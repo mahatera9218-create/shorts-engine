@@ -19,7 +19,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: market-research
+  group: repo-reports
   cancel-in-progress: false
 
 jobs:

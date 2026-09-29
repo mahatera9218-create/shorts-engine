@@ -169,3 +169,24 @@ class RunTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class BenchmarkTest(unittest.TestCase):
+    def test_repeated_blogs_become_candidates(self):
+        from market import benchmark
+        post = lambda b, t, d: {"blogger": b, "blog_link": f"https://blog.naver.com/{b}", "title": t,
+                                "link": f"{b}/{t}", "postdate": d}
+        results = {
+            "연봉 순위": [post("a", "2026 연봉 순위 TOP10", "20260925"), post("b", "잡담", "20260101")],
+            "몸값 순위": [post("a", "몸값 1위는?", "20260920"), post("c", "몸값 vs 성적", "20260928")],
+            "이적료": [post("c", "이적료 비교", "20260927")],
+        }
+        out = benchmark.find_candidates(results, min_queries=2, top_n=5, today=date(2026, 9, 29))
+        self.assertEqual({b["name"] for b in out}, {"a", "c"})
+        self.assertEqual(out[0]["query_hits"], 2)
+
+    def test_title_patterns(self):
+        from market import benchmark
+        p = benchmark.title_patterns(["연봉 순위 TOP10", "A vs B 비교", "그냥 제목"])
+        self.assertAlmostEqual(p["digit"], 1 / 3)
+        self.assertAlmostEqual(p["versus"], 1 / 3)
