@@ -26,7 +26,7 @@ from .voice import check_draft
 
 POSTS = ROOT / "posts"
 SKILLS = ROOT / ".claude" / "skills"
-EXAMPLE_POST = POSTS / "2026-10-01-이정후-영수증" / "post.md"
+EXAMPLE_POST = SKILLS / "blog-voice" / "example-post.md"  # 말투·길이 참고용 (대표가 좋다고 한 첫 글, 예고 문장 제거)
 NUM = re.compile(r"\d[\d,]*(?:\.\d+)?")
 IMAGES = ("thumb.png", "card_quiz.png", "card_answer.png", "card_wage.png", "card_table.png")
 QUIZ = re.compile(r"^퀴즈 카드: (.+?) 맞히기 \(정답 (.+?)\)", re.M)
