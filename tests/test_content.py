@@ -168,6 +168,35 @@ class ContentTest(unittest.TestCase):
         assert [x["group"] for x in got] == ["home", "home", "car_kr", "car_import"]
         assert len({x["key"] for x in got}) == 4 and got == pick_prices(prices, "seed")
 
+    def test_count_small(self):
+        from content.themes import count
+        assert (count(0.5), count(0.036), count(0.0042)) == ("0.5", "0.03", "0.004")
+
+    def test_fill_prices_checks_article(self):
+        from content.autopost import eok_text, fill_prices
+        assert "34억3000만" in eok_text(3_430_000_000) and "34억3천만" in eok_text(3_430_000_000)
+
+        class Hub:
+            def news(self, q, display=30):
+                return [{"title": "은마 84㎡ 거래", "description": "전용 84㎡ 34억 3,000만원에 팔렸다",
+                         "link": "https://n/1", "date": "2026-09-20"}]
+
+        class LLM:
+            def __init__(self, price):
+                self.price = price
+
+            def ask_json(self, *a, **k):
+                return {"found": True, "price_krw": self.price, "deal_date": "2026-09-01", "source": 1}
+
+        item = {"key": "eunma", "group": "home", "label": "은마 84㎡", "short": "은마아파트", "unit": "채",
+                "fetch": "news", "query": "은마", "min_krw": 1_000_000_000, "max_krw": 10_000_000_000}
+        fb = {"key": "seoul_apt", "short": "서울 아파트", "price_krw": 1, "as_of": "2026-08-10", "source": "x"}
+        got, notes = fill_prices(Hub(), LLM(3_430_000_000), [item], "2026-09-29", fb)
+        assert got[0]["price_krw"] == 3_430_000_000 and got[0]["as_of"] == "2026-09-01" and not notes
+        for bad in (3_500_000_000, 500_000_000):  # 기사에 없는 숫자, 범위 밖
+            got, notes = fill_prices(Hub(), LLM(bad), [item, dict(item, key="x")], "2026-09-29", fb)
+            assert [g["key"] for g in got] == ["seoul_apt"] and len(notes) == 2
+
 
 if __name__ == "__main__":
     unittest.main()

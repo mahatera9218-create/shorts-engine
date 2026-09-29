@@ -62,6 +62,25 @@ EXTRACT_SCHEMA = {
     "additionalProperties": False,
 }
 
+PRICE_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "found": {"type": "boolean"},
+        "price_krw": {"type": "integer"},
+        "deal_date": {"type": "string"},
+        "source": {"type": "integer"},
+    },
+    "required": ["found", "price_krw", "deal_date", "source"],
+    "additionalProperties": False,
+}
+
+PRICE_RULES = """너는 부동산 기사 요약문에서 실거래가 하나를 뽑는 도우미다.
+- 요청한 단지의 전용 84㎡ '매매' 실거래가 중 거래일이 가장 최근인 것 하나만 고른다.
+- 호가·전세·월세·분양가·입주권·평균값·다른 면적·다른 단지는 쓰지 않는다. 확실하지 않으면 found=false.
+- price_krw는 원 단위 정수 (예: 34억3000만원 → 3430000000). 기사에 적힌 숫자만 쓰고 계산·추측하지 않는다.
+- deal_date는 기사에 적힌 거래 날짜 (YYYY-MM-DD 또는 YYYY-MM, 없으면 빈 문자열). source는 기사 번호 [n].
+"""
+
 POST_SCHEMA = {
     "type": "object",
     "properties": {
@@ -157,6 +176,50 @@ def gather_news(hub, queries: list[str], per_query: int = 15) -> list[dict]:
 
 def news_prompt(news: list[dict]) -> str:
     return "\n".join(f"[{i}] ({it['date']}) {it['title']} — {it['description']}" for i, it in enumerate(news, 1))
+
+
+def eok_text(krw: int) -> list[str]:
+    """기사에 그 가격이 실제로 적혀 있는지 볼 때 찾을 표기 (34억3000만 / 34억3천만 / 34억 3,000만 ...)."""
+    e, m = divmod(krw // 10_000, 10_000)
+    if not m:
+        return [f"{e}억"]
+    c = f"{m // 1000}천" if m % 1000 == 0 else None
+    return [f"{e}억{x}만" for x in (str(m), f"{m:,}", c) if x]
+
+
+def fill_prices(hub, llm, items: list[dict], today: str, fallback: dict | None) -> tuple[list[dict], list[str]]:
+    """fetch: news 물건은 글 쓰는 날 뉴스에서 전용 84㎡ 최근 매매 실거래가를 뽑는다 (Claude가 고르고 코드가 확인).
+    기사에 없는 숫자·범위 밖·6개월 넘은 기사면 버리고 서울 평균(fallback)으로 대신한다."""
+    out, notes = [], []
+    for it in items:
+        if it.get("fetch") != "news":
+            out.append(it)
+            continue
+        got, why = None, "관련 기사 없음"
+        news = [n for n in gather_news(hub, [it["query"]], per_query=15)
+                if (date.fromisoformat(today) - date.fromisoformat(n["date"])).days <= 180]
+        if news:
+            r = llm.ask_json([PRICE_RULES], f"단지: {it['label']}\n오늘: {today}\n\n기사\n{news_prompt(news)}",
+                             PRICE_SCHEMA, max_tokens=1000, **extract_opts())
+            src = news[r["source"] - 1] if 1 <= r["source"] <= len(news) else None
+            text = (src["title"] + " " + src["description"]).replace(" ", "") if src else ""
+            if not r["found"] or not src:
+                why = "기사에서 84㎡ 매매 실거래가를 찾지 못함"
+            elif not it.get("min_krw", 0) <= r["price_krw"] <= it.get("max_krw", 10**13):
+                why = f"범위 밖 가격 ({won(r['price_krw'])})"
+            elif not any(x.replace(",", "") in text.replace(",", "") for x in eok_text(r["price_krw"])):
+                why = f"기사에 없는 숫자 ({won(r['price_krw'])})"
+            else:
+                d = r["deal_date"] if re.fullmatch(r"\d{4}-\d{2}(-\d{2})?", r["deal_date"]) else src["date"]
+                got = {**it, "price_krw": r["price_krw"], "as_of": d if len(d) == 10 else d + "-01",
+                       "source": f"실거래가 보도 ({src['date']}, {won(r['price_krw'])}) {src['link']}"}
+        if got:
+            out.append(got)
+        else:
+            notes.append(f"{it['short']} 가격 못 씀 ({why}) → 서울 아파트 평균으로 대신")
+            if fallback and all(x["key"] != fallback["key"] for x in out + items):
+                out.append(fallback)
+    return out, notes
 
 
 def done_ids() -> set[str]:
@@ -531,7 +594,10 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
             facts = got[0]["facts"]
             if th == "life":
                 prices = load_yaml("prices.yaml")
-                d["prices"] = themes.pick_prices(prices, f"{today}-{d['player']}")
+                fallback = next((i for i in prices["items"] if i["key"] == "seoul_apt"), None)
+                d["prices"], pn = fill_prices(hub, llm, themes.pick_prices(prices, f"{today}-{d['player']}"),
+                                              today, fallback)
+                notes += pn
                 old = [i["short"] for i in d["prices"] if (date.fromisoformat(today) - date.fromisoformat(str(i["as_of"]))).days > 180]
                 if old:
                     notes.append(f"가격 확인 필요 (6개월 넘음): {', '.join(old)} → config/prices.yaml")

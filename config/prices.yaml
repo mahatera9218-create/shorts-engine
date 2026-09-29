@@ -9,9 +9,21 @@
 pick: {home: 2, car_kr: 1, car_import: 1}
 
 items:
+  # ---- 집값 (weight = 월 검색량, reports/검색량/가격후보-2026-09-30.md)
+  # fetch: news → 글 쓰는 날 뉴스에서 전용 84㎡ 최근 매매 실거래가를 뽑는다 (호가·전세·분양가 제외, 못 찾으면 서울 평균으로 대신)
+  - {key: eunma, group: home, weight: 62570, label: "대치 은마아파트 전용 84㎡", short: 은마아파트, unit: 채,
+     fetch: news, query: "은마아파트 84㎡ 실거래", min_krw: 1000000000, max_krw: 10000000000}
+  - {key: helio, group: home, weight: 28260, label: "송파 헬리오시티 전용 84㎡", short: 헬리오시티, unit: 채,
+     fetch: news, query: "헬리오시티 84㎡ 실거래", min_krw: 1000000000, max_krw: 10000000000}
+  - {key: elsu, group: home, weight: 18820, label: "잠실엘스 전용 84㎡", short: 잠실엘스, unit: 채,
+     fetch: news, query: "잠실엘스 84㎡ 실거래", min_krw: 1000000000, max_krw: 10000000000}
+  - {key: acro, group: home, weight: 15130, label: "반포 아크로리버파크 전용 84㎡", short: 아크로리버파크, unit: 채,
+     fetch: news, query: "아크로리버파크 84㎡ 실거래", min_krw: 1000000000, max_krw: 15000000000}
+  - {key: onebailey, group: home, weight: 11960, label: "반포 래미안원베일리 전용 84㎡", short: 래미안원베일리, unit: 채,
+     fetch: news, query: "래미안원베일리 84㎡ 실거래", min_krw: 1000000000, max_krw: 15000000000}
   - key: seoul_apt
     group: home
-    weight: 1          # 검색량 재면 갱신
+    weight: 12600
     label: 서울 아파트 평균 매매가
     short: 서울 아파트
     unit: 채
@@ -19,9 +31,37 @@ items:
     as_of: 2026-08-10
     source: "헤럴드경제 보도 (KB부동산 월간, 8월 10일 기준 16억739만원) https://biz.heraldcorp.com/article/10849948"
 
+  # ---- 국산차 (시작가, 2026년 7월 개별소비세 환원 뒤 가격으로 확인한 것만. 투싼·캐스퍼는 확인 전이라 뺌)
+  - key: avante
+    group: car_kr
+    weight: 278300
+    label: 현대 아반떼 (2027년형 1.6 가솔린 모던)
+    short: 아반떼
+    unit: 대
+    price_krw: 23980000
+    as_of: 2026-09-01
+    source: "현대차 가격표 (2026-09-01 기준 2,398만원) https://www.hyundai.com/kr/ko/e/vehicles/the-all-new-avante/price"
+  - key: sportage
+    group: car_kr
+    weight: 238200
+    label: 기아 스포티지 (2027년형 1.6 가솔린 터보 시작가)
+    short: 스포티지
+    unit: 대
+    price_krw: 29440000
+    as_of: 2026-09-14
+    source: "2027년형 가격 보도 (2,944만원부터) https://www.autotribune.co.kr/news/articleView.html?idxno=45027"
+  - key: sorento
+    group: car_kr
+    weight: 210500
+    label: 기아 쏘렌토 (2027년형 2.5 가솔린 터보 시작가)
+    short: 쏘렌토
+    unit: 대
+    price_krw: 36410000
+    as_of: 2026-08-27
+    source: "2027년형 가격 보도 (3,641만원부터) https://www.autotribune.co.kr/news/articleView.html?idxno=45028"
   - key: grandeur
     group: car_kr
-    weight: 1          # 검색량 재면 갱신
+    weight: 185100
     label: 현대 그랜저 (2027년형 2.5 가솔린 시작가)
     short: 그랜저
     unit: 대
@@ -29,19 +69,37 @@ items:
     as_of: 2026-07-01
     source: "2027년형 가격 보도 (개별소비세 환원 후 4,245만원부터) https://web.getcha.kr/blog/new-model-year-hyundai-grandeur-3298"
 
+  # ---- 수입차 (BMW 520i는 보도마다 가격이 달라, 카이엔은 내연기관 가격 미확인이라 뺌)
+  - key: model_y
+    group: car_import
+    weight: 351100
+    label: 테슬라 모델Y (프리미엄 RWD)
+    short: 테슬라 모델Y
+    unit: 대
+    price_krw: 49990000
+    as_of: 2026-08-01
+    source: "2026년 8월 국내 가격 보도 (4,999만원) https://web.getcha.kr/blog/tesla-model-y-price-guide-2026-trim-comparison"
+  - key: bmw_x5
+    group: car_import
+    weight: 124200
+    label: BMW X5 (xDrive40i xLine 7인승)
+    short: BMW X5
+    unit: 대
+    price_krw: 123800000
+    as_of: 2026-09-01
+    source: "국내 가격 보도 (1억2,380만원) https://auto.danawa.com/auto/?Work=model&Model=4475&Tab=main&pcUse=y"
   - key: e_class
     group: car_import
-    weight: 1          # 검색량 재면 갱신
+    weight: 111100
     label: 벤츠 E클래스 (E300 4MATIC 익스클루시브)
     short: 벤츠 E클래스
     unit: 대
     price_krw: 94800000
     as_of: 2026-09-01
     source: "국내 판매가 보도 (9,480만원) https://m.carisyou.com/car/7669"
-
   - key: porsche_911
     group: car_import
-    weight: 1          # 검색량 재면 갱신
+    weight: 45320
     label: 포르쉐 911 터보 S 쿠페
     short: 포르쉐 911
     unit: 대
