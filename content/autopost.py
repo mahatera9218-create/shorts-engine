@@ -29,6 +29,7 @@ POSTS = ROOT / "posts"
 SKILLS = ROOT / ".claude" / "skills"
 EXAMPLE_POST = POSTS / "2026-10-01-이정후-영수증" / "post.md"
 NUM = re.compile(r"\d[\d,]*(?:\.\d+)?")
+IMAGES = ("thumb.png", "receipt.png", "compare.png", "season.png")
 BANNED = ["토토", "프로토", "배당", "베팅", "배팅", "열애", "여자친구", "남자친구", "이혼", "루머", "인성 논란"]
 
 # ---------------------------------------------------------------- 스키마
@@ -118,7 +119,11 @@ WRITE_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"(닉네�
 구조 (홈판형)
 - 첫 줄은 제목의 답이 되는 숫자 한 줄. 제목에서 던진 숫자는 본문 첫 화면에서 회수한다.
 - 문단은 3문장 이하, 짧은 문장과 긴 문장을 섞는다. 질문 2~4개. 최저임금 같은 교차 비교 1번.
-- 이미지 자리는 정확히 이 두 줄을 각각 한 줄로 넣는다: "[이미지 1_첫문단아래: thumb.png]" (첫 문단 바로 아래), "[이미지 2_영수증: receipt.png]" (단위별 금액을 말하기 직전).
+- 이미지 4장. 아래 네 줄을 각각 한 줄로, 글 흐름에 맞춰 나눠 넣는다 (스크롤마다 그림이 나오게):
+  "[이미지 1_첫문단아래: thumb.png]" 첫 문단 바로 아래 (홈판 카드와 같은 그림)
+  "[이미지 2_영수증: receipt.png]" 단위별 금액을 말하기 직전
+  "[이미지 3_최저임금비교: compare.png]" 최저임금 비교 문단 바로 위
+  "[이미지 4_시즌성적: season.png]" 올 시즌 성적을 말하는 문단 바로 위
 - 끝에서 둘째 문단: 다음에 계산해 볼 선수를 댓글로 묻는 질문 한 줄. 특정 선수 이름으로 다음 글을 약속하지 않는다 (그 선수 숫자가 안 모이면 못 쓴다).
 - 마지막 문단: "기준: ..."으로 연봉·성적·환율·최저임금의 기준일과 출처 종류를 한 문장으로.
 
@@ -214,6 +219,18 @@ def resolve(facts: list[dict], news: list[dict]) -> dict[str, dict]:
     return out
 
 
+def season_card(facts: dict, unit_keys: list[str]) -> tuple[list[dict], str]:
+    """시즌 성적 카드 (최대 6칸): 연봉을 나눈 기록 먼저, 그다음 나머지 기록."""
+    keys = [k for k in unit_keys if k in facts] + [k for k in facts if k not in unit_keys
+                                                     and k not in ("salary", "fx_krw_per_usd")]
+    card = []
+    for k in keys[:6]:
+        v = facts[k]["value"]
+        card.append({"label": facts[k].get("label", k), "value": f"{int(v):,}" if float(v).is_integer() else f"{v}"})
+    dates = [facts[k].get("date", "") for k in keys[:6]]
+    return card, max(dates) if dates else ""
+
+
 def build_data(topic: dict, ex: dict, facts: dict, cfg: dict) -> tuple[dict | None, str]:
     """receipt.py 입력을 만든다. 모자라거나 말이 안 되는 숫자면 (None, 이유)."""
     sal = facts.get("salary")
@@ -239,6 +256,9 @@ def build_data(topic: dict, ex: dict, facts: dict, cfg: dict) -> tuple[dict | No
     d["units"] = units
     d["headline_unit"] = ex["headline_unit"]
     d["min_wage_monthly_krw"] = cfg["constants"]["min_wage_monthly_krw"]
+    d["sport"] = topic.get("sport", "야구")
+    head = ex["headline_unit"]  # 제목에 쓴 기록을 카드 첫 칸(금색)에
+    d["card"], d["card_date"] = season_card(facts, sorted((u["key"] for u in units), key=lambda k: k != head))
     return {k: v for k, v in d.items() if v is not None}, ""
 
 
@@ -286,7 +306,7 @@ def check_post(p: dict, sheet: str) -> list[str]:
         bad = unknown_numbers(text, sheet)
         if bad:
             problems.append(f"{label}에 숫자표에 없는 숫자: {', '.join(bad)}")
-    for img in ("thumb.png", "receipt.png"):
+    for img in IMAGES:
         if img not in p["body"]:
             problems.append(f"이미지 자리 {img} 없음")
     hit = [w for w in BANNED if w in p["body"]]
@@ -353,7 +373,8 @@ def package_md(topic: dict, d: dict, facts: dict, post: dict, problems: list[str
     out += ["## 제목 (추천 ★)", ""]
     out += [f"{i}. {'★ ' if i == rec else ''}{t['text']} — {t['type']}" for i, t in enumerate(post["titles"], 1)]
     out += ["", "## 이미지 (본문 [이미지] 자리에 넣기)", "", "| 순서 | 파일 | 위치 | 대표이미지 |", "| --- | --- | --- | --- |",
-            "| 1 | thumb.png | 첫 문단 아래 | ✅ 대표이미지로 지정 |", "| 2 | receipt.png | 영수증 설명 위 | |", "",
+            "| 1 | thumb.png | 첫 문단 아래 | ✅ 대표이미지로 지정 |", "| 2 | receipt.png | 영수증 설명 위 | |",
+            "| 3 | compare.png | 최저임금 비교 위 | |", "| 4 | season.png | 시즌 성적 위 | |", "",
             "## 카테고리 · 태그", "", f"- 카테고리: **{topic['category']}**", f"- 태그: {', '.join(post['tags'][:10])}", "",
             "## 본문 (복사해서 붙여넣기, [이미지 …] 줄은 지우고 그 자리에 사진 넣기)", "", post["body"].strip(), "",
             "## 출처", ""]

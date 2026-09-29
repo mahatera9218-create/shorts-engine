@@ -17,3 +17,12 @@ sources:
   - "시즌 성적: 네이트 스포츠 2026-09-28 https://m.news.nate.com/view/20260928n21639"
   - "환율: 아시아경제 2026-09-29 https://view.asiae.co.kr/article/2026092915375464195"
   - "최저임금: 고용노동부 https://www.moel.go.kr/news/enews/report/enewsView.do?news_seq=18144"
+sport: 야구
+card_date: "2026-09-28"
+card:                         # 시즌 성적 카드 (season.png)
+  - {label: 안타, value: "149"}
+  - {label: 경기, value: "143"}
+  - {label: 홈런, value: "10"}
+  - {label: 타율, value: "0.276"}
+  - {label: 도루, value: "12"}
+  - {label: 타수, value: "539"}
