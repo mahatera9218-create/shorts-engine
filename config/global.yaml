@@ -1,0 +1,50 @@
+# 시장조사 설정 (설계서 0.3, 0.4, 14장). 점수 계산은 코드로만 한다.
+
+collect:
+  related_per_seed: 20        # 씨앗마다 검색량 상위 연관 키워드 몇 개를 남길지
+  min_monthly_volume: 300     # 월간 검색량(PC+모바일)이 이보다 작으면 버림
+  blog_top_n: 10              # 상위 몇 개 블로그 글을 볼지 (0.3 ③)
+  trend_months: 12            # 데이터랩 검색어 트렌드 기간
+
+youtube:
+  top_keywords: 10            # 점수 상위 몇 개만 유튜브에서 조회 (규칙 5: 한도)
+  videos_per_keyword: 10
+  daily_quota: 10000          # 공식 기본 한도
+  quota_budget: 1500          # 이 실행에서 쓸 최대 단위 (검색 1회 100, 영상·채널 조회 1)
+  outlier_ratio: 3.0          # 조회수 ÷ 구독자 수가 이 이상이면 이상치
+  region: KR
+  language: ko
+
+# 틈새 점수 = 수요^a × 가치^b × 이길가능성^c × 제휴가치^d ÷ 공급^e  (0.3)
+# 각 축은 0~1로 정규화한 뒤 지수(가중치)를 적용한다. 운영 데이터로 보정한다 (0.6).
+weights:
+  demand: 1.0
+  value: 1.0
+  win: 1.0
+  affiliate: 0.5
+  supply: 1.0
+
+# 규제·민감 업종 (0.3). 포함되면 점수와 별도로 표시하고, 법률 검토 전에는 진입하지 않는다.
+regulated_terms:
+  금융: [대출, 금리, 적금, 예금, 주식, 코인, 비트코인, 펀드, 투자, 카드론, 신용카드, 캐피탈, 할부금융]
+  보험: [보험, 보험료, 실비, 실손]
+  의료: [병원, 치료, 시술, 의약품, 약국, 처방, 한의원, 성형, 탈모, 다이어트약, 효능]
+  법률: [변호사, 소송, 이혼, 개인회생, 파산, 고소]
+
+report:
+  memos: 3                    # 투자 메모 개수
+  keywords_per_memo: 5
+
+# 네이버 API 주소.
+# 검색광고 API는 공식 저장소(naver/searchad-apidoc) 기준.
+# API HUB 주소는 공식 문서(guide.ncloud-docs.com)를 이 작업 환경에서 열 수 없어
+# 검색 결과로만 확인했다 → verified: false. 첫 실행 결과로 확인 후 true로 바꾼다.
+endpoints:
+  naver_ad_base: https://api.searchad.naver.com
+  naver_hub:
+    verified: false
+    base: https://naverapihub.apigw.ntruss.com
+    blog_search: /search/v1/blog
+    search_trend: /search-trend/v1/search
+    # 쇼핑 인사이트 분야별 트렌드. HUB 경로 미확인(추정). seeds.yaml에 카테고리 코드가 있을 때만 호출한다.
+    shopping_category: /shopping/v1/categories
