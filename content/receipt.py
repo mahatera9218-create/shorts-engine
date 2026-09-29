@@ -116,7 +116,7 @@ def poster(tag: str, name: str, label: str, big: str, photo: Image.Image | None 
     im = _shade(_cover(photo, w)) if photo is not None else Image.new("RGB", (w, w), BG)
     if jerseys:
         im = im.convert("RGBA")
-        place = [(0.77, 0.52, 0.5, -6)] if len(jerseys) == 1 else [(0.60, 0.44, 0.42, -8), (0.84, 0.52, 0.42, 7)]
+        place = [(0.77, 0.52, 0.5, -6)] if len(jerseys) == 1 else [(0.64, 0.585, 0.37, -8), (0.85, 0.62, 0.37, 7)]
         for j, (cx, cy, sz, rot) in zip(jerseys, place):
             jj = j.resize((int(w * sz), int(w * sz)), Image.LANCZOS).rotate(rot, resample=Image.BICUBIC, expand=True)
             im.alpha_composite(jj, (int(w * cx - jj.width / 2), int(w * cy - jj.height / 2)))
