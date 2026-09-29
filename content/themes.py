@@ -26,9 +26,13 @@ def short(p: dict) -> str:
 
 
 def count(x: float) -> str:
-    """개수 표기는 버림 (올려서 부풀리지 않는다): 1.68 → 1.6, 23.9 → 23, 1234.5 → 1,234."""
+    """개수 표기는 버림 (올려서 부풀리지 않는다): 1.68 → 1.6, 23.9 → 23, 1234.5 → 1,234, 0.036 → 0.03 (1 미만은 0이 안 되게)."""
     if x >= 10:
         return f"{int(x):,}"
+    if 0 < x < 1:
+        for k in (1, 2, 3):
+            if math.floor(x * 10 ** k):
+                return f"{math.floor(x * 10 ** k) / 10 ** k:.{k}f}"
     return f"{math.floor(x * 10) / 10:.1f}".removesuffix(".0")
 
 
@@ -130,7 +134,8 @@ def pick_prices(prices: dict, seed: str) -> list[dict]:
         for _ in range(min(k, len(pool))):
             it = rng.choices(pool, weights=[max(1, i.get("weight", 1)) for i in pool])[0]
             pool.remove(it)
-            out.append({x: it[x] for x in ("key", "group", "label", "short", "unit", "price_krw", "as_of", "source")})
+            out.append({x: it[x] for x in ("key", "group", "label", "short", "unit", "price_krw", "as_of", "source",
+                                           "fetch", "query", "min_krw", "max_krw") if x in it})
     return out
 
 

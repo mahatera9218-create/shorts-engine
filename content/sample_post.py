@@ -6,11 +6,14 @@ from __future__ import annotations
 
 import re
 
-from .autopost import EXTRACT_SCHEMA, POST_SCHEMA
+from .autopost import EXTRACT_SCHEMA, POST_SCHEMA, PRICE_SCHEMA
 
 
 class FakeNewsHub:
     def news(self, query: str, display: int = 30) -> list[dict]:
+        if "실거래" in query:  # 예시 아파트 실거래 기사 (가짜 가격)
+            return [{"title": f"[예시] {query} 기사", "description": "전용 84㎡가 지난달 12억3000만원에 거래됐다",
+                     "link": "https://example.com/apt/1", "date": "2026-09-20"}]
         base = [
             ("2026-09-28", "시즌 결산 기사", "올 시즌 30경기 150이닝 10승 140탈삼진"),
             ("2026-09-20", "중간 기사", "29경기 145이닝 9승 135탈삼진"),
@@ -45,6 +48,8 @@ class FakeClaude:
                               {"key": "wins", "label": "1승"}, {"key": "strikeouts", "label": "1탈삼진"}],
                     "headline_unit": "wins",
                     "story": [{"point": "올 시즌을 선발로 마쳤다", "source": s_end}]}
+        if schema == PRICE_SCHEMA:
+            return {"found": True, "price_krw": 1_230_000_000, "deal_date": "2026-08", "source": 1}
         if schema == POST_SCHEMA:
             per = dict(re.findall(r"^(1\S+)당: (\S+)", prompt, re.M))
             win = per.get("1승", "?")
