@@ -20,7 +20,7 @@ from pathlib import Path
 import yaml
 
 from market.common import ROOT, load_yaml, missing_secrets
-from . import cards, photos, receipt
+from . import cards, photos, receipt, themes
 from .receipt import won
 from .voice import check_draft
 
@@ -81,19 +81,6 @@ POST_SCHEMA = {
     "additionalProperties": False,
 }
 
-TOPIC_SCHEMA = {
-    "type": "object",
-    "properties": {
-        "found": {"type": "boolean"},
-        "player": {"type": "string"}, "short_name": {"type": "string"}, "team": {"type": "string"},
-        "sport": {"type": "string"},
-        "angle": {"type": "string"},
-        "queries": {"type": "array", "items": {"type": "string"}},
-    },
-    "required": ["found", "player", "short_name", "team", "sport", "angle", "queries"],
-    "additionalProperties": False,
-}
-
 EXTRACT_RULES = """너는 스포츠 기사 요약문에서 숫자 사실만 뽑는 담당이다. 글은 쓰지 않는다.
 
 규칙
@@ -108,6 +95,7 @@ EXTRACT_RULES = """너는 스포츠 기사 요약문에서 숫자 사실만 뽑�
 - 계약 총액·지급 유예 금액처럼 글에 필요한 다른 돈도 facts로 뽑는다 (key 예: contract_total, deferred, unit은 USD 또는 KRW). 원화 환산은 코드가 한다.
 - salary_basis: 연봉 근거를 한 줄로, 금액 숫자 없이 (예: "6년 계약 중 2026년 연봉, 보도 기준", "10년 계약, 대부분 지급 유예"). 금액은 facts에만.
 - usable=false: 올해 연봉 또는 나눌 기록이 요약문에 없을 때. reason에 무엇이 없는지 적는다.
+- 사용자가 준 '종목 안내'가 있으면 따른다 (예: 골프는 연봉 대신 올해 상금).
 """
 
 WRITE_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"(닉네임 백억소리)의 글쓴이다. 목표는 홈판에서 눌리고 끝까지 읽히는 글이다.
@@ -123,12 +111,7 @@ WRITE_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"(닉네�
 구조 (홈판형)
 - 첫 줄은 제목의 답이 되는 숫자 한 줄. 제목에서 던진 숫자는 본문 첫 화면에서 회수한다.
 - 문단은 3문장 이하, 짧은 문장과 긴 문장을 섞는다. 질문 2~4개. 최저임금 같은 교차 비교 1번.
-- 이미지 5장 (썸네일 + 카드뉴스 4장, 쪽 번호가 붙어 있어 순서를 지킨다). 아래 다섯 줄을 각각 한 줄로 넣는다:
-  "[이미지 1_첫문단아래: thumb.png]" 첫 문단 바로 아래 (홈판 카드와 같은 그림)
-  "[이미지 2_퀴즈: card_quiz.png]" 단위별 금액을 말하기 전. 바로 앞 문장에서 숫자표의 '퀴즈 카드' 기록이 얼마일지 맞혀 보라고 독자에게 묻는다
-  "[이미지 3_정답: card_answer.png]" 퀴즈 바로 다음 (사이에 짧은 한 줄까지). 정답 카드보다 앞에서는 퀴즈 정답 금액을 쓰지 않는다
-  "[이미지 4_최저임금: card_wage.png]" 최저임금 비교 문단 바로 위
-  "[이미지 5_한눈에표: card_table.png]" 올 시즌 성적을 말하는 문단 바로 위 (단위별 금액 표 + 시즌 기록)
+- 이미지는 숫자표의 '이미지 자리' 목록대로, 각 줄을 따옴표 안 모양 그대로 한 줄씩 순서대로 넣는다 (카드에 쪽 번호가 있어 순서를 지킨다).
 - 끝에서 둘째 문단: 다음에 계산해 볼 선수를 댓글로 묻는 질문 한 줄. 특정 선수 이름으로 다음 글을 약속하지 않는다 (그 선수 숫자가 안 모이면 못 쓴다).
 - 마지막 문단: "기준: ..."으로 연봉·성적·환율·최저임금의 기준일과 출처 종류를 한 문장으로.
 
@@ -178,33 +161,6 @@ def news_prompt(news: list[dict]) -> str:
 
 def done_ids() -> set[str]:
     return {p.name for p in POSTS.iterdir() if p.is_dir()} if POSTS.exists() else set()
-
-
-def pick_topic(cfg: dict, override: str | None = None) -> dict | None:
-    names = done_ids()
-    for t in cfg.get("queue", []):
-        if override and override not in (t["id"], t["player"]):
-            continue
-        if override or not any(n.endswith("-" + t["id"]) for n in names):
-            return t
-    if override:  # 대기열에 없는 선수 이름을 직접 준 경우
-        return {"id": f"{override}-영수증", "player": override, "team": "", "sport": "", "category": "선수 몸값",
-                "angle": "올해 연봉을 경기 기록 단위로 쪼갠다", "queries": [f"{override} 연봉", f"{override} 시즌 성적"]}
-    return None
-
-
-def discover_topic(cfg: dict, hub, llm) -> dict | None:
-    """대기열이 비면 최근 뉴스에서 연봉과 올 시즌 기록이 둘 다 보도된 선수를 고른다."""
-    news = gather_news(hub, cfg.get("discover_queries", []), per_query=12)
-    done = sorted({n.split("-", 3)[-1].removesuffix("-영수증") for n in done_ids()})
-    prompt = (f"이미 쓴 선수: {', '.join(done) or '없음'}\n\n아래 뉴스 요약에서 '올해 연봉'과 '올 시즌 기록'이 모두 보도된 "
-              "선수 1명을 골라라. 이미 쓴 선수는 빼고, 사생활·논란 기사로만 알려진 선수도 뺀다. queries는 네이버 뉴스 검색어 3~4개. short_name은 한국 팬이 부르는 짧은 이름(예: 오타니, 트라웃, 손흥민).\n\n"
-              + news_prompt(news))
-    t = llm.ask_json(["너는 스포츠 돈 블로그의 편집자다. 검색이 많이 될 스타 선수를 우선한다."], prompt, TOPIC_SCHEMA,
-                     max_tokens=4000, **extract_opts())
-    if not t.get("found"):
-        return None
-    return {"id": f"{t['player'].replace(' ', '')}-영수증", "category": "선수 몸값", **t}
 
 
 # ---------------------------------------------------------------- 숫자 정리 (코드)
@@ -367,7 +323,8 @@ def check_post(p: dict, sheet: str) -> list[str]:
         bad = unknown_numbers(text, sheet)
         if bad:
             problems.append(f"{label}에 숫자표에 없는 숫자: {', '.join(bad)}")
-    for img in IMAGES:
+    m_img = re.search(r"^이미지 파일: (.+)$", sheet, re.M)
+    for img in ([x.strip() for x in m_img.group(1).split(",")] if m_img else IMAGES):
         if img not in p["body"]:
             problems.append(f"이미지 자리 {img} 없음")
     hit = [w for w in BANNED if w in p["body"]]
@@ -435,33 +392,34 @@ def write_post(llm, topic: dict, sheet: str, max_revisions: int) -> tuple[dict, 
 
 # ---------------------------------------------------------------- 패키지
 
-def package_md(topic: dict, d: dict, facts: dict, post: dict, problems: list[str], rounds: int,
-               cfg: dict, news_used: list[dict], cost: float | None) -> str:
+def package_md(title: str, theme: str, category: str, facts: dict, post: dict, problems: list[str], rounds: int,
+               cfg: dict, news_count: int, cost: float | None, extra_sources: list[str] = ()) -> str:
     rec = post["recommended"]
     status = "✅ 자동 검사 통과" if not problems and post["gate_pass"] else "⚠️ 검사 미통과 — 발행하지 말고 Claude에게 알려주세요"
-    out = [f"# 발행 패키지 · {d['player']} {d['season']} 연봉 영수증", "",
+    out = [f"# 발행 패키지 · {title}", "",
            f"**상태:** {status}  ", f"**게이트:** {'통과' if post['gate_pass'] else '미통과'} — 정보 이득: {post['info_gain']}  ",
            f"**자동 작성:** Claude 초안 → 코드 검사 (고쳐 쓰기 {rounds}회)" + (f" · API 비용 약 ${cost:.2f}" if cost else ""), ""]
     if problems:
         out += ["**남은 문제:**", ""] + [f"- {p}" for p in problems] + [""]
     out += ["## 제목 (추천 ★)", ""]
     out += [f"{i}. {'★ ' if i == rec else ''}{t['text']} — {t['type']}" for i, t in enumerate(post["titles"], 1)]
-    out += ["", "## 이미지 (본문 [이미지] 자리에 넣기)", "", "| 순서 | 파일 | 위치 | 대표이미지 |", "| --- | --- | --- | --- |",
-            "| 1 | thumb.png | 첫 문단 아래 | ✅ 대표이미지로 지정 |", "| 2 | card_quiz.png | 퀴즈 | |",
-            "| 3 | card_answer.png | 퀴즈 바로 다음 (정답) | |", "| 4 | card_wage.png | 최저임금 비교 위 | |",
-            "| 5 | card_table.png | 시즌 성적 위 (한눈에 표) | |", "",
-            "## 카테고리 · 태그", "", f"- 카테고리: **{topic['category']}**", f"- 태그: {', '.join(post['tags'][:10])}", "",
+    plan = themes.image_plan(theme)
+    out += ["", "## 이미지 (본문 [이미지] 자리에 넣기)", "", "| 순서 | 파일 | 위치 | 대표이미지 |", "| --- | --- | --- | --- |"]
+    out += [f"| {i} | {f} | {lab} | {'✅ 대표이미지로 지정' if i == 1 else ''} |" for i, (lab, f, _) in enumerate(plan, 1)]
+    out += ["", "## 카테고리 · 태그", "", f"- 카테고리: **{category}**", f"- 태그: {', '.join(post['tags'][:10])}", "",
             "## 본문 (복사해서 붙여넣기, [이미지 …] 줄은 지우고 그 자리에 사진 넣기)", "", post["body"].strip(), "",
             "## 출처", ""]
     links = sorted({l for f in facts.values() for l in f["sources"]})
-    out += [f"- {l}" for l in links] + [f"- 최저임금: {cfg['constants']['min_wage_source']}", ""]
+    out += [f"- {l}" for l in links] + [f"- {x}" for x in extra_sources]
+    out += [f"- 최저임금: {cfg['constants']['min_wage_source']}", ""]
     out += ["## 팩트체크 목록 (코드가 정한 값)", "", "| 수치 | 값 | 기사 날짜 | 정한 규칙 |", "| --- | --- | --- | --- |"]
     for k, f in facts.items():
         diff = f" (출처별 {', '.join(map(str, f['differs']))})" if f["differs"] else ""
         out.append(f"| {f['label']} | {f['value']:,} {f['unit']} | {f['date']} | {f['rule']}{diff} |")
-    out += ["| 단위별 금액 | numbers.json | - | 코드 계산 |", "",
+    out += ["| 계산한 금액 | numbers.json | - | 코드 계산 |", "",
             "## 실험 기록용", "",
-            f"- 추천 제목 유형: {post['titles'][rec - 1]['type']} · 교차 비교: {post['cross_compare']} · 이미지 2 · 참고 기사 {len(news_used)}건", ""]
+            f"- 테마: {theme} · 추천 제목 유형: {post['titles'][rec - 1]['type']} · 교차 비교: {post['cross_compare']}"
+            f" · 이미지 {len(plan)} · 참고 기사 {news_count}건", ""]
     return "\n".join(out)
 
 
@@ -481,59 +439,134 @@ def write_index() -> None:
         "| 날짜 | 추천 제목 | 상태 |\n| --- | --- | --- |\n" + "\n".join(rows) + "\n", encoding="utf-8")
 
 
-def run(hub, llm, *, today: str, topic_override: str | None = None, out_root: Path = POSTS) -> tuple[str, Path | None]:
+def collect(hub, llm, topic: dict, today: str, cfg: dict) -> dict | str:
+    """한 선수의 뉴스 → 숫자 뽑기 → 충돌 정리 → 계산 입력. 모자라면 이유(str)를 돌려준다."""
+    news = gather_news(hub, topic["queries"] + [cfg["fx_query"]])
+    hint = f"\n종목 안내: {topic['hint']}" if topic.get("hint") else ""
+    ex = llm.ask_json([EXTRACT_RULES], f"선수: {topic['player']} ({topic.get('team', '')}, {topic.get('sport', '')}){hint}\n"
+                      f"오늘: {today}\n\n뉴스 요약 (번호 = source):\n{news_prompt(news)}",
+                      EXTRACT_SCHEMA, max_tokens=8000, **extract_opts())
+    if not ex["usable"]:
+        return ex["reason"]
+    facts = resolve(ex["facts"], news)
+    d, why = build_data(topic, ex, facts, cfg)
+    if d is None:
+        return why
+    return {"d": d, "facts": facts, "ex": ex, "news": news}
+
+
+def recent_players(k: int) -> set[str]:
+    names = set()
+    for f in sorted((x for x in POSTS.iterdir() if (x / "data.yaml").exists()), reverse=True)[:k] if POSTS.exists() else []:
+        names |= set(themes.names_in(yaml.safe_load((f / "data.yaml").read_text(encoding="utf-8")) or {}))
+    return names
+
+
+def strip_lines(sheet: str, *prefixes: str) -> str:
+    return "\n".join(l for l in sheet.splitlines() if not l.startswith(prefixes))
+
+
+def theme_sheet(plan: dict, d: dict, n: dict, got: list[dict], cfg: dict) -> str:
+    th = plan["theme"]
+    if th == "receipt":
+        return number_sheet(d, n, got[0]["facts"], got[0]["ex"], cfg)
+    if th in ("same", "cross"):
+        A, B = (x["d"].get("short_name") or x["d"]["player"] for x in got)
+        win, lose = (A, B) if n["winner"] == "a" else (B, A)
+        L = [f"비교: {A} vs {B} ({'같은 종목' if th == 'same' else '다른 종목'})",
+             f"제목용 짧은 이름: {A}",
+             f"썸네일: {A} vs {B} / 올해 연봉 / {receipt.short_won(n['a']['salary_krw'])} (추천 제목에는 이 금액을 다시 쓰지 않는다)",
+             f"{A} 올해 연봉: {won(n['a']['salary_krw'])}", f"{B} 올해 연봉: {won(n['b']['salary_krw'])}",
+             f"연봉 차이: {themes.ratio(n['salary_ratio'])}배",
+             f"{n['unit_label']} 몸값: {A} {won(n['va'])} / {B} {won(n['vb'])} → {win}이 {lose}의 {themes.ratio(n['ratio'])}배",
+             f"퀴즈 카드: {n['unit_label']} 몸값 누가 더 비쌀까 (정답 카드 전에는 누가 더 받는지 쓰지 않는다)"]
+        for x, key in zip(got, ("a", "b")):
+            L += ["", f"[{x['d'].get('short_name') or x['d']['player']} 상세]",
+                  strip_lines(number_sheet(x["d"], n[key], x["facts"], x["ex"], cfg), "썸네일:", "제목용", "퀴즈 카드:")]
+        return "\n".join(L)
+    q = themes.quiz_item(d, n)
+    apt = next((i for i in n["items"] if i["key"] == "seoul_apt"), n["items"][0])
+    L = [strip_lines(number_sheet(d, n, got[0]["facts"], got[0]["ex"], cfg), "썸네일:", "퀴즈 카드:"),
+         f"썸네일: {d.get('short_name') or d['player']} / 올해 연봉이면 / {apt['short']} {themes.count(apt['salary_count'])}{apt['unit']}"
+         " (추천 제목에는 이 숫자를 다시 쓰지 않는다)",
+         "생활 물가 (확인된 가격, 개수는 버림):"]
+    L += [f"- {i['label']}: {won(i['price_krw'])} ({i['as_of']} 기준) → 올해 연봉으로 {themes.count(i['salary_count'])}{i['unit']},"
+          f" {n['life_label']} 몸값으로 {themes.count(i['unit_count'])}{i['unit']}" for i in n["items"]]
+    L.append(f"퀴즈 카드: {n['life_label']} 몸값으로 {q['short']} 몇 {q['unit']} 맞히기 (정답 {themes.count(q['unit_count'])}{q['unit']})")
+    return "\n".join(L)
+
+
+def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str | None = None,
+        out_root: Path = POSTS) -> tuple[str, Path | None]:
     cfg = load_yaml("post_queue.yaml")
-    if not topic_override and out_root == POSTS:
+    pool = load_yaml("players.yaml")
+    if not topic_override and not theme and out_root == POSTS:
         today_made = [p for p in done_ids() if p.startswith(today)
                       and "**자동 작성:**" in (POSTS / p / "post.md").read_text(encoding="utf-8", errors="ignore")
                       if (POSTS / p / "post.md").exists()]
         if len(today_made) >= cfg.get("daily_limit", 1):
             return f"오늘 이미 {len(today_made)}편을 만들었습니다 (하루 한도 {cfg.get('daily_limit', 1)}편).", None
     notes: list[str] = []
-    if topic_override:
-        candidates = [pick_topic(cfg, topic_override)]
-    else:
-        candidates = [t for t in cfg.get("queue", []) if not any(n.endswith("-" + t["id"]) for n in done_ids())][:3]
-        if not candidates:
-            found = discover_topic(cfg, hub, llm)
-            candidates = [found] if found else []
-    for topic in candidates:  # 숫자가 모자라면 다음 선수로 넘어간다 (최대 3명)
-        news = gather_news(hub, topic["queries"] + [cfg["fx_query"]])
-        ex = llm.ask_json([EXTRACT_RULES], f"선수: {topic['player']} ({topic.get('team', '')}, {topic.get('sport', '')})\n"
-                          f"오늘: {today}\n\n뉴스 요약 (번호 = source):\n{news_prompt(news)}",
-                          EXTRACT_SCHEMA, max_tokens=8000, **extract_opts())
-        if not ex["usable"]:
-            notes.append(f"{topic['player']}: 건너뜀 — {ex['reason']}")
+    cache: dict[str, dict | str] = {}
+    for plan in themes.plans(pool, recent_players(pool.get("recent_posts", 5)), today, n=5,
+                             override=topic_override, theme=theme):
+        got = []
+        for p in plan["players"]:
+            if p["name"] not in cache:
+                cache[p["name"]] = collect(hub, llm, themes.topic(pool, p), today, cfg)
+            got.append(cache[p["name"]])
+        bad = [f"{p['name']}: {g}" for p, g in zip(plan["players"], got) if isinstance(g, str)]
+        if bad:
+            notes += [f"건너뜀 — {b}" for b in bad if b not in notes]
             continue
-        facts = resolve(ex["facts"], news)
-        d, why = build_data(topic, ex, facts, cfg)
-        if d is None:
-            notes.append(f"{topic['player']}: 건너뜀 — {why}")
-            continue
-        folder = out_root / f"{today}-{topic['id']}"
+        th = plan["theme"]
+        tinfo = pool["themes"][th]
+        if th in ("same", "cross"):
+            d = {"theme": th, "season": got[0]["d"]["season"], "sport": got[0]["d"].get("sport", "야구"),
+                 "a": got[0]["d"], "b": got[1]["d"]}
+            facts = {f"{k}.{key}": {**f, "label": f"{x['d'].get('short_name') or x['d']['player']} {f['label']}"}
+                     for k, x in zip("ab", got) for key, f in x["facts"].items()}
+        else:
+            d = {**got[0]["d"], "theme": th}
+            facts = got[0]["facts"]
+            if th == "life":
+                prices = load_yaml("prices.yaml")
+                d["prices"] = prices["items"]
+                d["quiz_item"] = prices.get("quiz_item", "grandeur")
+                old = [i["short"] for i in prices["items"] if (date.fromisoformat(today) - date.fromisoformat(str(i["as_of"]))).days > 180]
+                if old:
+                    notes.append(f"가격 확인 필요 (6개월 넘음): {', '.join(old)} → config/prices.yaml")
+        title = themes.title_name(d)
+        slug = "-".join(x["d"].get("short_name", x["d"]["player"]).replace(" ", "") for x in got)
+        folder = out_root / f"{today}-{th}-{slug}"
         folder.mkdir(parents=True, exist_ok=True)
         photos.fetch_all(folder, d.get("sport", "야구"), folder.name)  # 키가 없으면 사진 없이
-        n = receipt.build(folder, d)
-        sheet = number_sheet(d, n, facts, ex, cfg)
-        post, problems, rounds = write_post(llm, topic, sheet, cfg.get("max_revisions", 2))
+        n = themes.build(folder, d)
+        sheet = theme_sheet(plan, d, n, got, cfg) + "\n" + "\n".join(themes.image_lines(th))
+        post, problems, rounds = write_post(llm, {"category": tinfo["category"], "angle": tinfo["angle"]}, sheet,
+                                            cfg.get("max_revisions", 2))
         cost = llm.cost_usd()
         (folder / "data.yaml").write_text(yaml.safe_dump(d, allow_unicode=True, sort_keys=False), encoding="utf-8")
         (folder / "facts.json").write_text(json.dumps(facts, ensure_ascii=False, indent=1), encoding="utf-8")
         if photos.credit(folder):  # Pexels 이용 조건: 작가·Pexels 표시 (숫자 검사 뒤에 붙인다)
             post["body"] = post["body"].strip() + "\n\n" + photos.credit(folder)
         (folder / "body.txt").write_text(post["body"].strip() + "\n", encoding="utf-8")
-        (folder / "post.md").write_text(package_md(topic, d, facts, post, problems, rounds, cfg, news, cost), encoding="utf-8")
+        extra = [f"{i['label']}: {i['source']}" for i in d.get("prices", [])]
+        (folder / "post.md").write_text(package_md(f"{title} · {tinfo['name']}", th, tinfo["category"], facts, post,
+                                                   problems, rounds, cfg, sum(len(x["news"]) for x in got), cost, extra),
+                                        encoding="utf-8")
         if out_root == POSTS:
             write_index()
         head = "✅ 발행 가능" if not problems and post["gate_pass"] else "⚠️ 확인 필요: " + "; ".join(problems or ["게이트 미통과"])
-        return "\n".join(notes + [f"{topic['player']} 글 완성 — {head}"]), folder
-    return "\n".join(notes + ["쓸 수 있는 주제를 찾지 못했습니다. 대기열(config/post_queue.yaml)에 선수를 추가해 주세요."]), None
+        return "\n".join(notes + [f"{title} ({tinfo['name']}) 글 완성 — {head}"]), folder
+    return "\n".join(notes + ["쓸 수 있는 조합을 찾지 못했습니다 (연봉 보도가 있는 선수 부족). config/players.yaml 확인 필요."]), None
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--sample", action="store_true", help="키 없이 가짜 뉴스·가짜 응답으로 모양만 확인")
-    ap.add_argument("--topic", default=None)
+    ap.add_argument("--topic", default=None, help="선수 이름 (비우면 선수 풀에서 무작위)")
+    ap.add_argument("--theme", default=None, choices=["receipt", "same", "cross", "life"], help="테마 고정 (비우면 무작위)")
     ap.add_argument("--out", default=None, help="결과 폴더 (기본 posts/)")
     a = ap.parse_args()
     today = date.today().isoformat()
@@ -553,7 +586,7 @@ def main() -> None:
         hub = ApiHub(load_yaml("global.yaml")["endpoints"]["naver_hub"])
         llm = Claude()
     try:
-        msg, folder = run(hub, llm, today=today, topic_override=a.topic, out_root=out_root)
+        msg, folder = run(hub, llm, today=today, topic_override=a.topic, theme=a.theme, out_root=out_root)
     except Exception as e:  # 키·요금·API 오류: 메시지만 남기고 실패로 끝낸다 (키 값은 메시지에 없음)
         _summary(f"❌ 글쓰기 실패: {type(e).__name__}: {str(e)[:300]}\n\nClaude에게 이 화면을 알려주세요.")
         raise

@@ -1,0 +1,39 @@
+# 생활 물가 비교에 쓰는 기준 가격 (생활 물가 비교 테마, content/themes.py).
+# Claude가 추측한 값 금지: 공식 발표·보도로 확인한 값만, 출처와 기준 시점을 같이 적는다.
+# as_of가 6개월보다 오래되면 자동 글쓰기 요약에 '가격 확인 필요'가 뜬다. 바꾸면 여기만 고친다.
+
+items:
+  - key: seoul_apt
+    label: 서울 아파트 평균 매매가
+    short: 서울 아파트
+    unit: 채
+    price_krw: 1607390000
+    as_of: 2026-08-10
+    source: "헤럴드경제 보도 (KB부동산 월간, 8월 10일 기준 16억739만원) https://biz.heraldcorp.com/article/10849948"
+
+  - key: grandeur
+    label: 현대 그랜저 (2027년형 2.5 가솔린 시작가)
+    short: 그랜저
+    unit: 대
+    price_krw: 42450000
+    as_of: 2026-07-01
+    source: "2027년형 가격 보도 (개별소비세 환원 후 4,245만원부터) https://web.getcha.kr/blog/new-model-year-hyundai-grandeur-3298"
+
+  - key: e_class
+    label: 벤츠 E클래스 (E300 4MATIC 익스클루시브)
+    short: 벤츠 E클래스
+    unit: 대
+    price_krw: 94800000
+    as_of: 2026-09-01
+    source: "국내 판매가 보도 (9,480만원) https://m.carisyou.com/car/7669"
+
+  - key: porsche_911
+    label: 포르쉐 911 터보 S 쿠페
+    short: 포르쉐 911
+    unit: 대
+    price_krw: 342700000
+    as_of: 2026-04-01
+    source: "포르쉐코리아 출시 보도 (3억4,270만원) https://hypebeast.kr/2026/4/porsche-korea-officially-launches-new-911-turbo-s"
+
+# 1경기 몸값 퀴즈에 쓸 물건 (1경기 몸값으로 몇 대/채인지 맞히기)
+quiz_item: grandeur
