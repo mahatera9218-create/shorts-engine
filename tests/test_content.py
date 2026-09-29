@@ -96,12 +96,15 @@ class ContentTest(unittest.TestCase):
     def test_titles(self):
         from content.autopost import check_titles
         sheet = "썸네일: 오타니 쇼헤이 / 홈런 1개 / 9,045만원 (추천 제목은 이 기록·금액으로)"
-        good = {"recommended": 1, "titles": [{"text": "오타니 7억 달러인데 올해 27억?", "type": "반전형"}]
-                + [{"text": "오타니 1경기 1,952만 원", "type": "질문형"}] * 4}
+        good = {"recommended": 1, "tags": ["오타니", "MLB"],
+                "titles": [{"text": "7억 달러 계약인데 올해는 27억?", "type": "반전형"}]
+                + [{"text": "1경기에 1,952만 원", "type": "질문형"}] * 4}
         assert check_titles(good, sheet) == []
-        bad = {"recommended": 1, "titles": [{"text": "홈런 9,045만 원, 7억 달러 계약인데 충격 연봉?", "type": "숫자형"}] * 5}
+        bad = {"recommended": 1, "tags": ["MLB"],
+               "titles": [{"text": "오타니 홈런 9,045만 원, 7억 달러 계약인데 충격 연봉?", "type": "숫자형"}] * 5}
         problems = " / ".join(check_titles(bad, sheet))
-        assert "이름" in problems and "과장어" in problems and "되풀이" in problems and "20자" in problems
+        assert "선수 이름" in problems and "과장어" in problems and "되풀이" in problems and "20자" in problems
+        assert "태그" in problems
 
 
 if __name__ == "__main__":

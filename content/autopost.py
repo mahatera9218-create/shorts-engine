@@ -139,9 +139,10 @@ WRITE_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"(닉네�
 - titles 5개, 유형을 모두 다르게. recommended는 추천 제목 번호(1~5).
 
 제목 (홈판에서는 썸네일 + 제목만 보고 누를지 정한다. 가장 공들일 것)
-- 5개 모두 선수 이름으로 시작한다 (스타 이름이 가장 먼저 눈에 들어오게, 검색도 이름으로 한다).
-- 추천 제목은 이름 + 반전·궁금증 한 마디 (예: "오타니 7억 달러인데 올해 27억?", "이정후 부상인데 연봉은 다 받을까?"). 썸네일이 이미 금액을 보여주므로 숫자표 '썸네일' 줄의 금액을 추천 제목에 다시 쓰지 않는다. 썸네일은 "얼마", 제목은 "왜?"를 건드린다.
+- 선수 이름과 썸네일 금액은 제목에 쓰지 않는다 (썸네일과 본문에 이미 있다). 20자를 끌어들이는 데만 쓴다.
+- 추천 제목은 반전·궁금증 한 마디 (예: "7억 달러 계약인데 올해는 27억?", "부상으로 시즌 끝, 연봉은 다 받을까?"). 썸네일은 "얼마", 제목은 "왜?"를 건드린다.
 - 20자 이하 (띄어쓰기 포함). 나머지 4개도 20자 이하로 유형만 바꾼다. 던진 궁금증은 본문에서 반드시 답한다.
+- 선수 이름은 태그에 넣는다 (검색 유입 보완).
 - 물음표는 1개까지. "충격", "경악", "헉", "소름", "역대급" 같은 과장어 금지.
 - tags: 10개 이하, 띄어쓰기 없이.
 - cross_compare: 본문에 쓴 교차 비교 한 줄 요약.
@@ -319,7 +320,7 @@ THUMB = re.compile(r"^썸네일: (.+?) / (.+?) / (\S+?)원? \(", re.M)
 
 
 def check_titles(p: dict, sheet: str) -> list[str]:
-    """제목 규칙: 선수 이름으로 시작, 20자 이하, 과장어 금지, 추천 제목은 썸네일 금액을 되풀이하지 않음."""
+    """제목 규칙: 20자 이하, 과장어 금지, 추천 제목에 선수 이름·썸네일 금액 없음 (썸네일·본문에 있으니 글자를 아낀다)."""
     m = THUMB.search(sheet)
     if not m or not p["titles"]:
         return []
@@ -328,8 +329,6 @@ def check_titles(p: dict, sheet: str) -> list[str]:
     out = []
     for i, t in enumerate(p["titles"], 1):
         text = t["text"].strip()
-        if not text.startswith(core):
-            out.append(f"제목{i}이 선수 이름({core})으로 시작하지 않음")
         if len(text) > TITLE_MAX:
             out.append(f"제목{i}이 {TITLE_MAX}자 넘음 ({len(text)}자)")
         if text.count("?") > 1 or any(w in text for w in TITLE_BANNED):
@@ -337,6 +336,10 @@ def check_titles(p: dict, sheet: str) -> list[str]:
     rec = p["titles"][p["recommended"] - 1]["text"] if 1 <= p["recommended"] <= len(p["titles"]) else ""
     if money.removesuffix("원") in rec.replace(" ", ""):
         out.append(f"추천 제목이 썸네일 금액({money})을 되풀이함 → 반전·궁금증 한 마디로")
+    if core in rec:
+        out.append(f"추천 제목에 선수 이름({core}) → 빼고 끌어들이는 문구에 글자를 쓰기")
+    if not any(core in t for t in p.get("tags", [])) and p.get("tags") is not None:
+        out.append(f"태그에 선수 이름({core}) 없음")
     return out
 
 
