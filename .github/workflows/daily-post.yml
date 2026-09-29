@@ -2,6 +2,7 @@
 # - 자동 실행: 매일 오전 6시 47분 (한국 시간). 결과는 posts/README.md 목록에 올라온다.
 # - 수동 실행: Actions → 자동 글쓰기 → Run workflow (선수 이름을 넣으면 그 선수로 바로 씀)
 # - 발행은 운영자가 한다 (네이버 블로그는 글쓰기 API가 없음).
+# - 발행 도우미의 "다시 뽑기"는 desk-button.yml이 이 워크플로를 --again으로 부른다.
 name: 자동 글쓰기
 
 on:
@@ -21,6 +22,10 @@ on:
         type: choice
         options: ["", receipt, same, cross, life]
         default: ""
+  workflow_call:   # 발행 도우미 "다시 뽑기" (desk-button.yml)
+    inputs:
+      mode: {type: string, default: 실제}
+      again: {type: boolean, default: false}
   schedule:
     - cron: "47 21 * * *"   # UTC 21:47 = 한국 다음 날 06:47
 
@@ -62,6 +67,7 @@ jobs:
             args=()
             [ -n "$TOPIC" ] && args+=(--topic "$TOPIC")
             [ -n "$THEME" ] && args+=(--theme "$THEME")
+            [ "${{ inputs.again }}" = "true" ] && args+=(--again)
             python -m content.autopost "${args[@]}"
           fi
       - name: 결과 저장 (posts/ 커밋)
