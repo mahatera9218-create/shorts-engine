@@ -30,6 +30,7 @@ EXAMPLE_POST = POSTS / "2026-10-01-이정후-영수증" / "post.md"
 NUM = re.compile(r"\d[\d,]*(?:\.\d+)?")
 IMAGES = ("thumb.png", "card_quiz.png", "card_answer.png", "card_wage.png", "card_table.png")
 QUIZ = re.compile(r"^퀴즈 카드: (.+?) 맞히기 \(정답 (.+?)\)", re.M)
+TEASER = re.compile(r"다음\s*(글|편|영수증|포스팅|포스트|시간|회차|이야기|주인공|차례|대결)|다음\s*번\s*글|다음엔\s*\S+\s*(선수|연봉|몸값)(을|를|의|으로|로)?\s*(다룰|쪼갤|계산|알아)")
 BANNED = ["토토", "프로토", "배당", "베팅", "배팅", "열애", "여자친구", "남자친구", "이혼", "루머", "인성 논란"]
 
 # ---------------------------------------------------------------- 스키마
@@ -167,7 +168,8 @@ WRITE_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"(닉네�
 - 첫 줄은 제목의 답이 되는 숫자 한 줄. 제목에서 던진 숫자는 본문 첫 화면에서 회수한다.
 - 문단은 3문장 이하, 짧은 문장과 긴 문장을 섞는다. 질문 2~4개. 최저임금 같은 교차 비교 1번.
 - 이미지는 숫자표의 '이미지 자리' 목록대로, 각 줄을 따옴표 안 모양 그대로 한 줄씩 순서대로 넣는다 (카드에 쪽 번호가 있어 순서를 지킨다).
-- 끝에서 둘째 문단: 다음에 계산해 볼 선수를 댓글로 묻는 질문 한 줄. 특정 선수 이름으로 다음 글을 약속하지 않는다 (그 선수 숫자가 안 모이면 못 쓴다).
+- 끝에서 둘째 문단: 궁금한 선수를 댓글로 묻는 열린 질문 한 줄 (예: "누구 연봉을 쪼개 보면 좋을까요?").
+- 다음 글 예고 금지: "다음 글은 ○○", "다음 영수증은 ○○", "다음 편에서"처럼 다음 글이 누구·무엇인지 쓰지 않는다 (아직 정해지지 않았다). 코드 검사에서 걸린다.
 - 마지막 문단: "기준: ..."으로 연봉·성적·환율·최저임금의 기준일과 출처 종류를 한 문장으로.
 
 금지
@@ -196,7 +198,7 @@ WRITE_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"(닉네�
 
 클립 (네이버 클립: 홈피드에서 그 자리에서 보는 영상. 영상에 퀴즈·정답·표가 이미 있다)
 - clip_caption: 클립 설명 2~3줄. 첫 줄은 추천 제목과 같은 궁금증, 둘째 줄은 댓글로 이어질 물음. 해시태그·링크는 쓰지 않는다 (코드가 붙인다).
-- clip_question: 영상 마지막 화면에 크게 띄울 질문 18자 이하 (예: "다음은 누구 몸값?", "이 돈이면 뭐 살래요?"). 숫자는 숫자표에 있는 것만.
+- clip_question: 영상 마지막 화면에 크게 띄울 질문 18자 이하 (예: "누구 몸값이 궁금해요?", "이 돈이면 뭐 살래요?"). 숫자는 숫자표에 있는 것만.
 """
 
 
@@ -438,6 +440,9 @@ def check_post(p: dict, sheet: str) -> list[str]:
     for img in ([x.strip() for x in m_img.group(1).split(",")] if m_img else IMAGES):
         if img not in p["body"]:
             problems.append(f"이미지 자리 {img} 없음")
+    teaser = [m.group(0) for m in TEASER.finditer(p["body"] + "\n" + p.get("clip_caption", ""))]
+    if teaser:
+        problems.append(f"다음 글 예고 문장 (쓰지 않는다): {', '.join(teaser)}")
     hit = [w for w in BANNED if w in p["body"]]
     if hit:
         problems.append(f"금지 주제 단어: {', '.join(hit)}")
@@ -643,6 +648,39 @@ def theme_sheet(plan: dict, d: dict, n: dict, got: list[dict], cfg: dict) -> str
     return "\n".join(L)
 
 
+NEWS_DAYS = 3        # 최근 며칠 기사 수로 "지금 궁금한 선수"를 잰다
+NEWS_PER_BOOST = 15  # 기사 15건마다 가중치 +1배 (최대 3배)
+
+
+def weighted_pool(hub, pool: dict, today: str) -> tuple[dict, str]:
+    """적시성(대표 결정 2026-09-30): 최근 뉴스가 많은 선수, 댓글로 요청받은 선수를 더 자주 뽑는다.
+    뉴스는 네이버 뉴스 검색 API(허용된 통로)로 기사 수만 센다. 실패하면 원래 가중치."""
+    day = date.fromisoformat(today)
+    req = load_yaml("requests.yaml") if (ROOT / "config" / "requests.yaml").exists() else {}
+    asked = {r["name"] for r in (req.get("requests") or [])
+             if 0 <= (day - date.fromisoformat(str(r["date"]))).days <= req.get("days", 21)}
+    out, hot = [], []
+    for p in pool["players"]:
+        try:
+            n = sum(1 for it in hub.news(p["name"], display=100)
+                    if 0 <= (day - date.fromisoformat(it["date"])).days <= NEWS_DAYS)
+        except Exception:
+            n = 0
+        f = (1 + min(2.0, n / NEWS_PER_BOOST)) * (req.get("boost", 3) if p["name"] in asked else 1)
+        out.append({**p, "weight": p.get("weight", 1) * f})
+        if n or p["name"] in asked:
+            hot.append((f, f"{short_name(p)} 기사 {n}건" + (" · 댓글 요청" if p["name"] in asked else "")))
+    missing = asked - {p["name"] for p in pool["players"]}
+    why = ", ".join(t for _, t in sorted(hot, reverse=True)[:5])
+    if missing:
+        why += f" (댓글 요청 중 풀에 없는 선수: {', '.join(sorted(missing))} → players.yaml에 추가 필요)"
+    return {**pool, "players": out}, why
+
+
+def short_name(p: dict) -> str:
+    return p.get("short") or p["name"]
+
+
 def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str | None = None,
         out_root: Path = POSTS, again: bool = False) -> tuple[str, Path | None]:
     """again: 발행 도우미 '다시 뽑기' — 하루 한도를 건너뛰고 다른 조합으로 쓴다 (버린 글의 선수는 최근 목록에 있어 제외된다)."""
@@ -658,6 +696,9 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
     notes: list[str] = []
     cache: dict[str, dict | str] = {}
     seed = today if not made_today else f"{today}-{len(made_today)}"  # 다시 뽑으면 테마도 새로
+    pool, why = weighted_pool(hub, pool, today)
+    if why:
+        notes.append("가중치: " + why)
     for plan in themes.plans(pool, recent_players(pool.get("recent_posts", 5)), seed, n=5,
                              override=topic_override, theme=theme):
         got = []
