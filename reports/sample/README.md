@@ -4,6 +4,6 @@
 
 - [요약·키워드 점수표](00-요약-점수표.md)
 - [자동차](memo-1-car.md)
-- [여행 숙소](memo-2-travel-stay.md)
-- [가전·고가 제품 비교](memo-3-appliance.md)
+- [여행·축제·나들이](memo-2-festival.md)
+- [생활 경제 숫자](memo-3-life-economy.md)
 - [원자료 data.json](data.json)
