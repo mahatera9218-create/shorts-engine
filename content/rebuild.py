@@ -1,6 +1,6 @@
 """이미 만든 글의 이미지를 다시 그린다 (썸네일 디자인을 바꿨을 때).
 
-사진이 없으면 Pexels에서 받고(PEXELS_API_KEY), 본문 끝에 사진 출처 한 줄을 붙인다. 숫자·본문은 바꾸지 않는다.
+클립 영상도 새 이미지로 다시 만든다. 사진이 없으면 Pexels에서 받고(PEXELS_API_KEY), 본문 끝에 사진 출처 한 줄을 붙인다. 숫자·본문은 바꾸지 않는다.
 사용법: python -m content.rebuild [posts/폴더 ...]   (폴더를 안 주면 posts/ 아래 전부)
 """
 from __future__ import annotations
@@ -11,7 +11,7 @@ from pathlib import Path
 import yaml
 
 from market.common import ROOT
-from . import photos, themes
+from . import clip, photos, themes
 
 
 def add_credit(folder: Path) -> None:
@@ -37,7 +37,8 @@ def main() -> None:
         photos.fetch_all(folder, d.get("sport", "야구"), folder.name)
         themes.build(folder, d)
         add_credit(folder)
-        print(f"{folder.name}: 이미지 다시 그림" + (" (사진 포함)" if (folder / "photo.jpg").exists() else " (사진 없음)"))
+        print(f"{folder.name}: 이미지 다시 그림" + (" (사진 포함)" if (folder / "photo.jpg").exists() else " (사진 없음)")
+              + " · " + clip.make(folder))
 
 
 if __name__ == "__main__":
