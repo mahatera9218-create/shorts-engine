@@ -136,7 +136,13 @@ WRITE_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"(닉네�
 
 출력
 - gate_pass: 숫자표로 '새로 계산한 숫자'라는 정보 이득을 만들 수 있으면 true. info_gain에 한 줄.
-- titles 5개, 유형을 모두 다르게. recommended는 추천 제목 번호(1~5). 제목 앞부분에 큰 숫자.
+- titles 5개, 유형을 모두 다르게. recommended는 추천 제목 번호(1~5).
+
+제목 (홈판에서는 썸네일 + 제목만 보고 누를지 정한다. 가장 공들일 것)
+- 5개 모두 선수 이름으로 시작한다 (스타 이름이 가장 먼저 눈에 들어오게, 검색도 이름으로 한다).
+- 추천 제목은 숫자표의 '썸네일' 줄과 같은 기록·금액을 이름 바로 뒤에 둔다 (썸네일과 제목이 같은 말을 해야 카드가 강하다).
+- 앞부분(이름 + 숫자)만 읽어도 무슨 글인지 알게 하고, 뒷부분에 반전·대비·궁금증 한 조각 (예: "계약은 7억 달러인데", "부상인데 연봉은 다 받을까"). 그 궁금증은 본문에서 반드시 답한다.
+- 40자 이하. 물음표는 1개까지. "충격", "경악", "헉", "소름", "역대급" 같은 과장어 금지.
 - tags: 10개 이하, 띄어쓰기 없이.
 - cross_compare: 본문에 쓴 교차 비교 한 줄 요약.
 """
@@ -266,7 +272,10 @@ def build_data(topic: dict, ex: dict, facts: dict, cfg: dict) -> tuple[dict | No
 
 def number_sheet(d: dict, n: dict, facts: dict, ex: dict, cfg: dict) -> str:
     """글에 쓸 수 있는 숫자 전부. 글쓰기 검사도 이 표를 기준으로 한다."""
-    L = [f"선수: {d['player']} ({d.get('team', '')}), 시즌 {d['season']}"]
+    head = receipt.headline(d)
+    head_label = next(u["label"] for u in receipt.units(d) if u["key"] == head)
+    L = [f"선수: {d['player']} ({d.get('team', '')}), 시즌 {d['season']}",
+         f"썸네일: {d['player']} / {head_label} / {receipt.short_won(n['per'][head])} (추천 제목은 이 기록·금액으로)"]
     if d.get("salary_usd"):
         L.append(f"올해 연봉: {d['salary_usd'] / 1e4:,.0f}만 달러 = {won(n['salary_krw'])} ({d['fx_label']})")
     else:
@@ -304,6 +313,32 @@ def unknown_numbers(text: str, sheet: str, extra: str = "") -> list[str]:
     return sorted(set(bad))
 
 
+TITLE_BANNED = ["충격", "경악", "헉", "소름", "역대급"]
+THUMB = re.compile(r"^썸네일: (.+?) / (.+?) / (\S+?)원? \(", re.M)
+
+
+def check_titles(p: dict, sheet: str) -> list[str]:
+    """제목 규칙: 선수 이름으로 시작, 추천 제목에 썸네일 금액, 40자 이하, 과장어 금지."""
+    m = THUMB.search(sheet)
+    if not m or not p["titles"]:
+        return []
+    name, money = m.group(1), m.group(3)
+    core = name.split(" ")[0]  # '오타니 쇼헤이' → '오타니'
+    out = []
+    for i, t in enumerate(p["titles"], 1):
+        text = t["text"].strip()
+        if not text.startswith(core):
+            out.append(f"제목{i}이 선수 이름({core})으로 시작하지 않음")
+        if len(text) > 40:
+            out.append(f"제목{i}이 40자 넘음 ({len(text)}자)")
+        if text.count("?") > 1 or any(w in text for w in TITLE_BANNED):
+            out.append(f"제목{i}에 물음표 여러 개 또는 과장어")
+    rec = p["titles"][p["recommended"] - 1]["text"] if 1 <= p["recommended"] <= len(p["titles"]) else ""
+    if money.removesuffix("원") not in rec.replace(" ", ""):
+        out.append(f"추천 제목에 썸네일 금액({money})이 없음")
+    return out
+
+
 def check_post(p: dict, sheet: str) -> list[str]:
     problems = list(check_draft(p["body"]))
     for label, text in [("본문", p["body"])] + [(f"제목{i}", t["text"]) for i, t in enumerate(p["titles"], 1)]:
@@ -316,6 +351,7 @@ def check_post(p: dict, sheet: str) -> list[str]:
     hit = [w for w in BANNED if w in p["body"]]
     if hit:
         problems.append(f"금지 주제 단어: {', '.join(hit)}")
+    problems += check_titles(p, sheet)
     if len(p["titles"]) != 5 or not 1 <= p["recommended"] <= len(p["titles"]):
         problems.append("제목 5개와 추천 번호(1~5)가 필요")
     m = QUIZ.search(sheet)
