@@ -9,30 +9,31 @@
 #   씨앗·영역 이름·include_terms 어느 것과도 두 글자가 겹치지 않는 연관 키워드는 자동으로 뺀다 (global.yaml relevance_filter).
 
 areas:
-  - id: small-business
-    name: 자영업·사업자 운영
-    affiliate: 3
-    seeds: [사업자 세금, 소상공인 지원금]
-    include_terms: [부가세, 소득세, 세무, 정책자금]
+  # 2026-09-29 비교 조사: 홈판 주력 결정 후 스포츠(선수 중심)와 여행·축제를 같은 기준으로 잰다.
+  # 자영업·가전·업무용 IT는 1차 조사로 끝났으므로 뺐다 (결과는 reports/market/2026-09-29*에 보존).
+  - id: sports-kbo
+    name: 스포츠·국내 선수
+    affiliate: 1
+    seeds: [프로야구 연봉 순위, 프로야구 FA, 프로야구 선수 기록]
+    include_terms: [야구, 연봉, 이적, 기록, 선수, 프로필, 트레이드, 부상]
+  - id: sports-abroad
+    name: 스포츠·해외파 선수
+    affiliate: 1
+    seeds: [손흥민 연봉, 이정후 기록, 김민재 이적]
+    include_terms: [손흥민, 이정후, 김민재, 이강인, 김하성, 황희찬, 연봉, 이적, 기록]
+  - id: festival
+    name: 여행·축제·나들이
+    affiliate: 2
+    seeds: [가을 축제, 단풍 명소, 주말 가볼만한곳]
+    include_terms: [축제, 단풍, 나들이, 여행, 가볼만한, 행사, 불꽃]
+  - id: life-economy
+    name: 생활 경제 숫자
+    affiliate: 2
+    seeds: [휘발유 가격, 아파트 실거래가, 청약 일정]
+    include_terms: [유가, 기름값, 주유소, 실거래가, 청약, 물가, 전기요금]
   - id: car
     name: 자동차
     affiliate: 3
     # 2026-09-29: 블로그가 금방 보이는 비교·질문형으로 교체 (차종·모델명 정리형은 블로그가 한참 아래, 대표 확인)
     seeds: [인증중고차 비교, 중고차 사이트 비교, 경차 유지비, 자동차 유지비]
     include_terms: [인증중고, 중고차, 유지비, 수수료, 보증]
-  - id: appliance
-    name: 가전·고가 제품 비교
-    affiliate: 5
-    shopping_category: ""
-    seeds: [로봇청소기 비교, 제습기 추천]
-    include_terms: [가습기, 공기청정기, 청소기]
-  - id: travel-stay
-    name: 여행 숙소
-    affiliate: 4
-    seeds: [호텔 가격 비교, 여행 경비]
-    include_terms: [숙박, 리조트, 펜션]
-  - id: work-it
-    name: 업무용 IT 서비스
-    affiliate: 3
-    seeds: [전자계약, 회계 프로그램]
-    include_terms: [세무, 전자세금계산서]
