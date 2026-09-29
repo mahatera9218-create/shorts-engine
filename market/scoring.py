@@ -82,8 +82,11 @@ def score(rows: list[dict], weights: dict, regulated_terms: dict, today: date | 
     return out
 
 
-def area_summary(scored: list[dict], per_area: int = 5) -> list[dict]:
-    """영역(주제 후보)별로 묶는다. 규제 키워드는 순위 계산에서 빼고 따로 센다."""
+def area_summary(scored: list[dict], score_top: int = 5, show: int = 10) -> list[dict]:
+    """영역(주제 후보)별로 묶는다. 규제 키워드는 순위 계산에서 빼고 따로 센다.
+
+    주제 점수 = 규제 제외 상위 score_top개 키워드 점수 평균. 메모에는 대표 키워드 show개를 싣는다.
+    """
     areas: dict[str, dict] = {}
     for r in scored:
         a = areas.setdefault(r["area_id"], {"area_id": r["area_id"], "area_name": r["area_name"],
@@ -91,10 +94,33 @@ def area_summary(scored: list[dict], per_area: int = 5) -> list[dict]:
         (a["regulated"] if r["regulated"] else a["keywords"]).append(r)
     result = []
     for a in areas.values():
-        top = a["keywords"][:per_area]
+        top = a["keywords"][:score_top]
         a["top"] = top
+        a["representative"] = a["keywords"][:show]
         a["area_score"] = round(sum(k["score"] for k in top) / len(top), 1) if top else 0.0
         a["total_volume"] = sum(k["volume"] for k in a["keywords"])
         result.append(a)
     result.sort(key=lambda a: a["area_score"], reverse=True)
     return result
+
+
+def suggest_verdict(area: dict, rules: dict) -> tuple[str, str]:
+    """스킬의 판정 기준 중 코드로 판단할 수 있는 부분만 적용한 제안.
+
+    '진입'은 정보 이득 수단이 구체적으로 있어야 하므로 코드는 '진입 후보'까지만 말한다.
+    """
+    top = area["top"]
+    if not top:
+        return "제외", "규제 아닌 키워드가 없음"
+    if len(area["regulated"]) > len(area["keywords"]):
+        return "제외", "규제 업종 키워드 비중이 큼 (법률 검토 전 진입 안 함)"
+    trend = sum(k.get("trend", 0) for k in top) / len(top)
+    if trend <= rules["declining_trend"]:
+        return "제외", f"수요 하락 추세 (상위 키워드 평균 {trend * 100:+.0f}%)"
+    ages = [k["top_median_age_days"] for k in top if k.get("top_median_age_days") is not None]
+    if ages and median(ages) < rules["fresh_top_days"]:
+        return "제외", f"상위 10개가 최근 글로 꽉 참 (발행일 중앙값 {median(ages):.0f}일)"
+    win = sum(k["axes"]["win"] for k in top) / len(top)
+    if win < rules["low_win"]:
+        return "보류", f"이길 가능성 낮음 ({win:.2f})"
+    return "진입 후보", "점수 상위·규제 아님. 정보 이득 수단 확인 필요"

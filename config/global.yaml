@@ -33,7 +33,17 @@ regulated_terms:
 
 report:
   memos: 3                    # 투자 메모 개수
-  keywords_per_memo: 5
+  area_score_top: 5           # 주제 점수 = 규제 제외 상위 몇 개 키워드의 평균
+  representative_keywords: 10 # 메모의 대표 키워드 수 (market-research-memo 스킬 양식)
+
+# 판정 제안 (market-research-memo 스킬의 판정 기준 중 코드로 잴 수 있는 것). 최종 판정은 Claude.
+verdict:
+  declining_trend: -0.2       # 상위 키워드 평균 추세가 이 이하면 '수요 하락' → 제외
+  fresh_top_days: 90          # 상위 10개 발행일 중앙값이 이보다 짧으면 '최근 글로 꽉 참' → 제외
+  low_win: 0.3                # 이길 가능성 평균이 이보다 낮으면 보류
+
+# 브랜드 단독·오타 등 빼고 싶은 키워드 (정확히 같은 키워드만 뺀다). 스킬 절차 1.
+exclude_keywords: []
 
 # 네이버 API 주소.
 # 검색광고 API는 공식 저장소(naver/searchad-apidoc) 기준.

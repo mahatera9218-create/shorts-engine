@@ -17,12 +17,12 @@ from datetime import date
 
 from . import report
 from .common import ROOT, ApiError, load_yaml, missing_secrets
-from .scoring import area_summary, score
+from .scoring import area_summary, score, suggest_verdict
 
 
 def collect_keywords(tool, areas: list[dict], cfg: dict) -> list[dict]:
     """영역별 씨앗 → 연관 키워드. 중복 제거, 최소 검색량 필터, 씨앗마다 상위 N개."""
-    seen: set[str] = set()
+    seen: set[str] = {k.replace(" ", "") for k in cfg.get("exclude_keywords", [])}
     rows = []
     for area in areas:
         related = [r for r in tool.related(area["seeds"]) if r["volume"] >= cfg["min_monthly_volume"]]
@@ -76,7 +76,7 @@ def run(sample: bool) -> int:
 
     c = cfg["collect"]
     # ① 키워드 발굴
-    rows = collect_keywords(tool, areas, c)
+    rows = collect_keywords(tool, areas, {**c, "exclude_keywords": cfg.get("exclude_keywords") or []})
     print(f"연관 키워드 {len(rows)}개")
     if not rows:
         write_step_summary("# 시장조사 실행 중단\n\n연관 키워드를 하나도 받지 못했습니다. 씨앗 키워드나 최소 검색량 설정을 확인하세요.")
@@ -125,8 +125,13 @@ def run(sample: bool) -> int:
         notes.append(f"유튜브 쿼터 사용 {yt.used}단위 (예산 {y['quota_budget']}, 하루 한도 {y['daily_quota']})")
 
     # ④ 투자 메모 초안
-    areas_ranked = area_summary(scored, cfg["report"]["keywords_per_memo"])
-    write_outputs(out_dir, run_date, scored, areas_ranked, notes, sample, cfg["report"]["memos"])
+    rep = cfg["report"]
+    areas_ranked = area_summary(scored, rep["area_score_top"], rep["representative_keywords"])
+    for a in areas_ranked:
+        a["verdict"], a["verdict_reason"] = suggest_verdict(a, cfg["verdict"])
+        a["affiliate_prior"] = next((x.get("affiliate", 3) for x in areas if x["id"] == a["area_id"]), 3)
+        a["shopping"] = next((x.get("shopping") for x in areas if x["id"] == a["area_id"]), None)
+    write_outputs(out_dir, run_date, scored, areas_ranked, notes, sample, rep["memos"])
     return 0
 
 
