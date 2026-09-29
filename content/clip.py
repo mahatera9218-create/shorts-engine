@@ -1,7 +1,7 @@
 """네이버 클립용 세로 영상 (약 18초, 9:16, 30fps): 블로그 카드를 붙이는 게 아니라 같은 숫자로 움직이는 화면을 새로 그린다.
 
 - 줄거리는 카드를 그릴 때 저장한 clip.json (훅 → 퀴즈 + 카운트다운 → 정답 공개 → 표 → 최저임금 → 블로그 안내).
-- 움직임: 사진 천천히 확대, 이름 쾅 등장, 보기 차례로 등장, 3·2·1 타이머, 정답 강조·흔들림, 표 한 줄씩, 진행 막대.
+- 움직임: 사진 천천히 확대, 유니폼 등판(content/jersey.py) 흔들림, 이름 쾅 등장, 보기 차례로 등장, 3·2·1 타이머, 정답 강조·흔들림, 표 한 줄씩, 진행 막대.
 - 소리: 무음 트랙만 넣는다. 음악은 올릴 때 클립 에디터의 음원(네이버가 저작권 계약한 곡)으로 넣는다 (대표 결정 2026-09-30).
 - 재료는 우리 숫자와 Pexels 사진뿐. 경기 영상·남의 영상·AI 목소리는 쓰지 않는다.
 - 결과: posts/<글>/clip.mp4, clip.txt (설명 + 해시태그).
@@ -21,7 +21,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 
 from market.common import ROOT
-from . import desk, photos
+from . import desk, jersey, photos
 from .brand import font
 
 W, H, FPS = 1080, 1920, 30
@@ -116,6 +116,8 @@ class Hook(Scene):
 
     def __init__(self, h: dict, photo: Image.Image | None):
         self.h, self.bg = h, cover(photo)
+        js = jersey.for_players(h.get("players", []), 560 if len(h.get("players", [])) < 2 else 440)
+        self.jerseys = [(j, rot) for j, rot in zip(js, (-5, 6) if len(js) > 1 else (-4,))]
 
     def draw(self, c, t):
         z = 1 + 0.05 * t / self.dur
@@ -124,12 +126,17 @@ class Hook(Scene):
         tag = label(self.h["tag"], "display", 52, WHITE)
         box = Image.new("RGBA", (tag.width + 50, tag.height + 30), RED + (255,))
         box.alpha_composite(tag, (25, 15))
-        put(c, box, 80, 330, anchor="l")
-        put(c, label(self.h["name"], "display", 230, WHITE, 12), W / 2, 600, 1.25 - 0.25 * ease_out(t / 0.2))
-        put(c, label(self.h["label"], "display", 96, WHITE, 6), W / 2, 850 + 30 * (1 - ease_out((t - 0.15) / 0.2)),
+        put(c, box, 80, 250, anchor="l")
+        xs = [W / 2] if len(self.jerseys) == 1 else [W * 0.3, W * 0.7]
+        for (j, rot), x in zip(self.jerseys, xs):  # 등판이 먼저 툭 (첫 프레임부터 보임)
+            wob = rot + 4 * math.sin(t * 2.2)
+            put(c, j.rotate(wob, resample=Image.BICUBIC, expand=True), x, 610, 1.15 - 0.15 * ease_out(t / 0.25))
+        y0 = 1010 if self.jerseys else 600
+        put(c, label(self.h["name"], "display", 200, WHITE, 12), W / 2, y0, 1.25 - 0.25 * ease_out(t / 0.2))
+        put(c, label(self.h["label"], "display", 90, WHITE, 6), W / 2, y0 + 190 + 30 * (1 - ease_out((t - 0.15) / 0.2)),
             1, clamp((t - 0.15) / 0.15))
         s = 1.5 - 0.5 * ease_back((t - 0.35) / 0.3)
-        put(c, label(self.h["big"], "display", 210, GOLD, 10), W / 2, 1090, s, clamp((t - 0.35) / 0.08))
+        put(c, label(self.h["big"], "display", 190, GOLD, 10), W / 2, y0 + 370, s, clamp((t - 0.35) / 0.08))
         if 0.35 < t < 0.5:  # 번쩍
             c.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, int(110 * (1 - (t - 0.35) / 0.15)))))
 

@@ -13,7 +13,7 @@ from pathlib import Path
 
 from PIL import Image
 
-from . import cards, receipt
+from . import cards, jersey, receipt
 from .brand import center_text, fit, font
 from .cards import HL, INK, LINE, RED, SOFT, W, WHITE, _base, _highlight, _num, word
 from .receipt import short_won, won
@@ -188,7 +188,8 @@ def build_vs(folder: Path, d: dict, photo: Image.Image | None) -> dict:
     B = d["b"].get("short_name") or d["b"]["player"]
     total = 4
     imgs = {"thumb.png": receipt.poster(f"{d['season']} 연봉 대결", f"{A} vs {B}", "올해 연봉",
-                                        f"{short_won(n['a']['salary_krw'])} vs {short_won(n['b']['salary_krw'])}", photo)}
+                                        f"{short_won(n['a']['salary_krw'])} vs {short_won(n['b']['salary_krw'])}", photo,
+                                        jerseys=jersey.for_players([d["a"]["player"], d["b"]["player"]]))}
     im, dr = _base(2, total)
     center_text(dr, (W / 2, 250), f"{n['unit_label']} 몸값,", font("display", 86), INK)
     center_text(dr, (W / 2, 360), "누가 더 비쌀까?", font("display", 86), INK)
@@ -224,7 +225,8 @@ def build_vs(folder: Path, d: dict, photo: Image.Image | None) -> dict:
     center_text(dr, (W / 2, end + 60), note, font("r", 28), SOFT)
     imgs["card_table.png"] = im
     st = {"hook": {"tag": f"{d['season']} 연봉 대결", "name": f"{A} vs {B}", "label": "올해 연봉",
-                   "big": f"{short_won(n['a']['salary_krw'])} vs {short_won(n['b']['salary_krw'])}"},
+                   "big": f"{short_won(n['a']['salary_krw'])} vs {short_won(n['b']['salary_krw'])}",
+                   "players": [d["a"]["player"], d["b"]["player"]]},
           "quiz": {"lines": [f"{n['unit_label']} 몸값,", "누가 더 비쌀까?"], "options": [A, B],
                    "answer": 0 if n["winner"] == "a" else 1},
           "answer": {"big": won(vw), "top": f"{win} {n['unit_label']}", "line": line},
@@ -239,7 +241,8 @@ def build_life(folder: Path, d: dict, photo: Image.Image | None) -> dict:
     q = n["item"]
     total = 5
     imgs = {"thumb.png": receipt.poster(f"{d['season']} 연봉 체감", name, "올해 연봉이면",
-                                        f"{q['short']} {count(q['salary_count'])}{q['unit']}", photo)}
+                                        f"{q['short']} {count(q['salary_count'])}{q['unit']}", photo,
+                                        jerseys=jersey.for_players([d["player"]]))}
     if n["inverse"]:
         first, ask, qv, qu = f"{q['short']} 한 {q['unit']} 사려면", f"{name} 몇 {n['inverse_word']}?", n["inverse_count"], n["inverse_word"]
         ans = f"{count(qv)}{qu}"
@@ -283,7 +286,7 @@ def build_life(folder: Path, d: dict, photo: Image.Image | None) -> dict:
         imgs["card_wage.png"] = wage
     years = n.get("min_wage_years_per", {}).get(n["life_unit"])
     st = {"hook": {"tag": f"{d['season']} 연봉 체감", "name": name, "label": "올해 연봉이면",
-                   "big": f"{q['short']} {count(q['salary_count'])}{q['unit']}"},
+                   "big": f"{q['short']} {count(q['salary_count'])}{q['unit']}", "players": [d["player"]]},
           "quiz": {"lines": [first, ask], "options": [f"약 {count(v)}{qu}" for v in opts], "answer": idx},
           "answer": {"big": ans, "line": line},
           "table": {"title": title, "header": rows[0], "rows": rows[1:], "hot": [h - 1 for h in hot]},
