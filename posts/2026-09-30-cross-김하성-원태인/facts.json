@@ -1,0 +1,163 @@
+{
+ "a.salary": {
+  "value": 20000000,
+  "label": "김하성 2026 연봉",
+  "unit": "USD",
+  "date": "2026-09-28",
+  "sources": [
+   "https://www.news1.kr/sports/overseas-baseball/6303013",
+   "https://www.sportschosun.com/baseball/2026-09-28/202609280100184510012186"
+  ],
+  "rule": "모두 같음",
+  "differs": null
+ },
+ "a.fx_krw_per_usd": {
+  "value": 1356.7,
+  "label": "김하성 원달러 환율(9월 29일 종가)",
+  "unit": "KRW",
+  "date": "2026-09-30",
+  "sources": [
+   "https://www.fntimes.com/html/view.php?ud=202609300720359118141825007d_18"
+  ],
+  "rule": "최신 기사",
+  "differs": [
+   1352.5,
+   1356.7
+  ]
+ },
+ "a.games": {
+  "value": 51,
+  "label": "김하성 경기",
+  "unit": "경기",
+  "date": "2026-09-30",
+  "sources": [
+   "https://www.spotvnews.co.kr/news/articleView.html?idxno=1010449",
+   "https://www.starnewskorea.com/sports/2026/09/30/2026093001520813723"
+  ],
+  "rule": "모두 같음",
+  "differs": null
+ },
+ "a.at_bats": {
+  "value": 129,
+  "label": "김하성 타수",
+  "unit": "타수",
+  "date": "2026-09-30",
+  "sources": [
+   "http://www.osen.co.kr/article/G1112884582",
+   "https://www.starnewskorea.com/sports/2026/09/30/2026093001520813723"
+  ],
+  "rule": "모두 같음",
+  "differs": null
+ },
+ "a.hits": {
+  "value": 15,
+  "label": "김하성 안타",
+  "unit": "안타",
+  "date": "2026-09-30",
+  "sources": [
+   "http://www.osen.co.kr/article/G1112884582",
+   "https://www.starnewskorea.com/sports/2026/09/30/2026093001520813723"
+  ],
+  "rule": "모두 같음",
+  "differs": null
+ },
+ "a.batting_average": {
+  "value": 0.116,
+  "label": "김하성 타율",
+  "unit": "",
+  "date": "2026-09-30",
+  "sources": [
+   "https://www.spotvnews.co.kr/news/articleView.html?idxno=1010449"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "a.rbi": {
+  "value": 9,
+  "label": "김하성 타점",
+  "unit": "타점",
+  "date": "2026-09-30",
+  "sources": [
+   "https://www.starnewskorea.com/sports/2026/09/30/2026093001520813723"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "a.ops": {
+  "value": 0.359,
+  "label": "김하성 OPS",
+  "unit": "",
+  "date": "2026-09-30",
+  "sources": [
+   "https://www.spotvnews.co.kr/news/articleView.html?idxno=1010449"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "a.stolen_bases": {
+  "value": 2,
+  "label": "김하성 도루",
+  "unit": "개",
+  "date": "2026-09-30",
+  "sources": [
+   "https://www.starnewskorea.com/sports/2026/09/30/2026093001520813723"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "b.salary": {
+  "value": 1000000000,
+  "label": "원태인 2026시즌 연봉",
+  "unit": "KRW",
+  "date": "2026-09-23",
+  "sources": [
+   "https://www.maniareport.com/view.php?ud=2026092306424030091b55a0d56_19"
+  ],
+  "rule": "모두 같음",
+  "differs": null
+ },
+ "b.games": {
+  "value": 23,
+  "label": "원태인 등판 경기(9월 21일 롯데전 직전)",
+  "unit": "경기",
+  "date": "2026-09-21",
+  "sources": [
+   "https://www.mk.co.kr/article/12157693"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "b.innings": {
+  "value": 132,
+  "label": "원태인 이닝(9월 21일 롯데전 직전)",
+  "unit": "이닝",
+  "date": "2026-09-21",
+  "sources": [
+   "https://www.mk.co.kr/article/12157693"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "b.wins": {
+  "value": 7,
+  "label": "원태인 승(9월 21일 롯데전 직전)",
+  "unit": "승",
+  "date": "2026-09-21",
+  "sources": [
+   "https://www.mk.co.kr/article/12157693"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "b.era": {
+  "value": 4.16,
+  "label": "원태인 평균자책점(9월 21일 롯데전 직전)",
+  "unit": "점",
+  "date": "2026-09-21",
+  "sources": [
+   "https://www.mk.co.kr/article/12157693"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ }
+}
