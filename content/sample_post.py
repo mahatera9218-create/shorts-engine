@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import re
 
-from .autopost import EXTRACT_SCHEMA, POST_SCHEMA, TOPIC_SCHEMA
+from .autopost import EXTRACT_SCHEMA, POST_SCHEMA
 
 
 class FakeNewsHub:
@@ -29,9 +29,6 @@ class FakeClaude:
 
     def ask_json(self, system, prompt, schema, **_):
         self.usage["calls"] += 1
-        if schema == TOPIC_SCHEMA:
-            return {"found": True, "player": "예시선수", "team": "예시팀", "sport": "야구 (투수)",
-                    "angle": "연봉을 이닝으로 쪼갠다", "queries": ["예시선수 연봉"]}
         if schema == EXTRACT_SCHEMA:
             src = {k: int(n) for n, k in re.findall(r"\[(\d+)\] \([^)]*\) \[예시\] \S+ \S+ (\S+) 기사", prompt)}
             s_end, s_mid, s_pay = src.get("결산", 1), src.get("중간", 2), src.get("계약", 3)
@@ -51,18 +48,17 @@ class FakeClaude:
         if schema == POST_SCHEMA:
             per = dict(re.findall(r"^(1\S+)당: (\S+)", prompt, re.M))
             win = per.get("1승", "?")
-            body = (f"1승에 {win}.\n\n예시선수가 올해 거둔 승리 하나의 값이에요.\n\n[이미지 1_첫문단아래: thumb.png]\n\n"
-                    "이 글은 예시예요. 숫자는 모두 가짜고, 모양만 확인하는 용도죠.\n\n"
-                    "그럼 다른 기록은 얼마일지 먼저 맞혀 보세요.\n\n[이미지 2_퀴즈: card_quiz.png]\n\n"
-                    "[이미지 3_정답: card_answer.png]\n\n" + "\n".join(f"{k}에 {v}." for k, v in per.items()) +
-                    "\n\n[이미지 4_최저임금: card_wage.png]\n\n최저임금이랑 비교하면 이래요.\n\n"
-                    "[이미지 5_한눈에표: card_table.png]\n\n올 시즌 성적은 이랬어요." +
-                    "\n\n생각보다 크죠? 내년에는 어떨까요?\n\n기준: 예시 데이터예요. 실제 선수·실제 숫자가 아니에요.")
+            marks = re.findall(r'"(\[이미지 \d+_[^\]]+\])"', prompt)  # 테마별 이미지 자리 (숫자표의 안내 그대로)
+            lines = ["이 글은 예시예요. 숫자는 모두 가짜고, 모양만 확인하는 용도죠.", "먼저 맞혀 보세요.", "정답은 이래요.",
+                     "\n".join(f"{k}에 {v}." for k, v in per.items()) or "비교해 보면 이래요.", "올 시즌은 이랬어요."]
+            body = f"1승에 {win}.\n\n예시선수가 올해 거둔 승리 하나의 값이에요.\n\n" + "\n\n".join(
+                f"{m}\n\n{lines[i] if i < len(lines) else '생각보다 크죠?'}" for i, m in enumerate(marks))
+            body += "\n\n생각보다 크죠? 내년에는 어떨까요?\n\n기준: 예시 데이터예요. 실제 선수·실제 숫자가 아니에요."
             return {"gate_pass": True, "info_gain": "예시: 새로 계산한 숫자",
                     "titles": [{"text": f"예시선수 1승에 {win} (예시)", "type": "숫자형"},
                                {"text": "예시선수 한 경기에 얼마? (예시)", "type": "질문형"},
                                {"text": "예시선수 최저임금과 비교 (예시)", "type": "대비형"},
                                {"text": "예시선수 몸값 순위 (예시)", "type": "순위형"},
-                               {"text": "예시선수 20억 받고 10승? (예시)", "type": "반전형"}],
+                               {"text": "예시선수 올해 10승인데 얼마? (예시)", "type": "반전형"}],
                     "recommended": 5, "body": body, "tags": ["예시선수", "예시"], "cross_compare": "없음 (예시)"}
         raise ValueError("알 수 없는 스키마")

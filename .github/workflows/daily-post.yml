@@ -13,9 +13,14 @@ on:
         options: [실제, 예시]
         default: 실제
       topic:
-        description: "선수 이름 (비우면 대기열 순서대로)"
+        description: "선수 이름 (비우면 선수 풀에서 무작위)"
         type: string
         required: false
+      theme:
+        description: "테마 (비우면 무작위)"
+        type: choice
+        options: ["", receipt, same, cross, life]
+        default: ""
   schedule:
     - cron: "47 21 * * *"   # UTC 21:47 = 한국 다음 날 06:47
 
@@ -49,13 +54,15 @@ jobs:
           NCP_APIGW_API_KEY_ID: ${{ secrets.NCP_APIGW_API_KEY_ID }}
           NCP_APIGW_API_KEY: ${{ secrets.NCP_APIGW_API_KEY }}
           TOPIC: ${{ inputs.topic }}
+          THEME: ${{ inputs.theme }}
         run: |
           if [ "${{ inputs.mode }}" = "예시" ]; then
             python -m content.autopost --sample --out "$RUNNER_TEMP/예시"
-          elif [ -n "$TOPIC" ]; then
-            python -m content.autopost --topic "$TOPIC"
           else
-            python -m content.autopost
+            args=()
+            [ -n "$TOPIC" ] && args+=(--topic "$TOPIC")
+            [ -n "$THEME" ] && args+=(--theme "$THEME")
+            python -m content.autopost "${args[@]}"
           fi
       - name: 결과 저장 (posts/ 커밋)
         if: inputs.mode != '예시'

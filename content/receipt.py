@@ -103,22 +103,25 @@ def thumb_image(d: dict, n: dict, w: int = 1080, photo: Image.Image | None = Non
     """홈판 카드: 선수 이름이 가장 크게(맨 위) → 기록 → 아주 큰 금액. 배경은 실사(없으면 남색).
 
     설명(최저임금 비교 등)은 넣지 않는다: 궁금해서 눌러 보게 (대표 결정). 비교는 본문 카드에서."""
+    head = headline(d)
+    label = next(u["label"] for u in units(d) if u["key"] == head)
+    return poster(f"{d['season']} 연봉 영수증", d.get("short_name") or d["player"], label,
+                  short_won(n["per"][head]), photo, w)
+
+
+def poster(tag: str, name: str, label: str, big: str, photo: Image.Image | None = None, w: int = 1080) -> Image.Image:
+    """썸네일 틀 (모든 테마 공통): 태그 → 이름(가장 크게) → 기록 → 아주 큰 금액."""
     im = _shade(_cover(photo, w)) if photo is not None else Image.new("RGB", (w, w), BG)
     dr = ImageDraw.Draw(im)
     x0 = int(w * 0.07)
-    tag = f"{d['season']} 연봉 영수증"
     tf = font("display", int(w * 0.045))
     l, t, r, b = dr.textbbox((0, 0), tag, font=tf)
     dr.rectangle((x0, w * 0.06, x0 + (r - l) + w * 0.05, w * 0.06 + (b - t) + w * 0.04), fill=RED)
     dr.text((x0 + w * 0.025, w * 0.06 + w * 0.02 - t), tag, font=tf, fill=WHITE)
-    name = d.get("short_name") or d["player"]  # 짧은 이름 (대표 결정)
     dr.text((x0 - w * 0.005, w * 0.31), name, font=fit(dr, name, "display", int(w * 0.2), w * 0.88), fill=WHITE,
             anchor="lm", stroke_width=int(w * 0.012), stroke_fill=(0, 0, 0))
-    head = headline(d)
-    label = next(u["label"] for u in units(d) if u["key"] == head)
     dr.text((x0, w * 0.56), label, font=font("display", int(w * 0.085)), fill=WHITE, anchor="lm",
             stroke_width=int(w * 0.007), stroke_fill=(0, 0, 0))
-    big = short_won(n["per"][head])
     dr.text((x0 - w * 0.005, w * 0.75), big, font=fit(dr, big, "display", int(w * 0.24), w * 0.88), fill=GOLD,
             anchor="lm", stroke_width=int(w * 0.01), stroke_fill=(0, 0, 0))
     return im

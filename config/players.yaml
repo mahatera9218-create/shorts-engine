@@ -1,0 +1,55 @@
+# 선수 풀과 테마 (content/themes.py). 매일 테마와 선수를 가중치대로 무작위로 뽑는다.
+# 숫자(연봉·기록)는 여기 적지 않는다. 글 쓰는 날 뉴스에서 새로 모은다 (연봉 보도가 없으면 다른 선수로 넘어감).
+# weight: 뽑힐 확률 가중치. 데이터랩 추정 검색량 기준 (reports/2026-09-29-주제-비교-검토.md 5장):
+#   3 = 월 40만 이상, 2 = 월 10만~20만, 1 = 그 밖의 인기 선수 (미측정, 운영하며 조정)
+# 운영하며 조회수가 잘 나온 종목·선수·테마의 가중치를 올려 타겟을 좁힌다 (2026-09-29 대표 결정).
+
+sports:
+  kbo:    {name: 프로야구, sport: 야구, hint: "타자는 경기·타수·안타·홈런, 투수는 경기·이닝·승·탈삼진"}
+  mlb:    {name: 메이저리그, sport: 야구, hint: "타자는 경기·타수·안타·홈런, 투수는 경기·이닝·승·탈삼진"}
+  soccer: {name: 해외축구, sport: 축구, hint: "경기·골·도움. 연봉은 주급 보도만 있으면 연봉으로 환산된 보도를 찾고, 없으면 usable=false"}
+  golf:   {name: 골프, sport: 골프, hint: "연봉 대신 올해 시즌 누적 상금 총액을 key salary로. 나눌 기록은 대회(events)·라운드(rounds)·우승(wins)"}
+
+players:
+  # 프로야구
+  - {name: 김도영, sport: kbo, team: KIA 타이거즈, weight: 3}
+  - {name: 류현진, sport: kbo, team: 한화 이글스, weight: 2}
+  - {name: 양현종, sport: kbo, team: KIA 타이거즈, weight: 1}
+  - {name: 김광현, sport: kbo, team: SSG 랜더스, weight: 1}
+  - {name: 구자욱, sport: kbo, team: 삼성 라이온즈, weight: 1}
+  - {name: 노시환, sport: kbo, team: 한화 이글스, weight: 1}
+  - {name: 원태인, sport: kbo, team: 삼성 라이온즈, weight: 1}
+  - {name: 문동주, sport: kbo, team: 한화 이글스, weight: 1}
+  # 메이저리그
+  - {name: 이정후, sport: mlb, team: 샌프란시스코 자이언츠, weight: 3}
+  - {name: 오타니 쇼헤이, short: 오타니, sport: mlb, team: LA 다저스, weight: 2}
+  - {name: 김하성, sport: mlb, team: "", weight: 1}
+  - {name: 김혜성, sport: mlb, team: LA 다저스, weight: 1}
+  - {name: 애런 저지, short: 저지, sport: mlb, team: 뉴욕 양키스, weight: 1}
+  - {name: 야마모토 요시노부, short: 야마모토, sport: mlb, team: LA 다저스, weight: 1}
+  # 해외축구
+  - {name: 이강인, sport: soccer, team: 파리 생제르맹, weight: 3}
+  - {name: 손흥민, sport: soccer, team: LAFC, weight: 3}
+  - {name: 김민재, sport: soccer, team: 바이에른 뮌헨, weight: 2}
+  - {name: 황희찬, sport: soccer, team: "", weight: 1}
+  - {name: 엘링 홀란, short: 홀란, sport: soccer, team: 맨체스터 시티, weight: 1}
+  - {name: 킬리안 음바페, short: 음바페, sport: soccer, team: 레알 마드리드, weight: 1}
+  - {name: 리오넬 메시, short: 메시, sport: soccer, team: 인터 마이애미, weight: 1}
+  # 골프 (상금)
+  - {name: 임성재, sport: golf, team: PGA 투어, weight: 1}
+  - {name: 김주형, sport: golf, team: PGA 투어, weight: 1}
+  - {name: 스코티 셰플러, short: 셰플러, sport: golf, team: PGA 투어, weight: 1}
+  - {name: 고진영, sport: golf, team: LPGA 투어, weight: 1}
+
+# 테마: weight는 뽑힐 확률 가중치, category는 네이버 블로그 카테고리
+themes:
+  receipt: {name: 연봉 영수증, weight: 3, category: 선수 몸값,
+            angle: "올해 연봉(상금)을 경기·기록 단위로 쪼갠다"}
+  same:    {name: 같은 종목 비교, weight: 2, category: 몸값 대결,
+            angle: "같은 종목 두 선수의 올해 연봉과 1경기 몸값을 비교한다"}
+  cross:   {name: 다른 종목 비교, weight: 2, category: 몸값 대결,
+            angle: "종목이 다른 두 스타의 올해 연봉과 1경기 몸값을 비교한다"}
+  life:    {name: 생활 물가 비교, weight: 3, category: 선수 몸값,
+            angle: "올해 연봉과 1경기 몸값을 서울 아파트값·차값으로 바꿔 체감하게 한다"}
+
+recent_posts: 5   # 최근 몇 편에 나온 선수는 다시 뽑지 않는다

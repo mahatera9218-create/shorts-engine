@@ -124,11 +124,39 @@ class ContentTest(unittest.TestCase):
         for folder in Path("posts").glob("2026-*"):
             p = desk.parse(folder)
             assert p and len(p["titles"]) == 5 and sum(t["best"] for t in p["titles"]) == 1
-            assert [x["n"] for x in p["images"]] == [1, 2, 3, 4, 5] and p["tags"]
+            assert [x["n"] for x in p["images"]] == list(range(1, len(p["images"]) + 1)) and p["tags"]
         with tempfile.TemporaryDirectory() as d:
             desk.build(Path(d) / "site")
             html = (Path(d) / "site" / "index.html").read_text(encoding="utf-8")
             assert "noindex" in html and (Path(d) / "site" / "robots.txt").exists()
+
+    def test_theme_plans(self):
+        from content import themes
+        from market.common import load_yaml
+        pool = load_yaml("players.yaml")
+        plans = themes.plans(pool, {"이정후"}, "2026-10-01", n=20)
+        assert plans and all(p["theme"] in pool["themes"] for p in plans)
+        for p in plans:
+            names = [x["name"] for x in p["players"]]
+            assert "이정후" not in names and len(set(names)) == len(names)
+            if p["theme"] == "same":
+                assert p["players"][0]["sport"] == p["players"][1]["sport"]
+            if p["theme"] == "cross":
+                assert p["players"][0]["sport"] != p["players"][1]["sport"]
+        assert plans == themes.plans(pool, {"이정후"}, "2026-10-01", n=20)  # 같은 날 다시 돌려도 같은 뽑기
+
+    def test_count_never_rounds_up(self):
+        from content.themes import count, ratio
+        assert count(1.68) == "1.6" and count(4.99) == "4.9" and count(23.9) == "23" and count(1234.5) == "1,234"
+        assert count(2.0) == "2" and ratio(10.69) == "10.6"
+
+    def test_images_from_sheet(self):
+        from content import themes
+        sheet = "1안타당: 2억 32만 원\n" + "\n".join(themes.image_lines("same"))
+        body = "1안타에 2억.\n[thumb.png][card_quiz.png][card_answer.png]"
+        p = {"body": body, "recommended": 1, "titles": [{"text": "1안타에 2억", "type": "숫자형"}] * 5}
+        assert any("card_table.png" in x for x in check_post(p, sheet))
+        assert not any("card_wage.png" in x for x in check_post({**p, "body": body + "[card_table.png]"}, sheet))
 
 
 if __name__ == "__main__":
