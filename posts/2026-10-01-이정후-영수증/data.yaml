@@ -26,3 +26,4 @@ card:                         # 시즌 성적 카드 (season.png)
   - {label: 타율, value: "0.276"}
   - {label: 도루, value: "12"}
   - {label: 타수, value: "539"}
+salary_basis: "6년 1억1300만 달러 계약 중 2026년 연봉"

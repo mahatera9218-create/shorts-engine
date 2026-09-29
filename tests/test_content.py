@@ -71,12 +71,27 @@ class ContentTest(unittest.TestCase):
 
     def test_check_post(self):
         sheet = "1안타당: 2억 32만 원"
-        good = {"body": "1안타에 2억.\n[1: thumb.png]\n[2: receipt.png]\n[3: table.png]\n[4: season.png]", "recommended": 1,
+        good = {"body": "1안타에 2억.\n[1: thumb.png]\n[2: card_quiz.png]\n[3: card_answer.png]\n[4: card_wage.png]\n"
+                        "[5: card_table.png]", "recommended": 1,
                 "titles": [{"text": "1안타에 2억", "type": "숫자형"}] * 5}
         assert check_post(good, sheet) == []
         bad = {**good, "body": good["body"] + "\n토토 배당 3.5배", "titles": [{"text": "1안타에 5억 999만", "type": "숫자형"}] * 5}
         problems = " / ".join(check_post(bad, sheet))
         assert "금지 주제" in problems and "3.5" in problems and "제목1" in problems
+
+    def test_quiz_answer_not_before_quiz(self):
+        sheet = "1안타당: 2억 32만 원\n1홈런당: 29억 8,474만 원\n퀴즈 카드: 1홈런 1번에 받는 돈 맞히기 (정답 29억 8,474만 원)"
+        imgs = "[1: thumb.png]\n{q}\n[2: card_quiz.png]\n[3: card_answer.png]\n[4: card_wage.png]\n[5: card_table.png]"
+        base = {"recommended": 1, "titles": [{"text": "1안타에 2억", "type": "숫자형"}] * 5}
+        ok = check_post({**base, "body": imgs.format(q="홈런 한 방은 얼마일까요?")}, sheet)
+        early = check_post({**base, "body": imgs.format(q="홈런 한 방은 29억 8,474만 원이에요.")}, sheet)
+        assert not any("퀴즈" in x for x in ok) and any("퀴즈 정답" in x for x in early)
+
+    def test_quiz_options(self):
+        from content.cards import nice, options
+        assert nice(30_150_000) == 30_000_000 and nice(271_350_000) == 270_000_000
+        opts, idx = options(90_450_000, "아무 글")
+        assert opts[idx] == nice(90_450_000) and opts == sorted(opts) and len(set(opts)) == 3
 
 
 if __name__ == "__main__":
