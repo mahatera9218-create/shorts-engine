@@ -21,6 +21,12 @@ areas:
     affiliate: 1
     seeds: [손흥민 연봉, 이정후 기록, 김민재 이적]
     include_terms: [손흥민, 이정후, 김민재, 이강인, 김하성, 황희찬, 연봉, 이적, 기록]
+  - id: ent-data
+    name: 연예·콘텐츠 숫자 (작품·흥행·순위)
+    affiliate: 1
+    # 사생활·루머·논란은 제외 (global.yaml 사생활 표시). 영화 흥행(KOBIS 공식 API), 넷플릭스 공식 Top10 등 숫자형만.
+    seeds: [박스오피스 순위, 넷플릭스 순위, 드라마 시청률]
+    include_terms: [영화, 관객, 흥행, 박스오피스, 시청률, 넷플릭스, 드라마, 예능, 음원, 차트, 출연작, 필모]
   - id: festival
     name: 여행·축제·나들이
     affiliate: 2
