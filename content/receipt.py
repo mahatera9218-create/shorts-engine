@@ -100,7 +100,9 @@ def _shade(im: Image.Image) -> Image.Image:
 
 
 def thumb_image(d: dict, n: dict, w: int = 1080, photo: Image.Image | None = None) -> Image.Image:
-    """홈판 카드: 선수 이름이 가장 크게(맨 위) → 기록 → 아주 큰 금액 → 최저임금 한 줄. 배경은 실사(없으면 남색)."""
+    """홈판 카드: 선수 이름이 가장 크게(맨 위) → 기록 → 아주 큰 금액. 배경은 실사(없으면 남색).
+
+    설명(최저임금 비교 등)은 넣지 않는다: 궁금해서 눌러 보게 (대표 결정). 비교는 본문 카드에서."""
     im = _shade(_cover(photo, w)) if photo is not None else Image.new("RGB", (w, w), BG)
     dr = ImageDraw.Draw(im)
     x0 = int(w * 0.07)
@@ -110,22 +112,15 @@ def thumb_image(d: dict, n: dict, w: int = 1080, photo: Image.Image | None = Non
     dr.rectangle((x0, w * 0.06, x0 + (r - l) + w * 0.05, w * 0.06 + (b - t) + w * 0.04), fill=RED)
     dr.text((x0 + w * 0.025, w * 0.06 + w * 0.02 - t), tag, font=tf, fill=WHITE)
     name = d["player"]
-    dr.text((x0 - w * 0.005, w * 0.28), name, font=fit(dr, name, "display", int(w * 0.2), w * 0.88), fill=WHITE,
+    dr.text((x0 - w * 0.005, w * 0.31), name, font=fit(dr, name, "display", int(w * 0.2), w * 0.88), fill=WHITE,
             anchor="lm", stroke_width=int(w * 0.012), stroke_fill=(0, 0, 0))
     head = headline(d)
     label = next(u["label"] for u in units(d) if u["key"] == head)
-    dr.text((x0, w * 0.5), label, font=font("display", int(w * 0.085)), fill=WHITE, anchor="lm",
+    dr.text((x0, w * 0.56), label, font=font("display", int(w * 0.085)), fill=WHITE, anchor="lm",
             stroke_width=int(w * 0.007), stroke_fill=(0, 0, 0))
     big = short_won(n["per"][head])
-    dr.text((x0 - w * 0.005, w * 0.665), big, font=fit(dr, big, "display", int(w * 0.22), w * 0.88), fill=GOLD,
+    dr.text((x0 - w * 0.005, w * 0.75), big, font=fit(dr, big, "display", int(w * 0.24), w * 0.88), fill=GOLD,
             anchor="lm", stroke_width=int(w * 0.01), stroke_fill=(0, 0, 0))
-    years = n.get("min_wage_years_per", {}).get(head)
-    line3 = f"최저임금 연봉 {years:.1f}년치" if years else f"올해 연봉 {won(n['salary_krw'])}"
-    f3 = fit(dr, line3, "display", int(w * 0.06), w * 0.8)
-    l, t, r, b = dr.textbbox((0, 0), line3, font=f3)
-    y3 = int(w * 0.845)
-    dr.rectangle((x0, y3, x0 + (r - l) + w * 0.04, y3 + (b - t) + w * 0.035), fill=RED)
-    dr.text((x0 + w * 0.02, y3 + w * 0.0175 - t), line3, font=f3, fill=WHITE)
     return im
 
 
