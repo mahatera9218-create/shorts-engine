@@ -86,40 +86,44 @@ def _cover(photo: Image.Image, w: int) -> Image.Image:
     return photo.crop((left, top, left + side, top + side)).resize((w, w), Image.LANCZOS).convert("RGB")
 
 
-def _shade(im: Image.Image, start: float = 0.3, strength: int = 235) -> Image.Image:
-    """아래로 갈수록 어두워지는 그라데이션 (글자가 사진 위에서도 읽히게)."""
+def _shade(im: Image.Image) -> Image.Image:
+    """위(선수 이름)와 아래(금액)가 읽히게 위·아래를 어둡게, 가운데는 사진이 보이게."""
     w, h = im.size
     grad = Image.new("L", (1, h))
     for y in range(h):
-        t = max(0.0, (y / h - start) / (1 - start))
-        grad.putpixel((0, y), int(70 + (strength - 70) * min(1.0, t * 1.3)))
+        t = y / h
+        top = max(0.0, 0.45 - t) / 0.45       # 위쪽 45%: 아래로 갈수록 옅어짐
+        bottom = max(0.0, t - 0.45) / 0.55    # 아래쪽 55%: 아래로 갈수록 짙어짐
+        grad.putpixel((0, y), int(80 + 120 * top + 160 * min(1.0, bottom * 1.2)))
     black = Image.new("RGB", (w, h), (0, 0, 0))
     return Image.composite(black, im, grad.resize((w, h)))
 
 
 def thumb_image(d: dict, n: dict, w: int = 1080, photo: Image.Image | None = None) -> Image.Image:
-    """홈판 카드: 실사 배경(없으면 남색) + 굵은 제목 글꼴 + 아주 큰 금액 + 최저임금 한 줄."""
+    """홈판 카드: 선수 이름이 가장 크게(맨 위) → 기록 → 아주 큰 금액 → 최저임금 한 줄. 배경은 실사(없으면 남색)."""
     im = _shade(_cover(photo, w)) if photo is not None else Image.new("RGB", (w, w), BG)
     dr = ImageDraw.Draw(im)
     x0 = int(w * 0.07)
-    stroke = {"stroke_width": int(w * 0.007), "stroke_fill": (0, 0, 0)}
     tag = f"{d['season']} 연봉 영수증"
-    tf = font("display", int(w * 0.05))
+    tf = font("display", int(w * 0.045))
     l, t, r, b = dr.textbbox((0, 0), tag, font=tf)
-    dr.rectangle((x0, w * 0.07, x0 + (r - l) + w * 0.05, w * 0.07 + (b - t) + w * 0.045), fill=RED)
-    dr.text((x0 + w * 0.025, w * 0.07 + w * 0.0225 - t), tag, font=tf, fill=WHITE)
+    dr.rectangle((x0, w * 0.06, x0 + (r - l) + w * 0.05, w * 0.06 + (b - t) + w * 0.04), fill=RED)
+    dr.text((x0 + w * 0.025, w * 0.06 + w * 0.02 - t), tag, font=tf, fill=WHITE)
+    name = d["player"]
+    dr.text((x0 - w * 0.005, w * 0.28), name, font=fit(dr, name, "display", int(w * 0.2), w * 0.88), fill=WHITE,
+            anchor="lm", stroke_width=int(w * 0.012), stroke_fill=(0, 0, 0))
     head = headline(d)
     label = next(u["label"] for u in units(d) if u["key"] == head)
-    line1 = f"{d['player']} {label}"
-    dr.text((x0, w * 0.52), line1, font=fit(dr, line1, "display", int(w * 0.1), w * 0.86), fill=WHITE, anchor="lm", **stroke)
+    dr.text((x0, w * 0.5), label, font=font("display", int(w * 0.085)), fill=WHITE, anchor="lm",
+            stroke_width=int(w * 0.007), stroke_fill=(0, 0, 0))
     big = short_won(n["per"][head])
-    dr.text((x0 - w * 0.005, w * 0.69), big, font=fit(dr, big, "display", int(w * 0.25), w * 0.88), fill=GOLD,
+    dr.text((x0 - w * 0.005, w * 0.665), big, font=fit(dr, big, "display", int(w * 0.22), w * 0.88), fill=GOLD,
             anchor="lm", stroke_width=int(w * 0.01), stroke_fill=(0, 0, 0))
     years = n.get("min_wage_years_per", {}).get(head)
     line3 = f"최저임금 연봉 {years:.1f}년치" if years else f"올해 연봉 {won(n['salary_krw'])}"
-    f3 = fit(dr, line3, "display", int(w * 0.065), w * 0.8)
+    f3 = fit(dr, line3, "display", int(w * 0.06), w * 0.8)
     l, t, r, b = dr.textbbox((0, 0), line3, font=f3)
-    y3 = int(w * 0.84)
+    y3 = int(w * 0.845)
     dr.rectangle((x0, y3, x0 + (r - l) + w * 0.04, y3 + (b - t) + w * 0.035), fill=RED)
     dr.text((x0 + w * 0.02, y3 + w * 0.0175 - t), line3, font=f3, fill=WHITE)
     return im
