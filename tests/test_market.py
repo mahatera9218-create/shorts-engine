@@ -208,3 +208,26 @@ class ProbeTest(unittest.TestCase):
         self.assertEqual(out[0]["keyword"], "손흥민")
         self.assertAlmostEqual(out[0]["est_volume"], 150000.0)
         self.assertAlmostEqual(out[1]["est_volume"], 30000.0)
+
+
+class VoiceTest(unittest.TestCase):
+    def test_ai_phrases_and_monotone_flagged(self):
+        from content import voice
+        draft = "이번 글에서는 이정후 연봉에 대해 알아보겠습니다. " + "이것은 중요한 역할을 하는 것입니다. " * 8
+        problems = voice.check_draft(draft)
+        self.assertTrue(any("알아보겠습니다" in p for p in problems))
+        self.assertTrue(any("고름" in p or "~다" in p for p in problems))
+
+    def test_natural_draft_passes(self):
+        from content import voice
+        draft = ("1안타에 3천만 원. 이정후 올해 연봉을 안타 수로 나눠 봤어요. 생각보다 많죠? "
+                 "계약은 6년짜리예요. 한 시즌으로 치면 금액이 꽤 큽니다. 그럼 타석당은 얼마일까요? "
+                 "타석으로 나누면 숫자가 확 줄어요. 그래도 억 소리 나네. 다음은 류현진 차례예요. "
+                 "1이닝에 얼마인지 궁금하지 않으세요?")
+        self.assertEqual(voice.check_draft(draft), [])
+
+    def test_style_metrics(self):
+        from content import voice
+        m = voice.style_metrics(["좋아요. 그렇죠? 끝이다."])
+        self.assertEqual(m["sentences"], 3)
+        self.assertAlmostEqual(m["요"], 1 / 3)

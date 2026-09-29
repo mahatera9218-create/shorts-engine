@@ -70,6 +70,7 @@ class ApiHub:
             "blog_link": it.get("bloggerlink", ""),
             "link": it.get("link", ""),
             "postdate": it.get("postdate", ""),
+            "description": clean(it.get("description")),
         } for it in data.get("items", [])]
         time.sleep(0.1)
         return {"total": int(count.get("total", 0)), "total_date_sort": int(data.get("total", 0)), "items": items}

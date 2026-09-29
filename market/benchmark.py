@@ -19,6 +19,7 @@ from datetime import date
 from .common import ROOT, ApiError, load_yaml, missing_secrets
 from .run import unique_dir, write_step_summary
 from .scoring import monthly_new_posts
+from content.voice import style_metrics
 
 DIGIT = re.compile(r"\d")
 RANK = re.compile(r"순위|TOP|top|Top|위\b|1위")
@@ -81,6 +82,10 @@ def render(run_date: str, themes: list[dict], sample: bool) -> str:
         out += [f"## {t['name']}", "",
                 f"수집 글 {p['count']}개의 제목: 숫자 포함 {_pct(p['digit'])} · 순위형 {_pct(p['rank'])} · "
                 f"비교형 {_pct(p['versus'])} · 평균 {p['avg_len']:.0f}자", ""]
+        v = t.get("voice")
+        if v and v["sentences"]:
+            out += [f"본문 요약문 {v['sentences']}문장의 말투: ~요 {_pct(v['요'])} · ~다 {_pct(v['다'])} · ~죠 {_pct(v['죠'])} · "
+                    f"질문 {_pct(v['질문'])} · 느낌표 {_pct(v['느낌표'])} · 문장 평균 {v['평균길이']:.0f}자 (문장은 저장하지 않고 수치만)", ""]
         if not t["candidates"]:
             out += ["- 반복 등장 블로그 없음", ""]
             continue
@@ -124,7 +129,8 @@ def run(sample: bool) -> int:
                 write_step_summary(f"# 벤치마크 중단\n\n블로그 검색 실패 ({q}): {e}")
                 return 1
         titles = [it.get("title", "") for items in results.values() for it in items]
-        themes.append({"name": t["name"], "patterns": title_patterns(titles),
+        snippets = [it.get("description", "") for items in results.values() for it in items if it.get("description")]
+        themes.append({"name": t["name"], "patterns": title_patterns(titles), "voice": style_metrics(snippets),
                        "candidates": find_candidates(results, cfg["min_queries"], cfg["top_n"], date.today())})
     text = render(run_date, themes, sample)
     out_dir.mkdir(parents=True, exist_ok=True)

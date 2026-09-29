@@ -43,4 +43,5 @@
 - `market-research-memo`: 시장조사와 투자 메모
 - `money-content-writer`: 블로그·사이트 글
 - `shorts-script`: 쇼츠 대본과 장면 목록
+- `blog-voice`: 블로그 말투와 AI 티 검사 (글을 쓸 때 money-content-writer와 함께)
 - 검증된 규칙(플레이북)은 해당 스킬의 SKILL.md를 고쳐서 반영하고, DECISIONS.md에 기록한다. (15.6)
