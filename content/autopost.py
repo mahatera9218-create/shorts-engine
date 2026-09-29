@@ -20,7 +20,7 @@ from pathlib import Path
 import yaml
 
 from market.common import ROOT, load_yaml, missing_secrets
-from . import cards, clip, photos, receipt, themes
+from . import cards, clip, mark, photos, receipt, themes
 from .receipt import won
 from .voice import check_draft
 
@@ -567,18 +567,21 @@ def theme_sheet(plan: dict, d: dict, n: dict, got: list[dict], cfg: dict) -> str
 
 
 def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str | None = None,
-        out_root: Path = POSTS) -> tuple[str, Path | None]:
+        out_root: Path = POSTS, again: bool = False) -> tuple[str, Path | None]:
+    """again: 발행 도우미 '다시 뽑기' — 하루 한도를 건너뛰고 다른 조합으로 쓴다 (버린 글의 선수는 최근 목록에 있어 제외된다)."""
     cfg = load_yaml("post_queue.yaml")
     pool = load_yaml("players.yaml")
-    if not topic_override and not theme and out_root == POSTS:
-        today_made = [p for p in done_ids() if p.startswith(today)
+    made_today = [p for p in done_ids() if p.startswith(today)] if out_root == POSTS else []
+    if not topic_override and not theme and out_root == POSTS and not again:
+        today_made = [p for p in made_today if (POSTS / p / "post.md").exists()
                       and "**자동 작성:**" in (POSTS / p / "post.md").read_text(encoding="utf-8", errors="ignore")
-                      if (POSTS / p / "post.md").exists()]
+                      and mark.status(POSTS / p).get("status") != "rejected"]
         if len(today_made) >= cfg.get("daily_limit", 1):
             return f"오늘 이미 {len(today_made)}편을 만들었습니다 (하루 한도 {cfg.get('daily_limit', 1)}편).", None
     notes: list[str] = []
     cache: dict[str, dict | str] = {}
-    for plan in themes.plans(pool, recent_players(pool.get("recent_posts", 5)), today, n=5,
+    seed = today if not made_today else f"{today}-{len(made_today)}"  # 다시 뽑으면 테마도 새로
+    for plan in themes.plans(pool, recent_players(pool.get("recent_posts", 5)), seed, n=5,
                              override=topic_override, theme=theme):
         got = []
         for p in plan["players"]:
@@ -644,6 +647,7 @@ def main() -> None:
     ap.add_argument("--topic", default=None, help="선수 이름 (비우면 선수 풀에서 무작위)")
     ap.add_argument("--theme", default=None, choices=["receipt", "same", "cross", "life"], help="테마 고정 (비우면 무작위)")
     ap.add_argument("--out", default=None, help="결과 폴더 (기본 posts/)")
+    ap.add_argument("--again", action="store_true", help="다시 뽑기: 하루 한도를 건너뛰고 새 조합으로")
     a = ap.parse_args()
     today = date.today().isoformat()
     out_root = Path(a.out) if a.out else POSTS
@@ -662,7 +666,8 @@ def main() -> None:
         hub = ApiHub(load_yaml("global.yaml")["endpoints"]["naver_hub"])
         llm = Claude()
     try:
-        msg, folder = run(hub, llm, today=today, topic_override=a.topic, theme=a.theme, out_root=out_root)
+        msg, folder = run(hub, llm, today=today, topic_override=a.topic, theme=a.theme, out_root=out_root,
+                          again=a.again)
     except Exception as e:  # 키·요금·API 오류: 메시지만 남기고 실패로 끝낸다 (키 값은 메시지에 없음)
         _summary(f"❌ 글쓰기 실패: {type(e).__name__}: {str(e)[:300]}\n\nClaude에게 이 화면을 알려주세요.")
         raise
