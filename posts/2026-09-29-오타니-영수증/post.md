@@ -73,6 +73,8 @@
 
 기준: 연봉·계약은 계약 내용 보도, 성적은 2026년 9월 28일 보도, 환율은 2026년 9월 29일 서울 외환시장, 최저임금은 2026년 고시(시급 10,320원, 월 209시간) 기준이에요.
 
+대표 사진: Jonathan / Pexels (https://www.pexels.com/photo/drone-shot-of-people-watching-a-baseball-game-12406210/)
+
 ## 출처
 
 - http://www.00news.co.kr/news/articleView.html?idxno=106867
