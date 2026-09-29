@@ -36,6 +36,7 @@ queue:
 
   - id: 오타니-영수증
     player: 오타니 쇼헤이
+    short_name: 오타니
     team: LA 다저스
     sport: 야구 (투타)
     category: 선수 몸값
