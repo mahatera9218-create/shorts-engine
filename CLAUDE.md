@@ -38,7 +38,9 @@
 
 ## 스킬
 
+이 저장소의 `.claude/skills/`에 있고, 이 저장소를 여는 모든 세션에서 쓴다.
+
 - `market-research-memo`: 시장조사와 투자 메모
 - `money-content-writer`: 블로그·사이트 글
 - `shorts-script`: 쇼츠 대본과 장면 목록
-- 검증된 규칙(플레이북)은 해당 스킬에 반영을 제안한다. (15.6)
+- 검증된 규칙(플레이북)은 해당 스킬의 SKILL.md를 고쳐서 반영하고, DECISIONS.md에 기록한다. (15.6)
