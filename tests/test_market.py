@@ -190,3 +190,21 @@ class BenchmarkTest(unittest.TestCase):
         p = benchmark.title_patterns(["연봉 순위 TOP10", "A vs B 비교", "그냥 제목"])
         self.assertAlmostEqual(p["digit"], 1 / 3)
         self.assertAlmostEqual(p["versus"], 1 / 3)
+
+
+class ProbeTest(unittest.TestCase):
+    def test_estimate_uses_anchor_volume(self):
+        class Tool:
+            def related(self, seeds):
+                return [{"keyword": "휘발유가격", "volume": 60000.0}]
+
+        class Hub:
+            def relative_last_month(self, anchor, keywords):
+                return {"손흥민": 2.5, "이정후": 0.5}
+
+        areas = [{"name": "스포츠", "probe_keywords": ["손흥민", "이정후"]}]
+        notes = []
+        out = run.estimate_probes(Tool(), Hub(), areas, {"anchor": "휘발유가격"}, notes)
+        self.assertEqual(out[0]["keyword"], "손흥민")
+        self.assertAlmostEqual(out[0]["est_volume"], 150000.0)
+        self.assertAlmostEqual(out[1]["est_volume"], 30000.0)

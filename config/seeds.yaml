@@ -16,17 +16,21 @@ areas:
     affiliate: 1
     seeds: [프로야구 연봉 순위, 프로야구 FA, 프로야구 선수 기록, 골프 상금 순위]
     include_terms: [야구, 연봉, 이적, 기록, 선수, 프로필, 트레이드, 부상, 상금, 계약금, 몸값]
+    # 광고 도구에 안 잡혀 데이터랩으로 추정 (global.yaml demand_probe)
+    probe_keywords: [프로야구 연봉, 프로야구 연봉 순위, KBO FA, 이적료 순위, 류현진, 김도영, 골프 상금 순위]
   - id: sports-abroad
     name: 스포츠·해외파 선수
     affiliate: 1
     seeds: [손흥민 연봉, 이정후 기록, 김민재 이적]
     include_terms: [손흥민, 이정후, 김민재, 이강인, 김하성, 황희찬, 연봉, 이적, 기록]
+    probe_keywords: [손흥민, 손흥민 연봉, 이정후, 이정후 연봉, 김민재, 이강인, 오타니]
   - id: ent-data
     name: 연예·콘텐츠 숫자 (작품·흥행·순위)
     affiliate: 1
     # 사생활·루머·논란은 제외 (global.yaml 사생활 표시). 영화 흥행(KOBIS 공식 API), 넷플릭스 공식 Top10 등 숫자형만.
     seeds: [박스오피스 순위, 영화 손익분기점, 넷플릭스 순위, 드라마 시청률]
     include_terms: [영화, 관객, 흥행, 박스오피스, 손익분기, 제작비, 매출, 시청률, 넷플릭스, 드라마, 예능, 음원, 차트, 출연작, 필모]
+    probe_keywords: [손익분기점, 천만 영화, 드라마 시청률, 출연료]
   - id: festival
     name: 여행·축제·나들이
     affiliate: 2

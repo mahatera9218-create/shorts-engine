@@ -35,12 +35,23 @@ def score_table(scored: list[dict], limit: int = 30) -> str:
     return "\n".join(lines)
 
 
-def summary_md(run_date: str, areas: list[dict], scored: list[dict], notes: list[str], sample: bool) -> str:
+def probe_table(probes: list[dict]) -> str:
+    lines = ["| 키워드 | 주제 | 추정 월 검색량 |", "| --- | --- | --- |"]
+    lines += [f"| {p['keyword']} | {p['area']} | 약 {_n(p['est_volume'])} |" for p in probes]
+    return "\n".join(lines)
+
+
+def summary_md(run_date: str, areas: list[dict], scored: list[dict], notes: list[str], sample: bool,
+               probes: list[dict] | None = None) -> str:
     out = [f"# 시장조사 요약 · {run_date}", "", banner(sample)]
     out += ["## 주제 후보 순위", "", "| 순위 | 주제 | 주제 점수 | 제안 | 규제 키워드 |", "| --- | --- | --- | --- | --- |"]
     for i, a in enumerate(areas, 1):
         out.append(f"| {i} | {a['area_name']} | {a['area_score']} | {a.get('verdict', '-')} | {len(a['regulated'])}개 |")
     out += ["", "주제 점수 = 그 주제의 규제 제외 상위 키워드 점수 평균. 제안은 코드 판정이며 최종 결론은 Claude 검토 후 메모에 적습니다. 점수는 이번 실행 안에서의 상대값(최고 100)입니다.", ""]
+    if probes:
+        out += ["## 인물·스포츠 키워드 추정 검색량", "",
+                "광고 키워드 도구에 안 잡히는 키워드입니다. 데이터랩 비율로 추정한 값이라 오차가 큽니다 (점수표에는 안 들어감).", "",
+                probe_table(probes), ""]
     out += ["## 키워드 상위 30", "", score_table(scored), "", "⚠️ = 규제·민감 업종 (법률 검토 전 진입 안 함)", ""]
     if notes:
         out += ["## 실행 메모", ""] + [f"- {n}" for n in notes] + [""]

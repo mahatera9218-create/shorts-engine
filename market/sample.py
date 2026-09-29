@@ -55,6 +55,13 @@ class FakeHub:
         return out
 
 
+def _fake_relative(self, anchor: str, keywords: list[str]) -> dict:
+    return {k: _rng("rel" + k).uniform(0.05, 3.0) for k in keywords}
+
+
+FakeHub.relative_last_month = _fake_relative
+
+
 class FakeYouTube:
     used = 0
 
