@@ -115,33 +115,40 @@ def compute_vs(d: dict) -> dict:
 
 
 def compute_life(d: dict) -> dict:
+    """1선수 1물건 (대표 결정): 올해 연봉과 기록 단위별 몸값을 물건 하나의 개수로 바꾼다."""
     n = receipt.compute(d)
-    keys = [u["key"] for u in receipt.units(d)]
-    unit = "games" if "games" in keys else receipt.headline(d)
-    per = n["per"][unit]
-    label = next(u["label"] for u in receipt.units(d) if u["key"] == unit)
-    items = [{**p, "salary_count": n["salary_krw"] / p["price_krw"], "unit_count": per / p["price_krw"]}
-             for p in d["prices"]]
-    return {**n, "life_unit": unit, "life_label": label, "life_per": per, "items": items}
+    item = d["prices"][0]
+    us = receipt.units(d)
+    rows = [{"key": "salary", "label": "올해 연봉", "value": n["salary_krw"], "count": n["salary_krw"] / item["price_krw"]}]
+    rows += [{"key": u["key"], "label": u["label"], "value": n["per"][u["key"]], "count": n["per"][u["key"]] / item["price_krw"]}
+             for u in us]
+    # 퀴즈 단위: 1개 이상 살 수 있는 가장 작은 단위 (0.03채 같은 퀴즈는 재미없다). 없으면 가장 많이 사는 단위
+    unit_rows = sorted(rows[1:], key=lambda r: r["value"])
+    pick = next((r for r in unit_rows if r["count"] >= 1), max(unit_rows, key=lambda r: r["count"]))
+    inverse = pick["count"] < 1  # 비싼 집: '몇 채?' 대신 '한 채 사려면 몇 경기?'
+    if inverse:
+        pick = next((r for r in unit_rows if r["key"] == "games"), unit_rows[0])
+    it = {**item, "salary_count": rows[0]["count"], "unit_count": pick["count"]}
+    return {**n, "life_unit": pick["key"], "life_label": pick["label"], "life_per": pick["value"],
+            "item": it, "items": [it], "rows": rows, "inverse": inverse,
+            "inverse_count": item["price_krw"] / pick["value"], "inverse_word": cards.word(pick["label"])}
 
 
 def pick_prices(prices: dict, seed: str) -> list[dict]:
-    """그룹별로 pick 수만큼, 검색량(weight)이 큰 것일수록 자주 뽑는다 (대표 결정: 많이 검색하는 동네·차종 위주)."""
+    """1선수 1물건 (대표 결정): 먼저 그룹(집·국산차·수입차)을 group_weight대로 고르고,
+    그 안에서 검색량(weight)이 큰 것일수록 자주 뽑는다 (많이 검색하는 단지·차종 위주)."""
     rng = random.Random(seed)
-    out = []
-    for group, k in (prices.get("pick") or {"home": 1, "car_kr": 1, "car_import": 1}).items():
-        pool = [i for i in prices["items"] if i.get("group") == group]
-        for _ in range(min(k, len(pool))):
-            it = rng.choices(pool, weights=[max(1, i.get("weight", 1)) for i in pool])[0]
-            pool.remove(it)
-            out.append({x: it[x] for x in ("key", "group", "label", "short", "unit", "price_krw", "as_of", "source",
-                                           "fetch", "query", "min_krw", "max_krw") if x in it})
-    return out
+    gw = prices.get("group_weight") or {"home": 1, "car_kr": 1, "car_import": 1}
+    groups = [g for g in gw if any(i.get("group") == g for i in prices["items"])]
+    group = rng.choices(groups, weights=[gw[g] for g in groups])[0]
+    pool = [i for i in prices["items"] if i.get("group") == group]
+    it = rng.choices(pool, weights=[max(1, i.get("weight", 1)) for i in pool])[0]
+    return [{x: it[x] for x in ("key", "group", "label", "short", "unit", "price_krw", "as_of", "source",
+                                "fetch", "query", "min_krw", "max_krw") if x in it}]
 
 
 def quiz_item(d: dict, n: dict) -> dict:
-    """퀴즈는 국산차 (가장 체감되는 값). 없으면 첫 물건."""
-    return next((i for i in n["items"] if i.get("group") == "car_kr"), n["items"][0])
+    return n["item"]
 
 
 # ---------------------------------------------------------------- 카드 (그림)
@@ -223,35 +230,47 @@ def build_vs(folder: Path, d: dict, photo: Image.Image | None) -> dict:
 def build_life(folder: Path, d: dict, photo: Image.Image | None) -> dict:
     n = compute_life(d)
     name = d.get("short_name") or d["player"]
-    apt = next((i for i in n["items"] if i.get("group") == "home"), n["items"][0])
-    q = quiz_item(d, n)
+    q = n["item"]
     total = 5
     imgs = {"thumb.png": receipt.poster(f"{d['season']} 연봉 체감", name, "올해 연봉이면",
-                                        f"{apt['short']} {count(apt['salary_count'])}{apt['unit']}", photo)}
+                                        f"{q['short']} {count(q['salary_count'])}{q['unit']}", photo)}
+    if n["inverse"]:
+        first, ask, qv, qu = f"{q['short']} 한 {q['unit']} 사려면", f"{name} 몇 {n['inverse_word']}?", n["inverse_count"], n["inverse_word"]
+        ans = f"{count(qv)}{qu}"
+        line = f"{q['short']} {won(q['price_krw'])} ÷ {n['life_label']} {won(n['life_per'])}"
+    else:
+        first, ask, qv, qu = f"{name} {n['life_label']} 몸값이면", f"{q['short']} 몇 {q['unit']}?", q["unit_count"], q["unit"]
+        ans = f"{q['short']} {count(qv)}{qu}"
+        line = f"{n['life_label']} {won(n['life_per'])} ÷ {q['short']} {won(q['price_krw'])}"
     im, dr = _base(2, total)
-    first = f"{name} {n['life_label']} 몸값이면"
     center_text(dr, (W / 2, 250), first, fit(dr, first, "display", 80, W * 0.86), INK)
-    center_text(dr, (W / 2, 360), f"{q['short']} 몇 {q['unit']}?", font("display", 86), INK)
-    opts, idx = cards.options(q["unit_count"], folder.name)
-    _big_options(dr, [f"약 {count(v)}{q['unit']}" for v in opts])
+    center_text(dr, (W / 2, 360), ask, fit(dr, ask, "display", 86, W * 0.86), INK)
+    opts, idx = cards.options(qv, folder.name)
+    _big_options(dr, [f"약 {count(v)}{qu}" for v in opts])
     center_text(dr, (W / 2, 985), "정답은 아래에 ↓", font("b", 40), RED)
     imgs["card_quiz.png"] = im
     im, dr = _base(3, total)
     dr.text((W / 2 - 40, 260), "정답은", font=font("display", 70), fill=SOFT, anchor="rm")
     _num(dr, (W / 2 + 10, 262), idx + 1, r=44, color=RED)
     dr.text((W / 2 + 70, 260), "번", font=font("display", 70), fill=SOFT, anchor="lm")
-    _highlight(dr, (W / 2, 470), f"{q['short']} {count(q['unit_count'])}{q['unit']}", 140)
-    line = f"{n['life_label']} {won(n['life_per'])} ÷ {q['short']} {won(q['price_krw'])}"
+    _highlight(dr, (W / 2, 470), ans, 140)
     center_text(dr, (W / 2, 680), line, fit(dr, line, "b", 44, W * 0.86), INK)
     imgs["card_answer.png"] = im
     im, dr = _base(4, total)
-    title = f"{name} 연봉으로 살 수 있는 것"
+    title = f"{name} 몸값을 {q['short']}로 바꾸면"
     center_text(dr, (W / 2, 190), title, fit(dr, title, "display", 64, W * 0.86), INK)
-    rows = [["물건", "가격", "연봉으로", f"{word(n['life_label'])}로"]]
-    rows += [[i["short"], won(i["price_krw"]), f"{count(i['salary_count'])}{i['unit']}",
-              f"{count(i['unit_count'])}{i['unit']}"] for i in n["items"]]
-    end = _table(dr, rows, [0.28, 0.28, 0.22, 0.22], 290, {1})
-    center_text(dr, (W / 2, end + 60), "가격: 공식 발표·보도 기준 (본문 끝 출처)", font("r", 28), SOFT)
+    if n["inverse"]:  # 한 채 사려면 연봉 몇 년·몇 경기·몇 승
+        rows = [["기준", "몸값", f"한 {q['unit']} 사려면"]]
+        rows += [[r["label"], won(r["value"]), f"{count(q['price_krw'] / r['value'])}{'년' if r['key'] == 'salary' else word(r['label'])}"]
+                 for r in n["rows"][:6]]
+    else:
+        rows = [["기준", "몸값", f"{q['short']}"]]
+        rows += [[r["label"], won(r["value"]), f"{count(r['count'])}{q['unit']}"] for r in n["rows"][:6]]
+    hot = {i for i, r in enumerate(n["rows"][:6], 1) if r["key"] == n["life_unit"]}
+    end = _table(dr, rows, [0.3, 0.38, 0.32], 290, hot)
+    center_text(dr, (W / 2, end + 50), f"{q['label']} {won(q['price_krw'])} ({q['as_of']} 기준)",
+                fit(dr, f"{q['label']} {won(q['price_krw'])} ({q['as_of']} 기준)", "r", 28, W * 0.86), SOFT)
+    center_text(dr, (W / 2, end + 95), "가격 출처는 본문 끝에", font("r", 28), SOFT)
     imgs["card_items.png"] = im
     wage = cards.wage_card(n, n["life_unit"], 5, total)
     if wage is not None:
@@ -297,7 +316,7 @@ IMAGE_PLANS = {
         ("첫문단아래", "thumb.png", "첫 문단 바로 아래 (홈판 카드와 같은 그림)"),
         ("퀴즈", "card_quiz.png", "바로 앞 문장에서 '퀴즈 카드' 물건을 몇 대(채) 살 수 있을지 맞혀 보라고 묻는다"),
         ("정답", "card_answer.png", "퀴즈 바로 다음. 정답 카드보다 앞에서는 정답 숫자를 쓰지 않는다"),
-        ("살수있는것", "card_items.png", "아파트·차값 비교 문단 바로 위"),
+        ("단위별", "card_items.png", "연봉·기록 단위별로 몇 채(대)인지 말하는 문단 바로 위"),
         ("최저임금", "card_wage.png", "최저임금 비교 문단 바로 위")],
 }
 

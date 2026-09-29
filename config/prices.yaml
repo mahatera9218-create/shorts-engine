@@ -4,9 +4,10 @@
 # 대표 결정 (2026-09-30): 집값은 많이 검색하는 지역·단지, 차값은 많이 검색하는 국산·수입 차종 위주.
 #   → candidates의 검색량을 market/volume.py로 재고(워크플로 '생활 물가 검색량'), 상위만 items에 넣는다.
 #   group: home(집값) · car_kr(국산차) · car_import(수입차), weight: 월 검색량 (클수록 자주 뽑힘)
-# 글마다 pick 수만큼 그룹별로 뽑아 쓴다.
+# 1선수 1물건 (대표 결정 2026-09-30): 글마다 그룹을 group_weight대로 하나 고르고, 그 안에서 weight대로 물건 하나.
+#   (차 검색량이 집보다 훨씬 커서, 물건 weight로만 뽑으면 차만 나온다 → 그룹을 먼저 같은 확률로 고른다)
 
-pick: {home: 2, car_kr: 1, car_import: 1}
+group_weight: {home: 1, car_kr: 1, car_import: 1}
 
 items:
   # ---- 집값 (weight = 월 검색량, reports/검색량/가격후보-2026-09-30.md)
