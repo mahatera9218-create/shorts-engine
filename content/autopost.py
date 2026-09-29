@@ -547,15 +547,22 @@ def theme_sheet(plan: dict, d: dict, n: dict, got: list[dict], cfg: dict) -> str
             L += ["", f"[{x['d'].get('short_name') or x['d']['player']} 상세]",
                   strip_lines(number_sheet(x["d"], n[key], x["facts"], x["ex"], cfg), "썸네일:", "제목용", "퀴즈 카드:")]
         return "\n".join(L)
-    q = themes.quiz_item(d, n)
-    apt = next((i for i in n["items"] if i.get("group") == "home"), n["items"][0])
+    q = n["item"]
     L = [strip_lines(number_sheet(d, n, got[0]["facts"], got[0]["ex"], cfg), "썸네일:", "퀴즈 카드:"),
-         f"썸네일: {d.get('short_name') or d['player']} / 올해 연봉이면 / {apt['short']} {themes.count(apt['salary_count'])}{apt['unit']}"
+         f"썸네일: {d.get('short_name') or d['player']} / 올해 연봉이면 / {q['short']} {themes.count(q['salary_count'])}{q['unit']}"
          " (추천 제목에는 이 숫자를 다시 쓰지 않는다)",
-         "생활 물가 (확인된 가격, 개수는 버림):"]
-    L += [f"- {i['label']}: {won(i['price_krw'])} ({i['as_of']} 기준) → 올해 연봉으로 {themes.count(i['salary_count'])}{i['unit']},"
-          f" {n['life_label']} 몸값으로 {themes.count(i['unit_count'])}{i['unit']}" for i in n["items"]]
-    L.append(f"퀴즈 카드: {n['life_label']} 몸값으로 {q['short']} 몇 {q['unit']} 맞히기 (정답 {themes.count(q['unit_count'])}{q['unit']})")
+         f"비교 물건 (글 전체에서 이것 하나만 쓴다): {q['label']} {won(q['price_krw'])} ({q['as_of']} 기준)",
+         f"{q['short']}로 바꾸면 (개수는 버림):"]
+    L += [f"- {r['label']} {won(r['value'])} → {themes.count(r['count'])}{q['unit']}" for r in n["rows"]]
+    if n["inverse"]:
+        L.append(f"{q['short']} 한 {q['unit']} 사려면 (버림):")
+        L += [f"- {r['label']}로 {themes.count(q['price_krw'] / r['value'])}{'년' if r['key'] == 'salary' else cards.word(r['label'])}"
+              for r in n["rows"]]
+    if n["inverse"]:
+        L.append(f"{q['short']} 한 {q['unit']} 사려면: {n['life_label']} 몸값 {won(n['life_per'])}로 {themes.count(n['inverse_count'])}{n['inverse_word']}")
+        L.append(f"퀴즈 카드: {q['short']} 한 {q['unit']} 사려면 몇 {n['inverse_word']} 맞히기 (정답 {themes.count(n['inverse_count'])}{n['inverse_word']})")
+    else:
+        L.append(f"퀴즈 카드: {n['life_label']} 몸값으로 {q['short']} 몇 {q['unit']} 맞히기 (정답 {themes.count(q['unit_count'])}{q['unit']})")
     return "\n".join(L)
 
 
