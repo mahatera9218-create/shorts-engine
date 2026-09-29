@@ -9,7 +9,7 @@ on:
   workflow_call:
   push:
     branches: [main]
-    paths: ["posts/**", "content/desk.py"]
+    paths: ["posts/**", "content/desk.py", ".github/workflows/desk.yml"]
 
 permissions:
   contents: read
@@ -46,6 +46,15 @@ jobs:
             echo "⚠️ Cloudflare 키가 없어 발행 도우미를 올리지 않았습니다 (docs/운영자-안내-발행-도우미.md)" >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
+          set -o pipefail   # 올리기가 실패하면 ❌로 표시되게 (tee가 실패를 가리지 않게)
+          # 복사할 때 공백·줄바꿈·주소 전체가 같이 들어가도 32자리 계정 ID만 골라 쓴다
+          ACC=$(printf '%s' "$CLOUDFLARE_ACCOUNT_ID" | grep -oiE '[0-9a-f]{32}' | head -1 || true)
+          if [ -z "$ACC" ]; then
+            echo "❌ CLOUDFLARE_ACCOUNT_ID 형식이 이상합니다. 32자리 영문·숫자만 다시 넣어 주세요 (docs/운영자-안내-발행-도우미.md ②)" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          export CLOUDFLARE_ACCOUNT_ID="$ACC"
+          export CLOUDFLARE_API_TOKEN="$(printf '%s' "$CLOUDFLARE_API_TOKEN" | tr -d '[:space:]')"
           npx --yes wrangler@4 pages project create "$PROJECT" --production-branch main 2>/dev/null || true
           npx --yes wrangler@4 pages deploy site --project-name "$PROJECT" --branch main --commit-dirty=true | tee deploy.log
           url=$(grep -oE 'https://[a-zA-Z0-9.-]+\.pages\.dev' deploy.log | tail -1)
