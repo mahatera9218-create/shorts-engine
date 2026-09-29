@@ -20,6 +20,7 @@ SECRET_GROUPS = {
     "naver_ad": ["NAVER_AD_API_KEY", "NAVER_AD_SECRET_KEY", "NAVER_AD_CUSTOMER_ID"],
     "naver_hub": ["NCP_APIGW_API_KEY_ID", "NCP_APIGW_API_KEY"],
     "youtube": ["YOUTUBE_API_KEY"],
+    "anthropic": ["ANTHROPIC_API_KEY"],
 }
 
 

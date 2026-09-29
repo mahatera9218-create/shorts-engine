@@ -33,10 +33,28 @@ def won(x: float) -> str:
     return f"{man:,}만 원"
 
 
+def units(d: dict) -> list[dict]:
+    """쪼갤 단위 목록. 새 형식은 units: [{key, label, count}], 예전 형식(stats)은 타자 4단위로 바꾼다."""
+    if d.get("units"):
+        return [u for u in d["units"] if u.get("count")]
+    return [{"key": k, "label": label, "count": d["stats"][k]} for k, label in UNITS if d["stats"].get(k)]
+
+
+def salary_krw(d: dict) -> float:
+    return d["salary_krw"] if d.get("salary_krw") else d["salary_usd"] * d["fx_krw_per_usd"]
+
+
+def headline(d: dict) -> str:
+    keys = [u["key"] for u in units(d)]
+    return d.get("headline_unit") if d.get("headline_unit") in keys else ("hits" if "hits" in keys else keys[-1])
+
+
 def compute(d: dict) -> dict:
-    salary = d["salary_usd"] * d["fx_krw_per_usd"]
-    per = {key: salary / d["stats"][key] for key, _ in UNITS if d["stats"].get(key)}
-    out = {"salary_krw": salary, "per": per, "per_team_game": salary / d["team_games"]}
+    salary = salary_krw(d)
+    per = {u["key"]: salary / u["count"] for u in units(d)}
+    out = {"salary_krw": salary, "per": per}
+    if d.get("team_games"):
+        out["per_team_game"] = salary / d["team_games"]
     if d.get("min_wage_monthly_krw"):
         yearly = d["min_wage_monthly_krw"] * 12
         out["min_wage_yearly_krw"] = yearly
@@ -64,7 +82,7 @@ def receipt_image(d: dict, n: dict, w: int = 1080) -> Image.Image:
     dash(y)
     y += h * 0.05
     fl, fr = font("b", int(w * 0.045)), font("xb", int(w * 0.045))
-    rows = [(f"{label} ({d['stats'][k]:,})", won(n["per"][k])) for k, label in UNITS if k in n["per"]]
+    rows = [(f"{u['label']} ({u['count']:,})", won(n["per"][u["key"]])) for u in units(d)]
     for left, right in rows:
         dr.text((px0 + 50, y), left, font=fl, fill=INK, anchor="lm")
         dr.text((px1 - 50, y), right, font=fr, fill=INK, anchor="rm")
@@ -74,13 +92,16 @@ def receipt_image(d: dict, n: dict, w: int = 1080) -> Image.Image:
     dr.text((px0 + 50, y), "올해 연봉", font=fr, fill=INK, anchor="lm")
     dr.text((px1 - 50, y), "약 " + won(n["salary_krw"]), font=font("xb", int(w * 0.05)), fill=(190, 40, 40), anchor="rm")
     y += h * 0.06
-    if n.get("min_wage_years_per", {}).get("hits"):
-        line = f"1안타 = 최저임금 연봉 {n['min_wage_years_per']['hits']:.1f}년치"
+    head = headline(d)
+    if n.get("min_wage_years_per", {}).get(head):
+        label = next(u["label"] for u in units(d) if u["key"] == head)
+        line = f"{label} = 최저임금 연봉 {n['min_wage_years_per'][head]:.1f}년치"
         center_text(dr, (cx, y), line, font("b", int(w * 0.04)), INK)
         y += h * 0.06
     dash(y - h * 0.02)
     y += h * 0.03
-    center_text(dr, (cx, y), f"{d['salary_usd'] / 1e4:,.0f}만 달러 · {d['fx_label']}", font("r", int(w * 0.03)), (90, 90, 100))
+    basis = f"{d['salary_usd'] / 1e4:,.0f}만 달러 · {d['fx_label']}" if d.get("salary_usd") else d.get("salary_label", "연봉 보도 기준")
+    center_text(dr, (cx, y), basis, font("r", int(w * 0.03)), (90, 90, 100))
     y += h * 0.04
     center_text(dr, (cx, y), "성적·연봉은 보도 기준 · 최저임금 월 209시간", font("r", int(w * 0.03)), (90, 90, 100))
     end = int(y + h * 0.05)
@@ -94,22 +115,32 @@ def thumb_image(d: dict, n: dict, w: int = 1080) -> Image.Image:
     im = Image.new("RGB", (w, w), BG)
     dr = ImageDraw.Draw(im)
     center_text(dr, (w / 2, w * 0.2), f"{d['player']} {d['season']} 연봉 영수증", fit(dr, f"{d['player']} {d['season']} 연봉 영수증", "b", int(w * 0.06), w * 0.85), WHITE)
-    head = f"1안타 {won(n['per']['hits']).split(' ')[0]}"
-    center_text(dr, (w / 2, w * 0.47), head, fit(dr, head, "xb", int(w * 0.2), w * 0.9), GOLD)
-    sub = f"1경기 {won(n['per']['games'])} · 1홈런 {won(n['per']['home_runs'])}"
-    center_text(dr, (w / 2, w * 0.72), sub, fit(dr, sub, "b", int(w * 0.05), w * 0.88), WHITE)
+    us = units(d)
+    head = headline(d)
+    label = next(u["label"] for u in us if u["key"] == head)
+    big = f"{label} {won(n['per'][head]).split(' ')[0]}"
+    center_text(dr, (w / 2, w * 0.47), big, fit(dr, big, "xb", int(w * 0.2), w * 0.9), GOLD)
+    others = [u for u in us if u["key"] != head][:2]
+    sub = " · ".join(f"{u['label']} {won(n['per'][u['key']])}" for u in others)
+    if sub:
+        center_text(dr, (w / 2, w * 0.72), sub, fit(dr, sub, "b", int(w * 0.05), w * 0.88), WHITE)
     center_text(dr, (w / 2, w * 0.86), "억소리 나는 스포츠", font("r", int(w * 0.035)), GRAY)
     return im
+
+
+def build(folder: Path, d: dict) -> dict:
+    n = compute(d)
+    (folder / "numbers.json").write_text(json.dumps(n, ensure_ascii=False, indent=1), encoding="utf-8")
+    receipt_image(d, n).save(folder / "receipt.png")
+    thumb_image(d, n).save(folder / "thumb.png")
+    return n
 
 
 def main() -> None:
     folder = Path(sys.argv[1])
     d = yaml.safe_load((folder / "data.yaml").read_text(encoding="utf-8"))
-    n = compute(d)
-    (folder / "numbers.json").write_text(json.dumps(n, ensure_ascii=False, indent=1), encoding="utf-8")
-    receipt_image(d, n).save(folder / "receipt.png")
-    thumb_image(d, n).save(folder / "thumb.png")
-    print(json.dumps({k: won(v) for k, v in n["per"].items()} | {"연봉": won(n["salary_krw"]), "팀경기당": won(n["per_team_game"])}, ensure_ascii=False))
+    n = build(folder, d)
+    print(json.dumps({k: won(v) for k, v in n["per"].items()} | {"연봉": won(n["salary_krw"])}, ensure_ascii=False))
     for k, v in n.get("min_wage_years_per", {}).items():
         print(k, f"최저임금 연봉 {v:.1f}년치")
 
