@@ -1,0 +1,7 @@
+# 댓글 요청 선수 (대표 결정 2026-09-30): 대표가 주 1회 댓글을 캡처해 보내면 Claude가 여기에 적는다.
+# 적힌 날부터 days일 동안 뽑힐 확률 boost배. 선수 풀(players.yaml)에 없는 선수는 Claude가 풀에 먼저 추가한다
+# (팀·등번호 확인 후). 이름은 players.yaml의 name 그대로.
+days: 21
+boost: 3
+requests: []
+#  - {name: 김도영, date: 2026-10-06, note: "댓글 3건"}

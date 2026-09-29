@@ -246,6 +246,20 @@ class ContentTest(unittest.TestCase):
         assert any("클립 질문" in x and "18자" in x for x in probs)
         assert any("클립 설명에 숫자표에 없는 숫자" in x for x in check_post({**p, "clip_caption": "75억?"}, sheet))
 
+    def test_teaser_and_news_weight(self):
+        from content.autopost import TEASER, weighted_pool
+        assert TEASER.search("다음 영수증은 류현진이에요") and not TEASER.search("누구 연봉을 쪼개 볼까요?")
+
+        class Hub:
+            def news(self, q, display=100):
+                n = 30 if q == "A" else 0
+                return [{"date": "2026-09-29"}] * n + [{"date": "2026-09-01"}] * 5
+
+        pool = {"players": [{"name": "A", "weight": 1}, {"name": "B", "weight": 2}]}
+        got, why = weighted_pool(Hub(), pool, "2026-09-30")
+        w = {p["name"]: p["weight"] for p in got["players"]}
+        assert w == {"A": 3.0, "B": 2} and "A 기사 30건" in why
+
 
 if __name__ == "__main__":
     unittest.main()
