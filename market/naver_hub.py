@@ -54,10 +54,15 @@ class ApiHub:
     def blog(self, keyword: str, display: int = 100) -> dict:
         """전체 문서 수 + 최신 글 N개(최신순) 제목·발행일·블로그명.
 
-        정확도순 상위는 실제 검색 화면의 상위와 달라(2026-09-29 확인) 쓰지 않는다.
+        정확도순 상위는 실제 검색 화면의 상위와 달라(2026-09-29 확인) 글 목록은 최신순으로 받는다.
         최신 글의 발행일로 '최근 새 글이 얼마나 올라오는가'(경쟁 활동량)를 잰다.
+        문서 수(total)는 최신순이 정확도순보다 수백 배 작게 나와(같은 날 두 실행 비교) 정확도순 값을 쓴다.
         """
-        data = request_json("GET", self.base + self.paths["blog_search"], headers=self._headers(),
+        url = self.base + self.paths["blog_search"]
+        count = request_json("GET", url, headers=self._headers(),
+                             params={"query": keyword, "display": 1, "sort": "sim"})
+        time.sleep(0.1)
+        data = request_json("GET", url, headers=self._headers(),
                             params={"query": keyword, "display": display, "sort": "date"})
         items = [{
             "title": clean(it.get("title")),
@@ -67,7 +72,7 @@ class ApiHub:
             "postdate": it.get("postdate", ""),
         } for it in data.get("items", [])]
         time.sleep(0.1)
-        return {"total": int(data.get("total", 0)), "items": items}
+        return {"total": int(count.get("total", 0)), "total_date_sort": int(data.get("total", 0)), "items": items}
 
     def trends(self, keywords: list[str], months: int = 12) -> dict[str, dict]:
         """키워드별 월간 상대 검색 추이 → 추세 방향·계절성. 값은 상대값(절대 검색량 아님)."""
