@@ -20,17 +20,17 @@ UNITS = [("games", "1경기"), ("at_bats", "1타수"), ("hits", "1안타"), ("ho
 
 
 def won(x: float) -> str:
-    """사람이 읽는 금액: 1억 이상은 'X억 Y만 원', 그 아래는 'Y만 원'."""
+    """사람이 읽는 금액 (억원·만원은 붙여 쓴다, 대표 결정): 'X억 Y만원', 'X억원', 'Y만원'."""
     x = round(x)
     eok, man = divmod(x, 100_000_000)
     man = round(man / 10_000)
     if man == 10_000:
         eok, man = eok + 1, 0
     if eok and man:
-        return f"{eok:,}억 {man:,}만 원"
+        return f"{eok:,}억 {man:,}만원"
     if eok:
-        return f"{eok:,}억 원"
-    return f"{man:,}만 원"
+        return f"{eok:,}억원"
+    return f"{man:,}만원"
 
 
 def units(d: dict) -> list[dict]:
@@ -75,8 +75,8 @@ RED = (214, 40, 40)
 
 
 def short_won(x: float) -> str:
-    """썸네일용: 가장 큰 단위만 (2억 32만 원 → 2억원, 9,045만 원 → 9,045만원)."""
-    return won(x).split(" ")[0] + "원"
+    """썸네일용: 가장 큰 단위만 (2억 32만원 → 2억원, 9,045만원 → 9,045만원)."""
+    return won(x).split(" ")[0].removesuffix("원") + "원"
 
 
 def _cover(photo: Image.Image, w: int) -> Image.Image:
@@ -111,7 +111,7 @@ def thumb_image(d: dict, n: dict, w: int = 1080, photo: Image.Image | None = Non
     l, t, r, b = dr.textbbox((0, 0), tag, font=tf)
     dr.rectangle((x0, w * 0.06, x0 + (r - l) + w * 0.05, w * 0.06 + (b - t) + w * 0.04), fill=RED)
     dr.text((x0 + w * 0.025, w * 0.06 + w * 0.02 - t), tag, font=tf, fill=WHITE)
-    name = d["player"]
+    name = d.get("short_name") or d["player"]  # 짧은 이름 (대표 결정)
     dr.text((x0 - w * 0.005, w * 0.31), name, font=fit(dr, name, "display", int(w * 0.2), w * 0.88), fill=WHITE,
             anchor="lm", stroke_width=int(w * 0.012), stroke_fill=(0, 0, 0))
     head = headline(d)

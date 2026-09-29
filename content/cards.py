@@ -79,7 +79,7 @@ def _highlight(d, xy, text, size, color=HL, max_w=W * 0.86):
 
 def quiz_card(d: dict, q: dict, value: float, page: int, total: int, seed: str) -> Image.Image:
     im, dr = _base(page, total)
-    first = f"{d['player']} {q['label']},"
+    first = f"{d.get('short_name') or d['player']} {q['label']},"
     center_text(dr, (W / 2, 250), first, fit(dr, first, "display", 86, W * 0.86), INK)
     center_text(dr, (W / 2, 360), "얼마짜리일까?", font("display", 86), INK)
     opts, _ = options(value, seed)
@@ -139,7 +139,7 @@ def wage_card(n: dict, head: str, page: int, total: int) -> Image.Image | None:
 
 def table_card(d: dict, n: dict, units: list[dict], head: str, page: int, total: int) -> Image.Image:
     im, dr = _base(page, total)
-    title = f"한눈에 보는 {d['player']} 영수증"
+    title = f"한눈에 보는 {d.get('short_name') or d['player']} 영수증"
     center_text(dr, (W / 2, 190), title, fit(dr, title, "display", 64, W * 0.86), INK)
     pad, rh = 90, 100
     tw = W - 2 * pad
