@@ -15,18 +15,20 @@ import requests
 from market.common import ROOT, secret
 
 SEARCH = "https://api.pexels.com/v1/search"
-QUERIES = {
-    "야구": ["baseball stadium", "baseball field", "baseball bat and ball", "baseball stadium night lights"],
-    "축구": ["soccer stadium", "soccer ball field", "football stadium lights"],
-    "농구": ["basketball court", "basketball hoop"],
-    "골프": ["golf course", "golf ball"],
+QUERIES = {  # photo = 썸네일 배경, photo2 = 본문 시즌 기록 사진
+    "photo": {"야구": ["baseball stadium", "baseball field", "baseball stadium night lights"],
+              "축구": ["soccer stadium", "football stadium lights"],
+              "농구": ["basketball court"], "골프": ["golf course"]},
+    "photo2": {"야구": ["baseball glove and ball", "baseball bat on grass", "baseball dugout", "baseball on field"],
+               "축구": ["soccer ball on grass", "soccer goal net"],
+               "농구": ["basketball hoop", "basketball on court"], "골프": ["golf ball on tee"]},
 }
 
 
 def used_ids() -> set[int]:
     """이미 다른 글에 쓴 사진은 다시 쓰지 않는다."""
     out = set()
-    for p in (ROOT / "posts").glob("*/photo.json"):
+    for p in (ROOT / "posts").glob("*/photo*.json"):
         try:
             out.add(json.loads(p.read_text(encoding="utf-8"))["id"])
         except (ValueError, KeyError):
@@ -34,13 +36,14 @@ def used_ids() -> set[int]:
     return out
 
 
-def fetch(folder: Path, sport: str, seed: str) -> dict | None:
-    """folder/photo.jpg와 photo.json(출처)을 만든다. 키가 없거나 실패하면 None."""
+def fetch(folder: Path, sport: str, seed: str, name: str = "photo") -> dict | None:
+    """folder/<name>.jpg와 <name>.json(출처)을 만든다. 키가 없거나 실패하면 None."""
     key = secret("PEXELS_API_KEY")
     if not key:
         return None
-    kind = next((k for k in QUERIES if k in (sport or "")), "야구")
-    queries = QUERIES[kind]
+    table = QUERIES[name]
+    kind = next((k for k in table if k in (sport or "")), "야구")
+    queries = table[kind]
     h = int(hashlib.sha1(seed.encode()).hexdigest(), 16)
     query = queries[h % len(queries)]
     try:
@@ -56,16 +59,24 @@ def fetch(folder: Path, sport: str, seed: str) -> dict | None:
     except (requests.RequestException, KeyError, ValueError) as e:
         print(f"사진을 받지 못해 그린 썸네일로 대신합니다: {type(e).__name__}")
         return None
-    (folder / "photo.jpg").write_bytes(img.content)
+    (folder / f"{name}.jpg").write_bytes(img.content)
     info = {"id": p["id"], "photographer": p.get("photographer", ""), "page": p.get("url", ""), "query": query}
-    (folder / "photo.json").write_text(json.dumps(info, ensure_ascii=False, indent=1), encoding="utf-8")
+    (folder / f"{name}.json").write_text(json.dumps(info, ensure_ascii=False, indent=1), encoding="utf-8")
     return info
 
 
+def fetch_all(folder: Path, sport: str, seed: str) -> None:
+    for name in QUERIES:
+        if not (folder / f"{name}.jpg").exists():
+            fetch(folder, sport, seed, name)
+
+
 def credit(folder: Path) -> str:
-    """본문 끝에 붙일 출처 한 줄 (API 이용 조건)."""
-    p = folder / "photo.json"
-    if not p.exists():
-        return ""
-    info = json.loads(p.read_text(encoding="utf-8"))
-    return f"대표 사진: {info['photographer']} / Pexels ({info['page']})"
+    """본문 끝에 붙일 출처 (API 이용 조건: 작가 이름 + Pexels 링크)."""
+    lines = []
+    for name, label in (("photo", "대표 사진"), ("photo2", "본문 사진")):
+        p = folder / f"{name}.json"
+        if p.exists():
+            info = json.loads(p.read_text(encoding="utf-8"))
+            lines.append(f"{label}: {info['photographer']} / Pexels ({info['page']})")
+    return "\n".join(lines)
