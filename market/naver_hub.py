@@ -98,6 +98,28 @@ class ApiHub:
             time.sleep(0.1)
         return out
 
+    def relative_last_month(self, anchor: str, keywords: list[str]) -> dict[str, float]:
+        """지난달 검색량을 기준 키워드 대비 비율로 돌려준다 (기준 = 1.0).
+
+        데이터랩 값은 한 요청 안의 최댓값을 100으로 맞춘 상대값이라, 요청마다 기준 키워드를 함께 넣어 비율을 잰다.
+        """
+        end = date.today().replace(day=1) - timedelta(days=1)
+        start = end.replace(day=1)
+        out: dict[str, float] = {}
+        for i in range(0, len(keywords), MAX_GROUPS - 1):
+            batch = keywords[i:i + MAX_GROUPS - 1]
+            body = {"startDate": start.isoformat(), "endDate": end.isoformat(), "timeUnit": "month",
+                    "keywordGroups": [{"groupName": k, "keywords": [k]} for k in [anchor] + batch]}
+            data = request_json("POST", self.base + self.paths["search_trend"],
+                                headers={**self._headers(), "Content-Type": "application/json"}, json=body)
+            last = {r.get("title", ""): (float(r["data"][-1].get("ratio", 0)) if r.get("data") else 0.0)
+                    for r in data.get("results", [])}
+            base = last.get(anchor, 0.0)
+            for k in batch:
+                out[k] = last.get(k, 0.0) / base if base > 0 else 0.0
+            time.sleep(0.1)
+        return out
+
     def shopping_category(self, name: str, category: str, months: int = 12) -> dict:
         """쇼핑 인사이트 분야별 클릭 추이. HUB 경로 미확인 → 카테고리 코드가 있을 때만 호출."""
         end = date.today().replace(day=1) - timedelta(days=1)
