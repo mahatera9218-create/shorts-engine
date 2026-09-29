@@ -67,5 +67,11 @@ jobs:
             echo "바뀐 결과 없음"
           else
             git commit -m "시장조사 결과 $(date +%F)"
-            git push
+            # 실행 중에 main이 바뀌었으면 최신을 받아 결과 커밋을 그 위에 올린 뒤 올린다 (최대 3번).
+            for i in 1 2 3; do
+              git pull --rebase -X theirs origin "${GITHUB_REF_NAME}" && git push && exit 0
+              sleep $((i * 5))
+            done
+            echo "결과를 저장하지 못했습니다. Claude에게 알려주세요." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
           fi
