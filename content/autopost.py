@@ -85,11 +85,12 @@ TOPIC_SCHEMA = {
     "type": "object",
     "properties": {
         "found": {"type": "boolean"},
-        "player": {"type": "string"}, "team": {"type": "string"}, "sport": {"type": "string"},
+        "player": {"type": "string"}, "short_name": {"type": "string"}, "team": {"type": "string"},
+        "sport": {"type": "string"},
         "angle": {"type": "string"},
         "queries": {"type": "array", "items": {"type": "string"}},
     },
-    "required": ["found", "player", "team", "sport", "angle", "queries"],
+    "required": ["found", "player", "short_name", "team", "sport", "angle", "queries"],
     "additionalProperties": False,
 }
 
@@ -115,7 +116,8 @@ WRITE_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"(닉네�
 숫자
 - 돈은 모두 원화로 쓴다 (달러 금액은 숫자표의 원화 환산값). "달러"라는 말은 마지막 "기준:" 문단의 환율 설명에만 쓴다.
 - 글과 제목에는 사용자가 준 '숫자표'에 있는 숫자만 쓴다. 새로 계산하거나 반올림해서 키우지 않는다.
-- 줄여 쓰기는 버림만 허용: "2억 32만 원" → "2억", "298억 4,740만 원" → "약 298억 원".
+- 줄여 쓰기는 버림만 허용: "2억 32만원" → "2억", "298억 4,740만원" → "약 298억원".
+- 금액은 붙여 쓴다: "9,045만원", "27억원", "2억 32만원" ("만 원", "억 원"처럼 띄우지 않는다).
 - 출처끼리 차이가 있다고 표시된 숫자는 본문에 "보도에 따라 약간 차이가 있어요"를 한 번 적는다.
 
 구조 (홈판형)
@@ -141,10 +143,10 @@ WRITE_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"(닉네�
 - titles 5개, 유형을 모두 다르게. recommended는 추천 제목 번호(1~5).
 
 제목 (홈판에서는 썸네일 + 제목만 보고 누를지 정한다. 가장 공들일 것)
-- 선수 이름과 썸네일 금액은 제목에 쓰지 않는다 (썸네일과 본문에 이미 있다). 20자를 끌어들이는 데만 쓴다.
-- 추천 제목은 반전·궁금증 한 마디 (예: "9,496억 계약인데 올해는 27억?", "부상으로 시즌 끝, 연봉은 다 받을까?"). 썸네일은 "얼마", 제목은 "왜?"를 건드린다.
-- 20자 이하 (띄어쓰기 포함). 나머지 4개도 20자 이하로 유형만 바꾼다. 던진 궁금증은 본문에서 반드시 답한다.
-- 선수 이름은 태그에 넣는다 (검색 유입 보완).
+- 5개 모두 숫자표의 '제목용 짧은 이름'으로 시작한다 (검색 유입 + 스타 이름으로 눈길). 성+이름 전체를 쓰지 않는다.
+- 추천 제목은 짧은 이름 + 숫자 후킹 (예: "오타니 9,496억 계약인데 올해 27억?", "이정후 298억, 시즌 끝나도 다 받을까?"). 숫자로 반전·궁금증을 만든다.
+- 썸네일 금액(숫자표 '썸네일' 줄)은 추천 제목에 되풀이하지 않는다. 썸네일은 "얼마", 제목은 "왜?".
+- 25자 이하 (띄어쓰기 포함). 던진 궁금증은 본문에서 반드시 답한다. 선수 이름은 태그에도 넣는다.
 - 물음표는 1개까지. "충격", "경악", "헉", "소름", "역대급" 같은 과장어 금지.
 - tags: 10개 이하, 띄어쓰기 없이.
 - cross_compare: 본문에 쓴 교차 비교 한 줄 요약.
@@ -196,7 +198,7 @@ def discover_topic(cfg: dict, hub, llm) -> dict | None:
     news = gather_news(hub, cfg.get("discover_queries", []), per_query=12)
     done = sorted({n.split("-", 3)[-1].removesuffix("-영수증") for n in done_ids()})
     prompt = (f"이미 쓴 선수: {', '.join(done) or '없음'}\n\n아래 뉴스 요약에서 '올해 연봉'과 '올 시즌 기록'이 모두 보도된 "
-              "선수 1명을 골라라. 이미 쓴 선수는 빼고, 사생활·논란 기사로만 알려진 선수도 뺀다. queries는 네이버 뉴스 검색어 3~4개.\n\n"
+              "선수 1명을 골라라. 이미 쓴 선수는 빼고, 사생활·논란 기사로만 알려진 선수도 뺀다. queries는 네이버 뉴스 검색어 3~4개. short_name은 한국 팬이 부르는 짧은 이름(예: 오타니, 트라웃, 손흥민).\n\n"
               + news_prompt(news))
     t = llm.ask_json(["너는 스포츠 돈 블로그의 편집자다. 검색이 많이 될 스타 선수를 우선한다."], prompt, TOPIC_SCHEMA,
                      max_tokens=4000, **extract_opts())
@@ -249,7 +251,8 @@ def build_data(topic: dict, ex: dict, facts: dict, cfg: dict) -> tuple[dict | No
     usd = ex["salary_currency"] == "USD"
     if usd and not 1e5 <= sal["value"] <= 1e8 or not usd and not 3e7 <= sal["value"] <= 1e11:
         return None, f"연봉 숫자가 이상함 ({sal['value']:,} {ex['salary_currency']})"
-    d = {"player": topic["player"], "team": topic.get("team", ""), "season": ex["season"],
+    d = {"player": topic["player"], "short_name": topic.get("short_name") or topic["player"].split(" ")[0],
+         "team": topic.get("team", ""), "season": ex["season"],
          "salary_label": f"연봉 {won(sal['value'])} · {ex['salary_basis']}" if not usd else None}
     if usd:
         fx = facts.get("fx_krw_per_usd")
@@ -278,6 +281,7 @@ def number_sheet(d: dict, n: dict, facts: dict, ex: dict, cfg: dict) -> str:
     head = receipt.headline(d)
     head_label = next(u["label"] for u in receipt.units(d) if u["key"] == head)
     L = [f"선수: {d['player']} ({d.get('team', '')}), 시즌 {d['season']}",
+         f"제목용 짧은 이름: {d.get('short_name') or d['player'].split(' ')[0]}",
          f"썸네일: {d['player']} / {head_label} / {receipt.short_won(n['per'][head])} (추천 제목에는 이 금액을 다시 쓰지 않는다)"]
     fx = d.get("fx_krw_per_usd")
     L.append(f"올해 연봉: {won(n['salary_krw'])}" + (f" (달러 연봉을 {d['fx_label']} 환율로 환산)" if fx else ""))
@@ -322,21 +326,27 @@ def unknown_numbers(text: str, sheet: str, extra: str = "") -> list[str]:
     return sorted(set(bad))
 
 
-TITLE_MAX = 20  # 홈판 카드에서 한눈에 (대표 결정: 짧을수록 직관적)
+TITLE_MAX = 25  # 짧은 이름 + 숫자 후킹 (대표 결정)
+SHORT = re.compile(r"^제목용 짧은 이름: (\S+)", re.M)
 TITLE_BANNED = ["충격", "경악", "헉", "소름", "역대급"]
 THUMB = re.compile(r"^썸네일: (.+?) / (.+?) / (\S+?)원? \(", re.M)
 
 
 def check_titles(p: dict, sheet: str) -> list[str]:
-    """제목 규칙: 20자 이하, 과장어 금지, 추천 제목에 선수 이름·썸네일 금액 없음 (썸네일·본문에 있으니 글자를 아낀다)."""
+    """제목 규칙: 짧은 이름으로 시작, 25자 이하, 과장어 금지, 추천 제목은 숫자 후킹 + 썸네일 금액 되풀이 금지."""
     m = THUMB.search(sheet)
     if not m or not p["titles"]:
         return []
     name, money = m.group(1), m.group(3)
-    core = name.split(" ")[0]  # '오타니 쇼헤이' → '오타니'
+    s = SHORT.search(sheet)
+    core = s.group(1) if s else name.split(" ")[0]  # '오타니 쇼헤이' → '오타니'
     out = []
     for i, t in enumerate(p["titles"], 1):
         text = t["text"].strip()
+        if not text.startswith(core):
+            out.append(f"제목{i}이 짧은 이름({core})으로 시작하지 않음")
+        elif name != core and text.startswith(name):
+            out.append(f"제목{i}에 긴 이름 → '{core}'로")
         if len(text) > TITLE_MAX:
             out.append(f"제목{i}이 {TITLE_MAX}자 넘음 ({len(text)}자)")
         if text.count("?") > 1 or any(w in text for w in TITLE_BANNED):
@@ -344,8 +354,8 @@ def check_titles(p: dict, sheet: str) -> list[str]:
     rec = p["titles"][p["recommended"] - 1]["text"] if 1 <= p["recommended"] <= len(p["titles"]) else ""
     if money.removesuffix("원") in rec.replace(" ", ""):
         out.append(f"추천 제목이 썸네일 금액({money})을 되풀이함 → 반전·궁금증 한 마디로")
-    if core in rec:
-        out.append(f"추천 제목에 선수 이름({core}) → 빼고 끌어들이는 문구에 글자를 쓰기")
+    if not re.search(r"\d", rec):
+        out.append("추천 제목에 숫자가 없음 → 이름 + 숫자 후킹으로")
     if not any(core in t for t in p.get("tags", [])) and p.get("tags") is not None:
         out.append(f"태그에 선수 이름({core}) 없음")
     return out
@@ -373,7 +383,7 @@ def check_post(p: dict, sheet: str) -> list[str]:
     m = QUIZ.search(sheet)
     if m and "card_quiz.png" in p["body"]:
         before = p["body"].split("card_quiz.png")[0]
-        if m.group(2) in before or m.group(2).removesuffix(" 원") in before:
+        if m.group(2) in before or m.group(2).removesuffix("원") in before:
             problems.append(f"퀴즈 정답({m.group(2)})이 퀴즈 카드보다 먼저 나옴 → 정답 카드 뒤로")
     if "card_answer.png" in p["body"] and "card_quiz.png" in p["body"] and \
             p["body"].index("card_answer.png") < p["body"].index("card_quiz.png"):
