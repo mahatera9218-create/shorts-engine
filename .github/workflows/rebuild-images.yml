@@ -1,0 +1,57 @@
+# 이미 만든 글의 이미지 다시 그리기 (썸네일 디자인을 바꿨을 때, Pexels 사진 넣기)
+# - 수동 실행: Actions → 이미지 다시 그리기 → Run workflow
+name: 이미지 다시 그리기
+
+on:
+  workflow_dispatch:
+    inputs:
+      folder:
+        description: "글 폴더 이름 (비우면 posts/ 전부)"
+        type: string
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: repo-reports
+  cancel-in-progress: false
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TZ: Asia/Seoul
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: 준비
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq fonts-nanum fonts-nanum-extra > /dev/null
+          pip install -r requirements.txt
+      - name: 다시 그리기
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          FOLDER: ${{ inputs.folder }}
+        run: |
+          if [ -n "$FOLDER" ]; then python -m content.rebuild "posts/$FOLDER"; else python -m content.rebuild; fi | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: 결과 저장 (posts/ 커밋)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add posts/
+          if git diff --cached --quiet; then
+            echo "바뀐 이미지 없음"
+          else
+            git commit -m "이미지 다시 그리기 $(date +%F)"
+            for i in 1 2 3; do
+              git pull --rebase -X theirs origin "${GITHUB_REF_NAME}" && git push && exit 0
+              sleep $((i * 5))
+            done
+            echo "결과를 저장하지 못했습니다. Claude에게 알려주세요." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
