@@ -53,10 +53,21 @@ jobs:
             echo "❌ CLOUDFLARE_ACCOUNT_ID 형식이 이상합니다. 32자리 영문·숫자만 다시 넣어 주세요 (docs/운영자-안내-발행-도우미.md ②)" >> "$GITHUB_STEP_SUMMARY"
             exit 1
           fi
+          echo "::add-mask::$ACC"   # 정리한 값도 로그에 안 보이게
           export CLOUDFLARE_ACCOUNT_ID="$ACC"
           export CLOUDFLARE_API_TOKEN="$(printf '%s' "$CLOUDFLARE_API_TOKEN" | tr -d '[:space:]')"
           npx --yes wrangler@4 pages project create "$PROJECT" --production-branch main 2>/dev/null || true
-          npx --yes wrangler@4 pages deploy site --project-name "$PROJECT" --branch main --commit-dirty=true | tee deploy.log
+          ok=""
+          for wait in 20 60 120; do   # Cloudflare가 "요청이 많다(10429)"고 하면 쉬었다가 다시
+            sleep "$wait"
+            if npx --yes wrangler@4 pages deploy site --project-name "$PROJECT" --branch main --commit-dirty=true | tee deploy.log; then
+              ok=1; break
+            fi
+          done
+          if [ -z "$ok" ]; then
+            echo "❌ 발행 도우미를 올리지 못했습니다. Claude에게 알려주세요." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
           url=$(grep -oE 'https://[a-zA-Z0-9.-]+\.pages\.dev' deploy.log | tail -1)
           echo "## 발행 도우미" >> "$GITHUB_STEP_SUMMARY"
           echo "고정 주소: https://$PROJECT.pages.dev (이번 배포: $url)" >> "$GITHUB_STEP_SUMMARY"
