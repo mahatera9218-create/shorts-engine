@@ -120,6 +120,9 @@ def run(sample: bool) -> int:
     scored = score(rows, cfg["weights"], cfg["regulated_terms"],
                    crowded_cap=cfg["verdict"]["crowded_monthly_posts"], display=c["blog_recent_n"])
 
+    # ②-2 광고 키워드 도구가 못 보는 인물·스포츠 키워드: 데이터랩 상대값 × 기준 키워드 검색량으로 추정
+    probes = estimate_probes(tool, hub, areas, cfg.get("demand_probe", {}), notes)
+
     # ③ 유튜브: 규제 제외 점수 상위만 (쿼터 보호)
     if yt is not None:
         y = cfg["youtube"]
@@ -139,13 +142,36 @@ def run(sample: bool) -> int:
         a["verdict"], a["verdict_reason"] = suggest_verdict(a, cfg["verdict"])
         a["affiliate_prior"] = next((x.get("affiliate", 3) for x in areas if x["id"] == a["area_id"]), 3)
         a["shopping"] = next((x.get("shopping") for x in areas if x["id"] == a["area_id"]), None)
-    write_outputs(out_dir, run_date, scored, areas_ranked, notes, sample, rep["memos"])
+    write_outputs(out_dir, run_date, scored, areas_ranked, notes, sample, rep["memos"], probes)
     return 0
 
 
-def write_outputs(out_dir, run_date, scored, areas_ranked, notes, sample, memo_count):
+def estimate_probes(tool, hub, areas: list[dict], cfg: dict, notes: list[str]) -> list[dict]:
+    """seeds.yaml의 probe_keywords 검색량 추정. 기준 키워드의 실제 검색량(검색광고)에 데이터랩 비율을 곱한다."""
+    anchor = cfg.get("anchor")
+    wanted = [(a["name"], k) for a in areas for k in a.get("probe_keywords", [])]
+    if not anchor or not wanted:
+        return []
+    try:
+        rows = tool.related([anchor])
+        base = next((r["volume"] for r in rows if r["keyword"].replace(" ", "") == anchor.replace(" ", "")), None)
+        if not base:
+            notes.append(f"검색량 추정 건너뜀: 기준 키워드 '{anchor}'의 검색량을 받지 못함")
+            return []
+        rel = hub.relative_last_month(anchor, [k for _, k in wanted])
+    except ApiError as e:
+        notes.append(f"검색량 추정 실패: {e}")
+        return []
+    notes.append(f"인물·스포츠 검색량은 추정치: 데이터랩 지난달 비율 × 기준 키워드 '{anchor}' 월 {int(base):,}회")
+    out = [{"area": area, "keyword": k, "ratio": rel.get(k, 0.0), "est_volume": rel.get(k, 0.0) * base}
+           for area, k in wanted]
+    out.sort(key=lambda x: x["est_volume"], reverse=True)
+    return out
+
+
+def write_outputs(out_dir, run_date, scored, areas_ranked, notes, sample, memo_count, probes=None):
     out_dir.mkdir(parents=True, exist_ok=True)
-    summary = report.summary_md(run_date, areas_ranked, scored, notes, sample)
+    summary = report.summary_md(run_date, areas_ranked, scored, notes, sample, probes or [])
     (out_dir / "00-요약-점수표.md").write_text(summary, encoding="utf-8")
     memo_files = []
     for i, area in enumerate(areas_ranked[:memo_count], 1):
@@ -153,7 +179,7 @@ def write_outputs(out_dir, run_date, scored, areas_ranked, notes, sample, memo_c
         (out_dir / name).write_text(report.memo_md(i, area, run_date, sample), encoding="utf-8")
         memo_files.append((name, area["area_name"]))
     (out_dir / "data.json").write_text(
-        json.dumps({"date": run_date, "sample": sample, "keywords": scored, "notes": notes},
+        json.dumps({"date": run_date, "sample": sample, "keywords": scored, "probes": probes or [], "notes": notes},
                    ensure_ascii=False, indent=1, default=str), encoding="utf-8")
 
     rel = out_dir.relative_to(ROOT)
