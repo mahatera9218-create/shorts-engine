@@ -40,6 +40,15 @@ def units(d: dict) -> list[dict]:
     return [{"key": k, "label": label, "count": d["stats"][k]} for k, label in UNITS if d["stats"].get(k)]
 
 
+def effective_count(u: dict) -> float:
+    """야구 이닝 표기 85.2 = 85와 2/3이닝. 이닝 단위만 소수 첫째 자리를 1/3로 바꾼다."""
+    c = u["count"]
+    if "inning" in u["key"]:
+        whole = int(c)
+        return whole + round((c - whole) * 10) / 3
+    return c
+
+
 def salary_krw(d: dict) -> float:
     return d["salary_krw"] if d.get("salary_krw") else d["salary_usd"] * d["fx_krw_per_usd"]
 
@@ -51,7 +60,7 @@ def headline(d: dict) -> str:
 
 def compute(d: dict) -> dict:
     salary = salary_krw(d)
-    per = {u["key"]: salary / u["count"] for u in units(d)}
+    per = {u["key"]: salary / effective_count(u) for u in units(d)}
     out = {"salary_krw": salary, "per": per}
     if d.get("team_games"):
         out["per_team_game"] = salary / d["team_games"]
