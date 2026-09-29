@@ -104,7 +104,8 @@ EXTRACT_RULES = """너는 스포츠 기사 요약문에서 숫자 사실만 뽑�
 - units: 연봉을 나눌 단위 2~4개. key는 facts의 key, label은 "1경기", "1이닝"처럼. 0이거나 없는 기록은 넣지 않는다.
 - headline_unit: 제목에 쓸 가장 눈길 끄는 단위 key.
 - story: 글 맥락이 되는 사실 3~6개를 짧게 네 말로 (기사 문장 복사 금지). 숫자는 facts에 있는 것만. 사생활·연애·가족·논란·도박은 빼라.
-- salary_basis: 연봉 근거를 한 줄로 (예: "6년 1억1300만 달러 계약 중 2026년 연봉, 보도 기준").
+- 계약 총액·지급 유예 금액처럼 글에 필요한 다른 돈도 facts로 뽑는다 (key 예: contract_total, deferred, unit은 USD 또는 KRW). 원화 환산은 코드가 한다.
+- salary_basis: 연봉 근거를 한 줄로, 금액 숫자 없이 (예: "6년 계약 중 2026년 연봉, 보도 기준", "10년 계약, 대부분 지급 유예"). 금액은 facts에만.
 - usable=false: 올해 연봉 또는 나눌 기록이 요약문에 없을 때. reason에 무엇이 없는지 적는다.
 """
 
@@ -112,6 +113,7 @@ WRITE_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"(닉네�
 위의 두 스킬 문서(blog-voice, money-content-writer)를 따른다. 특히 아래는 반드시 지킨다.
 
 숫자
+- 돈은 모두 원화로 쓴다 (달러 금액은 숫자표의 원화 환산값). "달러"라는 말은 마지막 "기준:" 문단의 환율 설명에만 쓴다.
 - 글과 제목에는 사용자가 준 '숫자표'에 있는 숫자만 쓴다. 새로 계산하거나 반올림해서 키우지 않는다.
 - 줄여 쓰기는 버림만 허용: "2억 32만 원" → "2억", "298억 4,740만 원" → "약 298억 원".
 - 출처끼리 차이가 있다고 표시된 숫자는 본문에 "보도에 따라 약간 차이가 있어요"를 한 번 적는다.
@@ -140,7 +142,7 @@ WRITE_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"(닉네�
 
 제목 (홈판에서는 썸네일 + 제목만 보고 누를지 정한다. 가장 공들일 것)
 - 선수 이름과 썸네일 금액은 제목에 쓰지 않는다 (썸네일과 본문에 이미 있다). 20자를 끌어들이는 데만 쓴다.
-- 추천 제목은 반전·궁금증 한 마디 (예: "7억 달러 계약인데 올해는 27억?", "부상으로 시즌 끝, 연봉은 다 받을까?"). 썸네일은 "얼마", 제목은 "왜?"를 건드린다.
+- 추천 제목은 반전·궁금증 한 마디 (예: "9,496억 계약인데 올해는 27억?", "부상으로 시즌 끝, 연봉은 다 받을까?"). 썸네일은 "얼마", 제목은 "왜?"를 건드린다.
 - 20자 이하 (띄어쓰기 포함). 나머지 4개도 20자 이하로 유형만 바꾼다. 던진 궁금증은 본문에서 반드시 답한다.
 - 선수 이름은 태그에 넣는다 (검색 유입 보완).
 - 물음표는 1개까지. "충격", "경악", "헉", "소름", "역대급" 같은 과장어 금지.
@@ -277,10 +279,8 @@ def number_sheet(d: dict, n: dict, facts: dict, ex: dict, cfg: dict) -> str:
     head_label = next(u["label"] for u in receipt.units(d) if u["key"] == head)
     L = [f"선수: {d['player']} ({d.get('team', '')}), 시즌 {d['season']}",
          f"썸네일: {d['player']} / {head_label} / {receipt.short_won(n['per'][head])} (추천 제목에는 이 금액을 다시 쓰지 않는다)"]
-    if d.get("salary_usd"):
-        L.append(f"올해 연봉: {d['salary_usd'] / 1e4:,.0f}만 달러 = {won(n['salary_krw'])} ({d['fx_label']})")
-    else:
-        L.append(f"올해 연봉: {won(n['salary_krw'])}")
+    fx = d.get("fx_krw_per_usd")
+    L.append(f"올해 연봉: {won(n['salary_krw'])}" + (f" (달러 연봉을 {d['fx_label']} 환율로 환산)" if fx else ""))
     L.append(f"연봉 근거: {ex['salary_basis']}")
     for u in receipt.units(d):
         L.append(f"{u['label']}당: {won(n['per'][u['key']])} (올 시즌 {u['count']:,}, 버림 표기 {won(n['per'][u['key']]).split(' ')[0]})")
@@ -291,6 +291,14 @@ def number_sheet(d: dict, n: dict, facts: dict, ex: dict, cfg: dict) -> str:
     L.append("기록·사실 (기사 날짜 · 정한 규칙):")
     for k, f in facts.items():
         if k in ("salary", "fx_krw_per_usd"):
+            continue
+        if f["unit"] == "USD":  # 달러 금액은 원화로만 보여준다 (대표 결정: 통화는 원화로)
+            if not fx:
+                continue
+            L.append(f"- {f['label']}: 약 {won(f['value'] * fx)} (지금 환율로 환산 · {f['date']})")
+            continue
+        if f["unit"] == "KRW":
+            L.append(f"- {f['label']}: {won(f['value'])} ({f['date']} · {f['rule']})")
             continue
         v = f"{f['value']:,}" if float(f["value"]).is_integer() else f"{f['value']}"
         diff = f" · 출처끼리 차이 {f['differs']} → 본문에 '보도에 따라 약간 차이' 표기" if f["differs"] else ""
@@ -358,6 +366,10 @@ def check_post(p: dict, sheet: str) -> list[str]:
     problems += check_titles(p, sheet)
     if len(p["titles"]) != 5 or not 1 <= p["recommended"] <= len(p["titles"]):
         problems.append("제목 5개와 추천 번호(1~5)가 필요")
+    for label, text in [("본문", "\n".join(l for l in p["body"].splitlines() if not l.startswith("기준")))] + \
+            [(f"제목{i}", t["text"]) for i, t in enumerate(p["titles"], 1)]:
+        if "달러" in text:
+            problems.append(f"{label}에 '달러' → 원화로 (환율은 '기준:' 문단에만)")
     m = QUIZ.search(sheet)
     if m and "card_quiz.png" in p["body"]:
         before = p["body"].split("card_quiz.png")[0]
