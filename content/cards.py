@@ -115,11 +115,7 @@ def wage_card(n: dict, head: str, page: int, total: int) -> Image.Image | None:
         return None
     im, dr = _base(page, total)
     center_text(dr, (W / 2, 230), "최저임금으로 이 돈 벌려면?", font("display", 72), INK)
-    y, m = int(years), round((years - int(years)) * 12)
-    if m == 12:
-        y, m = y + 1, 0
-    text = (f"{y}년 " if y else "") + (f"{m}개월" if m or not y else "")
-    _highlight(dr, (W / 2, 420), text.strip(), 150, color=PINK)
+    _highlight(dr, (W / 2, 420), wage_text(years), 150, color=PINK)
     step = next(s for s in (1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 10 ** 9) if years / s <= 10)  # 칸은 10개까지
     boxes = min(10, math.ceil(years / step))
     gap = 18
@@ -170,6 +166,29 @@ def table_card(d: dict, n: dict, units: list[dict], head: str, page: int, total:
     note = "성적·연봉 보도 기준" + (f" · 환율 {d['fx_krw_per_usd']:,}원" if d.get("fx_krw_per_usd") else "")
     center_text(dr, (W / 2, top + rh * len(rows) + 110), note, font("r", 28), SOFT)
     return im
+
+
+def wage_text(years: float) -> str:
+    y, m = int(years), round((years - int(years)) * 12)
+    if m == 12:
+        y, m = y + 1, 0
+    return ((f"{y}년 " if y else "") + (f"{m}개월" if m or not y else "")).strip()
+
+
+def story(d: dict, n: dict, units: list[dict], head: str, seed: str) -> dict:
+    """클립 영상용 줄거리 (content/clip.py가 움직이는 화면으로 그린다). 카드와 같은 숫자만 쓴다."""
+    name = d.get("short_name") or d["player"]
+    q = quiz_unit(d, units, n["per"], head)
+    opts, idx = options(n["per"][q["key"]], seed)
+    rows = [[word(u["label"]), won(n["per"][u["key"]])] for u in units]
+    years = n.get("min_wage_years_per", {}).get(head)
+    return {"quiz": {"lines": [f"{name} {q['label']},", "얼마짜리일까?"], "options": ["약 " + won(v) for v in opts],
+                     "answer": idx},
+            "answer": {"big": won(n["per"][q["key"]]),
+                       "line": f"올해 연봉 약 {won(n['salary_krw']).split(' ')[0]} ÷ {word(q['label'])} {q['count']:,}"},
+            "table": {"title": f"{name} 1번에 받는 돈", "header": ["기준", "1번에"], "rows": rows,
+                      "hot": [i for i, u in enumerate(units) if u["key"] == head]},
+            "wage": {"title": "최저임금으로 이 돈 벌려면?", "big": wage_text(years)} if years else None}
 
 
 def build_cards(d: dict, n: dict, units: list[dict], head: str, seed: str) -> dict[str, Image.Image]:

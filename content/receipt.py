@@ -14,7 +14,7 @@ import yaml
 from PIL import Image, ImageDraw
 
 from .brand import BG, GOLD, WHITE, fit, font
-from .cards import build_cards
+from .cards import build_cards, story
 
 UNITS = [("games", "1경기"), ("at_bats", "1타수"), ("hits", "1안타"), ("home_runs", "1홈런")]
 
@@ -138,6 +138,12 @@ def build(folder: Path, d: dict) -> dict:
     thumb_image(d, n, photo=photo).save(folder / "thumb.png")
     for name, img in build_cards(d, n, units(d), headline(d), folder.name).items():
         img.save(folder / name)
+    head = headline(d)
+    label = next(u["label"] for u in units(d) if u["key"] == head)
+    st = story(d, n, units(d), head, folder.name)
+    st["hook"] = {"tag": f"{d['season']} 연봉 영수증", "name": d.get("short_name") or d["player"], "label": label,
+                  "big": short_won(n["per"][head])}
+    (folder / "clip.json").write_text(json.dumps(st, ensure_ascii=False, indent=1), encoding="utf-8")
     for name in OLD_IMAGES:
         (folder / name).unlink(missing_ok=True)
     return n
