@@ -16,13 +16,13 @@ from . import photos, receipt
 
 def add_credit(folder: Path) -> None:
     line = photos.credit(folder)
-    if not line:
-        return
     for f in (folder / "body.txt", folder / "post.md"):  # 예전 출처 줄은 지우고 새로 붙인다
         if not f.exists():
             continue
         s = "\n".join(l for l in f.read_text(encoding="utf-8").splitlines() if "/ Pexels (" not in l)
-        if f.name == "body.txt":
+        if not line:
+            s = s.rstrip() + "\n"
+        elif f.name == "body.txt":
             s = s.rstrip() + "\n\n" + line + "\n"
         elif "\n## 출처" in s:
             s = s.replace("\n## 출처", f"\n{line}\n\n## 출처", 1)
