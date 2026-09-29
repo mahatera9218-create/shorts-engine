@@ -54,6 +54,9 @@ class ScoringTest(unittest.TestCase):
         terms = self.cfg["regulated_terms"]
         self.assertEqual(scoring.regulated_category("자동차 대출 금리", terms), "금융")
         self.assertIsNone(scoring.regulated_category("전자계약 방법", terms))
+        self.assertEqual(scoring.regulated_category("카니발장기렌트", terms), "금융")
+        for safe in ["체크리스트", "크리스마스선물", "로봇청소기"]:
+            self.assertIsNone(scoring.regulated_category(safe, terms))
 
     def test_area_summary_excludes_regulated(self):
         rows = [self.row("대출 비교", 90000, 100), self.row("제습기", 1000, 1000)]
