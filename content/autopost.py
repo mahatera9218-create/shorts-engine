@@ -20,7 +20,7 @@ from pathlib import Path
 import yaml
 
 from market.common import ROOT, load_yaml, missing_secrets
-from . import cards, photos, receipt, themes
+from . import cards, clip, photos, receipt, themes
 from .receipt import won
 from .voice import check_draft
 
@@ -627,6 +627,10 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
         (folder / "post.md").write_text(package_md(f"{title} · {tinfo['name']}", th, tinfo["category"], facts, post,
                                                    problems, rounds, cfg, sum(len(x["news"]) for x in got), cost, extra),
                                         encoding="utf-8")
+        try:  # 네이버 클립용 세로 영상 (실패해도 글은 그대로)
+            notes.append(clip.make(folder))
+        except Exception as ex:
+            notes.append(f"클립: 오류로 건너뜀 ({ex})")
         if out_root == POSTS:
             write_index()
         head = "✅ 발행 가능" if not problems and post["gate_pass"] else "⚠️ 확인 필요: " + "; ".join(problems or ["게이트 미통과"])
