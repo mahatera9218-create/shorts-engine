@@ -505,16 +505,22 @@ def write_post(llm, topic: dict, sheet: str, max_revisions: int) -> tuple[dict, 
         problems = check_post(post, sheet)
     # 편집장 검토 (스킬 0단계 기준): 4점 미만이 있으면 한 번 고쳐 쓰고, 고친 글이 코드 검사를 통과할 때만 바꾼다
     review = review_post(llm, sheet, post)
-    low = [x for x in review["scores"] if x["score"] < REVIEW_PASS]
-    if low and not problems and llm.cost_usd() < cap:
+    for _ in range(2):
+        low = [x for x in review["scores"] if x["score"] < REVIEW_PASS]
+        if not low or problems or llm.cost_usd() >= cap:
+            break
         fix = (prompt + "\n\n아래는 네가 쓴 초안과 편집장 검토다. 검토의 수정 지시를 반영해 같은 JSON 형식으로 다시 내라. "
                "숫자는 숫자표에 있는 것만.\n검토:\n" + "\n".join(f"- {x['criterion']} {x['score']}점: {x['reason']}" for x in low)
                + "\n수정 지시:\n" + "\n".join(f"- {f}" for f in review["fixes"]) + "\n\n초안:\n" + json.dumps(post, ensure_ascii=False))
         again = llm.ask_json(system, fix, POST_SCHEMA, **opts)
-        if not check_post(again, sheet):
-            post, rounds = again, rounds + 1
-            review = review_post(llm, sheet, post)
+        if check_post(again, sheet):
+            break
+        post, rounds = again, rounds + 1
+        review = review_post(llm, sheet, post)
     post["review"] = review
+    low = [x["criterion"] for x in review["scores"] if x["score"] < REVIEW_PASS]
+    if low:  # 고쳐 써도 기준 미달이면 발행 가능으로 두지 않는다 (도우미에서 ⚠️, 다시 뽑기 권장)
+        problems = problems + [f"편집장 기준 미달 ({', '.join(low)}) — 다시 뽑기 권장"]
     return post, problems, rounds
 
 
@@ -584,16 +590,45 @@ def write_index() -> None:
         "| 날짜 | 추천 제목 | 상태 |\n| --- | --- | --- |\n" + "\n".join(rows) + "\n", encoding="utf-8")
 
 
+def known_salary(player: str, today: str) -> dict | None:
+    """config/salaries.yaml의 확인된 올해 연봉 (시즌이 맞을 때만)."""
+    f = ROOT / "config" / "salaries.yaml"
+    if not f.exists():
+        return None
+    t = load_yaml("salaries.yaml")
+    k = (t.get("players") or {}).get(player)
+    return {**k, "season": t["season"]} if k and int(t.get("season", 0)) == int(today[:4]) else None
+
+
+def with_known_salary(facts: dict, ex: dict, known: dict) -> tuple[dict, dict]:
+    """뉴스에 올해 연봉이 없으면 확인 연봉표 값을 쓴다. 뉴스 값이 있으면 뉴스 우선, 다르면 차이를 남긴다."""
+    news_sal = facts.get("salary")
+    if news_sal and ex.get("salary_currency") == known["currency"]:
+        if news_sal["value"] != known["amount"]:
+            news_sal["differs"] = sorted({news_sal["value"], known["amount"]})
+        return facts, ex
+    facts = {**facts, "salary": {"value": known["amount"], "label": "올해 연봉", "unit": known["currency"],
+                                 "date": str(known["as_of"]), "sources": [known["source"]], "rule": "확인 연봉표",
+                                 "differs": None}}
+    return facts, {**ex, "salary_currency": known["currency"], "salary_basis": known["basis"], "season": known["season"]}
+
+
 def collect(hub, llm, topic: dict, today: str, cfg: dict) -> dict | str:
     """한 선수의 뉴스 → 숫자 뽑기 → 충돌 정리 → 계산 입력. 모자라면 이유(str)를 돌려준다."""
     news = gather_news(hub, topic["queries"] + [cfg["fx_query"]])
     hint = f"\n종목 안내: {topic['hint']}" if topic.get("hint") else ""
+    known = known_salary(topic["player"], today)
+    if known:
+        hint += (f"\n확인된 올해 연봉이 따로 있다 ({known['currency']}, 코드가 넣는다). 요약문에 올해 연봉이 없어도 "
+                 "나눌 기록이 있으면 usable=true. " + ("달러 연봉이니 환율(fx_krw_per_usd)은 꼭 뽑는다." if known["currency"] == "USD" else ""))
     ex = llm.ask_json([EXTRACT_RULES], f"선수: {topic['player']} ({topic.get('team', '')}, {topic.get('sport', '')}){hint}\n"
                       f"오늘: {today}\n\n뉴스 요약 (번호 = source):\n{news_prompt(news)}",
                       EXTRACT_SCHEMA, max_tokens=8000, **extract_opts())
     if not ex["usable"]:
         return ex["reason"]
     facts = resolve(ex["facts"], news)
+    if known:
+        facts, ex = with_known_salary(facts, ex, known)
     d, why = build_data(topic, ex, facts, cfg)
     if d is None:
         return why
@@ -697,9 +732,11 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
     cache: dict[str, dict | str] = {}
     seed = today if not made_today else f"{today}-{len(made_today)}"  # 다시 뽑으면 테마도 새로
     pool, why = weighted_pool(hub, pool, today)
+    skip_file = Path(os.environ["AUTOPOST_SKIP"]) if os.environ.get("AUTOPOST_SKIP") else None
+    skipped = set(json.loads(skip_file.read_text(encoding="utf-8"))) if skip_file and skip_file.exists() else set()
     if why:
         notes.append("가중치: " + why)
-    for plan in themes.plans(pool, recent_players(pool.get("recent_posts", 5)), seed, n=5,
+    for plan in themes.plans(pool, recent_players(pool.get("recent_posts", 5)) | skipped, seed, n=10,
                              override=topic_override, theme=theme):
         got = []
         for p in plan["players"]:
@@ -707,6 +744,9 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
                 cache[p["name"]] = collect(hub, llm, themes.topic(pool, p), today, cfg)
             got.append(cache[p["name"]])
         bad = [f"{p['name']}: {g}" for p, g in zip(plan["players"], got) if isinstance(g, str)]
+        if skip_file:  # 같은 날 여러 편을 쓸 때 이미 실패한 선수는 다시 모으지 않는다
+            skipped |= {p["name"] for p, g in zip(plan["players"], got) if isinstance(g, str)}
+            skip_file.write_text(json.dumps(sorted(skipped), ensure_ascii=False), encoding="utf-8")
         if bad:
             notes += [f"건너뜀 — {b}" for b in bad if b not in notes]
             continue

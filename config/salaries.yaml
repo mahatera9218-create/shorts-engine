@@ -1,0 +1,29 @@
+# 확인된 올해 연봉 (대표 결정 2026-09-30): 뉴스 요약문에 올해 연봉 1년치가 없으면 여기 값을 쓴다.
+# 공식 발표·보도로 확인한 값만, 출처·기준일과 함께. 계약 총액을 연수로 나눈 값·추측 금지.
+# 뉴스에서 연봉이 뽑히면 뉴스 값이 우선이고, 여기 값과 다르면 발행 패키지에 차이가 표시된다.
+# currency: KRW | USD (달러는 그날 환율로 원화 환산). 시즌이 바뀌면(보통 1~2월 연봉 발표) 새로 확인해 고친다.
+season: 2026
+players:
+  김도영:   {amount: 250000000,  currency: KRW, basis: "2026시즌 연봉 재계약 (50% 삭감), KIA 발표 보도", as_of: 2026-01-15,
+             source: "https://www.newspim.com/news/view/20260115001029"}
+  노시환:   {amount: 1000000000, currency: KRW, basis: "2026시즌 연봉 계약 (다년 계약은 2027년부터), 보도", as_of: 2026-01-21,
+             source: "https://v.daum.net/v/20260121181225160"}
+  원태인:   {amount: 1000000000, currency: KRW, basis: "2026시즌 연봉 계약, 보도", as_of: 2026-01-20,
+             source: "https://dgmbc.com/NewsArticle/814083"}
+  류현진:   {amount: 2100000000, currency: KRW, basis: "KBO 발표 2026 연봉 순위 (8년 170억 계약 중 2026년), 보도", as_of: 2026-03-18,
+             source: "https://v.daum.net/v/20260318142802406"}
+  김광현:   {amount: 1500000000, currency: KRW, basis: "KBO 발표 2026 연봉, 보도", as_of: 2026-03-18,
+             source: "https://v.daum.net/v/20260318142802406"}
+  문동주:   {amount: 220000000,  currency: KRW, basis: "2026시즌 연봉 계약 (120% 인상), 보도", as_of: 2026-01-21,
+             source: "https://v.daum.net/v/YPC2Yu6bGV"}
+  오타니 쇼헤이: {amount: 2000000, currency: USD, basis: "10년 7억 달러 계약 중 2026년 실제 지급 연봉 (나머지 지급 유예)", as_of: 2026-04-01,
+             source: "https://www.sportico.com/personalities/athletes/2026/mlb-highest-paid-players-2026-shohei-ohtani-1234887383/"}
+  애런 저지: {amount: 40000000, currency: USD, basis: "9년 계약 중 2026년 연봉", as_of: 2026-04-01,
+             source: "https://www.sportico.com/personalities/athletes/2026/mlb-highest-paid-players-2026-shohei-ohtani-1234887383/"}
+  야마모토 요시노부: {amount: 12000000, currency: USD, basis: "12년 계약 중 2026년 기본 연봉 (계약금 제외)", as_of: 2026-04-01,
+             source: "https://www.spotrac.com/mlb/player/_/id/82039/yoshinobu-yamamoto"}
+  김하성:   {amount: 20000000, currency: USD, basis: "애틀랜타 1년 2000만 달러 계약, 보도", as_of: 2025-12-30,
+             source: "https://www.newsis.com/view/NISX20251230_0003459636"}
+  김혜성:   {amount: 3750000,  currency: USD, basis: "다저스 3년 1250만 달러 계약 중 2026년 연봉, 보도", as_of: 2025-01-04,
+             source: "https://www.hankyung.com/article/2025010453707"}
+# 확인 못 함 (넣지 않음): 양현종(2+1년 총액 45억, 연도별 미공개), 구자욱, 해외축구(주급 보도만), 골프(상금은 뉴스에서)
