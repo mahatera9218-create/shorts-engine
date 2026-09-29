@@ -11,7 +11,7 @@ from pathlib import Path
 import yaml
 
 from market.common import ROOT
-from . import photos, receipt
+from . import photos, themes
 
 
 def add_credit(folder: Path) -> None:
@@ -25,7 +25,8 @@ def add_credit(folder: Path) -> None:
         elif f.name == "body.txt":
             s = s.rstrip() + "\n\n" + line + "\n"
         elif "\n## 출처" in s:
-            s = s.replace("\n## 출처", f"\n{line}\n\n## 출처", 1)
+            head, tail = s.split("\n## 출처", 1)
+            s = head.rstrip("\n") + f"\n\n{line}\n\n## 출처" + tail
         f.write_text(s, encoding="utf-8")
 
 
@@ -34,7 +35,7 @@ def main() -> None:
     for folder in folders:
         d = yaml.safe_load((folder / "data.yaml").read_text(encoding="utf-8"))
         photos.fetch_all(folder, d.get("sport", "야구"), folder.name)
-        receipt.build(folder, d)
+        themes.build(folder, d)
         add_credit(folder)
         print(f"{folder.name}: 이미지 다시 그림" + (" (사진 포함)" if (folder / "photo.jpg").exists() else " (사진 없음)"))
 
