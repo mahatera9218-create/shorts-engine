@@ -29,16 +29,36 @@ def _floor(x: float) -> float:
     return max(FLOOR, min(1.0, x))
 
 
-def median_age_days(postdates: list[str], today: date | None = None) -> float | None:
-    """상위 글 발행일(YYYYMMDD)의 중앙값 나이(일). 오래될수록 기회."""
+def monthly_new_posts(postdates: list[str], display: int, today: date | None = None) -> float | None:
+    """최신순 글 발행일(YYYYMMDD)로 '최근 30일 새 글 수'를 잰다. 많을수록 경쟁이 활발하다.
+
+    받은 글이 모두 30일 안이면(= 한도까지 꽉 참) 가장 오래된 글의 나이로 한 달 치를 추정한다.
+    2000년 이전 날짜(API가 주는 자리표시값 19900101 등)는 버린다.
+    """
     today = today or date.today()
     ages = []
     for p in postdates:
         try:
-            ages.append((today - datetime.strptime(p, "%Y%m%d").date()).days)
+            d = datetime.strptime(p, "%Y%m%d").date()
         except (TypeError, ValueError):
             continue
-    return median(ages) if ages else None
+        if d.year >= 2000:
+            ages.append(max((today - d).days, 0))
+    if not ages:
+        return None
+    recent = sum(1 for a in ages if a <= 30)
+    if recent == len(ages) and len(ages) >= display:
+        return len(ages) * 30 / max(max(ages), 1)
+    return float(recent)
+
+
+def related_to_seeds(keyword: str, seeds: list[str], extra_terms: list[str] | None = None) -> bool:
+    """씨앗(또는 추가 용어)과 두 글자 조각이 하나라도 겹치면 관련 키워드로 본다."""
+    def grams(text: str) -> set[str]:
+        t = text.replace(" ", "")
+        return {t[i:i + 2] for i in range(len(t) - 1)}
+    base = set().union(*(grams(s) for s in seeds + (extra_terms or [])))
+    return bool(grams(keyword) & base)
 
 
 def regulated_category(keyword: str, terms: dict[str, list[str]]) -> str | None:
@@ -48,7 +68,8 @@ def regulated_category(keyword: str, terms: dict[str, list[str]]) -> str | None:
     return None
 
 
-def score(rows: list[dict], weights: dict, regulated_terms: dict, today: date | None = None) -> list[dict]:
+def score(rows: list[dict], weights: dict, regulated_terms: dict, today: date | None = None,
+          crowded_cap: float = 3000, display: int = 100) -> list[dict]:
     """rows: 키워드별 수집 결과(수요·가치·공급·상위글·제휴 사전값). 점수를 붙여 내림차순으로 돌려준다."""
     if not rows:
         return []
@@ -61,8 +82,9 @@ def score(rows: list[dict], weights: dict, regulated_terms: dict, today: date | 
         trend = max(-0.3, min(0.3, r.get("trend", 0.0)))
         demand = _floor(demand_raw[i] * (1 + trend))
         value = _floor((r["competition_level"] / 3 + min(r["ad_depth"] / MAX_AD_DEPTH, 1) + clicks_raw[i]) / 3)
-        age = median_age_days([it["postdate"] for it in r.get("blog_items", [])], today)
-        win = _floor(age / 365) if age is not None else 0.5
+        monthly = monthly_new_posts([it["postdate"] for it in r.get("blog_items", [])], display, today)
+        # 최근 새 글이 적을수록 이길 가능성이 크다. crowded_cap(월 새 글) 이상이면 바닥값.
+        win = _floor(1 - _log(monthly) / _log(crowded_cap)) if monthly is not None else 0.5
         affiliate = _floor(r.get("affiliate_prior", 3) / 5)
         supply = _floor(supply_raw[i])
 
@@ -71,7 +93,7 @@ def score(rows: list[dict], weights: dict, regulated_terms: dict, today: date | 
         out.append({
             **r,
             "axes": {"demand": demand, "value": value, "win": win, "affiliate": affiliate, "supply": supply},
-            "top_median_age_days": age,
+            "monthly_new_posts": monthly,
             "raw_score": raw,
             "regulated": regulated_category(r["keyword"], regulated_terms),
         })
@@ -117,9 +139,9 @@ def suggest_verdict(area: dict, rules: dict) -> tuple[str, str]:
     trend = sum(k.get("trend", 0) for k in top) / len(top)
     if trend <= rules["declining_trend"]:
         return "제외", f"수요 하락 추세 (상위 키워드 평균 {trend * 100:+.0f}%)"
-    ages = [k["top_median_age_days"] for k in top if k.get("top_median_age_days") is not None]
-    if ages and median(ages) < rules["fresh_top_days"]:
-        return "제외", f"상위 10개가 최근 글로 꽉 참 (발행일 중앙값 {median(ages):.0f}일)"
+    monthly = [k["monthly_new_posts"] for k in top if k.get("monthly_new_posts") is not None]
+    if monthly and median(monthly) >= rules["crowded_monthly_posts"]:
+        return "제외", f"최근 글로 꽉 참 (월 새 글 중앙값 {median(monthly):,.0f}개)"
     win = sum(k["axes"]["win"] for k in top) / len(top)
     if win < rules["low_win"]:
         return "보류", f"이길 가능성 낮음 ({win:.2f})"

@@ -17,15 +17,19 @@ from datetime import date
 
 from . import report
 from .common import ROOT, ApiError, load_yaml, missing_secrets
-from .scoring import area_summary, score, suggest_verdict
+from .scoring import area_summary, related_to_seeds, score, suggest_verdict
 
 
 def collect_keywords(tool, areas: list[dict], cfg: dict) -> list[dict]:
-    """영역별 씨앗 → 연관 키워드. 중복 제거, 최소 검색량 필터, 씨앗마다 상위 N개."""
+    """영역별 씨앗 → 연관 키워드. 중복 제거, 최소 검색량 필터, 씨앗과 무관한 키워드 제거, 씨앗마다 상위 N개."""
     seen: set[str] = {k.replace(" ", "") for k in cfg.get("exclude_keywords", [])}
     rows = []
     for area in areas:
         related = [r for r in tool.related(area["seeds"]) if r["volume"] >= cfg["min_monthly_volume"]]
+        if cfg.get("relevance_filter", True):
+            before = len(related)
+            related = [r for r in related if related_to_seeds(r["keyword"], area["seeds"], [area["name"]] + (area.get("include_terms") or []))]
+            cfg.setdefault("_dropped", []).append(f"{area['name']} {before - len(related)}개")
         related.sort(key=lambda r: r["volume"], reverse=True)
         kept = 0
         for r in related:
@@ -76,7 +80,10 @@ def run(sample: bool) -> int:
 
     c = cfg["collect"]
     # ① 키워드 발굴
-    rows = collect_keywords(tool, areas, {**c, "exclude_keywords": cfg.get("exclude_keywords") or []})
+    collect_cfg = {**c, "exclude_keywords": cfg.get("exclude_keywords") or []}
+    rows = collect_keywords(tool, areas, collect_cfg)
+    if collect_cfg.get("_dropped"):
+        notes.append("씨앗과 관련 없어 뺀 연관 키워드: " + ", ".join(collect_cfg["_dropped"]))
     print(f"연관 키워드 {len(rows)}개")
     if not rows:
         write_step_summary("# 시장조사 실행 중단\n\n연관 키워드를 하나도 받지 못했습니다. 씨앗 키워드나 최소 검색량 설정을 확인하세요.")
@@ -85,7 +92,7 @@ def run(sample: bool) -> int:
     # ② 공급·이길 가능성: 블로그 문서 수와 상위 10개
     for r in rows:
         try:
-            b = hub.blog(r["keyword"], c["blog_top_n"])
+            b = hub.blog(r["keyword"], c["blog_recent_n"])
         except ApiError as e:
             write_step_summary(f"# 시장조사 실행 중단\n\n블로그 검색 API 호출 실패: {e}\n\n"
                                "404면 API HUB 주소가, 401·403이면 키 또는 API HUB 이용 신청(블로그 검색 선택)이 원인일 가능성이 큽니다.")
@@ -110,7 +117,8 @@ def run(sample: bool) -> int:
             except ApiError as e:
                 notes.append(f"쇼핑 인사이트({area['name']}) 실패: {e}")
 
-    scored = score(rows, cfg["weights"], cfg["regulated_terms"])
+    scored = score(rows, cfg["weights"], cfg["regulated_terms"],
+                   crowded_cap=cfg["verdict"]["crowded_monthly_posts"], display=c["blog_recent_n"])
 
     # ③ 유튜브: 규제 제외 점수 상위만 (쿼터 보호)
     if yt is not None:

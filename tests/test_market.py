@@ -31,9 +31,12 @@ class HubTest(unittest.TestCase):
     def test_clean_strips_tags(self):
         self.assertEqual(naver_hub.clean("<b>제습기</b> &amp; 추천"), "제습기 & 추천")
 
-    def test_trend_direction(self):
-        self.assertAlmostEqual(naver_hub.trend_direction([10, 10, 10, 20, 20, 20]), 1.0)
-        self.assertEqual(naver_hub.trend_direction([1, 2]), 0.0)
+    def test_trend_is_year_over_year(self):
+        # 여름에만 튀는 계절 상품: 작년 여름과 올해 여름이 같으면 추세 0
+        summer = [10, 10, 10, 10, 10, 30, 30, 30, 10, 10, 10, 10]
+        self.assertAlmostEqual(naver_hub.trend_direction(summer + summer[:8]), 0.0)
+        self.assertAlmostEqual(naver_hub.trend_direction(summer + [10, 10, 10, 10, 10, 60, 60, 60]), 1.0)
+        self.assertEqual(naver_hub.trend_direction([1] * 12), 0.0)
 
 
 class ScoringTest(unittest.TestCase):
@@ -43,6 +46,30 @@ class ScoringTest(unittest.TestCase):
         return {"keyword": kw, "volume": volume, "clicks": volume * 0.01, "competition_level": 2,
                 "ad_depth": 8, "blog_total": blog_total, "affiliate_prior": 3, "area_id": "a", "area_name": "A",
                 "blog_items": [{"postdate": postdate, "blogger": "x"}], **kw_extra}
+
+    def test_monthly_new_posts(self):
+        today = date(2026, 9, 29)
+        # 100개가 모두 10일 안 → 한 달 약 300개로 추정
+        busy = ["20260929"] * 50 + ["20260919"] * 50
+        self.assertAlmostEqual(scoring.monthly_new_posts(busy, 100, today), 300.0)
+        # 30일 안 글 3개뿐, 자리표시 날짜(19900101)는 버림
+        quiet = ["20260925", "20260920", "20260905", "20250101", "19900101"]
+        self.assertEqual(scoring.monthly_new_posts(quiet, 100, today), 3.0)
+        self.assertIsNone(scoring.monthly_new_posts(["19900101"], 100, today))
+
+    def test_quiet_competition_wins(self):
+        today = date(2026, 9, 29)
+        rows = [self.row("조용", 10000, 50000, postdate="20250101"),
+                self.row("붐빔", 10000, 50000, postdate="20260929")]
+        rows[1]["blog_items"] = [{"postdate": "20260929", "blogger": "x"}] * 100
+        out = scoring.score(rows, self.cfg["weights"], {}, today=today)
+        self.assertEqual(out[0]["keyword"], "조용")
+
+    def test_relevance_filter(self):
+        seeds = ["사업자 세금", "소상공인 지원금"]
+        self.assertTrue(scoring.related_to_seeds("소상공인정책자금", seeds))
+        self.assertFalse(scoring.related_to_seeds("번역", seeds))
+        self.assertTrue(scoring.related_to_seeds("번역", seeds, ["번역"]))
 
     def test_less_supply_scores_higher(self):
         rows = [self.row("가", 10000, 1000), self.row("나", 10000, 1000000), self.row("다", 500, 5000)]
@@ -69,14 +96,14 @@ class ScoringTest(unittest.TestCase):
 class VerdictTest(unittest.TestCase):
     rules = load_yaml("global.yaml")["verdict"]
 
-    def area(self, trend=0.0, age=400, win=0.8, regulated=0, keywords=3):
-        kw = [{"trend": trend, "top_median_age_days": age, "axes": {"win": win}} for _ in range(keywords)]
+    def area(self, trend=0.0, monthly=50, win=0.8, regulated=0, keywords=3):
+        kw = [{"trend": trend, "monthly_new_posts": monthly, "axes": {"win": win}} for _ in range(keywords)]
         return {"top": kw, "keywords": kw, "regulated": [{}] * regulated}
 
     def test_rules(self):
         self.assertEqual(scoring.suggest_verdict(self.area(), self.rules)[0], "진입 후보")
         self.assertEqual(scoring.suggest_verdict(self.area(trend=-0.5), self.rules)[0], "제외")
-        self.assertEqual(scoring.suggest_verdict(self.area(age=30), self.rules)[0], "제외")
+        self.assertEqual(scoring.suggest_verdict(self.area(monthly=5000), self.rules)[0], "제외")
         self.assertEqual(scoring.suggest_verdict(self.area(regulated=5), self.rules)[0], "제외")
         self.assertEqual(scoring.suggest_verdict(self.area(win=0.1), self.rules)[0], "보류")
         self.assertEqual(scoring.suggest_verdict(self.area(keywords=0), self.rules)[0], "제외")

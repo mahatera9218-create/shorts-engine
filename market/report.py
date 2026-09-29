@@ -63,7 +63,7 @@ def _axis_rows(area: dict) -> list[tuple[str, str, str]]:
     yt = [r["youtube"] for r in top if r.get("youtube")]
     seasonal = sum(1 for r in top if r.get("seasonality", 0) >= 2)
     high = sum(1 for r in top if r["competition"] == "높음")
-    age = _mid([r.get("top_median_age_days") for r in top])
+    monthly = _mid([r.get("monthly_new_posts") for r in top])
     subs = _mid([v["subscribers"] for y in yt for v in y["videos"] if v["subscribers"]])
     yt_total = _mid([y["total"] for y in yt])
     shop = area.get("shopping")
@@ -78,7 +78,7 @@ def _axis_rows(area: dict) -> list[tuple[str, str, str]]:
          f"블로그 문서 중앙값 {_n(_mid([r.get('blog_total') for r in top]))}, "
          f"유튜브 경쟁 영상 {_n(yt_total) if yt_total is not None else '미조회'}"),
         ("이길 가능성", f"{ax['win']:.2f}",
-         f"상위 10개 발행일 중앙값 {f'{age / 30:.0f}개월 전' if age is not None else '미확인'}, "
+         f"최근 30일 새 블로그 글 중앙값 {_n(monthly) + '개' if monthly is not None else '미확인'} (적을수록 유리), "
          f"유튜브 상위 채널 구독자 중앙값 {_n(subs) if subs else '미조회'}"),
         ("제휴 가치", f"{ax['affiliate']:.2f}",
          f"가정값 {area.get('affiliate_prior', '-')}/5 (config/seeds.yaml, 미검증)"
@@ -102,14 +102,16 @@ def memo_md(rank: int, area: dict, run_date: str, sample: bool) -> str:
     out += [f"**예상 편당 매출:** {PENDING}", "", f"**예상 편당 원가:** {PENDING}", ""]
 
     # 상위 경쟁자 요약: 3줄은 Claude가 쓰고, 코드는 근거 사실만 모은다.
-    bloggers = Counter(it["blogger"] for r in top for it in r.get("blog_items", []) if it["blogger"])
-    repeat = [f"{b}({c}회)" for b, c in bloggers.most_common(5) if c >= 2]
-    ages = [a for a in (r.get("top_median_age_days") for r in top) if a is not None]
-    old = sum(1 for a in ages if a >= 365)
+    # 최근 글을 여러 키워드에 걸쳐 꾸준히 쓰는 블로그 = 이 주제에서 활발한 경쟁자
+    bloggers = Counter(it["blogger"] for r in top for it in r.get("blog_items", [])[:30] if it["blogger"])
+    repeat = [f"{b}({c}회)" for b, c in bloggers.most_common(5) if c >= 3]
+    monthly = [m for m in (r.get("monthly_new_posts") for r in top) if m is not None]
+    busy = sum(1 for m in monthly if m >= 100)
     outliers = [v for r in top if r.get("youtube") for v in r["youtube"]["videos"] if v["outlier"]]
     out += [f"**상위 경쟁자 요약:** {PENDING}", "",
-            f"- 여러 키워드 상위에 반복 등장한 블로그(추격 대상 후보, 15.1): {', '.join(repeat) or '없음'}",
-            f"- 상위 10개 발행일 중앙값이 1년 넘은 키워드: {old}/{len(ages)}개",
+            f"- 여러 키워드에 최근 글을 꾸준히 쓰는 블로그(추격 대상 후보, 15.1): {', '.join(repeat) or '없음'}",
+            f"- 월 새 글 100개 이상인 키워드: {busy}/{len(monthly)}개",
+            "- 실제 검색 화면의 상위 10개는 API로 알 수 없음 (정확도순 결과가 검색 화면과 다름, 2026-09-29 확인)",
             f"- 유튜브 이상치 영상(쇼츠 신호): {len(outliers)}개", ""]
 
     out += [f"**빈틈과 우리의 정보 이득:** {PENDING}", "",
@@ -132,9 +134,9 @@ def memo_md(rank: int, area: dict, run_date: str, sample: bool) -> str:
             f"- 추가: {PENDING}", ""]
 
     # 부록: 판단 근거 원자료 (상위 3개 키워드만, 1페이지를 넘기지 않게)
-    out += ["---", "", "<details><summary>부록: 상위 키워드 경쟁 자료</summary>", ""]
+    out += ["---", "", "<details><summary>부록: 상위 키워드 최근 글</summary>", ""]
     for r in top[:3]:
-        out.append(f"**{r['keyword']}** · 블로그 문서 {_n(r.get('blog_total'))}")
+        out.append(f"**{r['keyword']}** · 블로그 문서 {_n(r.get('blog_total'))} · 최근 30일 새 글 {_n(r.get('monthly_new_posts'))}")
         out += [f"- {it['postdate']} · {it['blogger']} · {it['title']}" for it in r.get("blog_items", [])[:3]]
         for v in [v for v in (r.get("youtube") or {}).get("videos", []) if v["outlier"]][:2]:
             out.append(f"- 📈 {v['title']} ({v['channel']}, 조회 {_n(v['views'])} / 구독 {_n(v['subscribers'])})")
