@@ -22,6 +22,11 @@ on:
         type: choice
         options: ["", receipt, same, cross, life]
         default: ""
+      count:
+        description: "몇 편 (1~5). 2편 이상이면 오늘 한도를 넘겨 서로 다른 선수·테마로 씀"
+        type: choice
+        options: ["1", "2", "3", "4", "5"]
+        default: "1"
   workflow_call:   # 발행 도우미 "다시 뽑기" (desk-button.yml)
     inputs:
       mode: {type: string, default: 실제}
@@ -68,7 +73,11 @@ jobs:
             [ -n "$TOPIC" ] && args+=(--topic "$TOPIC")
             [ -n "$THEME" ] && args+=(--theme "$THEME")
             [ "${{ inputs.again }}" = "true" ] && args+=(--again)
+            n="${{ inputs.count }}"; n="${n:-1}"
             python -m content.autopost "${args[@]}"
+            for i in $(seq 2 "$n"); do   # 2편째부터는 한도 예외 (앞 글의 선수는 최근 목록에 있어 제외된다)
+              python -m content.autopost "${args[@]}" --again
+            done
           fi
       - name: 결과 저장 (posts/ 커밋)
         if: inputs.mode != '예시'

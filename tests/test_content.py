@@ -223,12 +223,22 @@ class ContentTest(unittest.TestCase):
         assert jersey.spec("애런 저지")["stripes"] == "pin"
 
     def test_mark_title_and_desk_lists(self):
+        import tempfile
+        from pathlib import Path
         from content import desk, mark
         folder = "2026-09-29-오타니-영수증"
-        assert mark.parse_title(f"[발행완료] {folder}") == ("used", folder)
-        assert mark.parse_title(f"[다시뽑기] {folder}") == ("rejected", folder)
-        for bad in (f"발행완료 {folder}", "[발행완료] ../../etc", "[발행완료] 2026-01-01-없는글", f"[삭제] {folder}"):
-            assert mark.parse_title(bad) is None
+        old_posts = mark.POSTS
+        with tempfile.TemporaryDirectory() as t:
+            mark.POSTS = Path(t)
+            (mark.POSTS / folder).mkdir()
+            (mark.POSTS / folder / "post.md").write_text("# x", encoding="utf-8")
+            try:
+                assert mark.parse_title(f"[발행완료] {folder}") == ("used", folder)
+                assert mark.parse_title(f"[다시뽑기] {folder}") == ("rejected", folder)
+                for bad in (f"발행완료 {folder}", "[발행완료] ../../etc", "[발행완료] 2026-01-01-없는글", f"[삭제] {folder}"):
+                    assert mark.parse_title(bad) is None
+            finally:
+                mark.POSTS = old_posts
         base = {"titles": [], "ok": True, "date": "2026-09-29"}
         posts = [{**base, "folder": "2026-09-29-a", "status": {}},
                  {**base, "folder": "2026-09-30-b", "status": {"status": "used", "at": "2026-09-30 09:00"}},
