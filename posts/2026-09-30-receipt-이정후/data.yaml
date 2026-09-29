@@ -1,0 +1,39 @@
+player: 이정후
+short_name: 이정후
+team: 샌프란시스코 자이언츠
+season: 2026
+salary_usd: 22000000
+fx_krw_per_usd: 1356.7
+fx_label: 1달러 = 1,356.7원 (2026-09-30)
+units:
+- key: games
+  label: 1경기
+  count: 143
+- key: at_bats
+  label: 1타수
+  count: 539
+- key: hits
+  label: 안타 1개
+  count: 149
+- key: home_runs
+  label: 홈런 1개
+  count: 10
+headline_unit: home_runs
+salary_basis: 6년 계약 중 3년차인 2026년 연봉, 보도 기준
+min_wage_monthly_krw: 2156880
+sport: 야구 (메이저리그)
+card:
+- label: 홈런
+  value: '10'
+- label: 출전 경기
+  value: '143'
+- label: 타수
+  value: '539'
+- label: 안타
+  value: '149'
+- label: 타점
+  value: '57'
+- label: 타율
+  value: '0.276'
+card_date: '2026-09-28'
+theme: receipt
