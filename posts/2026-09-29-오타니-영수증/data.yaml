@@ -1,0 +1,21 @@
+player: 오타니 쇼헤이
+team: LA 다저스
+season: 2026
+salary_usd: 2000000
+fx_krw_per_usd: 1356.7
+fx_label: 1달러 = 1,356.7원 (2026-09-29)
+units:
+- key: games
+  label: 1경기
+  count: 139
+- key: home_runs
+  label: 홈런 1개
+  count: 30
+- key: hits
+  label: 안타 1개
+  count: 144
+- key: innings
+  label: 1이닝
+  count: 85.2
+headline_unit: home_runs
+min_wage_monthly_krw: 2156880
