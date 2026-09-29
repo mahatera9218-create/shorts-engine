@@ -93,6 +93,16 @@ class ContentTest(unittest.TestCase):
         opts, idx = options(90_450_000, "아무 글")
         assert opts[idx] == nice(90_450_000) and opts == sorted(opts) and len(set(opts)) == 3
 
+    def test_titles(self):
+        from content.autopost import check_titles
+        sheet = "썸네일: 오타니 쇼헤이 / 홈런 1개 / 9,045만원 (추천 제목은 이 기록·금액으로)"
+        good = {"recommended": 1, "titles": [{"text": "오타니 홈런 1개에 9,045만 원, 7억 달러 계약의 반전", "type": "숫자형"}]
+                + [{"text": "오타니 1경기 1,952만 원", "type": "질문형"}] * 4}
+        assert check_titles(good, sheet) == []
+        bad = {"recommended": 1, "titles": [{"text": "7억 달러 계약인데 충격 연봉", "type": "숫자형"}] * 5}
+        problems = " / ".join(check_titles(bad, sheet))
+        assert "이름" in problems and "과장어" in problems and "썸네일 금액" in problems
+
 
 if __name__ == "__main__":
     unittest.main()
