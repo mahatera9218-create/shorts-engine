@@ -121,9 +121,22 @@ def compute_life(d: dict) -> dict:
     return {**n, "life_unit": unit, "life_label": label, "life_per": per, "items": items}
 
 
+def pick_prices(prices: dict, seed: str) -> list[dict]:
+    """그룹별로 pick 수만큼, 검색량(weight)이 큰 것일수록 자주 뽑는다 (대표 결정: 많이 검색하는 동네·차종 위주)."""
+    rng = random.Random(seed)
+    out = []
+    for group, k in (prices.get("pick") or {"home": 1, "car_kr": 1, "car_import": 1}).items():
+        pool = [i for i in prices["items"] if i.get("group") == group]
+        for _ in range(min(k, len(pool))):
+            it = rng.choices(pool, weights=[max(1, i.get("weight", 1)) for i in pool])[0]
+            pool.remove(it)
+            out.append({x: it[x] for x in ("key", "group", "label", "short", "unit", "price_krw", "as_of", "source")})
+    return out
+
+
 def quiz_item(d: dict, n: dict) -> dict:
-    key = d.get("quiz_item") or "grandeur"
-    return next((i for i in n["items"] if i["key"] == key), n["items"][0])
+    """퀴즈는 국산차 (가장 체감되는 값). 없으면 첫 물건."""
+    return next((i for i in n["items"] if i.get("group") == "car_kr"), n["items"][0])
 
 
 # ---------------------------------------------------------------- 카드 (그림)
@@ -205,7 +218,7 @@ def build_vs(folder: Path, d: dict, photo: Image.Image | None) -> dict:
 def build_life(folder: Path, d: dict, photo: Image.Image | None) -> dict:
     n = compute_life(d)
     name = d.get("short_name") or d["player"]
-    apt = next((i for i in n["items"] if i["key"] == "seoul_apt"), n["items"][0])
+    apt = next((i for i in n["items"] if i.get("group") == "home"), n["items"][0])
     q = quiz_item(d, n)
     total = 5
     imgs = {"thumb.png": receipt.poster(f"{d['season']} 연봉 체감", name, "올해 연봉이면",
