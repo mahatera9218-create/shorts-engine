@@ -93,6 +93,17 @@ class ScoringTest(unittest.TestCase):
         self.assertEqual([k["keyword"] for k in areas[0]["top"]], ["제습기"])
 
 
+class UniqueDirTest(unittest.TestCase):
+    def test_same_day_run_does_not_overwrite(self):
+        with tempfile.TemporaryDirectory() as d:
+            base = Path(d) / "2026-09-29"
+            self.assertEqual(run.unique_dir(base), base)
+            base.mkdir()
+            self.assertEqual(run.unique_dir(base).name, "2026-09-29-2")
+            (Path(d) / "2026-09-29-2").mkdir()
+            self.assertEqual(run.unique_dir(base).name, "2026-09-29-3")
+
+
 class VerdictTest(unittest.TestCase):
     rules = load_yaml("global.yaml")["verdict"]
 

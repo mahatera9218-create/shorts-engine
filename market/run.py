@@ -74,7 +74,7 @@ def run(sample: bool) -> int:
         else:
             y = cfg["youtube"]
             yt = YouTube(y["quota_budget"], y["region"], y["language"])
-        out_dir = ROOT / "reports" / "market" / run_date
+        out_dir = unique_dir(ROOT / "reports" / "market" / run_date)
         if not cfg["endpoints"]["naver_hub"].get("verified"):
             notes.append("API HUB 주소는 공식 문서로 아직 확인 전(verified: false). 이번 실행이 성공하면 확인된 것으로 보고 true로 바꾼다.")
 
@@ -167,6 +167,16 @@ def write_outputs(out_dir, run_date, scored, areas_ranked, notes, sample, memo_c
             encoding="utf-8")
     write_step_summary(summary + "\n## 투자 메모\n\n" + "\n".join(f"- {t}: `{rel}/{n}`" for n, t in memo_files))
     print(f"결과 저장: {rel}")
+
+
+def unique_dir(path):
+    """같은 날 다시 실행해도 이전 결과(Claude 검토가 채워진 메모 포함)를 덮어쓰지 않는다: 2026-09-29-2 식으로."""
+    if not path.exists():
+        return path
+    n = 2
+    while path.with_name(f"{path.name}-{n}").exists():
+        n += 1
+    return path.with_name(f"{path.name}-{n}")
 
 
 def write_step_summary(text: str) -> None:
