@@ -26,7 +26,7 @@ weights:
 
 # 규제·민감 업종 (0.3). 포함되면 점수와 별도로 표시하고, 법률 검토 전에는 진입하지 않는다.
 regulated_terms:
-  금융: [대출, 금리, 적금, 예금, 주식, 코인, 비트코인, 펀드, 투자, 카드론, 신용카드, 캐피탈, 할부금융]
+  금융: [대출, 금리, 적금, 예금, 주식, 코인, 비트코인, 펀드, 투자, 카드론, 신용카드, 캐피탈, 할부, 자동차리스, 리스료, 리스승계, 장기렌트]
   보험: [보험, 보험료, 실비, 실손]
   의료: [병원, 치료, 시술, 의약품, 약국, 처방, 한의원, 성형, 탈모, 다이어트약, 효능]
   법률: [변호사, 소송, 이혼, 개인회생, 파산, 고소]
@@ -48,11 +48,11 @@ exclude_keywords: []
 # 네이버 API 주소.
 # 검색광고 API는 공식 저장소(naver/searchad-apidoc) 기준.
 # API HUB 주소는 공식 문서(guide.ncloud-docs.com)를 이 작업 환경에서 열 수 없어
-# 검색 결과로만 확인했다 → verified: false. 첫 실행 결과로 확인 후 true로 바꾼다.
+# 검색 결과로만 잡았고, 2026-09-29 첫 실제 실행에서 동작을 확인했다.
 endpoints:
   naver_ad_base: https://api.searchad.naver.com
   naver_hub:
-    verified: false
+    verified: true   # 2026-09-29 첫 실행에서 블로그 검색·검색어 트렌드 정상 응답 확인 (쇼핑 인사이트는 미확인)
     base: https://naverapihub.apigw.ntruss.com
     blog_search: /search/v1/blog
     search_trend: /search-trend/v1/search
