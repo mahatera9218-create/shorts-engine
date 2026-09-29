@@ -270,6 +270,22 @@ class ContentTest(unittest.TestCase):
         w = {p["name"]: p["weight"] for p in got["players"]}
         assert w == {"A": 3.0, "B": 2} and "A 기사 30건" in why
 
+    def test_cross_is_different_sport_and_known_salary(self):
+        from content import themes
+        from content.autopost import with_known_salary
+        pool = {"sports": {"kbo": {"sport": "야구"}, "mlb": {"sport": "야구"}, "soccer": {"sport": "축구"}},
+                "themes": {"cross": {"weight": 1}},
+                "players": [{"name": "K", "sport": "kbo"}, {"name": "M", "sport": "mlb"}, {"name": "S", "sport": "soccer"}]}
+        for seed in range(20):
+            for pl in themes.plans(pool, set(), str(seed), n=3, theme="cross"):
+                sports = {pool["sports"][p["sport"]]["sport"] for p in pl["players"]}
+                assert len(sports) == 2
+        known = {"amount": 250000000, "currency": "KRW", "basis": "b", "as_of": "2026-01-15", "source": "u", "season": 2026}
+        facts, ex = with_known_salary({"games": {"value": 30}}, {"salary_currency": "KRW", "season": 2026}, known)
+        assert facts["salary"]["value"] == 250000000 and facts["salary"]["rule"] == "확인 연봉표"
+        facts, _ = with_known_salary({"salary": {"value": 300000000, "differs": None}}, {"salary_currency": "KRW"}, known)
+        assert facts["salary"]["value"] == 300000000 and facts["salary"]["differs"] == [250000000, 300000000]
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -50,6 +50,9 @@ def plans(pool: dict, recent: set[str], seed: str, n: int = 6, override: str | N
     fresh = [p for p in everyone if p["name"] not in recent] or everyone
     themes = pool["themes"]
 
+    def kind(p):  # 야구·축구·골프 (리그가 아니라 종목으로 같은/다른 종목을 가른다)
+        return pool["sports"].get(p["sport"], {}).get("sport", p["sport"])
+
     def pick(cands, exclude=()):
         c = [p for p in cands if p["name"] not in exclude]
         return rng.choices(c, weights=[p.get("weight", 1) for p in c])[0] if c else None
@@ -64,7 +67,7 @@ def plans(pool: dict, recent: set[str], seed: str, n: int = 6, override: str | N
             a = pick(fresh)
         ps = [a]
         if th in ("same", "cross"):
-            b = pick([p for p in fresh if (p["sport"] == a["sport"]) == (th == "same")], {a["name"]})
+            b = pick([p for p in fresh if (kind(p) == kind(a)) == (th == "same")], {a["name"]})
             if not b:
                 continue
             ps.append(b)
