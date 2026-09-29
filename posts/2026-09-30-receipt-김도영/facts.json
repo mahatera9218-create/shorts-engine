@@ -1,0 +1,82 @@
+{
+ "games": {
+  "value": 123,
+  "label": "경기 수(9/28 기준)",
+  "unit": "경기",
+  "date": "2026-09-29",
+  "sources": [
+   "https://www.ohmynews.com/NWS_Web/View/at_pg.aspx?CNTN_CD=A0003271293&CMPT_CD=P0010&utm_source=naver&utm_medium=newsearch&utm_campaign=naver_news"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "home_runs": {
+  "value": 41,
+  "label": "홈런(29일 경기 후)",
+  "unit": "개",
+  "date": "2026-09-30",
+  "sources": [
+   "https://www.mdtoday.co.kr/news/articleView.html?idxno=616779"
+  ],
+  "rule": "최신 기사",
+  "differs": [
+   40,
+   41
+  ]
+ },
+ "batting_average": {
+  "value": 0.31,
+  "label": "타율(9/28 기준)",
+  "unit": "",
+  "date": "2026-09-29",
+  "sources": [
+   "https://www.ohmynews.com/NWS_Web/View/at_pg.aspx?CNTN_CD=A0003271293&CMPT_CD=P0010&utm_source=naver&utm_medium=newsearch&utm_campaign=naver_news"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "rbi": {
+  "value": 102,
+  "label": "타점(9/28 기준)",
+  "unit": "개",
+  "date": "2026-09-29",
+  "sources": [
+   "https://www.ohmynews.com/NWS_Web/View/at_pg.aspx?CNTN_CD=A0003271293&CMPT_CD=P0010&utm_source=naver&utm_medium=newsearch&utm_campaign=naver_news"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "runs": {
+  "value": 106,
+  "label": "득점(9/28 기준)",
+  "unit": "개",
+  "date": "2026-09-29",
+  "sources": [
+   "https://www.ohmynews.com/NWS_Web/View/at_pg.aspx?CNTN_CD=A0003271293&CMPT_CD=P0010&utm_source=naver&utm_medium=newsearch&utm_campaign=naver_news"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "stolen_bases": {
+  "value": 10,
+  "label": "도루(9/28 기준)",
+  "unit": "개",
+  "date": "2026-09-29",
+  "sources": [
+   "https://www.ohmynews.com/NWS_Web/View/at_pg.aspx?CNTN_CD=A0003271293&CMPT_CD=P0010&utm_source=naver&utm_medium=newsearch&utm_campaign=naver_news"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "salary": {
+  "value": 250000000,
+  "label": "올해 연봉",
+  "unit": "KRW",
+  "date": "2026-01-15",
+  "sources": [
+   "https://www.newspim.com/news/view/20260115001029"
+  ],
+  "rule": "확인 연봉표",
+  "differs": null
+ }
+}
