@@ -81,9 +81,15 @@ PRICE_RULES = """너는 부동산 기사 요약문에서 실거래가 하나를 
 - deal_date는 기사에 적힌 거래 날짜 (YYYY-MM-DD 또는 YYYY-MM, 없으면 빈 문자열). source는 기사 번호 [n].
 """
 
+BRIEF_KEYS = {"reader": "독자", "reader_question": "독자의 질문", "promise": "제목·썸네일의 약속",
+              "payoff": "본문에서 회수하는 곳", "only_here": "이 글에만 있는 것", "takeaway": "읽고 남는 한 줄",
+              "why_naver": "네이버·광고주 기대에 맞는 이유"}
+
 POST_SCHEMA = {
     "type": "object",
     "properties": {
+        "brief": {"type": "object", "properties": {k: {"type": "string"} for k in BRIEF_KEYS},
+                  "required": list(BRIEF_KEYS), "additionalProperties": False},
         "gate_pass": {"type": "boolean"},
         "info_gain": {"type": "string"},
         "titles": {"type": "array", "items": {
@@ -95,10 +101,40 @@ POST_SCHEMA = {
         "body": {"type": "string"},
         "tags": {"type": "array", "items": {"type": "string"}},
         "cross_compare": {"type": "string"},
+        "clip_caption": {"type": "string"},
+        "clip_question": {"type": "string"},
     },
-    "required": ["gate_pass", "info_gain", "titles", "recommended", "body", "tags", "cross_compare"],
+    "required": ["brief", "gate_pass", "info_gain", "titles", "recommended", "body", "tags", "cross_compare",
+                 "clip_caption", "clip_question"],
     "additionalProperties": False,
 }
+
+REVIEW_CRITERIA = ["약속 회수", "새 정보", "머무를 이유", "신뢰", "남는 한 줄", "광고주 안전", "사람 말투"]
+REVIEW_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "scores": {"type": "array", "items": {
+            "type": "object",
+            "properties": {"criterion": {"type": "string", "enum": REVIEW_CRITERIA},
+                           "score": {"type": "integer"}, "reason": {"type": "string"}},
+            "required": ["criterion", "score", "reason"], "additionalProperties": False}},
+        "fixes": {"type": "array", "items": {"type": "string"}},
+    },
+    "required": ["scores", "fixes"],
+    "additionalProperties": False,
+}
+REVIEW_PASS = 4
+
+REVIEW_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"의 편집장이다. 위 스킬 문서의 0단계(9가지 질문과 지금의 가설)를 기준으로
+초안을 홈피드에서 이 글을 처음 보는 독자의 눈으로 읽고, 아래 7개 기준을 1~5점으로 매겨라. 후하게 주지 마라.
+- 약속 회수: 추천 제목·썸네일이 던진 궁금증을 본문 첫 화면(첫 3문단)에서 답하나. 낚시로 끝나면 1점.
+- 새 정보: 기사·다른 블로그에 없는, 이 글이 직접 계산한 숫자가 중심인가.
+- 머무를 이유: 퀴즈·카드·문단 흐름이 끝까지 읽게 만드나. 억지로 늘린 문장이 있으면 감점.
+- 신뢰: 기준일·출처 종류·계산 방법이 보이나. 과장·단정이 없나.
+- 남는 한 줄: 읽고 나서 친구에게 말할 한 줄이 분명한가.
+- 광고주 안전: 광고 옆에 놓여도 괜찮은가 (비방·논란·도박·사생활·선정 없음).
+- 사람 말투: 블로거가 쓴 것처럼 읽히나 (AI 상투어·기계적 반복 없음).
+fixes에는 4점 미만 기준을 올릴 구체적인 수정 지시만 적는다 (숫자표에 없는 숫자를 새로 넣으라는 지시는 금지). 모두 4점 이상이면 빈 목록."""
 
 EXTRACT_RULES = """너는 스포츠 기사 요약문에서 숫자 사실만 뽑는 담당이다. 글은 쓰지 않는다.
 
@@ -152,6 +188,15 @@ WRITE_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"(닉네�
 - 물음표는 1개까지. "충격", "경악", "헉", "소름", "역대급" 같은 과장어 금지.
 - tags: 10개 이하, 띄어쓰기 없이.
 - cross_compare: 본문에 쓴 교차 비교 한 줄 요약.
+
+설계 (brief: 본문보다 먼저 채운다. 스킬 0단계의 9가지 질문을 이 글에 적용한 답)
+- reader: 홈피드에서 이 글을 누를 사람 한 줄 (예: "야구는 보는데 연봉 구조는 잘 모르는 30~40대").
+- reader_question / promise / payoff / only_here / takeaway / why_naver: 각 한 줄. payoff는 본문 몇 번째 문단인지까지.
+- 본문은 brief대로 쓴다. brief와 본문이 어긋나면 본문을 고친다.
+
+클립 (네이버 클립: 홈피드에서 그 자리에서 보는 영상. 영상에 퀴즈·정답·표가 이미 있다)
+- clip_caption: 클립 설명 2~3줄. 첫 줄은 추천 제목과 같은 궁금증, 둘째 줄은 댓글로 이어질 물음. 해시태그·링크는 쓰지 않는다 (코드가 붙인다).
+- clip_question: 영상 마지막 화면에 크게 띄울 질문 18자 이하 (예: "다음은 누구 몸값?", "이 돈이면 뭐 살래요?"). 숫자는 숫자표에 있는 것만.
 """
 
 
@@ -382,7 +427,10 @@ def check_titles(p: dict, sheet: str) -> list[str]:
 
 def check_post(p: dict, sheet: str) -> list[str]:
     problems = list(check_draft(p["body"]))
-    for label, text in [("본문", p["body"])] + [(f"제목{i}", t["text"]) for i, t in enumerate(p["titles"], 1)]:
+    if len(p.get("clip_question", "")) > 18:
+        problems.append(f"클립 질문이 18자를 넘음 ({len(p['clip_question'])}자)")
+    for label, text in ([("본문", p["body"])] + [(f"제목{i}", t["text"]) for i, t in enumerate(p["titles"], 1)]
+                        + [("클립 설명", p.get("clip_caption", "")), ("클립 질문", p.get("clip_question", ""))]):
         bad = unknown_numbers(text, sheet)
         if bad:
             problems.append(f"{label}에 숫자표에 없는 숫자: {', '.join(bad)}")
@@ -450,7 +498,26 @@ def write_post(llm, topic: dict, sheet: str, max_revisions: int) -> tuple[dict, 
                "문제:\n" + "\n".join(f"- {x}" for x in problems) + "\n\n초안:\n" + json.dumps(post, ensure_ascii=False))
         post = llm.ask_json(system, fix, POST_SCHEMA, **opts)
         problems = check_post(post, sheet)
+    # 편집장 검토 (스킬 0단계 기준): 4점 미만이 있으면 한 번 고쳐 쓰고, 고친 글이 코드 검사를 통과할 때만 바꾼다
+    review = review_post(llm, sheet, post)
+    low = [x for x in review["scores"] if x["score"] < REVIEW_PASS]
+    if low and not problems and llm.cost_usd() < cap:
+        fix = (prompt + "\n\n아래는 네가 쓴 초안과 편집장 검토다. 검토의 수정 지시를 반영해 같은 JSON 형식으로 다시 내라. "
+               "숫자는 숫자표에 있는 것만.\n검토:\n" + "\n".join(f"- {x['criterion']} {x['score']}점: {x['reason']}" for x in low)
+               + "\n수정 지시:\n" + "\n".join(f"- {f}" for f in review["fixes"]) + "\n\n초안:\n" + json.dumps(post, ensure_ascii=False))
+        again = llm.ask_json(system, fix, POST_SCHEMA, **opts)
+        if not check_post(again, sheet):
+            post, rounds = again, rounds + 1
+            review = review_post(llm, sheet, post)
+    post["review"] = review
     return post, problems, rounds
+
+
+def review_post(llm, sheet: str, post: dict) -> dict:
+    docs = [(SKILLS / "money-content-writer" / "SKILL.md").read_text(encoding="utf-8"), REVIEW_RULES]
+    draft = {k: post[k] for k in ("brief", "titles", "recommended", "body", "clip_caption", "clip_question")}
+    return llm.ask_json(docs, f"숫자표\n{sheet}\n\n초안\n{json.dumps(draft, ensure_ascii=False)}", REVIEW_SCHEMA,
+                        max_tokens=3000, **extract_opts())
 
 
 # ---------------------------------------------------------------- 패키지
@@ -464,6 +531,14 @@ def package_md(title: str, theme: str, category: str, facts: dict, post: dict, p
            f"**자동 작성:** Claude 초안 → 코드 검사 (고쳐 쓰기 {rounds}회)" + (f" · API 비용 약 ${cost:.2f}" if cost else ""), ""]
     if problems:
         out += ["**남은 문제:**", ""] + [f"- {p}" for p in problems] + [""]
+    if post.get("brief"):
+        out += ["## 이 글의 설계 (독자·네이버 관점, 스킬 0단계)", ""]
+        out += [f"- {BRIEF_KEYS[k]}: {v}" for k, v in post["brief"].items() if k in BRIEF_KEYS] + [""]
+    if post.get("review"):
+        sc = post["review"]["scores"]
+        low = [f"- {x['criterion']}: {x['reason']}" for x in sc if x["score"] < REVIEW_PASS]
+        out += ["## 편집장 검토 (5점 만점)", "", " · ".join(f"{x['criterion']} {x['score']}" for x in sc), ""]
+        out += low + ([""] if low else [])
     out += ["## 제목 (추천 ★)", ""]
     out += [f"{i}. {'★ ' if i == rec else ''}{t['text']} — {t['type']}" for i, t in enumerate(post["titles"], 1)]
     plan = themes.image_plan(theme)
@@ -482,7 +557,9 @@ def package_md(title: str, theme: str, category: str, facts: dict, post: dict, p
     out += ["| 계산한 금액 | numbers.json | - | 코드 계산 |", "",
             "## 실험 기록용", "",
             f"- 테마: {theme} · 추천 제목 유형: {post['titles'][rec - 1]['type']} · 교차 비교: {post['cross_compare']}"
-            f" · 이미지 {len(plan)} · 참고 기사 {news_count}건", ""]
+            f" · 이미지 {len(plan)} · 참고 기사 {news_count}건"
+            + (f" · 검토 평균 {sum(x['score'] for x in post['review']['scores']) / max(1, len(post['review']['scores'])):.1f}"
+               if post.get("review") else ""), ""]
     return "\n".join(out)
 
 
@@ -630,6 +707,9 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
         (folder / "post.md").write_text(package_md(f"{title} · {tinfo['name']}", th, tinfo["category"], facts, post,
                                                    problems, rounds, cfg, sum(len(x["news"]) for x in got), cost, extra),
                                         encoding="utf-8")
+        for key in ("clip_caption", "clip_question"):  # 클립 설명·마지막 화면 질문 (content/clip.py가 읽는다)
+            if post.get(key):
+                (folder / f"{key}.txt").write_text(post[key].strip() + "\n", encoding="utf-8")
         try:  # 네이버 클립용 세로 영상 (실패해도 글은 그대로)
             notes.append(clip.make(folder))
         except Exception as ex:

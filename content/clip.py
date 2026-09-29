@@ -253,20 +253,29 @@ class Wage(Scene):
 
 
 class Outro(Scene):
-    dur = 2.4
+    """끝은 댓글로 이어질 질문 (클립은 그 자리에서 소비된다: 블로그 예고가 아니라 대화로 끝낸다)."""
+    dur = 2.6
+
+    def __init__(self, question: str = ""):
+        self.q = question
 
     def draw(self, c, t):
-        for i, (txt, w, s, col) in enumerate([("계산 과정과 출처는", "display", 100, WHITE), ("블로그에", "display", 100, WHITE),
-                                               (BLOG, "display", 86, GOLD), ("매일 새 몸값 퀴즈", "b", 50, GRAY)]):
+        lines = ([(self.q, "display", 104, WHITE), ("댓글로 알려주세요", "b", 56, GOLD), ("", "b", 10, GRAY),
+                  (f"계산 과정은 블로그 '{BLOG}'", "b", 44, GRAY)] if self.q else
+                 [("계산 과정과 출처는", "display", 100, WHITE), ("블로그에", "display", 100, WHITE),
+                  (BLOG, "display", 86, GOLD), ("매일 새 몸값 퀴즈", "b", 50, GRAY)])
+        for i, (txt, w, s, col) in enumerate(lines):
+            if not txt:
+                continue
             k = ease_out((t - i * 0.15) / 0.35)
             put(c, label(txt, w, s, col), W / 2, 700 + i * 140 + 40 * (1 - k), 1, k)
 
 
-def scenes(st: dict, photo: Image.Image | None) -> list[Scene]:
+def scenes(st: dict, photo: Image.Image | None, question: str = "") -> list[Scene]:
     out: list[Scene] = [Hook(st["hook"], photo), Quiz(st["quiz"]), Answer(st["quiz"], st["answer"]), Table(st["table"])]
     if st.get("wage"):
         out.append(Wage(st["wage"]))
-    return out + [Outro()]
+    return out + [Outro(question)]
 
 
 def render(sc: list[Scene]):
@@ -303,12 +312,14 @@ def ffmpeg() -> str | None:
 
 
 def caption(folder: Path, p: dict) -> str:
-    """클립 설명: 제목 한 줄 + 블로그 안내 + 사진 출처(있으면) + 해시태그."""
+    """클립 설명: 글쓴이가 쓴 설명(clip_caption.txt, 없으면 제목 + 기본 문구) + 사진 출처(있으면) + 해시태그."""
     hook = next((t["text"] for t in p["titles"] if t["best"]), p["titles"][0]["text"] if p["titles"] else "")
+    cf = folder / "clip_caption.txt"
+    text = cf.read_text(encoding="utf-8").strip() if cf.exists() else \
+        f"{hook}\n\n정답 맞히셨나요? 계산 과정과 출처는 블로그 '{BLOG}'에 있어요."
     tags = " ".join("#" + t.replace(" ", "") for t in (p["tags"] + ["몸값퀴즈", "스포츠"])[:MAX_TAGS])
     credit = photos.credit(folder)
-    return "\n\n".join(x for x in [hook, f"정답 맞히셨나요? 계산 과정과 출처는 블로그 '{BLOG}'에 있어요.",
-                                   credit, tags] if x) + "\n"
+    return "\n\n".join(x for x in [text, credit, tags] if x) + "\n"
 
 
 def make(folder: Path) -> str:
@@ -321,7 +332,8 @@ def make(folder: Path) -> str:
         return "클립: ffmpeg가 없어 영상을 만들지 못함"
     st = json.loads((folder / "clip.json").read_text(encoding="utf-8"))
     photo = Image.open(folder / "photo.jpg") if (folder / "photo.jpg").exists() else None
-    sc = scenes(st, photo)
+    qf = folder / "clip_question.txt"
+    sc = scenes(st, photo, qf.read_text(encoding="utf-8").strip() if qf.exists() else "")
     total = sum(s.dur for s in sc)
     cmd = [exe, "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(FPS),
            "-i", "-", "-f", "lavfi", "-i", "anullsrc=r=44100:cl=stereo",  # 무음 트랙 (음악은 클립 에디터에서)
