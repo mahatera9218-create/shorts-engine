@@ -13,7 +13,6 @@ import argparse
 import json
 import os
 import re
-import sys
 from collections import Counter
 from datetime import date
 from pathlib import Path
@@ -21,7 +20,7 @@ from pathlib import Path
 import yaml
 
 from market.common import ROOT, load_yaml, missing_secrets
-from . import photos, receipt
+from . import cards, photos, receipt
 from .receipt import won
 from .voice import check_draft
 
@@ -29,7 +28,8 @@ POSTS = ROOT / "posts"
 SKILLS = ROOT / ".claude" / "skills"
 EXAMPLE_POST = POSTS / "2026-10-01-이정후-영수증" / "post.md"
 NUM = re.compile(r"\d[\d,]*(?:\.\d+)?")
-IMAGES = ("thumb.png", "receipt.png", "table.png", "season.png")
+IMAGES = ("thumb.png", "card_quiz.png", "card_answer.png", "card_wage.png", "card_table.png")
+QUIZ = re.compile(r"^퀴즈 카드: (.+?) 맞히기 \(정답 (.+?)\)", re.M)
 BANNED = ["토토", "프로토", "배당", "베팅", "배팅", "열애", "여자친구", "남자친구", "이혼", "루머", "인성 논란"]
 
 # ---------------------------------------------------------------- 스키마
@@ -119,11 +119,12 @@ WRITE_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"(닉네�
 구조 (홈판형)
 - 첫 줄은 제목의 답이 되는 숫자 한 줄. 제목에서 던진 숫자는 본문 첫 화면에서 회수한다.
 - 문단은 3문장 이하, 짧은 문장과 긴 문장을 섞는다. 질문 2~4개. 최저임금 같은 교차 비교 1번.
-- 이미지 4장. 아래 네 줄을 각각 한 줄로, 글 흐름에 맞춰 나눠 넣는다 (스크롤마다 그림이 나오게):
+- 이미지 5장 (썸네일 + 카드뉴스 4장, 쪽 번호가 붙어 있어 순서를 지킨다). 아래 다섯 줄을 각각 한 줄로 넣는다:
   "[이미지 1_첫문단아래: thumb.png]" 첫 문단 바로 아래 (홈판 카드와 같은 그림)
-  "[이미지 2_영수증: receipt.png]" 단위별 금액을 말하기 직전
-  "[이미지 3_표: table.png]" 최저임금 비교 문단 바로 위 (단위별 금액·최저임금 비교 표)
-  "[이미지 4_시즌사진: season.png]" 올 시즌 성적을 말하는 문단 바로 위 (실사 사진 + 기록 한 줄)
+  "[이미지 2_퀴즈: card_quiz.png]" 단위별 금액을 말하기 전. 바로 앞 문장에서 숫자표의 '퀴즈 카드' 기록이 얼마일지 맞혀 보라고 독자에게 묻는다
+  "[이미지 3_정답: card_answer.png]" 퀴즈 바로 다음 (사이에 짧은 한 줄까지). 정답 카드보다 앞에서는 퀴즈 정답 금액을 쓰지 않는다
+  "[이미지 4_최저임금: card_wage.png]" 최저임금 비교 문단 바로 위
+  "[이미지 5_한눈에표: card_table.png]" 올 시즌 성적을 말하는 문단 바로 위 (단위별 금액 표 + 시즌 기록)
 - 끝에서 둘째 문단: 다음에 계산해 볼 선수를 댓글로 묻는 질문 한 줄. 특정 선수 이름으로 다음 글을 약속하지 않는다 (그 선수 숫자가 안 모이면 못 쓴다).
 - 마지막 문단: "기준: ..."으로 연봉·성적·환율·최저임금의 기준일과 출처 종류를 한 문장으로.
 
@@ -255,6 +256,7 @@ def build_data(topic: dict, ex: dict, facts: dict, cfg: dict) -> tuple[dict | No
         return None, "연봉을 나눌 기록이 2개 미만"
     d["units"] = units
     d["headline_unit"] = ex["headline_unit"]
+    d["salary_basis"] = ex["salary_basis"]
     d["min_wage_monthly_krw"] = cfg["constants"]["min_wage_monthly_krw"]
     d["sport"] = topic.get("sport", "야구")
     head = ex["headline_unit"]  # 제목에 쓴 기록을 카드 첫 칸(금색)에
@@ -283,6 +285,8 @@ def number_sheet(d: dict, n: dict, facts: dict, ex: dict, cfg: dict) -> str:
         v = f"{f['value']:,}" if float(f["value"]).is_integer() else f"{f['value']}"
         diff = f" · 출처끼리 차이 {f['differs']} → 본문에 '보도에 따라 약간 차이' 표기" if f["differs"] else ""
         L.append(f"- {f['label']}: {v}{f['unit'] if f['unit'] not in ('KRW', 'USD') else ''} ({f['date']} · {f['rule']}){diff}")
+    q = cards.quiz_unit(d, receipt.units(d), n["per"], receipt.headline(d))
+    L.append(f"퀴즈 카드: {q['label']} 1번에 받는 돈 맞히기 (정답 {won(n['per'][q['key']])})")
     L.append("맥락 (네 말로 풀어 쓸 것):")
     L += [f"- {s['point']}" for s in ex["story"]]
     return "\n".join(L)
@@ -314,6 +318,14 @@ def check_post(p: dict, sheet: str) -> list[str]:
         problems.append(f"금지 주제 단어: {', '.join(hit)}")
     if len(p["titles"]) != 5 or not 1 <= p["recommended"] <= len(p["titles"]):
         problems.append("제목 5개와 추천 번호(1~5)가 필요")
+    m = QUIZ.search(sheet)
+    if m and "card_quiz.png" in p["body"]:
+        before = p["body"].split("card_quiz.png")[0]
+        if m.group(2) in before or m.group(2).removesuffix(" 원") in before:
+            problems.append(f"퀴즈 정답({m.group(2)})이 퀴즈 카드보다 먼저 나옴 → 정답 카드 뒤로")
+    if "card_answer.png" in p["body"] and "card_quiz.png" in p["body"] and \
+            p["body"].index("card_answer.png") < p["body"].index("card_quiz.png"):
+        problems.append("정답 카드가 퀴즈 카드보다 앞에 있음")
     if re.search(r"^#|\*\*", p["body"], re.M):
         problems.append("마크다운 기호(#, **)를 빼고 일반 텍스트로")
     return problems
@@ -373,8 +385,9 @@ def package_md(topic: dict, d: dict, facts: dict, post: dict, problems: list[str
     out += ["## 제목 (추천 ★)", ""]
     out += [f"{i}. {'★ ' if i == rec else ''}{t['text']} — {t['type']}" for i, t in enumerate(post["titles"], 1)]
     out += ["", "## 이미지 (본문 [이미지] 자리에 넣기)", "", "| 순서 | 파일 | 위치 | 대표이미지 |", "| --- | --- | --- | --- |",
-            "| 1 | thumb.png | 첫 문단 아래 | ✅ 대표이미지로 지정 |", "| 2 | receipt.png | 영수증 설명 위 | |",
-            "| 3 | table.png | 최저임금 비교 위 (표) | |", "| 4 | season.png | 시즌 성적 위 (사진) | |", "",
+            "| 1 | thumb.png | 첫 문단 아래 | ✅ 대표이미지로 지정 |", "| 2 | card_quiz.png | 퀴즈 | |",
+            "| 3 | card_answer.png | 퀴즈 바로 다음 (정답) | |", "| 4 | card_wage.png | 최저임금 비교 위 | |",
+            "| 5 | card_table.png | 시즌 성적 위 (한눈에 표) | |", "",
             "## 카테고리 · 태그", "", f"- 카테고리: **{topic['category']}**", f"- 태그: {', '.join(post['tags'][:10])}", "",
             "## 본문 (복사해서 붙여넣기, [이미지 …] 줄은 지우고 그 자리에 사진 넣기)", "", post["body"].strip(), "",
             "## 출처", ""]
