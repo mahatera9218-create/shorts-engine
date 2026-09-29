@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import re
 
-from .autopost import EXTRACT_SCHEMA, POST_SCHEMA, PRICE_SCHEMA
+from .autopost import BRIEF_KEYS, EXTRACT_SCHEMA, POST_SCHEMA, PRICE_SCHEMA, REVIEW_CRITERIA, REVIEW_SCHEMA
 
 
 class FakeNewsHub:
@@ -50,6 +50,8 @@ class FakeClaude:
                     "story": [{"point": "올 시즌을 선발로 마쳤다", "source": s_end}]}
         if schema == PRICE_SCHEMA:
             return {"found": True, "price_krw": 1_230_000_000, "deal_date": "2026-08", "source": 1}
+        if schema == REVIEW_SCHEMA:
+            return {"scores": [{"criterion": c, "score": 4, "reason": "예시"} for c in REVIEW_CRITERIA], "fixes": []}
         if schema == POST_SCHEMA:
             per = dict(re.findall(r"^(1\S+)당: (\S+)", prompt, re.M))
             win = per.get("1승", "?")
@@ -59,7 +61,9 @@ class FakeClaude:
             body = f"1승에 {win}.\n\n예시선수가 올해 거둔 승리 하나의 값이에요.\n\n" + "\n\n".join(
                 f"{m}\n\n{lines[i] if i < len(lines) else '생각보다 크죠?'}" for i, m in enumerate(marks))
             body += "\n\n생각보다 크죠? 내년에는 어떨까요?\n\n기준: 예시 데이터예요. 실제 선수·실제 숫자가 아니에요."
-            return {"gate_pass": True, "info_gain": "예시: 새로 계산한 숫자",
+            return {"brief": {k: f"예시 {v}" for k, v in BRIEF_KEYS.items()},
+                    "clip_caption": "예시선수 1승 값, 얼마일까요?\n여러분 생각은?", "clip_question": "다음은 누구 몸값?",
+                    "gate_pass": True, "info_gain": "예시: 새로 계산한 숫자",
                     "titles": [{"text": f"예시선수 1승에 {win} (예시)", "type": "숫자형"},
                                {"text": "예시선수 한 경기에 얼마? (예시)", "type": "질문형"},
                                {"text": "예시선수 최저임금과 비교 (예시)", "type": "대비형"},

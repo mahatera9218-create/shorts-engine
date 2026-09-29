@@ -60,6 +60,7 @@ def parse(folder: Path) -> dict | None:
             "titles": titles, "tags": [x.strip() for x in tags.group(1).split(",")] if tags else [],
             "category": cat.group(1) if cat else "", "blocks": blocks, "images": images, "sources": sources,
             "clip": (folder / "clip.mp4").exists(), "status": read_status(folder),
+            "review": (re.search(r"## 편집장 검토[^\n]*\n\n(.+)", t) or [None, ""])[1].strip(),
             "clip_text": (folder / "clip.txt").read_text(encoding="utf-8") if (folder / "clip.txt").exists() else ""}
 
 
@@ -151,6 +152,7 @@ def page(p: dict) -> str:
 <a href="../../" class="muted">← 글 목록</a>
 <h1>{e(best["text"] if best else p["folder"])}</h1><div class="muted">{e(p["date"])} · 카테고리 {e(p["category"])}</div>
 <p>{status}</p>{f"<ul>{probs}</ul>" if probs else ""}{used}
+{f'<p class="muted">편집장 검토: {e(p["review"])}</p>' if p.get("review") else ""}
 <div class="card"><h2><span class="step">1</span>사진 저장</h2>
 <button onclick="saveAll(this)">📷 사진 {len(p["images"])}장 한 번에 저장</button>
 <div class="muted">공유 창이 뜨면 "이미지 저장" / "사진에 저장"을 누르세요. 파일 이름 앞 번호가 넣는 순서예요.</div></div>
