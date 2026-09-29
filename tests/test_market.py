@@ -39,6 +39,19 @@ class HubTest(unittest.TestCase):
         self.assertEqual(naver_hub.trend_direction([1] * 12), 0.0)
 
 
+class BlogCountTest(unittest.TestCase):
+    def test_total_comes_from_relevance_sort(self):
+        def fake(method, url, headers=None, params=None, json=None):
+            if params["sort"] == "sim":
+                return {"total": 271010, "items": [{}]}
+            return {"total": 563, "items": [{"title": "t", "bloggername": "b", "postdate": "20260920"}]}
+        hub = naver_hub.ApiHub({"base": "https://x", "blog_search": "/b"})
+        with mock.patch.object(naver_hub, "request_json", side_effect=fake), mock.patch.object(naver_hub.time, "sleep"):
+            out = hub.blog("기아차종류")
+        self.assertEqual(out["total"], 271010)
+        self.assertEqual(out["items"][0]["postdate"], "20260920")
+
+
 class ScoringTest(unittest.TestCase):
     cfg = load_yaml("global.yaml")
 
