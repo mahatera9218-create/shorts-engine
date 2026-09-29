@@ -214,6 +214,14 @@ class ContentTest(unittest.TestCase):
             p = {"titles": [{"text": "오타니 1홈런에 9,045만원", "type": "숫자형", "best": True}], "tags": ["오타니", "연봉"]}
             text = clip.caption(Path(t), p)
             assert text.startswith("오타니 1홈런에 9,045만원") and "#오타니 #연봉" in text
+    def test_jersey_spec(self):
+        from content import jersey
+        o = jersey.spec("오타니 쇼헤이")
+        assert o["number"] == 17 and o["name"] == "OHTANI" and o["base"] and o["stripes"] == "none"
+        assert jersey.spec("오타니") == o  # 짧은 이름도
+        assert jersey.spec("임성재") is None and jersey.spec("없는선수") is None  # 골프·풀 밖은 등판 없음
+        assert jersey.spec("애런 저지")["stripes"] == "pin"
+
 
 if __name__ == "__main__":
     unittest.main()
