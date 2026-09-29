@@ -68,7 +68,7 @@
 | `NCP_APIGW_API_KEY_ID` | API HUB Client ID | ✅ |
 | `NCP_APIGW_API_KEY` | API HUB Client Secret | ✅ |
 | `YOUTUBE_API_KEY` | 유튜브 API 키 | 선택 |
-| `ANTHROPIC_API_KEY` | Claude API 키 | 2주차부터 |
+| `ANTHROPIC_API_KEY` | Claude API 키 (자동 글쓰기, [발급 안내](운영자-안내-Claude-API-키.md)) | 자동 글쓰기에 필요 |
 
 넣은 값은 다시 볼 수 없습니다(정상). 잘못 넣었으면 이름 옆 **연필 → 새 값 입력**으로 덮어씁니다.
 

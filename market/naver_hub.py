@@ -9,6 +9,7 @@ import html
 import re
 import time
 from datetime import date, timedelta
+from email.utils import parsedate_to_datetime
 
 from .common import request_json, secret
 
@@ -74,6 +75,21 @@ class ApiHub:
         } for it in data.get("items", [])]
         time.sleep(0.1)
         return {"total": int(count.get("total", 0)), "total_date_sort": int(data.get("total", 0)), "items": items}
+
+    def news(self, query: str, display: int = 50) -> list[dict]:
+        """뉴스 검색 최신순. 제목·요약문·원문 주소·발행일만 받는다 (허용된 통로, 기사 본문은 받지 않음)."""
+        data = request_json("GET", self.base + self.paths["news_search"], headers=self._headers(),
+                            params={"query": query, "display": display, "sort": "date"})
+        time.sleep(0.1)
+        out = []
+        for it in data.get("items", []):
+            try:
+                day = parsedate_to_datetime(it.get("pubDate", "")).date().isoformat()
+            except (TypeError, ValueError):
+                day = ""
+            out.append({"title": clean(it.get("title")), "description": clean(it.get("description")),
+                        "link": it.get("originallink") or it.get("link", ""), "date": day})
+        return out
 
     def trends(self, keywords: list[str], months: int = 12) -> dict[str, dict]:
         """키워드별 월간 상대 검색 추이 → 추세 방향·계절성. 값은 상대값(절대 검색량 아님)."""

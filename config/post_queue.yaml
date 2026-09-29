@@ -1,0 +1,67 @@
+# 자동 글쓰기 대기열 (content/autopost.py). 위에서부터 하나씩, 하루 1편 쓴다.
+# 이미 posts/에 같은 id로 끝나는 폴더가 있으면 건너뛴다. 대기열이 비면 뉴스에서 Claude가 다음 선수를 고른다.
+# 숫자는 여기 적지 않는다. 글 쓰는 날 뉴스 검색으로 새로 모으고, 출처끼리 다르면 규칙으로 정한다 (DECISIONS 숫자 충돌 규칙).
+
+blog: sports-money          # config/blogs.yaml의 id
+daily_limit: 1              # 하루 최대 편수 (대량 발행 금지)
+max_revisions: 2            # 검사 미통과 시 Claude에게 고쳐 달라고 하는 최대 횟수
+
+# 글마다 쓰는 고정 숫자 (공식 출처). 바뀌면 여기만 고친다.
+constants:
+  min_wage_monthly_krw: 2156880
+  min_wage_label: "2026 최저임금 시급 10,320원 × 월 209시간"
+  min_wage_source: "고용노동부 https://www.moel.go.kr/news/enews/report/enewsView.do?news_seq=18144"
+
+fx_query: 원달러 환율 마감   # 달러 연봉일 때 환율을 뉴스에서 뽑는다
+
+# 대기열이 비었을 때 다음 선수를 찾는 뉴스 검색어
+discover_queries: [선수 연봉 계약, FA 계약 총액, 메이저리그 연봉, 프로야구 연봉, 이적료 연봉]
+
+queue:
+  - id: 류현진-영수증
+    player: 류현진
+    team: 한화 이글스
+    sport: 야구 (투수)
+    category: 선수 몸값
+    angle: 한화 복귀 계약의 올해 연봉을 1경기·1이닝·1승·1탈삼진으로 쪼갠다
+    queries: [류현진 연봉, 류현진 시즌 성적, 류현진 이닝 탈삼진, 류현진 계약]
+
+  - id: 김도영-영수증
+    player: 김도영
+    team: KIA 타이거즈
+    sport: 야구 (타자)
+    category: 선수 몸값
+    angle: 올해 연봉을 1경기·1타수·1안타·1홈런으로 쪼개고, 입단 첫해 연봉과 비교한다
+    queries: [김도영 연봉, 김도영 시즌 성적, 김도영 홈런 안타]
+
+  - id: 오타니-영수증
+    player: 오타니 쇼헤이
+    team: LA 다저스
+    sport: 야구 (투타)
+    category: 선수 몸값
+    angle: 10년 7억 달러 계약 중 올해 실제로 받는 돈(지급 유예)과 장부상 연봉을 나눠, 1경기·1홈런으로 쪼갠다
+    queries: [오타니 연봉, 오타니 시즌 성적, 오타니 홈런, 오타니 지급 유예]
+
+  - id: 김혜성-영수증
+    player: 김혜성
+    team: LA 다저스
+    sport: 야구 (타자)
+    category: 선수 몸값
+    angle: 메이저리그 계약의 올해 연봉을 1경기·1안타로 쪼갠다
+    queries: [김혜성 연봉, 김혜성 시즌 성적, 김혜성 안타]
+
+  - id: 김하성-영수증
+    player: 김하성
+    team: ""
+    sport: 야구 (타자)
+    category: 선수 몸값
+    angle: 올해 연봉을 1경기·1안타로 쪼갠다
+    queries: [김하성 연봉, 김하성 시즌 성적, 김하성 계약]
+
+  - id: 손흥민-영수증
+    player: 손흥민
+    team: LAFC
+    sport: 축구
+    category: 선수 몸값
+    angle: 올해 연봉을 1경기·1골·1도움으로 쪼갠다
+    queries: [손흥민 연봉, 손흥민 시즌 기록, 손흥민 골 도움]
