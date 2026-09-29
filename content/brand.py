@@ -22,6 +22,8 @@ def font(weight: str, size: int) -> ImageFont.FreeTypeFont:
     name = {"xb": "NanumGothicExtraBold.ttf", "b": "NanumGothicBold.ttf", "r": "NanumGothic.ttf"}[weight]
     base = Path(os.environ.get("BRAND_FONT_DIR", "/usr/share/fonts"))
     hits = list(base.rglob(name))
+    if not hits and weight == "xb":  # 서버에 ExtraBold가 없으면 Bold로 대신한다
+        hits = list(base.rglob("NanumGothicBold.ttf"))
     if not hits:
         raise SystemExit(f"글꼴 {name}을 {base}에서 찾지 못했습니다")
     return ImageFont.truetype(str(hits[0]), size)
