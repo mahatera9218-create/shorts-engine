@@ -1,7 +1,8 @@
 """발행 도우미 페이지: posts/의 발행 패키지를 태블릿에서 버튼 몇 번으로 옮길 수 있는 정적 사이트로 만든다.
 
-- 글마다 한 페이지: 제목 후보(누르면 복사), 썸네일, [본문 복사], [사진 한 번에 저장], [사진까지 통째로 복사(시험)], 태그 복사,
-  클립(세로 영상 저장·설명 복사)
+- 글마다 한 페이지: 제목 후보(누르면 복사), 썸네일, [본문 복사], [사진 한 번에 저장], 태그 복사,
+  클립(세로 영상 저장·설명 복사), [발행 완료 표시]·[다시 뽑기] (GitHub 이슈 → content/mark.py)
+- 목록: 발행할 글(오래된 것부터) → 발행한 글. 버린 글은 숨김.
 - 검색엔진 수집 금지 (발행 전 글이 먼저 수집되면 우리 글이 중복 문서가 될 수 있다): meta noindex + robots.txt + X-Robots-Tag
 - Cloudflare Pages에 올린다 (.github/workflows/desk.yml)
 
@@ -14,14 +15,18 @@ import html
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import json
+import os
 import re
 import shutil
+import urllib.parse
 import sys
 from pathlib import Path
 
 from market.common import ROOT
+from .mark import status as read_status
 
 POSTS = ROOT / "posts"
+REPO = os.environ.get("GITHUB_REPOSITORY", "mahatera9218-create/shorts-engine")
 IMG_LINE = re.compile(r"^\[이미지 (\d+)_([^:\]]*):\s*([^\]]+)\]$")
 TITLE_LINE = re.compile(r"^\d+\.\s+(★\s+)?(.+?)\s+—\s+(\S+)$")
 
@@ -54,7 +59,7 @@ def parse(folder: Path) -> dict | None:
     return {"folder": folder.name, "date": folder.name[:10], "ok": status_ok, "problems": problems,
             "titles": titles, "tags": [x.strip() for x in tags.group(1).split(",")] if tags else [],
             "category": cat.group(1) if cat else "", "blocks": blocks, "images": images, "sources": sources,
-            "clip": (folder / "clip.mp4").exists(),
+            "clip": (folder / "clip.mp4").exists(), "status": read_status(folder),
             "clip_text": (folder / "clip.txt").read_text(encoding="utf-8") if (folder / "clip.txt").exists() else ""}
 
 
@@ -85,12 +90,6 @@ function flash(b,t){const o=b.dataset.o||b.textContent;b.dataset.o=o;b.textConte
 async function copyText(b,t){try{await navigator.clipboard.writeText(t);flash(b,'복사됨 ✓')}catch(e){prompt('길게 눌러 복사하세요',t)}}
 function bodyText(){return POST.blocks.map(x=>x.text?x.text:'📷 사진 '+x.n+' ('+x.label+')').join('\\n\\n')}
 async function copyBody(b){copyText(b,bodyText())}
-async function copyRich(b){
-  const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
-  const h=POST.blocks.map(x=>x.text?'<p>'+esc(x.text).replace(/\\n/g,'<br>')+'</p>':'<p><img src="'+new URL(x.img,location.href).href+'"></p>').join('');
-  try{await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([h],{type:'text/html'}),'text/plain':new Blob([bodyText()],{type:'text/plain'})})]);flash(b,'복사됨 ✓ 네이버에 붙여넣어 보세요')}
-  catch(e){alert('이 브라우저는 사진 포함 복사를 지원하지 않아요. [본문 복사]를 써 주세요.')}
-}
 async function saveClip(b){
   try{
     const r=await fetch('clip.mp4');const bl=await r.blob();const files=[new File([bl],'clip.mp4',{type:'video/mp4'})];
@@ -106,6 +105,13 @@ async function saveAll(b){
   document.getElementById('each').scrollIntoView({behavior:'smooth'});alert('한 번에 저장이 안 되는 브라우저예요. 아래 사진을 하나씩 길게 눌러 저장해 주세요.')
 }
 """
+
+
+def issue_link(kind: str, folder: str, note: str) -> str:
+    """제목이 채워진 GitHub 이슈 작성 화면 (대표가 Create만 누르면 워크플로가 처리)."""
+    q = urllib.parse.urlencode({"title": f"[{kind}] {folder}",
+                                "body": f"{note}\n\n아래 초록색 **Create** 버튼만 누르면 됩니다. 이 글은 자동으로 닫혀요."})
+    return f"https://github.com/{REPO}/issues/new?{q}"
 
 
 def page(p: dict) -> str:
@@ -127,6 +133,11 @@ def page(p: dict) -> str:
     tags = " ".join("#" + t.replace(" ", "") for t in p["tags"])
     data = json.dumps({"blocks": p["blocks"], "images": p["images"]}, ensure_ascii=False).replace("</", "<\\/")
     thumb = next((x["file"] for x in p["images"] if x["n"] == 1), "thumb.png")
+    st = p.get("status", {})
+    used = (f'<div class="card" style="border-color:var(--warn)"><b>⚠️ 이미 발행한 글이에요 ({e(st.get("at", ""))})</b>'
+            '<div class="muted">같은 글을 두 번 올리지 마세요.</div></div>') if st.get("status") == "used" else ""
+    done_btn = e(issue_link("발행완료", p["folder"], "블로그·클립 발행을 마쳤어요."), quote=True)
+    again_btn = e(issue_link("다시뽑기", p["folder"], "이 글은 버리고 다른 선수·테마로 새로 써 주세요."), quote=True)
     clip = "" if not p.get("clip") else f"""<div class="card"><h2><span class="step">6</span>클립 (블로그 발행 뒤)</h2>
 <video src="clip.mp4" controls playsinline preload="metadata" style="width:100%;max-width:320px;border-radius:10px;display:block"></video>
 <button onclick="saveClip(this)">🎬 클립 영상 저장</button>
@@ -139,7 +150,7 @@ def page(p: dict) -> str:
 <title>{e(best["text"] if best else p["folder"])}</title><style>{CSS}</style></head><body><main>
 <a href="../../" class="muted">← 글 목록</a>
 <h1>{e(best["text"] if best else p["folder"])}</h1><div class="muted">{e(p["date"])} · 카테고리 {e(p["category"])}</div>
-<p>{status}</p>{f"<ul>{probs}</ul>" if probs else ""}
+<p>{status}</p>{f"<ul>{probs}</ul>" if probs else ""}{used}
 <div class="card"><h2><span class="step">1</span>사진 저장</h2>
 <button onclick="saveAll(this)">📷 사진 {len(p["images"])}장 한 번에 저장</button>
 <div class="muted">공유 창이 뜨면 "이미지 저장" / "사진에 저장"을 누르세요. 파일 이름 앞 번호가 넣는 순서예요.</div></div>
@@ -150,11 +161,16 @@ def page(p: dict) -> str:
 <div class="card"><h2><span class="step">4</span>본문</h2>
 <button onclick="copyBody(this)">📋 본문 복사 (사진 자리 📷 표시)</button>
 <div class="muted">네이버 앱에 붙여넣고, "📷 사진 N" 줄을 지운 자리에 N번 사진을 넣으세요.</div>
-<button class="ghost" onclick="copyRich(this)">🧪 사진까지 통째로 복사 (시험)</button>
-<div class="muted">네이버 편집기가 사진까지 받아 주면 사진 넣는 과정이 없어져요. 안 되면 위 버튼을 쓰세요.</div></div>
+</div>
 <div class="card"><h2><span class="step">5</span>태그</h2><button class="ghost" onclick="copyText(this,{e(json.dumps(tags), quote=True)})">{e(tags)}</button></div>
 {clip}
+<div class="card"><h2><span class="step">7</span>다 올렸으면</h2>
+<a class="btn" href="{done_btn}">✅ 발행 완료 표시</a>
+<div class="muted">GitHub 화면이 열리면 초록 <b>Create</b>만 누르세요. 2~3분 뒤 목록에서 "발행한 글"로 내려가요 (중복 발행 방지).</div></div>
 <div class="card body"><h2>미리 읽기</h2>{body}</div>
+<div class="card"><h2>🔄 이 글이 마음에 안 들면</h2>
+<a class="btn" style="background:var(--card);color:var(--ink);border:1px solid var(--line)" href="{again_btn}">다른 글로 다시 뽑기</a>
+<div class="muted">GitHub 화면에서 <b>Create</b>를 누르면 이 글은 목록에서 빠지고, 다른 선수·테마로 새 글을 써요 (약 5~10분).</div></div>
 <div class="card" id="each"><h2>사진 하나씩 저장</h2>{each}</div>
 <details class="card"><summary>출처</summary><pre style="white-space:pre-wrap">{e(p["sources"])}</pre></details>
 </main><script>const POST={data};{JS}</script></body></html>"""
@@ -162,17 +178,26 @@ def page(p: dict) -> str:
 
 def index(posts: list[dict]) -> str:
     e = html.escape
-    rows = "".join(
-        f'<a class="btn" style="text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" href="p/{slug(p["folder"])}/">'
-        f'{"✅" if p["ok"] else "⚠️"} {e(p["date"])} · {e(next((t["text"] for t in p["titles"] if t["best"]), p["folder"]))}</a>'
-        for p in posts)
+
+    def row(p, muted=False):
+        title = next((t["text"] for t in p["titles"] if t["best"]), p["folder"])
+        mark = "☑️" if muted else ("✅" if p["ok"] else "⚠️")
+        style = "text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" + (";opacity:.55" if muted else "")
+        return f'<a class="btn" style="{style}" href="p/{slug(p["folder"])}/">{mark} {e(p["date"])} · {e(title)}</a>'
+
+    live = [p for p in posts if p.get("status", {}).get("status") not in ("used", "rejected")]
+    used = [p for p in posts if p.get("status", {}).get("status") == "used"]
+    todo = "".join(row(p) for p in sorted(live, key=lambda p: p["folder"])[-14:])
+    done = "".join(row(p, True) for p in sorted(used, key=lambda p: p["status"].get("at", ""), reverse=True)[:10])
     return f"""<!doctype html><html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive">
 <title>발행 도우미</title><style>{CSS}</style></head><body><main>
 <h1>발행 도우미 · 억소리 나는 스포츠</h1>
 <p class="muted">마지막 업데이트: {datetime.now(ZoneInfo("Asia/Seoul")).strftime("%m월 %d일 %H:%M")}</p>
-<p class="muted">매일 아침 6시 47분에 새 글이 올라와요. 위에서부터(오래된 글부터) 하루 1편씩 발행하세요. ✅만 발행하고 ⚠️는 Claude에게 알려주세요. 최근 14편만 보여요.</p>
-{rows or '<p>아직 글이 없어요.</p>'}
+<p class="muted">매일 아침 6시 47분에 새 글이 올라와요. 위에서부터(오래된 글부터) 하루 1편씩 발행하고, 다 올리면 글 화면 맨 아래 <b>✅ 발행 완료 표시</b>를 눌러 주세요. ✅만 발행하고 ⚠️는 Claude에게 알려주세요.</p>
+<h2>발행할 글</h2>
+{todo or '<p>발행할 글이 없어요.</p>'}
+{f'<h2 style="margin-top:28px">발행한 글</h2>{done}' if done else ''}
 </main></body></html>"""
 
 
