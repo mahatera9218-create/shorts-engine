@@ -14,6 +14,7 @@ import yaml
 from PIL import Image, ImageDraw
 
 from .brand import BG, GOLD, WHITE, fit, font
+from . import jersey
 from .cards import build_cards, story
 
 UNITS = [("games", "1경기"), ("at_bats", "1타수"), ("hits", "1안타"), ("home_runs", "1홈런")]
@@ -106,12 +107,20 @@ def thumb_image(d: dict, n: dict, w: int = 1080, photo: Image.Image | None = Non
     head = headline(d)
     label = next(u["label"] for u in units(d) if u["key"] == head)
     return poster(f"{d['season']} 연봉 영수증", d.get("short_name") or d["player"], label,
-                  short_won(n["per"][head]), photo, w)
+                  short_won(n["per"][head]), photo, w, jersey.for_players([d["player"]]))
 
 
-def poster(tag: str, name: str, label: str, big: str, photo: Image.Image | None = None, w: int = 1080) -> Image.Image:
-    """썸네일 틀 (모든 테마 공통): 태그 → 이름(가장 크게) → 기록 → 아주 큰 금액."""
+def poster(tag: str, name: str, label: str, big: str, photo: Image.Image | None = None, w: int = 1080,
+           jerseys: list[Image.Image] | None = None) -> Image.Image:
+    """썸네일 틀 (모든 테마 공통): 태그 → 이름(가장 크게) → 기록 → 아주 큰 금액. 오른쪽에 유니폼 등판(있으면)."""
     im = _shade(_cover(photo, w)) if photo is not None else Image.new("RGB", (w, w), BG)
+    if jerseys:
+        im = im.convert("RGBA")
+        place = [(0.77, 0.52, 0.5, -6)] if len(jerseys) == 1 else [(0.60, 0.44, 0.42, -8), (0.84, 0.52, 0.42, 7)]
+        for j, (cx, cy, sz, rot) in zip(jerseys, place):
+            jj = j.resize((int(w * sz), int(w * sz)), Image.LANCZOS).rotate(rot, resample=Image.BICUBIC, expand=True)
+            im.alpha_composite(jj, (int(w * cx - jj.width / 2), int(w * cy - jj.height / 2)))
+        im = im.convert("RGB")
     dr = ImageDraw.Draw(im)
     x0 = int(w * 0.07)
     tf = font("display", int(w * 0.045))
@@ -142,7 +151,7 @@ def build(folder: Path, d: dict) -> dict:
     label = next(u["label"] for u in units(d) if u["key"] == head)
     st = story(d, n, units(d), head, folder.name)
     st["hook"] = {"tag": f"{d['season']} 연봉 영수증", "name": d.get("short_name") or d["player"], "label": label,
-                  "big": short_won(n["per"][head])}
+                  "big": short_won(n["per"][head]), "players": [d["player"]]}
     (folder / "clip.json").write_text(json.dumps(st, ensure_ascii=False, indent=1), encoding="utf-8")
     for name in OLD_IMAGES:
         (folder / name).unlink(missing_ok=True)
