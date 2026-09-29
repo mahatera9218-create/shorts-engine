@@ -59,10 +59,10 @@ class FakeClaude:
                     "[이미지 5_한눈에표: card_table.png]\n\n올 시즌 성적은 이랬어요." +
                     "\n\n생각보다 크죠? 내년에는 어떨까요?\n\n기준: 예시 데이터예요. 실제 선수·실제 숫자가 아니에요.")
             return {"gate_pass": True, "info_gain": "예시: 새로 계산한 숫자",
-                    "titles": [{"text": f"예시선수 1승에 {win} (예시)", "type": "숫자형"},
-                               {"text": "예시선수 한 경기에 얼마? (예시)", "type": "질문형"},
-                               {"text": "예시선수 최저임금과 비교하면 (예시)", "type": "대비형"},
-                               {"text": "예시선수 몸값 순위 (예시)", "type": "순위형"},
-                               {"text": "예시선수 부진했는데 연봉은? (예시)", "type": "반전형"}],
-                    "recommended": 5, "body": body, "tags": ["예시"], "cross_compare": "없음 (예시)"}
+                    "titles": [{"text": f"1승에 {win} (예시)", "type": "숫자형"},
+                               {"text": "한 경기에 얼마? (예시)", "type": "질문형"},
+                               {"text": "최저임금과 비교하면 (예시)", "type": "대비형"},
+                               {"text": "몸값 순위 (예시)", "type": "순위형"},
+                               {"text": "부진했는데 연봉은? (예시)", "type": "반전형"}],
+                    "recommended": 5, "body": body, "tags": ["예시선수", "예시"], "cross_compare": "없음 (예시)"}
         raise ValueError("알 수 없는 스키마")
