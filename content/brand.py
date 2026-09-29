@@ -18,7 +18,14 @@ WHITE = (245, 245, 245)
 GRAY = (150, 158, 175)
 
 
+DISPLAY = ROOT / "assets" / "fonts" / "BlackHanSans-Regular.ttf"  # 썸네일 제목용 굵은 글꼴 (SIL OFL)
+
+
 def font(weight: str, size: int) -> ImageFont.FreeTypeFont:
+    if weight == "display":
+        if DISPLAY.exists():
+            return ImageFont.truetype(str(DISPLAY), size)
+        weight = "xb"
     name = {"xb": "NanumGothicExtraBold.ttf", "b": "NanumGothicBold.ttf", "r": "NanumGothic.ttf"}[weight]
     base = Path(os.environ.get("BRAND_FONT_DIR", "/usr/share/fonts"))
     hits = list(base.rglob(name))

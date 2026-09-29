@@ -21,7 +21,7 @@ from pathlib import Path
 import yaml
 
 from market.common import ROOT, load_yaml, missing_secrets
-from . import receipt
+from . import photos, receipt
 from .receipt import won
 from .voice import check_draft
 
@@ -437,12 +437,15 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, out_root: Pa
             continue
         folder = out_root / f"{today}-{topic['id']}"
         folder.mkdir(parents=True, exist_ok=True)
+        photos.fetch(folder, d.get("sport", "야구"), folder.name)  # 키가 없으면 사진 없이
         n = receipt.build(folder, d)
         sheet = number_sheet(d, n, facts, ex, cfg)
         post, problems, rounds = write_post(llm, topic, sheet, cfg.get("max_revisions", 2))
         cost = llm.cost_usd()
         (folder / "data.yaml").write_text(yaml.safe_dump(d, allow_unicode=True, sort_keys=False), encoding="utf-8")
         (folder / "facts.json").write_text(json.dumps(facts, ensure_ascii=False, indent=1), encoding="utf-8")
+        if photos.credit(folder):  # Pexels 이용 조건: 작가·Pexels 표시 (숫자 검사 뒤에 붙인다)
+            post["body"] = post["body"].strip() + "\n\n" + photos.credit(folder)
         (folder / "body.txt").write_text(post["body"].strip() + "\n", encoding="utf-8")
         (folder / "post.md").write_text(package_md(topic, d, facts, post, problems, rounds, cfg, news, cost), encoding="utf-8")
         if out_root == POSTS:
