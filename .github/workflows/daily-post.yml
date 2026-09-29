@@ -74,3 +74,9 @@ jobs:
             echo "결과를 저장하지 못했습니다. Claude에게 알려주세요." >> "$GITHUB_STEP_SUMMARY"
             exit 1
           fi
+
+  desk:
+    needs: write
+    if: ${{ always() && needs.write.result == 'success' }}
+    uses: ./.github/workflows/desk.yml
+    secrets: inherit
