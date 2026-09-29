@@ -17,6 +17,9 @@ def _rng(text: str) -> random.Random:
 
 
 class FakeKeywordTool:
+    def median_bid(self, keywords: list[str], device: str = "MOBILE") -> dict[str, float]:
+        return {k.replace(" ", ""): _rng("bid" + k).choice([70, 150, 400, 900, 2500]) for k in keywords}
+
     def related(self, seeds: list[str]) -> list[dict]:
         rows = []
         for seed in seeds:
