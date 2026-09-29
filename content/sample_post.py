@@ -54,8 +54,8 @@ class FakeClaude:
             body = (f"1승에 {win}.\n\n예시선수가 올해 거둔 승리 하나의 값이에요.\n\n[이미지 1_첫문단아래: thumb.png]\n\n"
                     "이 글은 예시예요. 숫자는 모두 가짜고, 모양만 확인하는 용도죠.\n\n"
                     "[이미지 2_영수증: receipt.png]\n\n" + "\n".join(f"{k}에 {v}." for k, v in per.items()) +
-                    "\n\n[이미지 3_최저임금비교: compare.png]\n\n최저임금이랑 비교하면 이래요.\n\n"
-                    "[이미지 4_시즌성적: season.png]\n\n올 시즌 성적은 이랬어요." +
+                    "\n\n[이미지 3_표: table.png]\n\n최저임금이랑 비교하면 이래요.\n\n"
+                    "[이미지 4_시즌사진: season.png]\n\n올 시즌 성적은 이랬어요." +
                     "\n\n생각보다 크죠? 내년에는 어떨까요?\n\n기준: 예시 데이터예요. 실제 선수·실제 숫자가 아니에요.")
             return {"gate_pass": True, "info_gain": "예시: 새로 계산한 숫자",
                     "titles": [{"text": f"[예시] 1승에 {win}", "type": "숫자형"},
