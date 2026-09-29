@@ -129,6 +129,8 @@ REVIEW_PASS = 4
 REVIEW_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"의 편집장이다. 위 스킬 문서의 0단계(9가지 질문과 지금의 가설)를 기준으로
 초안을 홈피드에서 이 글을 처음 보는 독자의 눈으로 읽고, 아래 7개 기준을 1~5점으로 매겨라. 후하게 주지 마라.
 - 약속 회수: 추천 제목·썸네일이 던진 궁금증을 본문 첫 화면(첫 3문단)에서 답하나. 낚시로 끝나면 1점.
+  퀴즈 정답은 규칙상 퀴즈 카드 뒤에만 나온다. 제목의 답을 첫 화면에서 줬다면 퀴즈 정답이 뒤에 있는 것은 감점하지 않는다.
+  제목이 퀴즈 정답을 묻고 있으면 fixes에 "추천 제목을 첫 화면에서 답할 수 있는 궁금증으로 바꿔라"라고 적는다.
 - 새 정보: 기사·다른 블로그에 없는, 이 글이 직접 계산한 숫자가 중심인가.
 - 머무를 이유: 퀴즈·카드·문단 흐름이 끝까지 읽게 만드나. 억지로 늘린 문장이 있으면 감점.
 - 신뢰: 기준일·출처 종류·계산 방법이 보이나. 과장·단정이 없나.
@@ -186,7 +188,9 @@ WRITE_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"(닉네�
 - 5개 모두 숫자표의 '제목용 짧은 이름'으로 시작한다 (검색 유입 + 스타 이름으로 눈길). 성+이름 전체를 쓰지 않는다.
 - 추천 제목은 짧은 이름 + 숫자 후킹 (예: "오타니 9,496억 계약인데 올해 27억?", "이정후 298억, 시즌 끝나도 다 받을까?"). 숫자로 반전·궁금증을 만든다.
 - 썸네일 금액(숫자표 '썸네일' 줄)은 추천 제목에 되풀이하지 않는다. 썸네일은 "얼마", 제목은 "왜?".
-- 25자 이하 (띄어쓰기 포함). 던진 궁금증은 본문에서 반드시 답한다. 선수 이름은 태그에도 넣는다.
+- 25자 이하 (띄어쓰기 포함). 던진 궁금증은 본문 첫 화면(첫 3문단)에서 답한다. 선수 이름은 태그에도 넣는다.
+- 추천 제목은 퀴즈 카드의 정답(누가 더 비싼지, 몇 대인지, 얼마짜리인지)을 묻지 않는다. 퀴즈 정답은 퀴즈 카드 뒤에서만 공개되므로
+  제목이 그걸 물으면 첫 화면에서 답할 수 없다. 제목의 궁금증은 첫 화면에서 풀고, 퀴즈는 그다음 궁금증으로 쓴다.
 - 물음표는 1개까지. "충격", "경악", "헉", "소름", "역대급" 같은 과장어 금지.
 - tags: 10개 이하, 띄어쓰기 없이.
 - cross_compare: 본문에 쓴 교차 비교 한 줄 요약.
@@ -411,7 +415,7 @@ def check_titles(p: dict, sheet: str) -> list[str]:
         text = t["text"].strip()
         if not text.startswith(core):
             out.append(f"제목{i}이 짧은 이름({core})으로 시작하지 않음")
-        elif name != core and text.startswith(name):
+        elif name != core and " vs " not in name and text.startswith(name):
             out.append(f"제목{i}에 긴 이름 → '{core}'로")
         if len(text) > TITLE_MAX:
             out.append(f"제목{i}이 {TITLE_MAX}자 넘음 ({len(text)}자)")
@@ -489,7 +493,7 @@ def extract_opts() -> dict:
 
 def write_post(llm, topic: dict, sheet: str, max_revisions: int) -> tuple[dict, list[str], int]:
     w = llm_cfg().get("write", {})
-    cap = llm_cfg().get("cost_cap_usd_per_post", 1.0)
+    cap = llm_cfg().get("cost_cap_usd_per_post", 1.0) + llm.cost_usd()  # 이 글에서 쓴 비용만 센다 (여러 번 시도할 때)
     opts = {"model": w.get("model", "claude-sonnet-5-5"), "effort": w.get("effort", "medium")}
     system = writer_system()
     prompt = (f"카테고리: {topic['category']}\n글 방향: {topic['angle']}\n\n숫자표\n{sheet}\n\n"
@@ -683,6 +687,7 @@ def theme_sheet(plan: dict, d: dict, n: dict, got: list[dict], cfg: dict) -> str
     return "\n".join(L)
 
 
+DAILY_CAP_USD = 3.0  # 한 번 실행에서 쓸 Claude 비용 상한 (재시도 포함)
 NEWS_DAYS = 3        # 최근 며칠 기사 수로 "지금 궁금한 선수"를 잰다
 NEWS_PER_BOOST = 15  # 기사 15건마다 가중치 +1배 (최대 3배)
 
@@ -809,6 +814,8 @@ def main() -> None:
     ap.add_argument("--theme", default=None, choices=["receipt", "same", "cross", "life"], help="테마 고정 (비우면 무작위)")
     ap.add_argument("--out", default=None, help="결과 폴더 (기본 posts/)")
     ap.add_argument("--again", action="store_true", help="다시 뽑기: 하루 한도를 건너뛰고 새 조합으로")
+    ap.add_argument("--target", type=int, default=1, help="발행 가능한(✅) 글을 몇 편 만들지")
+    ap.add_argument("--tries", type=int, default=1, help="최대 몇 번 쓸지 (⚠️ 글은 목록에서 빼고 다시 쓴다)")
     a = ap.parse_args()
     today = date.today().isoformat()
     out_root = Path(a.out) if a.out else POSTS
@@ -826,12 +833,28 @@ def main() -> None:
         from .llm import Claude
         hub = ApiHub(load_yaml("global.yaml")["endpoints"]["naver_hub"])
         llm = Claude()
-    try:
-        msg, folder = run(hub, llm, today=today, topic_override=a.topic, theme=a.theme, out_root=out_root,
-                          again=a.again)
-    except Exception as e:  # 키·요금·API 오류: 메시지만 남기고 실패로 끝낸다 (키 값은 메시지에 없음)
-        _summary(f"❌ 글쓰기 실패: {type(e).__name__}: {str(e)[:300]}\n\nClaude에게 이 화면을 알려주세요.")
-        raise
+    made, lines, folder = 0, [], None
+    for attempt in range(max(a.tries, a.target)):
+        try:
+            msg, folder = run(hub, llm, today=today, topic_override=a.topic, theme=a.theme, out_root=out_root,
+                              again=a.again or made > 0)
+        except Exception as e:  # 키·요금·API 오류: 메시지만 남기고 실패로 끝낸다 (키 값은 메시지에 없음)
+            _summary(f"❌ 글쓰기 실패: {type(e).__name__}: {str(e)[:300]}\n\nClaude에게 이 화면을 알려주세요.")
+            raise
+        ok = bool(folder) and "✅ 자동 검사 통과" in (folder / "post.md").read_text(encoding="utf-8")
+        if folder and not ok and out_root == POSTS:  # 기준 미달은 목록에서 빼고 다른 조합으로 다시 (대표 결정 2026-09-30)
+            mark.mark(folder.name, "rejected")
+            msg += "\n→ 기준 미달이라 목록에서 빼고 다시 씁니다."
+        lines.append(f"[{attempt + 1}번째] {msg}")
+        made += ok
+        if made >= a.target or (not folder and "오늘 이미" in msg):
+            break
+        if llm.cost_usd() >= DAILY_CAP_USD:
+            lines.append(f"하루 비용 상한 ${DAILY_CAP_USD:.0f}에 닿아 멈춥니다.")
+            break
+    msg = "\n\n".join(lines) + f"\n\n결과: 발행 가능 {made}편 / 목표 {a.target}편"
+    if made < a.target:
+        msg += " ⚠️ 목표를 못 채웠어요 (내일 다시 시도, 계속되면 Claude가 확인)"
     if hasattr(llm, "usage"):
         u = llm.usage
         msg += (f"\nClaude 호출 {u['calls']}회 · 입력 {u['input']:,} · 출력 {u['output']:,} · 캐시 읽기 {u['cache_read']:,} 토큰"
