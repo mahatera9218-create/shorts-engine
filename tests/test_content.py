@@ -237,6 +237,15 @@ class ContentTest(unittest.TestCase):
         assert "2026-09-29-a" in h and "발행한 글" in h and "2026-10-01-c" not in h
         assert h.index("2026-09-29-a") < h.index("발행한 글") < h.index("2026-09-30-b")
 
+    def test_clip_question_checked(self):
+        from content.autopost import check_post
+        sheet = "1안타당: 2억 32만원"
+        p = {"body": "1안타에 2억.", "recommended": 1, "titles": [{"text": "1안타에 2억", "type": "숫자형"}] * 5,
+             "clip_caption": "1안타에 2억?", "clip_question": "다음은 누구 몸값이 궁금한가요 댓글로 알려주세요"}
+        probs = check_post(p, sheet)
+        assert any("클립 질문" in x and "18자" in x for x in probs)
+        assert any("클립 설명에 숫자표에 없는 숫자" in x for x in check_post({**p, "clip_caption": "75억?"}, sheet))
+
 
 if __name__ == "__main__":
     unittest.main()
