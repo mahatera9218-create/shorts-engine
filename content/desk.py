@@ -10,6 +10,8 @@ from __future__ import annotations
 
 import hashlib
 import html
+from datetime import datetime
+from zoneinfo import ZoneInfo
 import json
 import re
 import shutil
@@ -150,6 +152,7 @@ def index(posts: list[dict]) -> str:
 <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive">
 <title>발행 도우미</title><style>{CSS}</style></head><body><main>
 <h1>발행 도우미 · 억소리 나는 스포츠</h1>
+<p class="muted">마지막 업데이트: {datetime.now(ZoneInfo("Asia/Seoul")).strftime("%m월 %d일 %H:%M")}</p>
 <p class="muted">매일 아침 6시 47분에 새 글이 올라와요. 위에서부터(오래된 글부터) 하루 1편씩 발행하세요. ✅만 발행하고 ⚠️는 Claude에게 알려주세요. 최근 14편만 보여요.</p>
 {rows or '<p>아직 글이 없어요.</p>'}
 </main></body></html>"""
