@@ -71,7 +71,7 @@ class ContentTest(unittest.TestCase):
 
     def test_check_post(self):
         sheet = "1안타당: 2억 32만 원"
-        good = {"body": "1안타에 2억.\n[1: thumb.png]\n[2: receipt.png]\n[3: compare.png]\n[4: season.png]", "recommended": 1,
+        good = {"body": "1안타에 2억.\n[1: thumb.png]\n[2: receipt.png]\n[3: table.png]\n[4: season.png]", "recommended": 1,
                 "titles": [{"text": "1안타에 2억", "type": "숫자형"}] * 5}
         assert check_post(good, sheet) == []
         bad = {**good, "body": good["body"] + "\n토토 배당 3.5배", "titles": [{"text": "1안타에 5억 999만", "type": "숫자형"}] * 5}

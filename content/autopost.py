@@ -29,7 +29,7 @@ POSTS = ROOT / "posts"
 SKILLS = ROOT / ".claude" / "skills"
 EXAMPLE_POST = POSTS / "2026-10-01-이정후-영수증" / "post.md"
 NUM = re.compile(r"\d[\d,]*(?:\.\d+)?")
-IMAGES = ("thumb.png", "receipt.png", "compare.png", "season.png")
+IMAGES = ("thumb.png", "receipt.png", "table.png", "season.png")
 BANNED = ["토토", "프로토", "배당", "베팅", "배팅", "열애", "여자친구", "남자친구", "이혼", "루머", "인성 논란"]
 
 # ---------------------------------------------------------------- 스키마
@@ -122,8 +122,8 @@ WRITE_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"(닉네�
 - 이미지 4장. 아래 네 줄을 각각 한 줄로, 글 흐름에 맞춰 나눠 넣는다 (스크롤마다 그림이 나오게):
   "[이미지 1_첫문단아래: thumb.png]" 첫 문단 바로 아래 (홈판 카드와 같은 그림)
   "[이미지 2_영수증: receipt.png]" 단위별 금액을 말하기 직전
-  "[이미지 3_최저임금비교: compare.png]" 최저임금 비교 문단 바로 위
-  "[이미지 4_시즌성적: season.png]" 올 시즌 성적을 말하는 문단 바로 위
+  "[이미지 3_표: table.png]" 최저임금 비교 문단 바로 위 (단위별 금액·최저임금 비교 표)
+  "[이미지 4_시즌사진: season.png]" 올 시즌 성적을 말하는 문단 바로 위 (실사 사진 + 기록 한 줄)
 - 끝에서 둘째 문단: 다음에 계산해 볼 선수를 댓글로 묻는 질문 한 줄. 특정 선수 이름으로 다음 글을 약속하지 않는다 (그 선수 숫자가 안 모이면 못 쓴다).
 - 마지막 문단: "기준: ..."으로 연봉·성적·환율·최저임금의 기준일과 출처 종류를 한 문장으로.
 
@@ -374,7 +374,7 @@ def package_md(topic: dict, d: dict, facts: dict, post: dict, problems: list[str
     out += [f"{i}. {'★ ' if i == rec else ''}{t['text']} — {t['type']}" for i, t in enumerate(post["titles"], 1)]
     out += ["", "## 이미지 (본문 [이미지] 자리에 넣기)", "", "| 순서 | 파일 | 위치 | 대표이미지 |", "| --- | --- | --- | --- |",
             "| 1 | thumb.png | 첫 문단 아래 | ✅ 대표이미지로 지정 |", "| 2 | receipt.png | 영수증 설명 위 | |",
-            "| 3 | compare.png | 최저임금 비교 위 | |", "| 4 | season.png | 시즌 성적 위 | |", "",
+            "| 3 | table.png | 최저임금 비교 위 (표) | |", "| 4 | season.png | 시즌 성적 위 (사진) | |", "",
             "## 카테고리 · 태그", "", f"- 카테고리: **{topic['category']}**", f"- 태그: {', '.join(post['tags'][:10])}", "",
             "## 본문 (복사해서 붙여넣기, [이미지 …] 줄은 지우고 그 자리에 사진 넣기)", "", post["body"].strip(), "",
             "## 출처", ""]
@@ -437,7 +437,7 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, out_root: Pa
             continue
         folder = out_root / f"{today}-{topic['id']}"
         folder.mkdir(parents=True, exist_ok=True)
-        photos.fetch(folder, d.get("sport", "야구"), folder.name)  # 키가 없으면 사진 없이
+        photos.fetch_all(folder, d.get("sport", "야구"), folder.name)  # 키가 없으면 사진 없이
         n = receipt.build(folder, d)
         sheet = number_sheet(d, n, facts, ex, cfg)
         post, problems, rounds = write_post(llm, topic, sheet, cfg.get("max_revisions", 2))

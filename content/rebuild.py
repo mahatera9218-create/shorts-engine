@@ -19,22 +19,22 @@ def add_credit(folder: Path) -> None:
     if not line:
         return
     body = folder / "body.txt"
-    if body.exists() and "Pexels" not in body.read_text(encoding="utf-8"):
-        body.write_text(body.read_text(encoding="utf-8").rstrip() + "\n\n" + line + "\n", encoding="utf-8")
-    post = folder / "post.md"
-    if post.exists():
-        s = post.read_text(encoding="utf-8")
-        if "Pexels" not in s and "\n## 출처" in s:
+    for f in (folder / "body.txt", folder / "post.md"):  # 예전 출처 줄은 지우고 새로 붙인다
+        if not f.exists():
+            continue
+        s = "\n".join(l for l in f.read_text(encoding="utf-8").splitlines() if "/ Pexels (" not in l)
+        if f.name == "body.txt":
+            s = s.rstrip() + "\n\n" + line + "\n"
+        elif "\n## 출처" in s:
             s = s.replace("\n## 출처", f"\n{line}\n\n## 출처", 1)
-            post.write_text(s, encoding="utf-8")
+        f.write_text(s, encoding="utf-8")
 
 
 def main() -> None:
     folders = [Path(a) for a in sys.argv[1:]] or sorted(p for p in (ROOT / "posts").iterdir() if (p / "data.yaml").exists())
     for folder in folders:
         d = yaml.safe_load((folder / "data.yaml").read_text(encoding="utf-8"))
-        if not (folder / "photo.jpg").exists():
-            photos.fetch(folder, d.get("sport", "야구"), folder.name)
+        photos.fetch_all(folder, d.get("sport", "야구"), folder.name)
         receipt.build(folder, d)
         add_credit(folder)
         print(f"{folder.name}: 이미지 다시 그림" + (" (사진 포함)" if (folder / "photo.jpg").exists() else " (사진 없음)"))
