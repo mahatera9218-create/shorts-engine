@@ -1,0 +1,10 @@
+# 운영 중인 블로그 (비밀 정보 아님: 공개 주소만). 비밀번호·키는 절대 적지 않는다.
+blogs:
+  - id: sports-money
+    platform: naver
+    url: https://blog.naver.com/tenbillionsound
+    name: 억소리 나는 스포츠
+    nickname: 백억소리
+    topic: 스포츠 × 돈·숫자 (선수 중심)
+    opened: 2026-09-29
+    categories: [선수 몸값, 몸값 대결, 팀 돈 순위, 계약·이적 소식]
