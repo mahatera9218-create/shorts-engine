@@ -64,5 +64,5 @@ class FakeClaude:
                                {"text": "예시선수 최저임금과 비교하면 (예시)", "type": "대비형"},
                                {"text": "예시선수 몸값 순위 (예시)", "type": "순위형"},
                                {"text": "예시선수 부진했는데 연봉은? (예시)", "type": "반전형"}],
-                    "recommended": 1, "body": body, "tags": ["예시"], "cross_compare": "없음 (예시)"}
+                    "recommended": 5, "body": body, "tags": ["예시"], "cross_compare": "없음 (예시)"}
         raise ValueError("알 수 없는 스키마")
