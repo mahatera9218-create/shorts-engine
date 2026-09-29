@@ -75,7 +75,6 @@
 
 기준: 연봉·계약은 계약 세부 공개 보도, 성적은 2026년 9월 말 보도, 환율은 2026년 9월 29일 오후 3시 30분 서울 외환시장, 최저임금은 고용노동부 고시(시급 10,320원, 월 209시간) 기준이에요.
 
-대표 사진: Phil Evenden / Pexels (https://www.pexels.com/photo/black-and-white-photo-of-hampton-coliseum-virginia-36655231/)
 
 ## 출처
 
