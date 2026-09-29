@@ -15,13 +15,10 @@ import requests
 from market.common import ROOT, secret
 
 SEARCH = "https://api.pexels.com/v1/search"
-QUERIES = {  # photo = 썸네일 배경, photo2 = 본문 시즌 기록 사진
+QUERIES = {  # photo = 썸네일 배경 (본문은 카드뉴스라 사진을 쓰지 않는다)
     "photo": {"야구": ["baseball stadium", "baseball field", "baseball stadium night lights"],
               "축구": ["soccer stadium", "football stadium lights"],
               "농구": ["basketball court"], "골프": ["golf course"]},
-    "photo2": {"야구": ["baseball glove and ball", "baseball bat on grass", "baseball dugout", "baseball on field"],
-               "축구": ["soccer ball on grass", "soccer goal net"],
-               "농구": ["basketball hoop", "basketball on court"], "골프": ["golf ball on tee"]},
 }
 
 
@@ -74,7 +71,7 @@ def fetch_all(folder: Path, sport: str, seed: str) -> None:
 def credit(folder: Path) -> str:
     """본문 끝에 붙일 출처 (API 이용 조건: 작가 이름 + Pexels 링크)."""
     lines = []
-    for name, label in (("photo", "대표 사진"), ("photo2", "본문 사진")):
+    for name, label in (("photo", "대표 사진"),):
         p = folder / f"{name}.json"
         if p.exists():
             info = json.loads(p.read_text(encoding="utf-8"))

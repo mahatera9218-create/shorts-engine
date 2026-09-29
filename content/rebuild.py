@@ -18,7 +18,6 @@ def add_credit(folder: Path) -> None:
     line = photos.credit(folder)
     if not line:
         return
-    body = folder / "body.txt"
     for f in (folder / "body.txt", folder / "post.md"):  # 예전 출처 줄은 지우고 새로 붙인다
         if not f.exists():
             continue
