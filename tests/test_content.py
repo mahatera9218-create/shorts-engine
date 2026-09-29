@@ -117,6 +117,19 @@ class ContentTest(unittest.TestCase):
         bad = check_post({**base, "body": "연봉은 2,200만 달러예요." + imgs}, sheet)
         assert not any("달러" in x for x in ok) and any("달러" in x for x in bad)
 
+    def test_desk_parses_posts(self):
+        import tempfile
+        from pathlib import Path
+        from content import desk
+        for folder in Path("posts").glob("2026-*"):
+            p = desk.parse(folder)
+            assert p and len(p["titles"]) == 5 and sum(t["best"] for t in p["titles"]) == 1
+            assert [x["n"] for x in p["images"]] == [1, 2, 3, 4, 5] and p["tags"]
+        with tempfile.TemporaryDirectory() as d:
+            desk.build(Path(d) / "site")
+            html = (Path(d) / "site" / "index.html").read_text(encoding="utf-8")
+            assert "noindex" in html and (Path(d) / "site" / "robots.txt").exists()
+
 
 if __name__ == "__main__":
     unittest.main()
