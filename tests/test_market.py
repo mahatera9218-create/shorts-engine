@@ -63,6 +63,22 @@ class ScoringTest(unittest.TestCase):
         self.assertEqual([k["keyword"] for k in areas[0]["top"]], ["제습기"])
 
 
+class VerdictTest(unittest.TestCase):
+    rules = load_yaml("global.yaml")["verdict"]
+
+    def area(self, trend=0.0, age=400, win=0.8, regulated=0, keywords=3):
+        kw = [{"trend": trend, "top_median_age_days": age, "axes": {"win": win}} for _ in range(keywords)]
+        return {"top": kw, "keywords": kw, "regulated": [{}] * regulated}
+
+    def test_rules(self):
+        self.assertEqual(scoring.suggest_verdict(self.area(), self.rules)[0], "진입 후보")
+        self.assertEqual(scoring.suggest_verdict(self.area(trend=-0.5), self.rules)[0], "제외")
+        self.assertEqual(scoring.suggest_verdict(self.area(age=30), self.rules)[0], "제외")
+        self.assertEqual(scoring.suggest_verdict(self.area(regulated=5), self.rules)[0], "제외")
+        self.assertEqual(scoring.suggest_verdict(self.area(win=0.1), self.rules)[0], "보류")
+        self.assertEqual(scoring.suggest_verdict(self.area(keywords=0), self.rules)[0], "제외")
+
+
 class RunTest(unittest.TestCase):
     def test_secret_names_match_kickoff(self):
         names = sum(SECRET_GROUPS.values(), [])
@@ -85,6 +101,16 @@ class RunTest(unittest.TestCase):
             files = sorted(p.name for p in (Path(d) / "reports" / "sample").iterdir())
         self.assertEqual(len([f for f in files if f.startswith("memo-")]), 3)
         self.assertIn("00-요약-점수표.md", files)
+
+    def test_memo_follows_skill_template(self):
+        with tempfile.TemporaryDirectory() as d, mock.patch.object(run, "ROOT", Path(d)):
+            with mock.patch.dict(os.environ, {}, clear=True):
+                run.run(sample=True)
+            memo = next((Path(d) / "reports" / "sample").glob("memo-1-*.md")).read_text(encoding="utf-8")
+        for heading in ["투자 메모 —", "**결론:**", "| 축 | 점수 | 근거 |", "**예상 편당 매출:**", "**예상 편당 원가:**",
+                        "**상위 경쟁자 요약:**", "**빈틈과 우리의 정보 이득:**", "**대표 키워드 10개**",
+                        "**규제·리스크**", "**검증할 가정**"]:
+            self.assertIn(heading, memo)
 
 
 if __name__ == "__main__":
