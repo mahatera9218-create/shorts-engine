@@ -19,3 +19,18 @@ units:
   count: 85.2
 headline_unit: home_runs
 min_wage_monthly_krw: 2156880
+sport: 야구
+card:
+- label: 홈런
+  value: '30'
+- label: 타자 출전 경기
+  value: '139'
+- label: 안타
+  value: '144'
+- label: 투수 이닝
+  value: '85.2'
+- label: 타수
+  value: '523'
+- label: 타점
+  value: '81'
+card_date: '2026-09-28'
