@@ -485,7 +485,7 @@ def theme_sheet(plan: dict, d: dict, n: dict, got: list[dict], cfg: dict) -> str
                   strip_lines(number_sheet(x["d"], n[key], x["facts"], x["ex"], cfg), "썸네일:", "제목용", "퀴즈 카드:")]
         return "\n".join(L)
     q = themes.quiz_item(d, n)
-    apt = next((i for i in n["items"] if i["key"] == "seoul_apt"), n["items"][0])
+    apt = next((i for i in n["items"] if i.get("group") == "home"), n["items"][0])
     L = [strip_lines(number_sheet(d, n, got[0]["facts"], got[0]["ex"], cfg), "썸네일:", "퀴즈 카드:"),
          f"썸네일: {d.get('short_name') or d['player']} / 올해 연봉이면 / {apt['short']} {themes.count(apt['salary_count'])}{apt['unit']}"
          " (추천 제목에는 이 숫자를 다시 쓰지 않는다)",
@@ -531,9 +531,8 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
             facts = got[0]["facts"]
             if th == "life":
                 prices = load_yaml("prices.yaml")
-                d["prices"] = prices["items"]
-                d["quiz_item"] = prices.get("quiz_item", "grandeur")
-                old = [i["short"] for i in prices["items"] if (date.fromisoformat(today) - date.fromisoformat(str(i["as_of"]))).days > 180]
+                d["prices"] = themes.pick_prices(prices, f"{today}-{d['player']}")
+                old = [i["short"] for i in d["prices"] if (date.fromisoformat(today) - date.fromisoformat(str(i["as_of"]))).days > 180]
                 if old:
                     notes.append(f"가격 확인 필요 (6개월 넘음): {', '.join(old)} → config/prices.yaml")
         title = themes.title_name(d)

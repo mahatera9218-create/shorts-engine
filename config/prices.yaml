@@ -1,9 +1,17 @@
 # 생활 물가 비교에 쓰는 기준 가격 (생활 물가 비교 테마, content/themes.py).
 # Claude가 추측한 값 금지: 공식 발표·보도로 확인한 값만, 출처와 기준 시점을 같이 적는다.
 # as_of가 6개월보다 오래되면 자동 글쓰기 요약에 '가격 확인 필요'가 뜬다. 바꾸면 여기만 고친다.
+# 대표 결정 (2026-09-30): 집값은 많이 검색하는 지역·단지, 차값은 많이 검색하는 국산·수입 차종 위주.
+#   → candidates의 검색량을 market/volume.py로 재고(워크플로 '생활 물가 검색량'), 상위만 items에 넣는다.
+#   group: home(집값) · car_kr(국산차) · car_import(수입차), weight: 월 검색량 (클수록 자주 뽑힘)
+# 글마다 pick 수만큼 그룹별로 뽑아 쓴다.
+
+pick: {home: 2, car_kr: 1, car_import: 1}
 
 items:
   - key: seoul_apt
+    group: home
+    weight: 1          # 검색량 재면 갱신
     label: 서울 아파트 평균 매매가
     short: 서울 아파트
     unit: 채
@@ -12,6 +20,8 @@ items:
     source: "헤럴드경제 보도 (KB부동산 월간, 8월 10일 기준 16억739만원) https://biz.heraldcorp.com/article/10849948"
 
   - key: grandeur
+    group: car_kr
+    weight: 1          # 검색량 재면 갱신
     label: 현대 그랜저 (2027년형 2.5 가솔린 시작가)
     short: 그랜저
     unit: 대
@@ -20,6 +30,8 @@ items:
     source: "2027년형 가격 보도 (개별소비세 환원 후 4,245만원부터) https://web.getcha.kr/blog/new-model-year-hyundai-grandeur-3298"
 
   - key: e_class
+    group: car_import
+    weight: 1          # 검색량 재면 갱신
     label: 벤츠 E클래스 (E300 4MATIC 익스클루시브)
     short: 벤츠 E클래스
     unit: 대
@@ -28,6 +40,8 @@ items:
     source: "국내 판매가 보도 (9,480만원) https://m.carisyou.com/car/7669"
 
   - key: porsche_911
+    group: car_import
+    weight: 1          # 검색량 재면 갱신
     label: 포르쉐 911 터보 S 쿠페
     short: 포르쉐 911
     unit: 대
@@ -35,5 +49,11 @@ items:
     as_of: 2026-04-01
     source: "포르쉐코리아 출시 보도 (3억4,270만원) https://hypebeast.kr/2026/4/porsche-korea-officially-launches-new-911-turbo-s"
 
-# 1경기 몸값 퀴즈에 쓸 물건 (1경기 몸값으로 몇 대/채인지 맞히기)
-quiz_item: grandeur
+# 검색량을 잴 후보 (띄어쓰기는 무시됨). 많이 검색하는 순으로 가격을 확인해 items에 넣는다.
+candidates:
+  home: [서울 아파트, 강남 아파트, 서초 아파트, 송파 아파트, 잠실 아파트, 용산 아파트, 성수 아파트, 마포 아파트,
+         목동 아파트, 반포 아파트, 압구정 아파트, 분당 아파트, 판교 아파트,
+         은마아파트, 잠실엘스, 헬리오시티, 래미안원베일리, 아크로리버파크]
+  car_kr: [그랜저, 쏘렌토, 카니발, 아반떼, 싼타페, 스포티지, 투싼, 쏘나타, 팰리세이드, 캐스퍼, 제네시스 G80, 제네시스 GV80]
+  car_import: [벤츠 E클래스, 벤츠 S클래스, BMW 5시리즈, BMW X5, 테슬라 모델Y, 포르쉐 911, 포르쉐 카이엔,
+               람보르기니 우루스, 페라리, 롤스로이스 컬리넌]
