@@ -14,7 +14,6 @@ import yaml
 from PIL import Image, ImageDraw
 
 from .brand import BG, GOLD, GRAY, WHITE, center_text, fit, font
-from .sportsart import icon
 
 PAPER = (250, 247, 238)
 INK = (30, 32, 40)
@@ -131,32 +130,49 @@ def short_won(x: float) -> str:
     return won(x).split(" ")[0] + "원"
 
 
-def thumb_image(d: dict, n: dict, w: int = 1080) -> Image.Image:
-    """홈판 카드: 종목 아이콘 + 선수 이름 + 아주 큰 금액 + 빨간 띠(최저임금 비교)."""
-    im = Image.new("RGB", (w, w), BG)
-    ball = icon(d.get("sport", "야구"), int(w * 0.56)).rotate(18, resample=Image.BICUBIC)
-    im.paste(ball, (int(w * 0.6), int(-w * 0.12)), ball)
+def _cover(photo: Image.Image, w: int) -> Image.Image:
+    """사진을 정사각형으로 가운데 잘라 w×w로."""
+    side = min(photo.size)
+    left, top = (photo.width - side) // 2, (photo.height - side) // 2
+    return photo.crop((left, top, left + side, top + side)).resize((w, w), Image.LANCZOS).convert("RGB")
+
+
+def _shade(im: Image.Image, start: float = 0.3, strength: int = 235) -> Image.Image:
+    """아래로 갈수록 어두워지는 그라데이션 (글자가 사진 위에서도 읽히게)."""
+    w, h = im.size
+    grad = Image.new("L", (1, h))
+    for y in range(h):
+        t = max(0.0, (y / h - start) / (1 - start))
+        grad.putpixel((0, y), int(70 + (strength - 70) * min(1.0, t * 1.3)))
+    black = Image.new("RGB", (w, h), (0, 0, 0))
+    return Image.composite(black, im, grad.resize((w, h)))
+
+
+def thumb_image(d: dict, n: dict, w: int = 1080, photo: Image.Image | None = None) -> Image.Image:
+    """홈판 카드: 실사 배경(없으면 남색) + 굵은 제목 글꼴 + 아주 큰 금액 + 최저임금 한 줄."""
+    im = _shade(_cover(photo, w)) if photo is not None else Image.new("RGB", (w, w), BG)
     dr = ImageDraw.Draw(im)
+    x0 = int(w * 0.07)
+    stroke = {"stroke_width": int(w * 0.007), "stroke_fill": (0, 0, 0)}
     tag = f"{d['season']} 연봉 영수증"
-    tf = font("xb", int(w * 0.045))
+    tf = font("display", int(w * 0.05))
     l, t, r, b = dr.textbbox((0, 0), tag, font=tf)
-    x0, y0 = int(w * 0.07), int(w * 0.08)
-    dr.rectangle((x0, y0, x0 + (r - l) + w * 0.05, y0 + (b - t) + w * 0.04), fill=RED)
-    dr.text((x0 + w * 0.025, y0 + w * 0.02 - t), tag, font=tf, fill=WHITE)
-    name = d["player"]
-    dr.text((x0, y0 + w * 0.2), name, font=fit(dr, name, "xb", int(w * 0.12), w * 0.5), fill=WHITE, anchor="lm")
+    dr.rectangle((x0, w * 0.07, x0 + (r - l) + w * 0.05, w * 0.07 + (b - t) + w * 0.045), fill=RED)
+    dr.text((x0 + w * 0.025, w * 0.07 + w * 0.0225 - t), tag, font=tf, fill=WHITE)
     head = headline(d)
     label = next(u["label"] for u in units(d) if u["key"] == head)
-    dr.text((x0, w * 0.45), label, font=font("xb", int(w * 0.085)), fill=WHITE, anchor="lm")
+    line1 = f"{d['player']} {label}"
+    dr.text((x0, w * 0.52), line1, font=fit(dr, line1, "display", int(w * 0.1), w * 0.86), fill=WHITE, anchor="lm", **stroke)
     big = short_won(n["per"][head])
-    bf = fit(dr, big, "xb", int(w * 0.26), w * 0.88)
-    dr.text((x0 - w * 0.01, w * 0.62), big, font=bf, fill=GOLD, anchor="lm", stroke_width=int(w * 0.008), stroke_fill=(0, 0, 0))
-    band_y = int(w * 0.8)
-    dr.rectangle((0, band_y, w, w), fill=RED)
+    dr.text((x0 - w * 0.005, w * 0.69), big, font=fit(dr, big, "display", int(w * 0.25), w * 0.88), fill=GOLD,
+            anchor="lm", stroke_width=int(w * 0.01), stroke_fill=(0, 0, 0))
     years = n.get("min_wage_years_per", {}).get(head)
-    line = f"= 최저임금 연봉 {years:.1f}년치" if years else f"올해 연봉 {won(n['salary_krw'])}"
-    center_text(dr, (w / 2, band_y + (w - band_y) * 0.42), line, fit(dr, line, "xb", int(w * 0.075), w * 0.9), WHITE)
-    center_text(dr, (w / 2, band_y + (w - band_y) * 0.82), "억소리 나는 스포츠", font("b", int(w * 0.03)), (255, 215, 215))
+    line3 = f"최저임금 연봉 {years:.1f}년치" if years else f"올해 연봉 {won(n['salary_krw'])}"
+    f3 = fit(dr, line3, "display", int(w * 0.065), w * 0.8)
+    l, t, r, b = dr.textbbox((0, 0), line3, font=f3)
+    y3 = int(w * 0.84)
+    dr.rectangle((x0, y3, x0 + (r - l) + w * 0.04, y3 + (b - t) + w * 0.035), fill=RED)
+    dr.text((x0 + w * 0.02, y3 + w * 0.0175 - t), line3, font=f3, fill=WHITE)
     return im
 
 
@@ -171,7 +187,7 @@ def compare_image(d: dict, n: dict, w: int = 1080) -> Image.Image | None:
     h = top + len(rows) * (bar_h + gap) + int(w * 0.14)
     im = Image.new("RGB", (w, h), BG)
     dr = ImageDraw.Draw(im)
-    dr.text((w * 0.07, w * 0.09), "최저임금으로 치면 몇 년치?", font=font("xb", int(w * 0.058)), fill=WHITE, anchor="lm")
+    dr.text((w * 0.07, w * 0.09), "최저임금으로 치면 몇 년치?", font=font("display", int(w * 0.07)), fill=WHITE, anchor="lm")
     sub = f"{d['player']} {d['season']} · 최저임금 1년 = {won(n['min_wage_yearly_krw'])}"
     dr.text((w * 0.07, w * 0.16), sub, font=fit(dr, sub, "r", int(w * 0.034), w * 0.86), fill=GRAY, anchor="lm")
     lf, vf = font("b", int(w * 0.04)), font("xb", int(w * 0.042))
@@ -210,16 +226,14 @@ def season_image(d: dict, w: int = 1080) -> Image.Image | None:
     h = top + rows * (th + gap) + int(w * 0.1)
     im = Image.new("RGB", (w, h), BG)
     dr = ImageDraw.Draw(im)
-    ball = icon(d.get("sport", "야구"), int(w * 0.12))
-    im.paste(ball, (int(w - pad - w * 0.12), int(w * 0.06)), ball)
-    dr.text((pad, w * 0.09), f"{d['player']} {d['season']} 시즌", font=fit(dr, f"{d['player']} {d['season']} 시즌", "xb", int(w * 0.058), w * 0.7), fill=WHITE, anchor="lm")
+    dr.text((pad, w * 0.09), f"{d['player']} {d['season']} 시즌", font=fit(dr, f"{d['player']} {d['season']} 시즌", "display", int(w * 0.07), w * 0.86), fill=WHITE, anchor="lm")
     dr.text((pad, w * 0.16), f"보도 기준 · {d.get('card_date', '')}".rstrip(" ·"), font=font("r", int(w * 0.032)), fill=GRAY, anchor="lm")
     for i, c in enumerate(card):
         x = pad + (i % cols) * (tw + gap)
         y = top + (i // cols) * (th + gap)
         dr.rounded_rectangle((x, y, x + tw, y + th), radius=18, fill=TILE)
         val = str(c["value"])
-        center_text(dr, (x + tw / 2, y + th * 0.42), val, fit(dr, val, "xb", int(w * 0.1), tw * 0.85), GOLD if i == 0 else WHITE)
+        center_text(dr, (x + tw / 2, y + th * 0.42), val, fit(dr, val, "display", int(w * 0.11), tw * 0.85), GOLD if i == 0 else WHITE)
         center_text(dr, (x + tw / 2, y + th * 0.78), c["label"], fit(dr, c["label"], "b", int(w * 0.038), tw * 0.85), GRAY)
     return im
 
@@ -228,7 +242,8 @@ def build(folder: Path, d: dict) -> dict:
     n = compute(d)
     (folder / "numbers.json").write_text(json.dumps(n, ensure_ascii=False, indent=1), encoding="utf-8")
     receipt_image(d, n).save(folder / "receipt.png")
-    thumb_image(d, n).save(folder / "thumb.png")
+    photo = Image.open(folder / "photo.jpg") if (folder / "photo.jpg").exists() else None
+    thumb_image(d, n, photo=photo).save(folder / "thumb.png")
     for name, img in (("compare.png", compare_image(d, n)), ("season.png", season_image(d))):
         if img is not None:
             img.save(folder / name)
@@ -238,6 +253,9 @@ def build(folder: Path, d: dict) -> dict:
 def main() -> None:
     folder = Path(sys.argv[1])
     d = yaml.safe_load((folder / "data.yaml").read_text(encoding="utf-8"))
+    if "--photo" in sys.argv and not (folder / "photo.jpg").exists():  # 사진 새로 받기 (PEXELS_API_KEY 필요)
+        from .photos import fetch
+        fetch(folder, d.get("sport", "야구"), folder.name)
     n = build(folder, d)
     print(json.dumps({k: won(v) for k, v in n["per"].items()} | {"연봉": won(n["salary_krw"])}, ensure_ascii=False))
     for k, v in n.get("min_wage_years_per", {}).items():
