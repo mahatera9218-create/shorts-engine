@@ -111,29 +111,27 @@ class Scene:
 
 
 class Hook(Scene):
-    """사진 배경 확대 + 태그 → 이름 쾅 → 기록 → 금액 번쩍."""
-    dur = 3.2
+    """첫 프레임부터 이름이 보인다 (0.4초 안에 전부 등장): 이름 → 기록 → 금액 번쩍. 사진은 천천히 확대."""
+    dur = 2.4
 
     def __init__(self, h: dict, photo: Image.Image | None):
         self.h, self.bg = h, cover(photo)
 
     def draw(self, c, t):
-        z = 1 + 0.06 * t / self.dur
+        z = 1 + 0.05 * t / self.dur
         bg = self.bg.resize((int(self.bg.width * z / 1.1), int(self.bg.height * z / 1.1)), Image.BILINEAR)
         c.paste(bg.crop(((bg.width - W) // 2, (bg.height - H) // 2, (bg.width - W) // 2 + W, (bg.height - H) // 2 + H)))
         tag = label(self.h["tag"], "display", 52, WHITE)
-        k = ease_out(t / 0.3)
         box = Image.new("RGBA", (tag.width + 50, tag.height + 30), RED + (255,))
         box.alpha_composite(tag, (25, 15))
-        put(c, box, -box.width + (80 + box.width) * k, 330, anchor="l")
-        put(c, label(self.h["name"], "display", 230, WHITE, 12), W / 2, 600, 2.2 - 1.2 * ease_back((t - 0.25) / 0.35),
-            clamp((t - 0.25) / 0.12))
-        put(c, label(self.h["label"], "display", 96, WHITE, 6), W / 2, 850 + 40 * (1 - ease_out((t - 0.9) / 0.3)),
-            1, clamp((t - 0.9) / 0.3))
-        s = 1.6 - 0.6 * ease_back((t - 1.4) / 0.35)
-        put(c, label(self.h["big"], "display", 210, GOLD, 10), W / 2, 1090, s, clamp((t - 1.4) / 0.1))
-        if 1.4 < t < 1.55:  # 번쩍
-            c.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, int(120 * (1 - (t - 1.4) / 0.15)))))
+        put(c, box, 80, 330, anchor="l")
+        put(c, label(self.h["name"], "display", 230, WHITE, 12), W / 2, 600, 1.25 - 0.25 * ease_out(t / 0.2))
+        put(c, label(self.h["label"], "display", 96, WHITE, 6), W / 2, 850 + 30 * (1 - ease_out((t - 0.15) / 0.2)),
+            1, clamp((t - 0.15) / 0.15))
+        s = 1.5 - 0.5 * ease_back((t - 0.35) / 0.3)
+        put(c, label(self.h["big"], "display", 210, GOLD, 10), W / 2, 1090, s, clamp((t - 0.35) / 0.08))
+        if 0.35 < t < 0.5:  # 번쩍
+            c.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, int(110 * (1 - (t - 0.35) / 0.15)))))
 
 
 class Quiz(Scene):
