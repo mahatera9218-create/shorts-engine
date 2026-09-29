@@ -202,23 +202,18 @@ class ContentTest(unittest.TestCase):
     def test_clip_caption_and_scenes(self):
         import tempfile
         from pathlib import Path
-        from PIL import Image
         from content import clip
+        st = {"hook": {"tag": "t", "name": "오타니", "label": "홈런 1개", "big": "9,045만원"},
+              "quiz": {"lines": ["a", "b"], "options": ["1", "2", "3"], "answer": 1},
+              "answer": {"big": "3,167만원", "line": "x"},
+              "table": {"title": "t", "header": ["기준", "1번에"], "rows": [["경기", "1"]] * 4, "hot": [0]}, "wage": None}
+        sc = clip.scenes(st, None)
+        assert [type(s).__name__ for s in sc] == ["Hook", "Quiz", "Answer", "Table", "Outro"]
+        assert 15 <= sum(s.dur for s in sc) <= 25  # 15~25초
         with tempfile.TemporaryDirectory() as t:
-            f = Path(t)
-            for n in ("thumb.png", "card_quiz.png"):
-                Image.new("RGB", (1080, 1080)).save(f / n)
-            p = {"titles": [{"text": "오타니 1홈런에 9,045만원", "type": "숫자형", "best": True}], "tags": ["오타니", "연봉"],
-                 "images": [{"n": 1, "label": "첫문단아래", "file": "thumb.png"}, {"n": 2, "label": "퀴즈", "file": "card_quiz.png"},
-                            {"n": 3, "label": "정답", "file": "없는파일.png"}]}
-            try:
-                sc = clip.scenes(f, p)
-            except SystemExit:  # 글꼴이 없는 환경
-                return
-            assert [s for _, s in sc] == [2.5, 1.5, 1.0, 1.0, 1.0, clip.OUTRO]
-            text = clip.caption(f, p)
+            p = {"titles": [{"text": "오타니 1홈런에 9,045만원", "type": "숫자형", "best": True}], "tags": ["오타니", "연봉"]}
+            text = clip.caption(Path(t), p)
             assert text.startswith("오타니 1홈런에 9,045만원") and "#오타니 #연봉" in text
-
 
 if __name__ == "__main__":
     unittest.main()
