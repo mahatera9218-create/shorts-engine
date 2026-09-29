@@ -141,8 +141,9 @@ WRITE_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"(닉네�
 제목 (홈판에서는 썸네일 + 제목만 보고 누를지 정한다. 가장 공들일 것)
 - 5개 모두 선수 이름으로 시작한다 (스타 이름이 가장 먼저 눈에 들어오게, 검색도 이름으로 한다).
 - 추천 제목은 숫자표의 '썸네일' 줄과 같은 기록·금액을 이름 바로 뒤에 둔다 (썸네일과 제목이 같은 말을 해야 카드가 강하다).
-- 앞부분(이름 + 숫자)만 읽어도 무슨 글인지 알게 하고, 뒷부분에 반전·대비·궁금증 한 조각 (예: "계약은 7억 달러인데", "부상인데 연봉은 다 받을까"). 그 궁금증은 본문에서 반드시 답한다.
-- 40자 이하. 물음표는 1개까지. "충격", "경악", "헉", "소름", "역대급" 같은 과장어 금지.
+- 짧게: 20자 이하 (띄어쓰기 포함). 추천 제목은 "이름 + 기록 + 금액"만 (예: "이정후 1안타에 2억", "오타니 홈런 1개에 9,045만 원"). 설명·반전 문구를 덧붙이지 않는다.
+- 나머지 4개도 20자 이하로 유형만 바꾼다 (예: 질문형 "오타니 1경기에 얼마 받을까?", 반전형 "이정후 부상인데 연봉은 다?"). 던진 궁금증은 본문에서 반드시 답한다.
+- 물음표는 1개까지. "충격", "경악", "헉", "소름", "역대급" 같은 과장어 금지.
 - tags: 10개 이하, 띄어쓰기 없이.
 - cross_compare: 본문에 쓴 교차 비교 한 줄 요약.
 """
@@ -313,12 +314,13 @@ def unknown_numbers(text: str, sheet: str, extra: str = "") -> list[str]:
     return sorted(set(bad))
 
 
+TITLE_MAX = 20  # 홈판 카드에서 한눈에 (대표 결정: 짧을수록 직관적)
 TITLE_BANNED = ["충격", "경악", "헉", "소름", "역대급"]
 THUMB = re.compile(r"^썸네일: (.+?) / (.+?) / (\S+?)원? \(", re.M)
 
 
 def check_titles(p: dict, sheet: str) -> list[str]:
-    """제목 규칙: 선수 이름으로 시작, 추천 제목에 썸네일 금액, 40자 이하, 과장어 금지."""
+    """제목 규칙: 선수 이름으로 시작, 추천 제목에 썸네일 금액, 20자 이하, 과장어 금지."""
     m = THUMB.search(sheet)
     if not m or not p["titles"]:
         return []
@@ -329,8 +331,8 @@ def check_titles(p: dict, sheet: str) -> list[str]:
         text = t["text"].strip()
         if not text.startswith(core):
             out.append(f"제목{i}이 선수 이름({core})으로 시작하지 않음")
-        if len(text) > 40:
-            out.append(f"제목{i}이 40자 넘음 ({len(text)}자)")
+        if len(text) > TITLE_MAX:
+            out.append(f"제목{i}이 {TITLE_MAX}자 넘음 ({len(text)}자)")
         if text.count("?") > 1 or any(w in text for w in TITLE_BANNED):
             out.append(f"제목{i}에 물음표 여러 개 또는 과장어")
     rec = p["titles"][p["recommended"] - 1]["text"] if 1 <= p["recommended"] <= len(p["titles"]) else ""
