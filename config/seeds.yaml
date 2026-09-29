@@ -17,8 +17,9 @@ areas:
   - id: car
     name: 자동차
     affiliate: 3
-    seeds: [자동차 리스 비교, 중고차 시세]
-    include_terms: [하이브리드, 신차, 차종, 연비]
+    # 2026-09-29: 블로그가 금방 보이는 비교·질문형으로 교체 (차종·모델명 정리형은 블로그가 한참 아래, 대표 확인)
+    seeds: [인증중고차 비교, 중고차 사이트 비교, 경차 유지비, 자동차 유지비]
+    include_terms: [인증중고, 중고차, 유지비, 수수료, 보증]
   - id: appliance
     name: 가전·고가 제품 비교
     affiliate: 5
