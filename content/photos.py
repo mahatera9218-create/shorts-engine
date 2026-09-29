@@ -7,14 +7,18 @@ API 이용 조건: 글에 Pexels 링크와 작가 이름을 표시한다 ("사�
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 from pathlib import Path
 
 import requests
+from PIL import Image, ImageStat
 
 from market.common import ROOT, secret
 
 SEARCH = "https://api.pexels.com/v1/search"
+MUST = {"야구": "baseball", "축구": ("soccer", "football"), "농구": "basketball", "골프": "golf"}  # 사진 설명에 있어야 할 말
+GRAYISH = ("black and white", "black-and-white", "monochrome", "grayscale")
 QUERIES = {  # photo = 썸네일 배경 (본문은 카드뉴스라 사진을 쓰지 않는다)
     "photo": {"야구": ["baseball stadium", "baseball field", "baseball stadium night lights"],
               "축구": ["soccer stadium", "football stadium lights"],
@@ -33,6 +37,12 @@ def used_ids() -> set[int]:
     return out
 
 
+def colorful(data: bytes, min_saturation: int = 40) -> bool:
+    """설명에 흑백이라고 안 적힌 흑백 사진도 있어서, 받은 사진의 평균 채도로 한 번 더 거른다."""
+    im = Image.open(io.BytesIO(data)).convert("HSV").resize((64, 64))
+    return ImageStat.Stat(im).mean[1] >= min_saturation
+
+
 def fetch(folder: Path, sport: str, seed: str, name: str = "photo") -> dict | None:
     """folder/<name>.jpg와 <name>.json(출처)을 만든다. 키가 없거나 실패하면 None."""
     key = secret("PEXELS_API_KEY")
@@ -47,12 +57,19 @@ def fetch(folder: Path, sport: str, seed: str, name: str = "photo") -> dict | No
         r = requests.get(SEARCH, headers={"Authorization": key},
                          params={"query": query, "orientation": "square", "per_page": 40}, timeout=20)
         r.raise_for_status()
-        photos = [p for p in r.json().get("photos", []) if p["id"] not in used_ids()]
-        if not photos:
+        must = MUST[kind] if isinstance(MUST[kind], tuple) else (MUST[kind],)
+        photos = [p for p in r.json().get("photos", []) if p["id"] not in used_ids()
+                  and any(w in (p.get("alt") or "").lower() for w in must)       # 종목과 상관없는 사진 빼기
+                  and not any(g in (p.get("alt") or "").lower() for g in GRAYISH)]  # 흑백 빼기
+        start = h % max(1, min(len(photos), 10))  # 상위 10장 안에서 글마다 다르게
+        for p in photos[start:] + photos[:start]:
+            img = requests.get(p["src"]["large2x"], timeout=30)
+            img.raise_for_status()
+            if colorful(img.content):
+                break
+        else:
+            print(f"'{query}'에서 쓸 만한 컬러 사진을 찾지 못해 사진 없이 만듭니다")
             return None
-        p = photos[h % min(len(photos), 10)]  # 상위 10장 안에서 글마다 다르게
-        img = requests.get(p["src"]["large2x"], timeout=30)
-        img.raise_for_status()
     except (requests.RequestException, KeyError, ValueError) as e:
         print(f"사진을 받지 못해 그린 썸네일로 대신합니다: {type(e).__name__}")
         return None
