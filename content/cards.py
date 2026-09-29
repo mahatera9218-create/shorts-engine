@@ -167,7 +167,7 @@ def table_card(d: dict, n: dict, units: list[dict], head: str, page: int, total:
     if card:
         stats = f"{d['season']} 시즌 · " + " · ".join(f"{c['label']} {c['value']}" for c in card[:5])
         center_text(dr, (W / 2, top + rh * len(rows) + 60), stats, fit(dr, stats, "b", 32, W * 0.86), SOFT)
-    note = "성적·연봉 보도 기준" + (f" · 1달러 {d['fx_krw_per_usd']:,}원" if d.get("fx_krw_per_usd") else "")
+    note = "성적·연봉 보도 기준" + (f" · 환율 {d['fx_krw_per_usd']:,}원" if d.get("fx_krw_per_usd") else "")
     center_text(dr, (W / 2, top + rh * len(rows) + 110), note, font("r", 28), SOFT)
     return im
 

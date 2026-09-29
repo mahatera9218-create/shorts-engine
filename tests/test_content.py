@@ -106,6 +106,14 @@ class ContentTest(unittest.TestCase):
         assert "선수 이름" in problems and "과장어" in problems and "되풀이" in problems and "20자" in problems
         assert "태그" in problems
 
+    def test_won_only(self):
+        sheet = "1안타당: 2억 32만 원"
+        base = {"recommended": 1, "titles": [{"text": "1안타에 2억", "type": "숫자형"}] * 5}
+        imgs = "\n[thumb.png][card_quiz.png][card_answer.png][card_wage.png][card_table.png]"
+        ok = check_post({**base, "body": "1안타에 2억." + imgs + "\n기준: 1달러 1,356.7원"}, sheet)
+        bad = check_post({**base, "body": "연봉은 2,200만 달러예요." + imgs}, sheet)
+        assert not any("달러" in x for x in ok) and any("달러" in x for x in bad)
+
 
 if __name__ == "__main__":
     unittest.main()
