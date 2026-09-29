@@ -18,14 +18,17 @@ WHITE = (245, 245, 245)
 GRAY = (150, 158, 175)
 
 
-DISPLAY = ROOT / "assets" / "fonts" / "BlackHanSans-Regular.ttf"  # 썸네일 제목용 굵은 글꼴 (SIL OFL)
+FONTS = ROOT / "assets" / "fonts"  # 저장소에 넣은 글꼴 (모두 SIL OFL, 라이선스 파일 같이 있음)
+BUNDLED = {"display": "BlackHanSans-Regular.ttf",       # 썸네일 제목
+           "mono": "NanumGothicCoding-Regular.ttf",      # 영수증 (고정폭)
+           "monob": "NanumGothicCoding-Bold.ttf"}
 
 
 def font(weight: str, size: int) -> ImageFont.FreeTypeFont:
-    if weight == "display":
-        if DISPLAY.exists():
-            return ImageFont.truetype(str(DISPLAY), size)
-        weight = "xb"
+    if weight in BUNDLED:
+        if (FONTS / BUNDLED[weight]).exists():
+            return ImageFont.truetype(str(FONTS / BUNDLED[weight]), size)
+        weight = "xb" if weight == "display" else "b"
     name = {"xb": "NanumGothicExtraBold.ttf", "b": "NanumGothicBold.ttf", "r": "NanumGothic.ttf"}[weight]
     base = Path(os.environ.get("BRAND_FONT_DIR", "/usr/share/fonts"))
     hits = list(base.rglob(name))
