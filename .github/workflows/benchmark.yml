@@ -1,0 +1,63 @@
+# 벤치마크 대상 찾기 (설계서 15.1, 15.7 주 1회 자동)
+# - 수동 실행: Actions → 벤치마크 → Run workflow
+# - 자동 실행: 매주 월요일 오전 9시 13분 (한국 시간, 시장조사 뒤)
+name: 벤치마크
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "실행 방식 (실제 = API 키 필요, 예시 = 키 없이 모양만 확인)"
+        type: choice
+        options: [실제, 예시]
+        default: 실제
+  schedule:
+    - cron: "13 0 * * 1"   # UTC 월요일 00:13 = 한국 월요일 09:13
+
+permissions:
+  contents: write
+
+concurrency:
+  group: repo-reports
+  cancel-in-progress: false
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      TZ: Asia/Seoul
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: 준비
+        run: pip install -r requirements.txt
+      - name: 벤치마크 실행
+        env:
+          NCP_APIGW_API_KEY_ID: ${{ secrets.NCP_APIGW_API_KEY_ID }}
+          NCP_APIGW_API_KEY: ${{ secrets.NCP_APIGW_API_KEY }}
+        run: |
+          if [ "${{ inputs.mode }}" = "예시" ]; then
+            python -m market.benchmark --sample
+          else
+            python -m market.benchmark
+          fi
+      - name: 결과 저장 (reports/ 커밋)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/
+          if git diff --cached --quiet; then
+            echo "바뀐 결과 없음"
+          else
+            git commit -m "벤치마크 후보 $(date +%F)"
+            for i in 1 2 3; do
+              git pull --rebase -X theirs origin "${GITHUB_REF_NAME}" && git push && exit 0
+              sleep $((i * 5))
+            done
+            echo "결과를 저장하지 못했습니다. Claude에게 알려주세요." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
