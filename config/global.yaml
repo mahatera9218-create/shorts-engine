@@ -3,8 +3,9 @@
 collect:
   related_per_seed: 20        # 씨앗마다 검색량 상위 연관 키워드 몇 개를 남길지
   min_monthly_volume: 300     # 월간 검색량(PC+모바일)이 이보다 작으면 버림
-  blog_top_n: 10              # 상위 몇 개 블로그 글을 볼지 (0.3 ③)
-  trend_months: 12            # 데이터랩 검색어 트렌드 기간
+  blog_recent_n: 100          # 최신순으로 몇 개 글을 받아 '최근 30일 새 글 수'를 잴지 (API 최대 100)
+  relevance_filter: true      # 씨앗과 두 글자도 안 겹치는 연관 키워드는 뺌 (seeds.yaml include_terms로 넓힐 수 있음)
+  trend_months: 24            # 데이터랩 기간. 추세는 1년 전 같은 달과 비교하므로 15개월 이상 필요
 
 youtube:
   top_keywords: 10            # 점수 상위 몇 개만 유튜브에서 조회 (규칙 5: 한도)
@@ -39,7 +40,7 @@ report:
 # 판정 제안 (market-research-memo 스킬의 판정 기준 중 코드로 잴 수 있는 것). 최종 판정은 Claude.
 verdict:
   declining_trend: -0.2       # 상위 키워드 평균 추세가 이 이하면 '수요 하락' → 제외
-  fresh_top_days: 90          # 상위 10개 발행일 중앙값이 이보다 짧으면 '최근 글로 꽉 참' → 제외
+  crowded_monthly_posts: 3000 # 월 새 글이 이만큼이면 이길 가능성 바닥, 상위 키워드 중앙값이 이 이상이면 '최근 글로 꽉 참' → 제외 (초기 추정값, 운영 데이터로 보정)
   low_win: 0.3                # 이길 가능성 평균이 이보다 낮으면 보류
 
 # 브랜드 단독·오타 등 빼고 싶은 키워드 (정확히 같은 키워드만 뺀다). 스킬 절차 1.

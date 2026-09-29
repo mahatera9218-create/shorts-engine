@@ -5,26 +5,33 @@
 #   1 = 연결할 상품·제휴 거의 없음, 5 = 단가 높은 상품 제휴가 자연스러움.
 #   운영 데이터(제휴 클릭·매출)가 쌓이면 보정한다.
 # shopping_category: 네이버 쇼핑 인사이트 카테고리 코드 (선택). 모르면 비워 둔다.
+# include_terms: (선택) 씨앗과 글자가 안 겹쳐도 남길 연관 키워드의 핵심 단어.
+#   씨앗·영역 이름·include_terms 어느 것과도 두 글자가 겹치지 않는 연관 키워드는 자동으로 뺀다 (global.yaml relevance_filter).
 
 areas:
   - id: small-business
     name: 자영업·사업자 운영
     affiliate: 3
     seeds: [사업자 세금, 소상공인 지원금]
+    include_terms: [부가세, 소득세, 세무, 정책자금]
   - id: car
     name: 자동차
     affiliate: 3
     seeds: [자동차 리스 비교, 중고차 시세]
+    include_terms: [하이브리드, 신차, 차종, 연비]
   - id: appliance
     name: 가전·고가 제품 비교
     affiliate: 5
     shopping_category: ""
     seeds: [로봇청소기 비교, 제습기 추천]
+    include_terms: [가습기, 공기청정기, 청소기]
   - id: travel-stay
     name: 여행 숙소
     affiliate: 4
     seeds: [호텔 가격 비교, 여행 경비]
+    include_terms: [숙박, 리조트, 펜션]
   - id: work-it
     name: 업무용 IT 서비스
     affiliate: 3
     seeds: [전자계약, 회계 프로그램]
+    include_terms: [세무, 전자세금계산서]
