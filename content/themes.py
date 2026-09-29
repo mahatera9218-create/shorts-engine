@@ -223,7 +223,13 @@ def build_vs(folder: Path, d: dict, photo: Image.Image | None) -> dict:
     note = "성적·연봉 보도 기준" + (f" · 환율 {d['a']['fx_krw_per_usd']:,}원" if d["a"].get("fx_krw_per_usd") else "")
     center_text(dr, (W / 2, end + 60), note, font("r", 28), SOFT)
     imgs["card_table.png"] = im
-    _save(folder, imgs, n)
+    st = {"hook": {"tag": f"{d['season']} 연봉 대결", "name": f"{A} vs {B}", "label": "올해 연봉",
+                   "big": f"{short_won(n['a']['salary_krw'])} vs {short_won(n['b']['salary_krw'])}"},
+          "quiz": {"lines": [f"{n['unit_label']} 몸값,", "누가 더 비쌀까?"], "options": [A, B],
+                   "answer": 0 if n["winner"] == "a" else 1},
+          "answer": {"big": won(vw), "top": f"{win} {n['unit_label']}", "line": line},
+          "table": {"title": f"{A} vs {B}", "header": rows[0], "rows": rows[1:], "hot": [h - 1 for h in hot]}}
+    _save(folder, imgs, n, st)
     return n
 
 
@@ -275,12 +281,21 @@ def build_life(folder: Path, d: dict, photo: Image.Image | None) -> dict:
     wage = cards.wage_card(n, n["life_unit"], 5, total)
     if wage is not None:
         imgs["card_wage.png"] = wage
-    _save(folder, imgs, n)
+    years = n.get("min_wage_years_per", {}).get(n["life_unit"])
+    st = {"hook": {"tag": f"{d['season']} 연봉 체감", "name": name, "label": "올해 연봉이면",
+                   "big": f"{q['short']} {count(q['salary_count'])}{q['unit']}"},
+          "quiz": {"lines": [first, ask], "options": [f"약 {count(v)}{qu}" for v in opts], "answer": idx},
+          "answer": {"big": ans, "line": line},
+          "table": {"title": title, "header": rows[0], "rows": rows[1:], "hot": [h - 1 for h in hot]},
+          "wage": {"title": "최저임금으로 이 돈 벌려면?", "big": cards.wage_text(years)} if years else None}
+    _save(folder, imgs, n, st)
     return n
 
 
-def _save(folder: Path, imgs: dict, n: dict) -> None:
+def _save(folder: Path, imgs: dict, n: dict, st: dict | None = None) -> None:
     (folder / "numbers.json").write_text(json.dumps(n, ensure_ascii=False, indent=1, default=str), encoding="utf-8")
+    if st:  # 클립 영상용 줄거리 (content/clip.py)
+        (folder / "clip.json").write_text(json.dumps(st, ensure_ascii=False, indent=1), encoding="utf-8")
     for name, img in imgs.items():
         img.save(folder / name)
     for name in OLD + tuple(f for f in ("card_wage.png", "card_items.png") if f not in imgs):

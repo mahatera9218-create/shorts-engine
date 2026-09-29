@@ -132,6 +132,7 @@ def page(p: dict) -> str:
 <button onclick="saveClip(this)">🎬 클립 영상 저장</button>
 <button class="ghost" onclick="copyText(this,{e(json.dumps(p["clip_text"]), quote=True)})">📋 클립 설명·해시태그 복사</button>
 <ol class="muted"><li>블로그 앱 아래 <b>+</b> → <b>클립 만들기</b></li><li>방금 저장한 영상 고르기</li>
+<li><b>음악</b> → 추천·인기 음악 중 신나는 곡 하나 (네이버가 저작권 계약한 음원이라 안전)</li>
 <li>설명 칸에 붙여넣기 → 올리기</li></ol></div>"""
     return f"""<!doctype html><html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive">
