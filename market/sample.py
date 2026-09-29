@@ -44,6 +44,7 @@ class FakeHub:
             "blogger": f"예시블로그{r.randint(1, 12)}",
             "blog_link": "", "link": "",
             "postdate": (today - timedelta(days=int(i * gap))).strftime("%Y%m%d"),
+            "description": r.choice(["예시 요약이에요. 숫자가 꽤 크죠?", "예시 요약입니다. 순위를 정리했다.", "이게 말이 되나요?"]),
         } for i in range(display)]
         return {"total": int(r.choice([800, 5000, 30000, 200000, 900000])), "items": items}
 
