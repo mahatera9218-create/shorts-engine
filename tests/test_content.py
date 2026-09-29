@@ -63,6 +63,12 @@ class ContentTest(unittest.TestCase):
         n = receipt.compute(d)
         assert set(n["per"]) == {"games", "at_bats", "hits"} and n["per_team_game"] == 10_000_000
 
+    def test_innings_notation(self):
+        d = {"salary_krw": 1_700_000_000, "units": [{"key": "innings", "label": "1이닝", "count": 85.2},
+                                                     {"key": "games", "label": "1경기", "count": 10}]}
+        assert round(receipt.compute(d)["per"]["innings"]) == round(1_700_000_000 / (85 + 2 / 3))
+        assert receipt.compute(d)["per"]["games"] == 170_000_000
+
     def test_check_post(self):
         sheet = "1안타당: 2억 32만 원"
         good = {"body": "1안타에 2억.\n[이미지 1: thumb.png]\n[이미지 2: receipt.png]", "recommended": 1,

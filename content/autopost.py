@@ -119,7 +119,7 @@ WRITE_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"(닉네�
 - 첫 줄은 제목의 답이 되는 숫자 한 줄. 제목에서 던진 숫자는 본문 첫 화면에서 회수한다.
 - 문단은 3문장 이하, 짧은 문장과 긴 문장을 섞는다. 질문 2~4개. 최저임금 같은 교차 비교 1번.
 - 이미지 자리는 정확히 이 두 줄을 각각 한 줄로 넣는다: "[이미지 1_첫문단아래: thumb.png]" (첫 문단 바로 아래), "[이미지 2_영수증: receipt.png]" (단위별 금액을 말하기 직전).
-- 끝에서 둘째 문단: 다음 글 예고가 주어지면 한 줄로 예고한다. 없으면 독자 의견을 묻는 질문.
+- 끝에서 둘째 문단: 다음에 계산해 볼 선수를 댓글로 묻는 질문 한 줄. 특정 선수 이름으로 다음 글을 약속하지 않는다 (그 선수 숫자가 안 모이면 못 쓴다).
 - 마지막 문단: "기준: ..."으로 연봉·성적·환율·최저임금의 기준일과 출처 종류를 한 문장으로.
 
 금지
@@ -320,13 +320,12 @@ def extract_opts() -> dict:
     return {"model": e.get("model", "claude-sonnet-5-5"), "effort": e.get("effort", "low")}
 
 
-def write_post(llm, topic: dict, sheet: str, next_topic: dict | None, max_revisions: int) -> tuple[dict, list[str], int]:
+def write_post(llm, topic: dict, sheet: str, max_revisions: int) -> tuple[dict, list[str], int]:
     w = llm_cfg().get("write", {})
     cap = llm_cfg().get("cost_cap_usd_per_post", 1.0)
     opts = {"model": w.get("model", "claude-sonnet-5-5"), "effort": w.get("effort", "medium")}
     system = writer_system()
-    teaser = f"다음 글 예고: {next_topic['player']} — {next_topic['angle']}" if next_topic else "다음 글 예고: 없음"
-    prompt = (f"카테고리: {topic['category']}\n글 방향: {topic['angle']}\n{teaser}\n\n숫자표\n{sheet}\n\n"
+    prompt = (f"카테고리: {topic['category']}\n글 방향: {topic['angle']}\n\n숫자표\n{sheet}\n\n"
               "이 숫자표로 발행 패키지를 JSON으로 만들어라.")
     post = llm.ask_json(system, prompt, POST_SCHEMA, **opts)
     problems = check_post(post, sheet)
@@ -419,9 +418,7 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, out_root: Pa
         folder.mkdir(parents=True, exist_ok=True)
         n = receipt.build(folder, d)
         sheet = number_sheet(d, n, facts, ex, cfg)
-        queue = [t for t in cfg.get("queue", []) if t["id"] != topic["id"]
-                 and not any(x.endswith("-" + t["id"]) for x in done_ids())]
-        post, problems, rounds = write_post(llm, topic, sheet, queue[0] if queue else None, cfg.get("max_revisions", 2))
+        post, problems, rounds = write_post(llm, topic, sheet, cfg.get("max_revisions", 2))
         cost = llm.cost_usd()
         (folder / "data.yaml").write_text(yaml.safe_dump(d, allow_unicode=True, sort_keys=False), encoding="utf-8")
         (folder / "facts.json").write_text(json.dumps(facts, ensure_ascii=False, indent=1), encoding="utf-8")
