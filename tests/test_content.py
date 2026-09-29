@@ -158,6 +158,16 @@ class ContentTest(unittest.TestCase):
         assert any("card_table.png" in x for x in check_post(p, sheet))
         assert not any("card_wage.png" in x for x in check_post({**p, "body": body + "[card_table.png]"}, sheet))
 
+    def test_pick_prices_by_group(self):
+        from content.themes import pick_prices
+        prices = {"pick": {"home": 2, "car_kr": 1, "car_import": 1}, "items": [
+            {"key": k, "group": g, "label": k, "short": k, "unit": "대", "price_krw": 1, "as_of": "2026-09-01",
+             "source": "x", "weight": w} for k, g, w in
+            [("a", "home", 100), ("b", "home", 1), ("c", "home", 1), ("d", "car_kr", 5), ("e", "car_import", 5)]]}
+        got = pick_prices(prices, "seed")
+        assert [x["group"] for x in got] == ["home", "home", "car_kr", "car_import"]
+        assert len({x["key"] for x in got}) == 4 and got == pick_prices(prices, "seed")
+
 
 if __name__ == "__main__":
     unittest.main()
