@@ -21,18 +21,19 @@ def clean(text: str) -> str:
 
 
 def trend_direction(ratios: list[float]) -> float:
-    """최근 3개월 평균 ÷ 그 전 3개월 평균 − 1. 데이터가 모자라면 0."""
-    if len(ratios) < 6:
+    """최근 3개월 평균 ÷ 1년 전 같은 3개월 평균 − 1 (계절 효과 제거). 데이터가 15개월 미만이면 0."""
+    if len(ratios) < 15:
         return 0.0
     recent = sum(ratios[-3:]) / 3
-    before = sum(ratios[-6:-3]) / 3
-    if before <= 0:
+    year_ago = sum(ratios[-15:-12]) / 3
+    if year_ago <= 0:
         return 0.0
-    return recent / before - 1
+    return recent / year_ago - 1
 
 
 def seasonality(ratios: list[float]) -> float:
-    """최고 ÷ 평균. 1에 가까우면 사계절 수요, 크면 계절성이 강함."""
+    """최근 12개월 최고 ÷ 평균. 1에 가까우면 사계절 수요, 크면 계절성이 강함."""
+    ratios = ratios[-12:]
     if not ratios:
         return 0.0
     avg = sum(ratios) / len(ratios)
@@ -50,10 +51,14 @@ class ApiHub:
             "X-NCP-APIGW-API-KEY": secret("NCP_APIGW_API_KEY"),
         }
 
-    def blog(self, keyword: str, top_n: int = 10) -> dict:
-        """전체 문서 수 + 상위 N개(정확도순) 제목·발행일·블로그명."""
+    def blog(self, keyword: str, display: int = 100) -> dict:
+        """전체 문서 수 + 최신 글 N개(최신순) 제목·발행일·블로그명.
+
+        정확도순 상위는 실제 검색 화면의 상위와 달라(2026-09-29 확인) 쓰지 않는다.
+        최신 글의 발행일로 '최근 새 글이 얼마나 올라오는가'(경쟁 활동량)를 잰다.
+        """
         data = request_json("GET", self.base + self.paths["blog_search"], headers=self._headers(),
-                            params={"query": keyword, "display": top_n, "sort": "sim"})
+                            params={"query": keyword, "display": display, "sort": "date"})
         items = [{
             "title": clean(it.get("title")),
             "blogger": clean(it.get("bloggername")),

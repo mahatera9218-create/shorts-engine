@@ -35,22 +35,23 @@ class FakeKeywordTool:
 
 
 class FakeHub:
-    def blog(self, keyword: str, top_n: int = 10) -> dict:
+    def blog(self, keyword: str, display: int = 100) -> dict:
         r = _rng("blog" + keyword)
         today = date.today()
+        gap = r.choice([0.2, 1, 3, 10, 40])  # 글 사이 평균 간격(일): 작을수록 경쟁이 활발
         items = [{
             "title": f"[예시] {keyword} 정리 {i + 1}",
             "blogger": f"예시블로그{r.randint(1, 12)}",
             "blog_link": "", "link": "",
-            "postdate": (today - timedelta(days=r.randint(5, 900))).strftime("%Y%m%d"),
-        } for i in range(top_n)]
+            "postdate": (today - timedelta(days=int(i * gap))).strftime("%Y%m%d"),
+        } for i in range(display)]
         return {"total": int(r.choice([800, 5000, 30000, 200000, 900000])), "items": items}
 
     def trends(self, keywords: list[str], months: int = 12) -> dict:
         out = {}
         for k in keywords:
             r = _rng("trend" + k)
-            out[k] = {"trend": r.uniform(-0.4, 0.5), "seasonality": r.uniform(1.0, 2.6), "months": months}
+            out[k] = {"trend": r.uniform(-0.3, 0.3), "seasonality": r.uniform(1.0, 2.6), "months": months}
         return out
 
 
