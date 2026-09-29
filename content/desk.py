@@ -1,6 +1,7 @@
 """발행 도우미 페이지: posts/의 발행 패키지를 태블릿에서 버튼 몇 번으로 옮길 수 있는 정적 사이트로 만든다.
 
-- 글마다 한 페이지: 제목 후보(누르면 복사), 썸네일, [본문 복사], [사진 한 번에 저장], [사진까지 통째로 복사(시험)], 태그 복사
+- 글마다 한 페이지: 제목 후보(누르면 복사), 썸네일, [본문 복사], [사진 한 번에 저장], [사진까지 통째로 복사(시험)], 태그 복사,
+  클립(세로 영상 저장·설명 복사)
 - 검색엔진 수집 금지 (발행 전 글이 먼저 수집되면 우리 글이 중복 문서가 될 수 있다): meta noindex + robots.txt + X-Robots-Tag
 - Cloudflare Pages에 올린다 (.github/workflows/desk.yml)
 
@@ -52,7 +53,9 @@ def parse(folder: Path) -> dict | None:
     sources = t.split("## 출처", 1)[1].split("\n## ", 1)[0].strip() if "## 출처" in t else ""
     return {"folder": folder.name, "date": folder.name[:10], "ok": status_ok, "problems": problems,
             "titles": titles, "tags": [x.strip() for x in tags.group(1).split(",")] if tags else [],
-            "category": cat.group(1) if cat else "", "blocks": blocks, "images": images, "sources": sources}
+            "category": cat.group(1) if cat else "", "blocks": blocks, "images": images, "sources": sources,
+            "clip": (folder / "clip.mp4").exists(),
+            "clip_text": (folder / "clip.txt").read_text(encoding="utf-8") if (folder / "clip.txt").exists() else ""}
 
 
 def slug(name: str) -> str:
@@ -88,6 +91,13 @@ async function copyRich(b){
   try{await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([h],{type:'text/html'}),'text/plain':new Blob([bodyText()],{type:'text/plain'})})]);flash(b,'복사됨 ✓ 네이버에 붙여넣어 보세요')}
   catch(e){alert('이 브라우저는 사진 포함 복사를 지원하지 않아요. [본문 복사]를 써 주세요.')}
 }
+async function saveClip(b){
+  try{
+    const r=await fetch('clip.mp4');const bl=await r.blob();const files=[new File([bl],'clip.mp4',{type:'video/mp4'})];
+    if(navigator.canShare&&navigator.canShare({files})){await navigator.share({files});flash(b,'완료 ✓');return}
+  }catch(e){if(e.name==='AbortError')return}
+  alert('영상을 길게 누르거나, 영상 오른쪽 아래 ⋮ 메뉴에서 저장해 주세요.')
+}
 async function saveAll(b){
   try{
     const files=await Promise.all(POST.images.map(async x=>{const r=await fetch(x.file);const bl=await r.blob();return new File([bl],String(x.n).padStart(2,'0')+'_'+x.file,{type:bl.type||'image/png'})}));
@@ -117,6 +127,12 @@ def page(p: dict) -> str:
     tags = " ".join("#" + t.replace(" ", "") for t in p["tags"])
     data = json.dumps({"blocks": p["blocks"], "images": p["images"]}, ensure_ascii=False).replace("</", "<\\/")
     thumb = next((x["file"] for x in p["images"] if x["n"] == 1), "thumb.png")
+    clip = "" if not p.get("clip") else f"""<div class="card"><h2><span class="step">6</span>클립 (블로그 발행 뒤)</h2>
+<video src="clip.mp4" controls playsinline preload="metadata" style="width:100%;max-width:320px;border-radius:10px;display:block"></video>
+<button onclick="saveClip(this)">🎬 클립 영상 저장</button>
+<button class="ghost" onclick="copyText(this,{e(json.dumps(p["clip_text"]), quote=True)})">📋 클립 설명·해시태그 복사</button>
+<ol class="muted"><li>블로그 앱 아래 <b>+</b> → <b>클립 만들기</b></li><li>방금 저장한 영상 고르기</li>
+<li>설명 칸에 붙여넣기 → 올리기</li></ol></div>"""
     return f"""<!doctype html><html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive">
 <title>{e(best["text"] if best else p["folder"])}</title><style>{CSS}</style></head><body><main>
@@ -136,6 +152,7 @@ def page(p: dict) -> str:
 <button class="ghost" onclick="copyRich(this)">🧪 사진까지 통째로 복사 (시험)</button>
 <div class="muted">네이버 편집기가 사진까지 받아 주면 사진 넣는 과정이 없어져요. 안 되면 위 버튼을 쓰세요.</div></div>
 <div class="card"><h2><span class="step">5</span>태그</h2><button class="ghost" onclick="copyText(this,{e(json.dumps(tags), quote=True)})">{e(tags)}</button></div>
+{clip}
 <div class="card body"><h2>미리 읽기</h2>{body}</div>
 <div class="card" id="each"><h2>사진 하나씩 저장</h2>{each}</div>
 <details class="card"><summary>출처</summary><pre style="white-space:pre-wrap">{e(p["sources"])}</pre></details>
@@ -170,6 +187,8 @@ def build(out: Path) -> list[dict]:
             src = POSTS / p["folder"] / x["file"]
             if src.exists():
                 shutil.copy(src, d / x["file"])
+        if p.get("clip"):
+            shutil.copy(POSTS / p["folder"] / "clip.mp4", d / "clip.mp4")
         (d / "index.html").write_text(page(p), encoding="utf-8")
     (out / "index.html").write_text(index(sorted(posts, key=lambda p: p["folder"])[-14:]), encoding="utf-8")
     (out / "robots.txt").write_text("User-agent: *\nDisallow: /\n", encoding="utf-8")
