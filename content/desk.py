@@ -22,6 +22,8 @@ import urllib.parse
 import sys
 from pathlib import Path
 
+import yaml
+
 from market.common import ROOT
 from .mark import status as read_status
 
@@ -247,6 +249,15 @@ def shorts_list() -> list[dict]:
         if (f / "video.mp4").exists() and m.exists():
             title, _, desc = m.read_text(encoding="utf-8").partition("\n")
             out.append({"folder": f.name, "date": f.name[:10], "kind": f.name[11:12], "title": title, "desc": desc.strip()})
+    log = {x["title"]: x for x in (yaml.safe_load((SHORTS / "log.yaml").read_text(encoding="utf-8")) or [])} \
+        if (SHORTS / "log.yaml").exists() else {}
+    st = ROOT / "reports" / "쇼츠-성과" / "stats.yaml"
+    vids = ((yaml.safe_load(st.read_text(encoding="utf-8")) or {}).get("videos", {})) if st.exists() else {}
+    for s in out:
+        vid = log.get(s["title"], {}).get("video_id")
+        if vid and vid in vids and vids[vid]["snaps"]:
+            s["views"] = vids[vid]["snaps"][max(vids[vid]["snaps"])]["views"]
+        s["uploaded"] = bool(vid)
     return out
 
 
@@ -255,7 +266,9 @@ def shorts_page(items: list[dict]) -> str:
     cards = []
     for i, s in enumerate(items):
         v = f"{slug(s['folder'])}.mp4"  # 주소에 한글이 들어가지 않게
-        cards.append(f"""<div class="card"><h2>{e(s['date'])} · {e(KIND.get(s['kind'], s['kind']))}</h2>
+        up = (f'<span class="badge ok">✅ 올림 · 조회 {s["views"]:,}</span>' if "views" in s else '<span class="badge ok">✅ 올림</span>') \
+            if s.get("uploaded") else '<span class="badge warn">아직 안 올림</span>'
+        cards.append(f"""<div class="card"><h2>{e(s['date'])} · {e(KIND.get(s['kind'], s['kind']))} {up}</h2>
 <video src="{e(v)}" controls playsinline preload="metadata" style="width:100%;max-width:320px;border-radius:10px;display:block"></video>
 <button onclick="saveClip(this,{e(json.dumps(v), quote=True)})">🎬 영상 저장</button>
 <button class="ghost" onclick="copyText(this,{e(json.dumps(s['title']), quote=True)})">📋 제목 복사: {e(s['title'])}</button>

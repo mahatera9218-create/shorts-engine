@@ -1,5 +1,5 @@
 # 쇼츠 벤치마크: 한국에서 잘 되는 스포츠 돈 쇼츠의 숫자(조회수·길이·제목·구독자) → reports/쇼츠-벤치마크/
-# 자동: config/shorts_bench.yaml 또는 market/shorts_bench.py를 고쳐 main에 올리면 실행. 수동: Actions → 쇼츠 벤치마크 → Run workflow
+# 자동: 매주 월요일 오전 8시 37분(한국) + config/shorts_bench.yaml 또는 market/shorts_bench.py를 고쳐 main에 올리면. 수동: Actions → 쇼츠 벤치마크 → Run workflow
 name: 쇼츠 벤치마크
 
 on:
@@ -7,6 +7,8 @@ on:
   push:
     branches: [main]
     paths: ["config/shorts_bench.yaml", "market/shorts_bench.py"]
+  schedule:
+    - cron: "37 23 * * 0"   # UTC 일요일 23:37 = 한국 월요일 08:37 (주간 점검 전에)
 
 permissions:
   contents: write

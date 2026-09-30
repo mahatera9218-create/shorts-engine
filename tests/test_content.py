@@ -465,3 +465,30 @@ class TestShortsABC(unittest.TestCase):
         table = shorts.salary_table(None)
         self.assertTrue(all(x["krw"] is None for x in table if x["usd"]))
         self.assertFalse(any(o["key"].startswith("C-nba") for o in shorts.options_c(table)))
+
+
+class TestShortsStats(unittest.TestCase):
+    def test_update_match_and_summary(self):
+        import tempfile
+        from pathlib import Path
+        from unittest import mock
+        import yaml
+        from content import shorts_stats as ss
+        with tempfile.TemporaryDirectory() as d:
+            d = Path(d)
+            log = d / "log.yaml"
+            log.write_text(yaml.safe_dump([{"date": "2026-09-30", "kind": "B", "key": "B-x", "title": "KBO 연봉 1위 vs NBA 연봉 1위"}],
+                                          allow_unicode=True), encoding="utf-8")
+            with mock.patch.object(ss, "OUT", d), mock.patch.object(ss, "STATS", d / "stats.yaml"), mock.patch.object(ss, "LOG", log):
+                vids = [{"id": "v1", "title": "KBO 연봉 1위 vs NBA 연봉 1위", "published": "2026-09-30", "views": 100, "likes": 3, "comments": 1},
+                        {"id": "v2", "title": "직접 올린 영상", "published": "2026-09-30", "views": 5, "likes": 0, "comments": 0}]
+                ss.update({"subs": 10, "views": 105, "videos": 2}, vids, "2026-09-30")
+                vids[0]["views"] = 900
+                stats = ss.update({"subs": 25, "views": 905, "videos": 2}, vids, "2026-10-03")
+                self.assertEqual(stats["videos"]["v1"]["kind"], "B")
+                self.assertEqual(ss.views_at(stats["videos"]["v1"], 3), 900)
+                self.assertIsNone(ss.views_at(stats["videos"]["v1"], 7))
+                self.assertEqual(yaml.safe_load(log.read_text(encoding="utf-8"))[0]["video_id"], "v1")
+                text = "\n".join(ss.summary(stats, "2026-10-03"))
+                self.assertIn("구독자 **25**", text)
+                self.assertIn("짝을 못 찾은 영상 1개", text)
