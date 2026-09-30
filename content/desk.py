@@ -134,10 +134,14 @@ def page(p: dict) -> str:
     status = ('<span class="badge ok">✅ 발행 가능</span>' if p["ok"] else
               '<span class="badge warn">⚠️ 확인 필요 — 발행하지 말고 Claude에게 알려주세요</span>')
     probs = "".join(f"<li>{e(x)}</li>" for x in p["problems"])
-    titles = "".join(
-        f'<button class="ghost" onclick="copyText(this,{e(json.dumps(t["text"]), quote=True)})">'
-        f'{"★ " if t["best"] else ""}{e(t["text"])} <span class="muted">· {e(t["type"])} · {len(t["text"])}자</span></button>'
-        for t in p["titles"])
+    def tbtn(t, cls="ghost"):
+        return (f'<button class="{cls}" onclick="copyText(this,{e(json.dumps(t["text"]), quote=True)})">'
+                f'{e(t["text"])} <span class="muted">· {e(t["type"])} · {len(t["text"])}자</span></button>')
+
+    rest = "".join(tbtn(t) for t in p["titles"] if t is not best)
+    titles = (tbtn(best, "ghost") if best else "") + (
+        f'<details><summary class="muted">다른 제목 {len(p["titles"]) - 1}개 (썸네일과 짝이 아니라 예비)</summary>{rest}</details>'
+        if rest else "")
     body = "".join(
         f'<p>{e(b["text"])}</p>' if "text" in b else
         f'<div class="ph"><img src="{e(b["img"])}" alt="사진 {b["n"]}" loading="lazy"><small>📷 사진 {b["n"]} · {e(b["label"])}</small></div>'
@@ -171,7 +175,7 @@ def page(p: dict) -> str:
 <button onclick="saveAll(this)">📷 사진 {len(p["images"])}장 한 번에 저장</button>
 <div class="muted">공유 창이 뜨면 "이미지 저장" / "사진에 저장"을 누르세요. 파일 이름 앞 번호가 넣는 순서예요.</div></div>
 <div class="card"><h2><span class="step">2</span>제목 (눌러서 복사)</h2>{titles}
-<div class="muted">★ 추천. 마음에 드는 걸 골라 직접 다듬어도 돼요.</div></div>
+<div class="muted">썸네일과 짝으로 만든 제목이에요. 고르지 말고 이걸 그대로 쓰세요.</div></div>
 <div class="card"><h2><span class="step">3</span>대표 사진 (썸네일)</h2><img class="thumb" src="{e(thumb)}" alt="썸네일">
 <div class="muted">본문에 넣은 뒤 이 사진을 대표이미지로 지정하세요.</div></div>
 <div class="card"><h2><span class="step">4</span>본문</h2>
