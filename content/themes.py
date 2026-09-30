@@ -278,7 +278,8 @@ def build_life(folder: Path, d: dict, photo: Image.Image | None) -> dict:
     name = d.get("short_name") or d["player"]
     q = n["item"]
     total = 5
-    imgs = {"thumb.png": receipt.poster(f"{d['season']} 연봉 체감", name, "올해 연봉이면",
+    tag = {"place": "연고지 아파트", "trip": "몸값 여행", "jersey": "유니폼 vs 몸값"}.get(d.get("theme"), "연봉 체감")
+    imgs = {"thumb.png": receipt.poster(f"{d['season']} {tag}", name, "올해 연봉이면",
                                         f"{q['short']} {count(q['salary_count'])}{q['unit']}", photo,
                                         jerseys=jersey.for_players([d["player"]]))}
     if n["inverse"]:
@@ -306,9 +307,11 @@ def build_life(folder: Path, d: dict, photo: Image.Image | None) -> dict:
     im, dr = _base(4, total)
     title = f"{name} 몸값을 {ro(q['short'])} 바꾸면"
     center_text(dr, (W / 2, 190), title, fit(dr, title, "display", 64, W * 0.86), INK)
-    if n["inverse"]:  # 한 채 사려면 연봉 몇 년·몇 경기·몇 승
-        rows = [["기준", "몸값", f"한 {q['unit']} 사려면"]]
-        rows += [[r["label"], won(r["value"]), f"{count(q['price_krw'] / r['value'])}{'년' if r['key'] == 'salary' else word(r['label'])}"]
+    if n["inverse"]:  # 연봉은 몇 채, 기록은 "몇 경기에 1채"
+        rows = [["기준", "몸값", q["short"]]]
+        rows += [[r["label"], won(r["value"]),
+                  f"{count(r['count'])}{q['unit']}" if r["key"] == "salary" or r["count"] >= 1 else
+                  f"{count(q['price_krw'] / r['value'])}{word(r['label'])}에 1{q['unit']}"]
                  for r in n["rows"][:6]]
     else:
         rows = [["기준", "몸값", f"{q['short']}"]]
@@ -323,7 +326,7 @@ def build_life(folder: Path, d: dict, photo: Image.Image | None) -> dict:
     if wage is not None:
         imgs["card_wage.png"] = wage
     years = n.get("min_wage_years_per", {}).get(n["life_unit"])
-    st = {"hook": {"tag": f"{d['season']} 연봉 체감", "name": name, "label": "올해 연봉이면",
+    st = {"hook": {"tag": f"{d['season']} {tag}", "name": name, "label": "올해 연봉이면",
                    "big": f"{q['short']} {count(q['salary_count'])}{q['unit']}", "players": [d["player"]]},
           "quiz": {"lines": [first, ask], "options": [f"약 {count(v)}{qu}" for v in opts], "answer": idx},
           "answer": {"big": ans, "line": line},
@@ -392,7 +395,7 @@ def build(folder: Path, d: dict) -> dict:
     th = d.get("theme", "receipt")
     if th in ("same", "cross"):
         return build_vs(folder, d, photo)
-    if th in ("life", "jersey"):  # 유니폼 테마 = 물건이 그 팀 유니폼인 생활 물가 비교
+    if th in ("life", "jersey", "place", "trip"):  # 물건만 다른 생활 물가 비교 (유니폼·연고지 아파트·여행)
         return build_life(folder, d, photo)
     if th == "tax":
         return build_tax(folder, d, photo)
@@ -430,7 +433,7 @@ IMAGE_PLANS["tax"] = [
 
 
 def image_plan(theme: str) -> list[tuple[str, str, str]]:
-    return IMAGE_PLANS["vs" if theme in ("same", "cross") else "life" if theme == "jersey" else theme]
+    return IMAGE_PLANS["vs" if theme in ("same", "cross") else "life" if theme in ("jersey", "place", "trip") else theme]
 
 
 def image_lines(theme: str) -> list[str]:

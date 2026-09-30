@@ -10,7 +10,7 @@ from datetime import date
 from itertools import combinations
 
 from market.common import ROOT, load_yaml
-from .autopost import USED_DAYS, eligible, used_combos
+from .autopost import USED_DAYS, eligible, places_for, used_combos
 
 
 def kind(pool: dict, p: dict) -> str:
@@ -22,7 +22,10 @@ def count(pool: dict) -> dict[str, int]:
     el = eligible(pool)
     items = len(load_yaml("prices.yaml")["items"])
     pairs = list(combinations(ps, 2))
+    places = {p["name"]: places_for(pool, p) for p in ps}
     return {"life": len(ps) * items,
+            "place": sum(sum(x["domestic"] for x in v) for v in places.values()),
+            "trip": sum(len(v) for v in places.values()),
             "tax": len(el["tax"]),
             "receipt": len(ps),
             "same": sum(kind(pool, a) == kind(pool, b) for a, b in pairs),
@@ -37,6 +40,11 @@ def report(today: str) -> str:
     used_by = {}
     for th, _ in used:
         used_by[th] = used_by.get(th, 0) + 1
+    for keys in used_items.values():  # 장소 테마는 (선수, 장소)가 조합
+        for k in keys:
+            th = "place" if str(k).startswith("apt_") else "trip" if str(k).startswith("trip_") else None
+            if th:
+                used_by[th] = used_by.get(th, 0) + 1
     w = {k: v["weight"] for k, v in pool["themes"].items()}
     ws = sum(w.values())
     L = [f"# 콘텐츠 재고 · {today}", "",

@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import random
 import re
 from collections import Counter
 from datetime import date
@@ -86,6 +87,13 @@ BRIEF_KEYS = {"reader": "독자", "reader_question": "독자의 질문", "promis
               "payoff": "본문에서 회수하는 곳", "only_here": "이 글에만 있는 것", "takeaway": "읽고 남는 한 줄",
               "why_naver": "네이버·광고주 기대에 맞는 이유",
               "ad_fit": "기대하는 광고 묶음과 그걸 부르는 문맥"}
+
+REGION_RULES = """너는 부동산 기사 요약문에서 지역 아파트 평균 매매가격 하나를 뽑는 도우미다.
+- 요청한 지역(시·광역시) 전체의 아파트 평균 매매가격(한국부동산원·KB부동산 통계를 인용한 보도)만 쓴다.
+- 중위가격·전세·월세·분양가·특정 단지·구 단위·㎡당(평당) 가격·다른 지역은 쓰지 않는다. 확실하지 않으면 found=false.
+- price_krw는 원 단위 정수. 기사에 적힌 숫자만 쓰고 계산·추측하지 않는다.
+- deal_date는 통계 기준 월 (YYYY-MM, 없으면 빈 문자열). source는 기사 번호 [n].
+"""
 
 POST_SCHEMA = {
     "type": "object",
@@ -254,7 +262,9 @@ def fill_prices(hub, llm, items: list[dict], today: str, fallback: dict | None) 
         news = [n for n in gather_news(hub, [it["query"]], per_query=15)
                 if (date.fromisoformat(today) - date.fromisoformat(n["date"])).days <= 180]
         if news:
-            r = llm.ask_json([PRICE_RULES], f"단지: {it['label']}\n오늘: {today}\n\n기사\n{news_prompt(news)}",
+            region = it.get("kind") == "region_avg"
+            r = llm.ask_json([REGION_RULES if region else PRICE_RULES],
+                             f"{'지역' if region else '단지'}: {it['label']}\n오늘: {today}\n\n기사\n{news_prompt(news)}",
                              PRICE_SCHEMA, max_tokens=1000, **extract_opts())
             src = news[r["source"] - 1] if 1 <= r["source"] <= len(news) else None
             text = (src["title"] + " " + src["description"]).replace(" ", "") if src else ""
@@ -271,7 +281,7 @@ def fill_prices(hub, llm, items: list[dict], today: str, fallback: dict | None) 
         if got:
             out.append(got)
         else:
-            notes.append(f"{it['short']} 가격 못 씀 ({why}) → 서울 아파트 평균으로 대신")
+            notes.append(f"{it['short']} 가격 못 씀 ({why})" + (" → 서울 아파트 평균으로 대신" if fallback else ""))
             if fallback and all(x["key"] != fallback["key"] for x in out + items):
                 out.append(fallback)
     return out, notes
@@ -664,11 +674,48 @@ def used_combos(today: str, days: int = USED_DAYS) -> tuple[set, dict[str, set[s
     return combos, items
 
 
+CITY_QUERY = {"광주": "광주광역시"}  # 같은 이름 지역(경기 광주)과 헷갈리지 않게
+
+
+def places_for(pool: dict, player: dict) -> list[dict]:
+    """선수와 이어진 장소: 지금 소속팀 연고지(players.yaml cities) + 출신지·예전 소속팀(places.yaml). 공개된 사실만."""
+    cfg = load_yaml("places.yaml") if (ROOT / "config" / "places.yaml").exists() else {}
+    domestic = set((cfg.get("cities") or {}).get("국내", []))
+    out = []
+    city = (pool.get("cities") or {}).get(player.get("team", ""))
+    if city:
+        out.append({"city": city, "relation": f"지금 소속팀({player['team']}) 연고지"})
+    out += [dict(x) for x in (cfg.get("players") or {}).get(player["name"], [])]
+    seen, uniq = set(), []
+    for x in out:
+        if x["city"] not in seen:
+            seen.add(x["city"])
+            uniq.append({**x, "domestic": x["city"] in domestic})
+    return uniq
+
+
+def place_item(place: dict, theme: str) -> dict:
+    """연고지 아파트(국내 도시, 글 쓰는 날 뉴스에서 평균 매매가) 또는 여행(국민여행조사 평균 경비) 비교 물건."""
+    city = place["city"]
+    if theme == "place":
+        q = CITY_QUERY.get(city, city)
+        return {"key": f"apt_{city}", "group": "place", "label": f"{q} 아파트 평균 매매가격", "short": f"{city} 아파트",
+                "unit": "채", "fetch": "news", "kind": "region_avg", "query": f"{q} 아파트 평균 매매가격",
+                "min_krw": 100_000_000, "max_krw": 3_000_000_000}
+    t = load_yaml("places.yaml")["travel"]["domestic" if place["domestic"] else "overseas"]
+    return {"key": f"trip_{city}", "group": "trip", "label": t["label"], "short": f"{city} 여행", "unit": "번",
+            "price_krw": t["price_krw"], "as_of": t["as_of"], "source": t["source"]}
+
+
 def eligible(pool: dict) -> dict[str, set[str]]:
-    """테마별로 쓸 수 있는 선수: 세금은 국내 리그(사업소득·원화), 유니폼은 가격을 확인한 팀."""
+    """테마별로 쓸 수 있는 선수: 세금은 국내 리그(사업소득·원화), 유니폼은 가격을 확인한 팀,
+    연고지 아파트는 국내 장소가 있는 선수, 여행은 이어진 장소가 있는 선수."""
     goods = load_yaml("goods.yaml").get("teams", {}) if (ROOT / "config" / "goods.yaml").exists() else {}
+    pl = {p["name"]: places_for(pool, p) for p in pool["players"]}
     return {"tax": {p["name"] for p in pool["players"] if p["sport"] == "kbo"},
-            "jersey": {p["name"] for p in pool["players"] if p.get("team") in goods}}
+            "jersey": {p["name"] for p in pool["players"] if p.get("team") in goods},
+            "place": {n for n, xs in pl.items() if any(x["domestic"] for x in xs)},
+            "trip": {n for n, xs in pl.items() if xs}}
 
 
 def recent_players(k: int) -> set[str]:
@@ -717,7 +764,16 @@ def theme_sheet(plan: dict, d: dict, n: dict, got: list[dict], cfg: dict) -> str
              f"퀴즈 카드: 월급날 떼는 세금 맞히기 (정답 {won(n['withhold'])})"]
         return "\n".join(L)
     q = n["item"]
-    L = [strip_lines(number_sheet(d, n, got[0]["facts"], got[0]["ex"], cfg), "썸네일:", "퀴즈 카드:"),
+    link = []
+    if d.get("place"):
+        pl = d["place"]
+        link = [f"장소 연결 (공개된 경력·출생지): {pl['city']}는 {d.get('short_name') or d['player']}의 {pl['relation']}"]
+        if th == "trip":
+            link.append(f"- 여행 경비는 {pl['city']}만의 비용이 아니라 {q['label']}다 (국민여행조사 2025). "
+                        f"'{pl['city']} 여행 경비'라고 단정하지 말고 '여행 한 번 평균 경비로 치면'처럼 쓴다. 특정 항공권·호텔 가격은 쓰지 않는다.")
+        else:
+            link.append("- 지역 평균 매매가(통계 보도)다. 특정 단지 값처럼 쓰지 않고, 사라·오른다 같은 투자 권유는 하지 않는다.")
+    L = link + [strip_lines(number_sheet(d, n, got[0]["facts"], got[0]["ex"], cfg), "썸네일:", "퀴즈 카드:"),
          f"썸네일: {d.get('short_name') or d['player']} / 올해 연봉이면 / {q['short']} {themes.count(q['salary_count'])}{q['unit']}"
          " (추천 제목에는 이 숫자를 다시 쓰지 않는다)",
          f"비교 물건 (글 전체에서 이것 하나만 쓴다): {q['label']} {won(q['price_krw'])} ({q['as_of']} 기준)",
@@ -725,8 +781,8 @@ def theme_sheet(plan: dict, d: dict, n: dict, got: list[dict], cfg: dict) -> str
     L += [f"- {r['label']} {won(r['value'])} → {themes.count(r['count'])}{q['unit']}" for r in n["rows"]]
     if n["inverse"]:
         L.append(f"{q['short']} 한 {q['unit']} 사려면 (버림):")
-        L += [f"- {r['label']}로 {themes.count(q['price_krw'] / r['value'])}{'년' if r['key'] == 'salary' else cards.word(r['label'])}"
-              for r in n["rows"]]
+        L += [f"- {themes.count(q['price_krw'] / r['value'])}{cards.word(r['label'])}에 1{q['unit']}"
+              for r in n["rows"] if r["key"] != "salary" and r["count"] < 1]
     if n["inverse"]:
         L.append(f"{q['short']} 한 {q['unit']} 사려면: {n['life_label']} 몸값 {won(n['life_per'])}로 {themes.count(n['inverse_count'])}{n['inverse_word']}")
         L.append(f"퀴즈 카드: {q['short']} 한 {q['unit']} 사려면 몇 {n['inverse_word']} 맞히기 (정답 {themes.count(n['inverse_count'])}{n['inverse_word']})")
@@ -822,13 +878,23 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
                                                                            used_items.get(d["player"], set())),
                                               today, fallback)
                 notes += pn
+            if th in ("place", "trip"):  # 연고지·출신지·예전 소속팀 도시 (이 선수와 아직 안 쓴 장소부터)
+                me = next(p for p in pool["players"] if p["name"] == d["player"])
+                cands = [x for x in places_for(pool, me) if th == "trip" or x["domestic"]]
+                fresh = [x for x in cands if place_item(x, th)["key"] not in used_items.get(d["player"], set())] or cands
+                place = random.Random(f"{seed}-{d['player']}-{th}").choice(fresh)
+                d["place"] = place
+                d["prices"], pn = fill_prices(hub, llm, [place_item(place, th)], today, None)
+                notes += pn
+                if not d["prices"]:
+                    continue
             if th == "jersey":  # 유니폼 테마: 물건 = 그 팀 유니폼 (config/goods.yaml)
                 g = load_yaml("goods.yaml")["teams"].get(d.get("team", ""))
                 if not g:
                     notes.append(f"건너뜀 — {d['player']}: 유니폼 가격 없음 ({d.get('team', '')})")
                     continue
                 d["prices"] = [{**g, "group": "goods"}]
-            if th in ("life", "jersey"):
+            if th in ("life", "jersey", "place", "trip"):
                 old = [i["short"] for i in d["prices"] if (date.fromisoformat(today) - date.fromisoformat(str(i["as_of"]))).days > 180]
                 if old:
                     notes.append(f"가격 확인 필요 (6개월 넘음): {', '.join(old)} → config/prices.yaml·goods.yaml")
@@ -875,7 +941,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--sample", action="store_true", help="키 없이 가짜 뉴스·가짜 응답으로 모양만 확인")
     ap.add_argument("--topic", default=None, help="선수 이름 (비우면 선수 풀에서 무작위)")
-    ap.add_argument("--theme", default=None, choices=["receipt", "same", "cross", "life", "tax", "jersey"], help="테마 고정 (비우면 무작위)")
+    ap.add_argument("--theme", default=None, choices=["receipt", "same", "cross", "life", "tax", "jersey", "place", "trip"], help="테마 고정 (비우면 무작위)")
     ap.add_argument("--out", default=None, help="결과 폴더 (기본 posts/)")
     ap.add_argument("--again", action="store_true", help="다시 뽑기: 하루 한도를 건너뛰고 새 조합으로")
     ap.add_argument("--target", type=int, default=1, help="발행 가능한(✅) 글을 몇 편 만들지")
