@@ -94,6 +94,12 @@ jobs:
             # 발행 가능(✅) 글이 n편 될 때까지 최대 n×3+1번 쓴다. 기준 미달(⚠️)은 목록에서 빼고 다른 조합으로 다시.
             python -m content.autopost "${args[@]}" --target "$n" --tries $((n * 3 + 1))
           fi
+      - name: 쇼츠 성과 수집 (우리 채널 공개 통계, 실패해도 계속)
+        if: inputs.mode != '예시' && !inputs.again
+        continue-on-error: true
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: python -m content.shorts_stats | tee -a "$GITHUB_STEP_SUMMARY"
       - name: 유튜브 쇼츠 A·B·C (코드 계산만, Claude 비용 없음. 실패해도 글은 저장)
         if: inputs.mode != '예시' && !inputs.again
         continue-on-error: true
@@ -103,7 +109,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A posts/; [ -d shorts ] && git add -A shorts/; for f in config/trending.yaml config/search_volume.yaml reports/costs.csv; do [ -e "$f" ] && git add "$f"; done
+          git add -A posts/; [ -d shorts ] && git add -A shorts/; for f in config/trending.yaml config/search_volume.yaml reports/costs.csv reports/쇼츠-성과; do [ -e "$f" ] && git add "$f"; done
           if git diff --cached --quiet; then
             echo "새 글 없음"
           else

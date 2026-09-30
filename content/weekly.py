@@ -85,6 +85,15 @@ def cost_line(start: date, end: date, ps: list[dict]) -> str:
             + ", ".join(f"{k} ${v:.2f}" for k, v in sorted(stages.items(), key=lambda x: -x[1])))
 
 
+def shorts_lines(end: date) -> list[str]:
+    from . import shorts_stats
+    stats = shorts_stats.load(shorts_stats.STATS, None)
+    if not stats or not stats.get("channel"):
+        return ["- 아직 수집 전 (config/youtube.yaml에 채널 주소가 들어가면 매일 자동)"]
+    day = max(d for d in stats["channel"] if d <= str(end)) if any(d <= str(end) for d in stats["channel"]) else max(stats["channel"])
+    return [x.replace("## ", "### ") for x in shorts_stats.summary(stats, day)]
+
+
 def report(week_start: date) -> str:
     end = week_start + timedelta(days=6)
     ps = posts_between(week_start, end)
@@ -106,9 +115,10 @@ def report(week_start: date) -> str:
     L += [f"- 일 방문자 {wk.get('visitors_day', '-')} · 주간 조회 {wk.get('views_week', '-')} · 홈판 {wk.get('homefeed_pct', '-')}% · "
           f"검색 {wk.get('search_pct', '-')}% · 애드포스트 {wk.get('adpost_krw', '-')}원"] if wk else ["- 아직 캡처 없음 (월요일에 대표가 캡처를 보내면 채움)"]
     L += ["", "## 3. 판정 (7일 지난 글, 운영 계획 5장)", ""] + judge(metrics, end, names)
+    L += ["", "## 3-1. 유튜브 쇼츠 (자동, 운영 계획 6장)", ""] + shorts_lines(end)
     L += ["", "## 4. 이번 주 바꾼 것 (1~2개, DECISIONS에 기록)", "", "- (Claude가 판정 후 적음)",
           "", "## 5. 다음 주 가설", "", "- (Claude가 적음)",
-          "", "## 6. 대표님께 부탁", "", "- 블로그·클립 통계와 댓글 캡처 (docs/운영자-안내-주간-점검.md)", ""]
+          "", "## 6. 대표님께 부탁", "", "- 블로그·클립 통계와 댓글 캡처, 유튜브 스튜디오 쇼츠 캡처 (docs/운영자-안내-주간-점검.md)", ""]
     return "\n".join(L)
 
 
