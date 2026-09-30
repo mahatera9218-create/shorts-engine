@@ -75,7 +75,17 @@ def parse(folder: Path) -> dict | None:
             "category": cat.group(1) if cat else "", "blocks": blocks, "images": images, "sources": sources,
             "clip": (folder / "clip.mp4").exists(), "status": read_status(folder),
             "review": (re.search(r"## 편집장 검토[^\n]*\n\n(.+)", t) or [None, ""])[1].strip(),
-            "clip_text": (folder / "clip.txt").read_text(encoding="utf-8") if (folder / "clip.txt").exists() else ""}
+            "clip_text": (folder / "clip.txt").read_text(encoding="utf-8") if (folder / "clip.txt").exists() else "",
+            "shop": _shop(folder)}
+
+
+def _shop(folder: Path) -> dict | None:
+    """쇼핑커넥트 상품군 (config/commerce.yaml, 가입 전에는 None)."""
+    f = folder / "data.yaml"
+    if not f.exists():
+        return None
+    from .commerce import info
+    return info(yaml.safe_load(f.read_text(encoding="utf-8")) or {})
 
 
 def slug(name: str) -> str:
@@ -218,6 +228,13 @@ def page(p: dict) -> str:
             + (f'<a class="btn" href="{e(st["url"], quote=True)}">네이버에 올라간 글 보기</a>' if st.get("url") else
                '<div class="muted">네이버 공개 확인 전 (매일 아침 자동 확인)</div>')
             + '</div>') if st.get("status") == "used" else ""
+    sh = p.get("shop")
+    shop = (f'<div class="card"><h2>🛒 쇼핑커넥트: {e(sh["name"])}</h2>'
+            + "".join(f'<a class="btn" href="{e(x["url"], quote=True)}">{e(x["name"])}</a>' for x in sh["products"])
+            + ('' if sh["products"] else '<div class="muted">이 상품군의 상품을 아직 고르지 않았어요.</div>')
+            + edit_box("shopnote", sh["disclosure"], "광고 고지 복사")
+            + '<div class="muted">본문 끝에 광고 고지를 꼭 붙이세요. 선수 사진이 나오는 클립에는 상품 태그를 달지 않아요.</div></div>'
+            ) if sh else ""
     done_btn = e(issue_link("발행완료", p["folder"], "블로그·클립 발행을 마쳤어요."), quote=True)
     again_btn = e(issue_link("다시뽑기", p["folder"], "이 글은 버리고 다른 선수·테마로 새로 써 주세요."), quote=True)
     return f"""<!doctype html><html lang="ko"><head><meta charset="utf-8">
@@ -241,7 +258,7 @@ def page(p: dict) -> str:
 <div class="card"><h2><span class="step">5</span>태그</h2><button class="ghost" onclick="copyText(this,{e(json.dumps(tags), quote=True)})">📋 한 번에 복사: {e(tags)}</button>
 <div class="muted">한 번에 붙여넣기가 안 되면 아래 태그를 하나씩 눌러 복사 → 태그 칸에 붙여넣기 → 완료(엔터)를 반복하세요.</div>
 <div class="chips">{chips}</div></div>
-<div class="card"><h2>🎬 클립</h2><div class="muted">클립 영상·설명은 도우미 첫 화면의 <a href="../../#clip">클립 탭</a>에 있어요 (블로그 발행 뒤 올리기).</div></div>
+{shop}<div class="card"><h2>🎬 클립</h2><div class="muted">클립 영상·설명은 도우미 첫 화면의 <a href="../../#clip">클립 탭</a>에 있어요 (블로그 발행 뒤 올리기).</div></div>
 <div class="card"><h2><span class="step">6</span>다 올렸으면</h2>
 <a class="btn" href="{done_btn}">✅ 발행 완료 표시</a>
 <div class="muted">GitHub 화면이 열리면 초록 <b>Create</b>만 누르세요. 2~3분 뒤 목록에서 "발행한 글"로 내려가요 (중복 발행 방지).</div></div>
