@@ -717,6 +717,20 @@ def place_item(place: dict, theme: str) -> dict:
             "price_krw": t["price_krw"], "as_of": t["as_of"], "source": t["source"]}
 
 
+def reset_drafts(today: str) -> list[str]:
+    """초안 목록 매일 리셋 (대표 결정 2026-09-30): 오늘 이전 날짜의 글 중 발행 완료(used)가 아닌 것은 지운다.
+    발행한 글은 성과 기록·중복 방지(used_combos)를 위해 남긴다. 발행 안 한 후보는 재고를 쓰지 않은 것으로 본다."""
+    import shutil
+    gone = []
+    for f in (x for x in POSTS.iterdir() if x.is_dir()) if POSTS.exists() else []:
+        if re.match(r"\d{4}-\d{2}-\d{2}-", f.name) and f.name[:10] < today and mark.status(f).get("status") != "used":
+            shutil.rmtree(f)
+            gone.append(f.name)
+    if gone:
+        write_index()
+    return gone
+
+
 def eligible(pool: dict) -> dict[str, set[str]]:
     """테마별로 쓸 수 있는 선수: 세금은 국내 리그(사업소득·원화), 유니폼은 가격을 확인한 팀,
     연고지 아파트는 국내 장소가 있는 선수, 여행은 이어진 장소가 있는 선수."""
@@ -801,7 +815,7 @@ def theme_sheet(plan: dict, d: dict, n: dict, got: list[dict], cfg: dict) -> str
     return "\n".join(L)
 
 
-DAILY_CAP_USD = 3.0  # 한 번 실행에서 쓸 Claude 비용 상한 (재시도 포함)
+DAILY_CAP_USD = 5.0  # 한 번 실행에서 쓸 Claude 비용 상한 (후보 4편 + 재시도 포함)
 NEWS_DAYS = 3        # 최근 며칠 기사 수로 "지금 궁금한 선수"를 잰다
 NEWS_PER_BOOST = 15  # 기사 15건마다 가중치 +1배 (최대 3배)
 
@@ -987,6 +1001,10 @@ def main() -> None:
         from .llm import Claude
         hub = ApiHub(load_yaml("global.yaml")["endpoints"]["naver_hub"])
         llm = Claude()
+    if out_root == POSTS and not a.again and not a.topic and not a.theme:
+        gone = reset_drafts(today)  # 대표 결정 2026-09-30: 초안 목록은 매일 리셋
+        if gone:
+            print(f"지난 초안 {len(gone)}편 정리 (발행한 글은 남김)")
     made, lines, folder = 0, [], None
     for attempt in range(max(a.tries, a.target)):
         try:
