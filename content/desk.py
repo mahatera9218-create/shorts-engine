@@ -25,6 +25,18 @@ from pathlib import Path
 from market.common import ROOT
 from .mark import status as read_status
 
+TAG_OK = re.compile(r"^[0-9A-Za-z가-힣_]+$")  # 네이버 블로그 태그: 한글·영문·숫자·_ 만 (특수문자면 거절됨)
+
+
+def clean_tags(tags: list[str]) -> list[str]:
+    """띄어쓰기·가운뎃점은 떼고, 그래도 특수문자(. % - 등)가 남는 태그는 뺀다. 최대 10개."""
+    out = []
+    for x in tags:
+        x = re.sub(r"[\s·#]", "", x)
+        if TAG_OK.match(x) and x not in out:
+            out.append(x)
+    return out[:10]
+
 POSTS = ROOT / "posts"
 REPO = os.environ.get("GITHUB_REPOSITORY", "mahatera9218-create/shorts-engine")
 IMG_LINE = re.compile(r"^\[이미지 (\d+)_([^:\]]*):\s*([^\]]+)\]$")
@@ -57,7 +69,7 @@ def parse(folder: Path) -> dict | None:
             blocks.append({"text": para})
     sources = t.split("## 출처", 1)[1].split("\n## ", 1)[0].strip() if "## 출처" in t else ""
     return {"folder": folder.name, "date": folder.name[:10], "ok": status_ok, "problems": problems,
-            "titles": titles, "tags": [x.strip() for x in tags.group(1).split(",")] if tags else [],
+            "titles": titles, "tags": clean_tags(tags.group(1).split(",")) if tags else [],
             "category": cat.group(1) if cat else "", "blocks": blocks, "images": images, "sources": sources,
             "clip": (folder / "clip.mp4").exists(), "status": read_status(folder),
             "review": (re.search(r"## 편집장 검토[^\n]*\n\n(.+)", t) or [None, ""])[1].strip(),
@@ -79,6 +91,7 @@ main{max-width:760px;margin:0 auto;padding:16px 16px 80px}h1{font-size:22px;marg
 .ok{background:var(--ok)}.warn{background:var(--warn)}
 button,.btn{display:block;width:100%;min-height:52px;margin:8px 0;padding:12px 14px;border:0;border-radius:12px;background:var(--btn);color:var(--btnink);font-size:17px;font-weight:700;text-align:center;text-decoration:none;cursor:pointer}
 button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);font-weight:600;text-align:left}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.chips button.chip{width:auto;min-height:44px;margin:0;padding:8px 12px}
 button.done{background:var(--ok)!important;color:#fff!important}
 img{max-width:100%;border-radius:10px;display:block}.thumb{max-width:360px}
 .body p{margin:0 0 14px;white-space:pre-wrap}.body .ph{margin:10px 0 16px}.ph small{display:block;color:var(--soft);margin-top:4px}
@@ -131,7 +144,8 @@ def page(p: dict) -> str:
         for b in p["blocks"])
     each = "".join(f'<div class="ph"><img src="{e(x["file"])}" alt="사진 {x["n"]}" loading="lazy"><small>📷 사진 {x["n"]} · {e(x["label"])}'
                    f'{" · 대표이미지로 지정" if x["n"] == 1 else ""} (길게 눌러 저장)</small></div>' for x in p["images"])
-    tags = " ".join("#" + t.replace(" ", "") for t in p["tags"])
+    tags = " ".join("#" + t for t in p["tags"])
+    chips = "".join(f'<button class="ghost chip" onclick="copyText(this,{e(json.dumps(t), quote=True)})">{e(t)}</button>' for t in p["tags"])
     data = json.dumps({"blocks": p["blocks"], "images": p["images"]}, ensure_ascii=False).replace("</", "<\\/")
     thumb = next((x["file"] for x in p["images"] if x["n"] == 1), "thumb.png")
     st = p.get("status", {})
@@ -164,7 +178,9 @@ def page(p: dict) -> str:
 <button onclick="copyBody(this)">📋 본문 복사 (사진 자리 📷 표시)</button>
 <div class="muted">네이버 앱에 붙여넣고, "📷 사진 N" 줄을 지운 자리에 N번 사진을 넣으세요.</div>
 </div>
-<div class="card"><h2><span class="step">5</span>태그</h2><button class="ghost" onclick="copyText(this,{e(json.dumps(tags), quote=True)})">{e(tags)}</button></div>
+<div class="card"><h2><span class="step">5</span>태그</h2><button class="ghost" onclick="copyText(this,{e(json.dumps(tags), quote=True)})">📋 한 번에 복사: {e(tags)}</button>
+<div class="muted">한 번에 붙여넣기가 안 되면 아래 태그를 하나씩 눌러 복사 → 태그 칸에 붙여넣기 → 완료(엔터)를 반복하세요.</div>
+<div class="chips">{chips}</div></div>
 {clip}
 <div class="card"><h2><span class="step">7</span>다 올렸으면</h2>
 <a class="btn" href="{done_btn}">✅ 발행 완료 표시</a>

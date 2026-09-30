@@ -22,6 +22,7 @@ import yaml
 
 from market.common import ROOT, load_yaml, missing_secrets
 from . import cards, clip, mark, photos, receipt, themes
+from .desk import clean_tags
 from .receipt import won
 from .voice import check_draft
 
@@ -206,7 +207,7 @@ WRITE_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"(닉네�
 - 추천 제목은 퀴즈 카드의 정답(누가 더 비싼지, 몇 대인지, 얼마짜리인지)을 묻지 않는다. 퀴즈 정답은 퀴즈 카드 뒤에서만 공개되므로
   제목이 그걸 물으면 첫 화면에서 답할 수 없다. 제목의 궁금증은 첫 화면에서 풀고, 퀴즈는 그다음 궁금증으로 쓴다.
 - 물음표는 1개까지. "충격", "경악", "헉", "소름", "역대급" 같은 과장어 금지.
-- tags: 10개 이하, 띄어쓰기 없이.
+- tags: 10개 이하, 띄어쓰기 없이, 한글·영문·숫자만 (점·%·가운뎃점·하이픈 같은 특수문자 금지: 네이버가 태그로 받지 않는다).
 - cross_compare: 본문에 쓴 교차 비교 한 줄 요약.
 
 설계 (brief: 본문보다 먼저 채운다. 스킬 0단계의 9가지 질문을 이 글에 적용한 답)
@@ -583,7 +584,7 @@ def package_md(title: str, theme: str, category: str, facts: dict, post: dict, p
     plan = themes.image_plan(theme)
     out += ["", "## 이미지 (본문 [이미지] 자리에 넣기)", "", "| 순서 | 파일 | 위치 | 대표이미지 |", "| --- | --- | --- | --- |"]
     out += [f"| {i} | {f} | {lab} | {'✅ 대표이미지로 지정' if i == 1 else ''} |" for i, (lab, f, _) in enumerate(plan, 1)]
-    out += ["", "## 카테고리 · 태그", "", f"- 카테고리: **{category}**", f"- 태그: {', '.join(post['tags'][:10])}", "",
+    out += ["", "## 카테고리 · 태그", "", f"- 카테고리: **{category}**", f"- 태그: {', '.join(clean_tags(post['tags']))}", "",
             "## 본문 (복사해서 붙여넣기, [이미지 …] 줄은 지우고 그 자리에 사진 넣기)", "", post["body"].strip(), "",
             "## 출처", ""]
     links = sorted({l for f in facts.values() for l in f["sources"]})
@@ -946,7 +947,8 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
         photos.fetch_all(folder, d.get("sport", "야구"), folder.name)  # 키가 없으면 사진 없이
         n = themes.build(folder, d)
         sheet = theme_sheet(plan, d, n, got, cfg) + "\n" + "\n".join(themes.image_lines(th))
-        post, problems, rounds = write_post(llm, {"category": tinfo["category"], "angle": tinfo["angle"]}, sheet,
+        category = pool["categories"].get(d.get("sport", "야구").split()[0], "야구")  # sport = "야구 (프로야구)"
+        post, problems, rounds = write_post(llm, {"category": category, "angle": tinfo["angle"]}, sheet,
                                             cfg.get("max_revisions", 2))
         cost = llm.cost_usd()
         (folder / "data.yaml").write_text(yaml.safe_dump(d, allow_unicode=True, sort_keys=False), encoding="utf-8")
@@ -958,7 +960,7 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
         if th == "tax":
             tx = load_yaml("tax.yaml")
             extra += [f"종합소득세 세율: {tx['source']}", f"원천징수 3.3%: {tx['withholding_source']}"]
-        (folder / "post.md").write_text(package_md(f"{title} · {tinfo['name']}", th, tinfo["category"], facts, post,
+        (folder / "post.md").write_text(package_md(f"{title} · {tinfo['name']}", th, category, facts, post,
                                                    problems, rounds, cfg, sum(len(x["news"]) for x in got), cost, extra),
                                         encoding="utf-8")
         for key in ("clip_caption", "clip_question"):  # 클립 설명·마지막 화면 질문 (content/clip.py가 읽는다)
