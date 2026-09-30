@@ -62,7 +62,9 @@ def main() -> None:
     out = os.environ.get("GITHUB_OUTPUT")
     if out:
         with open(out, "a", encoding="utf-8") as f:
-            f.write(f"action={action}\nfolder={name}\n")
+            d = POSTS / name / "data.yaml"
+            m = ((yaml.safe_load(d.read_text(encoding="utf-8")) or {}).get("marketer") if d.exists() else None) or ""
+            f.write(f"action={action}\nfolder={name}\nmarketer={m}\n")  # 다시 뽑기는 같은 마케터가
 
 
 if __name__ == "__main__":

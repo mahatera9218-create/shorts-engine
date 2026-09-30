@@ -76,7 +76,30 @@ def parse(folder: Path) -> dict | None:
             "clip": (folder / "clip.mp4").exists(), "status": read_status(folder),
             "review": (re.search(r"## 편집장 검토[^\n]*\n\n(.+)", t) or [None, ""])[1].strip(),
             "clip_text": (folder / "clip.txt").read_text(encoding="utf-8") if (folder / "clip.txt").exists() else "",
-            "shop": _shop(folder)}
+            "shop": _shop(folder), "marketer": _marketer(folder)}
+
+
+def _marketer(folder: Path) -> int | None:
+    f = folder / "data.yaml"
+    return (yaml.safe_load(f.read_text(encoding="utf-8")) or {}).get("marketer") if f.exists() else None
+
+
+def _label(m) -> str:
+    from .marketers import label
+    return label(m)
+
+
+def today_pick(posts: list[dict], today: str) -> dict | None:
+    """오늘 블로그에 올릴 글 (대표 결정 2026-10-01): 오늘 차례 마케터의 ✅ 글, 없으면 다음 차례 마케터 순서로."""
+    from .marketers import ids, turn
+    cands = [p for p in posts if p["date"] == today and p["ok"] and p.get("marketer")
+             and p.get("status", {}).get("status") not in ("used", "rejected")]
+    if not cands:
+        return None
+    ms = ids()
+    t = ms.index(turn(today)) if turn(today) in ms else 0
+    order = ms[t:] + ms[:t]
+    return min(cands, key=lambda p: (order.index(p["marketer"]) if p["marketer"] in order else 99, p["folder"]))
 
 
 def _shop(folder: Path) -> dict | None:
@@ -244,7 +267,7 @@ def page(p: dict) -> str:
 <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive">
 <title>{e(best["text"] if best else p["folder"])}</title><style>{CSS}</style></head><body><main>
 <a href="../../" class="muted">← 글 목록</a>
-<h1>{e(best["text"] if best else p["folder"])}</h1><div class="muted">{e(p["date"])} · 카테고리 {e(p["category"])}</div>
+<h1>{e(best["text"] if best else p["folder"])}</h1><div class="muted">{e(p["date"])} · 카테고리 {e(p["category"])}{" · " + e(_label(p.get("marketer"))) if p.get("marketer") else ""}</div>
 <p>{status}</p>{f"<ul>{probs}</ul>" if probs else ""}{used}
 {f'<p class="muted">편집장 검토: {e(p["review"])}</p>' if p.get("review") else ""}
 <div class="card"><h2><span class="step">1</span>사진 저장</h2>
@@ -288,41 +311,55 @@ def clip_shop(p: dict) -> str:
 
 
 def clip_cards(posts: list[dict]) -> str:
-    """클립 탭: 오늘 올릴 클립. 발행한 글의 클립이 맨 위, 나머지는 후보 (고른 글의 클립만 올린다)."""
+    """클립 탭 (대표 결정 2026-10-01): 가장 최근 날짜 마케터 글의 클립을 모두 올린다 (클립 조회수로 마케터 비교).
+    기준 미달(⚠️)·버린 글의 클립은 뺀다."""
     e = html.escape
-    ps = [p for p in posts if p.get("clip") and p.get("status", {}).get("status") != "rejected"]
-    ps.sort(key=lambda p: (p.get("status", {}).get("status") != "used", p["folder"]))
+    ps = [p for p in posts if p.get("clip") and p["ok"] and p.get("status", {}).get("status") != "rejected"]
+    if not ps:
+        return "<p>올릴 클립이 없어요.</p>"
+    last = max(p["date"] for p in ps)
+    ps = sorted((p for p in ps if p["date"] == last), key=lambda p: (p.get("marketer") or 9, p["folder"]))
+    from .marketers import label
     out = []
     for p in ps:
         title = next((t["text"] for t in p["titles"] if t["best"]), p["folder"])
-        used = p.get("status", {}).get("status") == "used"
-        badge = '<span class="badge ok">발행한 글 → 이 클립을 올리세요</span>' if used else '<span class="badge warn">후보 (이 글을 골랐을 때만)</span>'
+        who = label(p.get("marketer")) or "마케터 없음"
+        badge = f'<span class="badge ok">{e(who)} → 올리세요</span>'
         src = f"p/{slug(p['folder'])}/clip.mp4"
-        out.append(f"""<div class="card"><h2>{e(title)}</h2>{badge}
+        out.append(f"""<div class="card"><h2>{e(title)}</h2>{badge} <span class="muted">{e(p["date"])}</span>
 <video src="{e(src)}" controls playsinline preload="none" style="width:100%;max-width:320px;border-radius:10px;display:block;margin-top:8px"></video>
 <button onclick="saveClip(this,{e(json.dumps(src), quote=True)})">🎬 클립 영상 저장</button>
 {copy_pair(p["clip_text"], "클립", p["folder"])}{clip_shop(p)}</div>""")
-    return "".join(out) or "<p>올릴 클립이 없어요.</p>"
+    return "".join(out)
 
 
 def index(posts: list[dict], n_shorts: int = 0, shorts_html: str = "") -> str:
     e = html.escape
 
-    def row(p, muted=False):
-        title = next((t["text"] for t in p["titles"] if t["best"]), p["folder"])
-        mark = "☑️" if muted else ("✅" if p["ok"] else "⚠️")
-        style = "text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" + (";opacity:.55" if muted else "")
-        return f'<a class="btn" style="{style}" href="p/{slug(p["folder"])}/">{mark} {e(p["date"])} · {e(title)}</a>'
+    from .marketers import label, turn
+    today = datetime.now(ZoneInfo("Asia/Seoul")).strftime("%Y-%m-%d")
+    pick = today_pick(posts, today)
 
-    live = [p for p in posts if p.get("status", {}).get("status") not in ("used", "rejected")]
+    def row(p, muted=False, star=False):
+        title = next((t["text"] for t in p["titles"] if t["best"]), p["folder"])
+        mark = "☑️" if muted else ("⭐" if star else "✅" if p["ok"] else "⚠️")
+        style = ("text-align:left;background:var(--card);color:var(--ink);border:" + ("3px solid var(--accent)" if star else "1px solid var(--line)")
+                 + (";opacity:.55" if muted else ""))
+        who = f'<br><span class="muted">{e(label(p.get("marketer")))}</span>' if p.get("marketer") else ""
+        return f'<a class="btn" style="{style}" href="p/{slug(p["folder"])}/">{mark} {e(p["date"])} · {e(title)}{who}</a>'
+
+    live = [p for p in posts if p.get("status", {}).get("status") not in ("used", "rejected") and p is not pick]
     used = [p for p in posts if p.get("status", {}).get("status") == "used"]
+    turn_note = (f'<h2>⭐ 오늘 올릴 글 · {e(label(pick["marketer"]))}</h2>{row(pick, star=True)}'
+                 + ('' if pick["marketer"] == turn(today) else f'<div class="muted">오늘은 {e(label(turn(today)))} 차례인데 발행할 만한 글이 없어 다음 마케터 글이에요.</div>')
+                 ) if pick else ""
     todo = "".join(row(p) for p in sorted(live, key=lambda p: p["folder"])[-14:])
     done = "".join(row(p, True) for p in sorted(used, key=lambda p: p["status"].get("at", ""), reverse=True)[:10])
-    n_clip = sum(1 for p in posts if p.get("clip") and p.get("status", {}).get("status") == "used")
     tabs = """<nav class="tabs"><a href="#blog" data-t="blog">📝 블로그</a><a href="#clip" data-t="clip">🎬 클립</a>
 <a href="#shorts" data-t="shorts">▶️ 쇼츠</a></nav>"""
     tab_js = """function tab(){const h=(location.hash||'#blog').slice(1);document.querySelectorAll('section.tab').forEach(s=>s.hidden=s.id!==h);
-document.querySelectorAll('nav.tabs a').forEach(a=>a.classList.toggle('on',a.dataset.t===h))}addEventListener('hashchange',tab);tab();"""
+document.querySelectorAll('nav.tabs a').forEach(a=>a.classList.toggle('on',a.dataset.t===h));
+document.querySelectorAll('section.tab:not([hidden]) textarea.ed').forEach(grow)}addEventListener('hashchange',tab);addEventListener('DOMContentLoaded',tab);tab();"""
     return f"""<!doctype html><html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive">
 <title>발행 도우미</title><style>{CSS}
@@ -333,20 +370,20 @@ nav.tabs a.on{{background:var(--btn);color:var(--btnink)}}</style></head><body><
 <p class="muted">마지막 업데이트: {datetime.now(ZoneInfo("Asia/Seoul")).strftime("%m월 %d일 %H:%M")}</p>
 {tabs}
 <section class="tab" id="blog">
-<p class="muted">매일 아침 6시 47분에 후보 4편이 올라와요. <b>1편만</b> 골라 올리고, 글 화면 맨 아래 <b>✅ 발행 완료 표시</b>. 고르지 않은 후보는 다음 날 아침 지워져요.</p>
-<h2>오늘의 후보</h2>
-{todo or '<p>후보가 아직 없어요. 내일 아침 6시 47분에 올라와요.</p>'}
+<p class="muted">매일 아침 마케터 3명이 1편씩 써요. <b>⭐ 오늘 올릴 글</b>(마케터 차례대로)을 올리고, 글 화면 맨 아래 <b>✅ 발행 완료 표시</b>. 마음에 안 들면 아래 다른 마케터 글을 올려도 돼요. 나머지는 다음 날 아침 지워져요.</p>
+{turn_note}
+<h2>{'다른 마케터 글 (예비)' if pick else '오늘의 후보'}</h2>
+{todo or '<p>후보가 아직 없어요. 매일 아침 5시쯤 올라와요.</p>'}
 {f'<h2 style="margin-top:28px">발행한 글</h2>{done}' if done else ''}
 <div class="card" style="margin-top:28px"><h2>필요할 때만 누르는 버튼</h2>
 <a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(issue_link("다시그리기", "오늘후보", "글은 그대로 두고 사진·썸네일·클립만 새로 그려 주세요."), quote=True)}">🎨 사진·클립 다시 그리기</a>
 <div class="muted">무료 · 5~10분. 썸네일·클립 디자인을 고친 뒤 지금 있는 후보에 바로 반영할 때.</div>
-<a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(issue_link("새후보", "4편", "오늘 후보 4편을 새로 써 주세요."), quote=True)}">✍️ 후보 4편 새로 쓰기</a>
-<div class="muted">Claude 비용 약 $1 · 20~30분. 오늘 후보가 다 마음에 안 들 때만.</div>
+<a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(issue_link("새후보", "3편", "마케터 3명이 1편씩 새로 써 주세요."), quote=True)}">✍️ 마케터 3명 새로 쓰기</a>
+<div class="muted">Claude 비용 약 $1 · 15~25분 (3명이 동시에 써요). 오늘 글이 다 마음에 안 들 때만.</div>
 <div class="muted">누르면 GitHub 화면이 열려요. 초록색 <b>Create</b>만 누르면 끝이에요.</div></div>
 </section>
 <section class="tab" id="clip" hidden>
-<p class="muted">블로그를 올린 뒤, 그 글의 클립을 올려요. 블로그 앱 아래 <b>+</b> → <b>클립 만들기</b> → 저장한 영상 → <b>음악</b>에서 인기 음원 → <b>설명 복사</b>·<b>해시태그 복사</b> 붙여넣기 → 올리기.
-발행 완료 표시를 하면 그 글의 클립이 맨 위로 와요.</p>
+<p class="muted"><b>오늘 마케터 3명의 클립을 모두 올려요</b> (클립 조회수로 마케터를 비교해요). 블로그 앱 아래 <b>+</b> → <b>클립 만들기</b> → 저장한 영상 → <b>음악</b>에서 인기 음원 → <b>설명 복사</b>·<b>해시태그 복사</b> 붙여넣기 → 상품 태그(있으면) → 올리기.</p>
 {clip_cards(posts)}
 </section>
 <section class="tab" id="shorts" hidden>

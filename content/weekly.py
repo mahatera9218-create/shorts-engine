@@ -40,7 +40,9 @@ def posts_between(start: date, end: date) -> list[dict]:
         ttype = re.search(r"^\d\. ★ .+ — (\S+)$", md, re.M)
         out.append({"folder": f.name, "day": day, "theme": d.get("theme", "receipt"), "ok": "✅" in md.split("## ", 1)[0],
                     "status": status(f).get("status", ""), "score": statistics.mean(scores) if scores else None,
-                    "cost": float(cost.group(1)) if cost else 0.0, "title_type": ttype.group(1) if ttype else ""})
+                    "cost": float(cost.group(1)) if cost else 0.0, "title_type": ttype.group(1) if ttype else "",
+                    "marketer": d.get("marketer"), "rounds": int(r.group(1)) if (r := re.search(r"고쳐 쓰기 (\d+)회", md)) else 0,
+                    "edits": (f / "edits.md").read_text(encoding="utf-8").count("\n  → ") if (f / "edits.md").exists() else 0})
     return out
 
 
@@ -66,6 +68,26 @@ def judge(metrics: dict, today: date, names: dict) -> list[str]:
         verdict = "올리기 후보 (+1)" if r >= UP else "내리기 후보 (−0.5)" if r <= DOWN else "유지"
         out.append(f"- {names.get(th, th)}: {len(vs)}편, 평균의 {r:.0%} → {verdict}")
     return out
+
+
+def marketer_lines(ps: list[dict], metrics: dict) -> list[str]:
+    """마케터 비교 (대표 결정 2026-10-01): 만든 글·발행·클립 조회·블로그 7일 조회·대표가 고친 곳·다시 쓴 횟수·비용.
+    조회수는 대표 캡처(config/metrics.yaml)에서. 4주마다 꼴찌 전략을 바꾼다."""
+    from .marketers import cfg, ids
+    c = cfg()
+    mp = metrics.get("posts", {})
+    L = ["| 마케터 | 글(✅) | 발행 | 클립 조회 평균 | 블로그 7일 조회 평균 | 대표가 고친 곳 | 다시 쓴 횟수 | 비용 |",
+         "| --- | --- | --- | --- | --- | --- | --- | --- |"]
+    for m in ids(c):
+        mine = [p for p in ps if p.get("marketer") == m and p["status"] != "rejected"]
+        clips = [x for p in mine for x in [(mp.get(p["folder"]) or {}).get("clip_views")
+                                           or ((mp.get(p["folder"]) or {}).get("checks") or [{}])[-1].get("clip_views")] if x]
+        blogs = [(mp.get(p["folder"]) or {}).get("views_7d") for p in mine if (mp.get(p["folder"]) or {}).get("views_7d")]
+        avg = lambda xs: f"{statistics.mean(xs):,.0f} ({len(xs)}편)" if xs else "-"
+        L.append(f"| {m} · {c['marketers'][m]['name']} | {sum(p['ok'] for p in mine)} | {sum(p['status'] == 'used' for p in mine)} | "
+                 f"{avg(clips)} | {avg(blogs)} | {sum(p['edits'] for p in mine)} | {sum(p['rounds'] for p in mine)} | "
+                 f"${sum(p['cost'] for p in mine):.2f} |")
+    return L
 
 
 def cost_line(start: date, end: date, ps: list[dict]) -> str:
@@ -114,6 +136,7 @@ def report(week_start: date) -> str:
     wk = (metrics.get("weeks") or {}).get(str(week_start))
     L += [f"- 일 방문자 {wk.get('visitors_day', '-')} · 주간 조회 {wk.get('views_week', '-')} · 홈판 {wk.get('homefeed_pct', '-')}% · "
           f"검색 {wk.get('search_pct', '-')}% · 애드포스트 {wk.get('adpost_krw', '-')}원"] if wk else ["- 아직 캡처 없음 (월요일에 대표가 캡처를 보내면 채움)"]
+    L += ["", "## 2-1. 마케터 비교 (클립은 3명 다 올림, 블로그는 차례대로)", ""] + marketer_lines(ps, metrics)
     L += ["", "## 3. 판정 (7일 지난 글, 운영 계획 5장)", ""] + judge(metrics, end, names)
     L += ["", "## 3-1. 유튜브 쇼츠 (자동, 운영 계획 6장)", ""] + shorts_lines(end)
     L += ["", "## 4. 이번 주 바꾼 것 (1~2개, DECISIONS에 기록)", "", "- (Claude가 판정 후 적음)",

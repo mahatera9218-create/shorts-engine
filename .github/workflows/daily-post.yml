@@ -1,8 +1,11 @@
-# 자동 글쓰기 (하루 1편): 뉴스 수집 → Claude 숫자 뽑기 → 코드 계산·그래픽 → Claude 글쓰기 → 코드 검사 → posts/에 저장
-# - 자동 실행: 매일 오전 5시 13분 (예비 7시 37분, 한국 시간). GitHub가 늦게 시작할 때가 있어 두 번 걸어 둔다. 결과는 posts/README.md 목록에 올라온다.
-# - 수동 실행: Actions → 자동 글쓰기 → Run workflow (선수 이름을 넣으면 그 선수로 바로 씀)
+# 자동 글쓰기: 마케터 3명이 동시에 1편씩 (2026-10-01, config/marketers.yaml)
+#   준비(화제 선수·발행 확인) → 마케터 1·2·3 동시에 글쓰기(뉴스 → Claude 숫자 뽑기 → 코드 계산·그래픽 → Claude 글쓰기 → 검사 → 클립)
+#   → 모으기(글 합치기·쇼츠 3개·저장) → 발행 도우미
+# - 자동 실행: 매일 오전 5시 13분 (예비 7시 37분, 한국 시간). GitHub가 늦게 시작할 때가 있어 두 번 걸어 둔다.
+#   예비 실행은 마케터마다 오늘 글이 이미 있으면 더 쓰지 않는다.
+# - 수동 실행: Actions → 자동 글쓰기 → Run workflow (선수 이름을 넣으면 오늘 차례 마케터가 그 선수로 씀)
 # - 발행은 운영자가 한다 (네이버 블로그는 글쓰기 API가 없음).
-# - 발행 도우미의 "다시 뽑기"는 desk-button.yml이 이 워크플로를 --again으로 부른다.
+# - 발행 도우미 버튼: "다시 뽑기"는 버린 글의 마케터가 1편, "후보 새로 쓰기"는 3명이 1편씩 (desk-button.yml).
 name: 자동 글쓰기
 
 on:
@@ -14,27 +17,27 @@ on:
         options: [실제, 예시]
         default: 실제
       topic:
-        description: "선수 이름 (비우면 선수 풀에서 무작위)"
+        description: "선수 이름 (비우면 마케터 3명이 각자 고름)"
         type: string
         required: false
       theme:
-        description: "테마 (비우면 무작위)"
+        description: "테마 (비우면 마케터 전략대로)"
         type: choice
-        options: ["", receipt, same, cross, life]
+        options: ["", receipt, same, cross, life, tax, place, trip, jersey, rank]
         default: ""
-      count:
-        description: "후보 몇 편 (1~5, 기본 4). 기준 미달은 알아서 다시 씀. 대표가 1편 골라 발행"
-        type: choice
-        options: ["1", "2", "3", "4", "5"]
-        default: "4"
-  workflow_call:   # 발행 도우미 버튼 "다시 뽑기"·"후보 새로 쓰기" (desk-button.yml)
+      marketer:
+        description: "마케터 번호만 (비우면 3명 모두)"
+        type: string
+        required: false
+  workflow_call:   # 발행 도우미 버튼 (desk-button.yml)
     inputs:
       mode: {type: string, default: 실제}
       again: {type: boolean, default: false}
-      count: {type: string, default: "1"}   # 다시 뽑기 = 1편, 도우미 "후보 새로 쓰기" = 4편
+      count: {type: string, default: "1"}      # 예전 입력 (1 = 한 마케터, 그 밖 = 모두)
+      marketer: {type: string, default: ""}    # 다시 뽑기: 버린 글의 마케터
   schedule:   # GitHub 예약 실행은 몇 시간씩 늦게 시작할 때가 있다 (9/30은 06:47 예약이 09:45에 시작, 10/1은 07시까지 시작 안 함)
     - cron: "13 20 * * *"   # UTC 20:13 = 한국 05:13 (일찍 걸어 둔다)
-    - cron: "37 22 * * *"   # UTC 22:37 = 한국 07:37 예비: 앞 실행이 이미 썼으면 하루 한도에 걸려 글을 더 쓰지 않는다
+    - cron: "37 22 * * *"   # UTC 22:37 = 한국 07:37 예비
 
 permissions:
   contents: write
@@ -44,13 +47,150 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  write:
+  prepare:
     runs-on: ubuntu-latest
-    timeout-minutes: 100   # 후보 4편 + 클립 4개 + 쇼츠 3개는 30분을 넘길 수 있다 (10/1 새 후보 실행이 30분 제한에 끊겨 하나도 저장 못 함)
+    timeout-minutes: 15
+    env:
+      TZ: Asia/Seoul
+    outputs:
+      matrix: ${{ steps.m.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: 예시 (키 없이 모양만)
+        if: inputs.mode == '예시'
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq fonts-nanum ffmpeg > /dev/null
+          python -m content.autopost --sample --marketer 1 --out "$RUNNER_TEMP/예시"
+      - name: 화제 선수·검색량 (실패해도 글쓰기는 계속)
+        if: inputs.mode != '예시' && !inputs.again
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          NCP_APIGW_API_KEY_ID: ${{ secrets.NCP_APIGW_API_KEY_ID }}
+          NCP_APIGW_API_KEY: ${{ secrets.NCP_APIGW_API_KEY }}
+          NAVER_AD_API_KEY: ${{ secrets.NAVER_AD_API_KEY }}
+          NAVER_AD_SECRET_KEY: ${{ secrets.NAVER_AD_SECRET_KEY }}
+          NAVER_AD_CUSTOMER_ID: ${{ secrets.NAVER_AD_CUSTOMER_ID }}
+        run: python -m content.trending | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: 발행 확인 (네이버 블로그 RSS, 실패해도 글쓰기는 계속)
+        if: inputs.mode != '예시' && !inputs.again
+        continue-on-error: true
+        run: python -m content.published | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: 저장 (마케터들이 같은 화제 선수·발행 표시를 보게)
+        if: inputs.mode != '예시' && !inputs.again
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A posts/
+          for f in config/trending.yaml config/search_volume.yaml; do [ -e "$f" ] && git add "$f"; done
+          git diff --cached --quiet && exit 0
+          git commit -m "자동 글쓰기 준비 $(date +%F)"
+          for i in 1 2 3; do
+            git pull --rebase -X theirs origin main && git push origin HEAD:main && exit 0
+            sleep $((i * 5))
+          done
+          exit 1
+      - name: 마케터 정하기
+        id: m
+        env:
+          ONE: ${{ inputs.marketer }}
+          COUNT: ${{ inputs.count }}
+          TOPIC: ${{ inputs.topic }}
+          MODE: ${{ inputs.mode }}
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, os
+          from datetime import date
+          from content import marketers
+          one, count, topic = (os.environ.get(k, "").strip() for k in ("ONE", "COUNT", "TOPIC"))
+          if os.environ.get("MODE") == "예시":
+              ms = []
+          elif one:
+              ms = [int(one)]
+          elif topic or count == "1":
+              ms = [marketers.turn(date.today().isoformat())]
+          else:
+              ms = marketers.ids()
+          print("matrix=" + json.dumps(ms))
+          PY
+          cat "$GITHUB_OUTPUT"
+
+  write:
+    needs: prepare
+    if: needs.prepare.outputs.matrix != '[]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    strategy:
+      fail-fast: false
+      matrix:
+        marketer: ${{ fromJSON(needs.prepare.outputs.matrix) }}
     env:
       TZ: Asia/Seoul
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main   # 준비 단계가 올린 화제 선수까지
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: 준비
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq fonts-nanum fonts-nanum-extra ffmpeg > /dev/null
+          pip install -r requirements.txt
+      - name: 글쓰기 (마케터 ${{ matrix.marketer }})
+        timeout-minutes: 55
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
+          NCP_APIGW_API_KEY_ID: ${{ secrets.NCP_APIGW_API_KEY_ID }}
+          NCP_APIGW_API_KEY: ${{ secrets.NCP_APIGW_API_KEY }}
+          TOPIC: ${{ inputs.topic }}
+          THEME: ${{ inputs.theme }}
+          AUTOPOST_SKIP: ${{ runner.temp }}/skip.json   # 여러 번 시도할 때 이미 실패한 선수는 다시 모으지 않음
+        run: |
+          args=(--marketer "${{ matrix.marketer }}" --target 1 --tries 4)
+          [ -n "$TOPIC" ] && args+=(--topic "$TOPIC")
+          [ -n "$THEME" ] && args+=(--theme "$THEME")
+          [ "${{ inputs.again }}" = "true" ] && args+=(--again)
+          python -m content.autopost "${args[@]}"
+      - name: 결과 넘기기 준비 (오늘 글 폴더와 같이 고치는 장부만)
+        if: always()
+        run: |
+          mkdir -p out/posts out/config out/reports
+          cp -r posts/"$(date +%F)"-* out/posts/ 2>/dev/null || true
+          for f in config/skip_players.yaml config/player_photos.yaml; do [ -e "$f" ] && cp "$f" out/config/; done
+          [ -e reports/costs.csv ] && cp reports/costs.csv out/reports/
+          date > out/marketer-${{ matrix.marketer }}.txt
+          ls out/posts
+      - name: 결과 넘기기 (모으기 단계로)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: post-${{ matrix.marketer }}
+          path: out/
+          if-no-files-found: ignore
+          retention-days: 3
+
+  collect:
+    needs: [prepare, write]
+    if: ${{ always() && needs.prepare.result == 'success' && needs.prepare.outputs.matrix != '[]' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      TZ: Asia/Seoul
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -68,59 +208,32 @@ jobs:
             .cache/media.txt
           key: media-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.job }}-r
           restore-keys: media-
-      - name: 화제 선수·검색량 (실패해도 글쓰기는 계속)
-        if: inputs.mode != '예시'
+      - name: 마케터 결과 받기
         continue-on-error: true
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          NCP_APIGW_API_KEY_ID: ${{ secrets.NCP_APIGW_API_KEY_ID }}
-          NCP_APIGW_API_KEY: ${{ secrets.NCP_APIGW_API_KEY }}
-          NAVER_AD_API_KEY: ${{ secrets.NAVER_AD_API_KEY }}
-          NAVER_AD_SECRET_KEY: ${{ secrets.NAVER_AD_SECRET_KEY }}
-          NAVER_AD_CUSTOMER_ID: ${{ secrets.NAVER_AD_CUSTOMER_ID }}
-        run: python -m content.trending | tee -a "$GITHUB_STEP_SUMMARY"
-      - name: 발행 확인 (네이버 블로그 RSS, 실패해도 글쓰기는 계속)
-        if: inputs.mode != '예시'
-        continue-on-error: true
-        run: python -m content.published | tee -a "$GITHUB_STEP_SUMMARY"
-      - name: 글쓰기
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
-          GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}   # 클립 AI 목소리 (없으면 목소리 없이)
-          NCP_APIGW_API_KEY_ID: ${{ secrets.NCP_APIGW_API_KEY_ID }}
-          NCP_APIGW_API_KEY: ${{ secrets.NCP_APIGW_API_KEY }}
-          TOPIC: ${{ inputs.topic }}
-          AUTOPOST_SKIP: ${{ runner.temp }}/skip.json   # 여러 편일 때 이미 실패한 선수는 다시 모으지 않음
-          THEME: ${{ inputs.theme }}
+        uses: actions/download-artifact@v4
+        with:
+          pattern: post-*
+          path: ${{ runner.temp }}/arts
+      - name: 모으기 (마케터 글 합치기·글 목록)
         run: |
-          if [ "${{ inputs.mode }}" = "예시" ]; then
-            python -m content.autopost --sample --out "$RUNNER_TEMP/예시"
-          else
-            args=()
-            [ -n "$TOPIC" ] && args+=(--topic "$TOPIC")
-            [ -n "$THEME" ] && args+=(--theme "$THEME")
-            [ "${{ inputs.again }}" = "true" ] && args+=(--again)
-            n="${{ inputs.count }}"; n="${n:-4}"   # 매일 후보 4편 (대표가 1편 골라 발행)
-            # 발행 가능(✅) 글이 n편 될 때까지 최대 n×3+1번 쓴다. 기준 미달(⚠️)은 목록에서 빼고 다른 조합으로 다시.
-            python -m content.autopost "${args[@]}" --target "$n" --tries $((n * 3 + 1))
-          fi
-        timeout-minutes: 75   # 넘으면 글쓰기만 멈추고, 그때까지 쓴 글·쇼츠는 아래에서 저장한다
+          args=("$RUNNER_TEMP/arts")
+          [ "${{ inputs.again }}" = "true" ] && args+=(--again)
+          python -m content.collect "${args[@]}" | tee -a "$GITHUB_STEP_SUMMARY"
       - name: 쇼츠 성과 수집 (우리 채널 공개 통계, 실패해도 계속)
-        if: always() && inputs.mode != '예시' && !inputs.again
+        if: ${{ !inputs.again }}
         continue-on-error: true
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: python -m content.shorts_stats | tee -a "$GITHUB_STEP_SUMMARY"
       - name: 유튜브 쇼츠 A·B·C (코드 계산만, Claude 비용 없음. 실패해도 글은 저장)
-        if: always() && inputs.mode != '예시' && !inputs.again
+        if: ${{ !inputs.again }}
         continue-on-error: true
         env:
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
         run: python -m content.shorts | tee -a "$GITHUB_STEP_SUMMARY"
-      - name: 결과 저장 (posts/ 커밋, 글쓰기가 중간에 멈춰도 그때까지 쓴 것은 저장)
-        if: always() && inputs.mode != '예시'
+      - name: 결과 저장 (posts/ 커밋)
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -130,7 +243,7 @@ jobs:
           else
             git commit -m "자동 글쓰기 $(date +%F)"
             for i in 1 2 3; do
-              git pull --rebase -X theirs origin "${GITHUB_REF_NAME}" && git push && exit 0
+              git pull --rebase -X theirs origin main && git push origin HEAD:main && exit 0
               sleep $((i * 5))
             done
             echo "결과를 저장하지 못했습니다. Claude에게 알려주세요." >> "$GITHUB_STEP_SUMMARY"
@@ -163,7 +276,7 @@ jobs:
           key: media-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.job }}
 
   desk:
-    needs: write
-    if: ${{ always() && needs.write.result != 'skipped' }}   # 일부만 써도 도우미에 올린다
+    needs: collect
+    if: ${{ always() && needs.collect.result != 'skipped' }}   # 일부만 써도 도우미에 올린다
     uses: ./.github/workflows/desk.yml
     secrets: inherit
