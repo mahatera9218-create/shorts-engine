@@ -1,5 +1,5 @@
 # 우리 유튜브 쇼츠 채널 (공개 정보만). 키·비밀번호는 여기에 쓰지 않는다 (API 키는 GitHub Secrets YOUTUBE_API_KEY).
-# handle: 채널 주소의 @아이디 (예: "@eoksori"). 비어 있으면 쇼츠 성과 수집을 건너뛴다.
+# handle: 채널 주소의 @아이디. 이 파일을 고쳐 main에 올리면 성과 수집이 한 번 돈다 (평소엔 매일 아침 자동 글쓰기 안에서).
 channel:
-  handle: ""
+  handle: "@tenbillionsound"
   opened: 2026-09-30
