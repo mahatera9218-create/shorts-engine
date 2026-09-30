@@ -191,7 +191,7 @@ def credits(folder: Path) -> list[str]:
 def encode(exe: str, frames, total: float, out: Path, bg: Path | None, audio: Path | None) -> str:
     """전경 프레임(RGBA, 투명)을 배경(실사 영상 또는 남색)에 얹고 소리를 붙인다."""
     from .clip import BG, FPS, H, W
-    bg_in = (["-stream_loop", "-1", "-i", str(bg)] if bg else
+    bg_in = (["-stream_loop", "-1", "-ss", "1.5", "-i", str(bg)] if bg else  # 1.5초 건너뜀: 스톡 영상 첫머리의 검은 화면·페이드
              ["-f", "lavfi", "-i", f"color=c=0x{BG[0]:02x}{BG[1]:02x}{BG[2]:02x}:s={W}x{H}:r={FPS}"])
     au_in = ["-i", str(audio)] if audio else ["-f", "lavfi", "-i", "anullsrc=r=44100:cl=stereo"]
     graph = (f"[1:v]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},fps={FPS},setsar=1"
