@@ -111,7 +111,7 @@ class Scene:
 
 
 class Hook(Scene):
-    """첫 프레임부터 이름이 보인다 (0.4초 안에 전부 등장): 이름 → 기록 → 금액 번쩍. 사진은 천천히 확대."""
+    """첫 프레임부터 전부 보인다 (첫 프레임이 클립 표지): 태그·등판·이름·기록·금액 → 금액 튕기며 번쩍. 사진은 천천히 확대."""
     dur = 2.4
 
     def __init__(self, h: dict, photo: Image.Image | None):
@@ -132,11 +132,11 @@ class Hook(Scene):
             wob = rot + 4 * math.sin(t * 2.2)
             put(c, j.rotate(wob, resample=Image.BICUBIC, expand=True), x, 610, 1.15 - 0.15 * ease_out(t / 0.25))
         y0 = 1010 if self.jerseys else 600
-        put(c, label(self.h["name"], "display", 200, WHITE, 12), W / 2, y0, 1.25 - 0.25 * ease_out(t / 0.2))
-        put(c, label(self.h["label"], "display", 90, WHITE, 6), W / 2, y0 + 190 + 30 * (1 - ease_out((t - 0.15) / 0.2)),
-            1, clamp((t - 0.15) / 0.15))
-        s = 1.5 - 0.5 * ease_back((t - 0.35) / 0.3)
-        put(c, label(self.h["big"], "display", 190, GOLD, 10), W / 2, y0 + 370, s, clamp((t - 0.35) / 0.08))
+        put(c, label(self.h["name"], "display", 200, WHITE, 12), W / 2, y0, 1.1 - 0.1 * ease_out(t / 0.2))
+        # 첫 프레임 = 클립 표지(네이버가 첫 장면을 표지로 씀) → 기록·금액도 처음부터 보이게, 등장 대신 튕김
+        put(c, label(self.h["label"], "display", 90, WHITE, 6), W / 2, y0 + 190, 1.1 - 0.1 * ease_out(t / 0.2))
+        s = 1 + 0.08 * math.sin(math.pi * clamp((t - 0.35) / 0.3))
+        put(c, label(self.h["big"], "display", 190, GOLD, 10), W / 2, y0 + 370, s)
         if 0.35 < t < 0.5:  # 번쩍
             c.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, int(110 * (1 - (t - 0.35) / 0.15)))))
 
