@@ -11,6 +11,9 @@ from .autopost import BRIEF_KEYS, EXTRACT_SCHEMA, POST_SCHEMA, PRICE_SCHEMA, REV
 
 class FakeNewsHub:
     def news(self, query: str, display: int = 30) -> list[dict]:
+        if "평균 매매" in query:  # 예시 지역 아파트 평균 매매가 기사 (가짜 가격)
+            return [{"title": f"[예시] {query} 기사", "description": "8월 기준 아파트 평균 매매가격은 3억 2,450만원으로 집계됐다",
+                     "link": "https://example.com/region/1", "date": "2026-09-20"}]
         if "실거래" in query:  # 예시 아파트 실거래 기사 (가짜 가격)
             return [{"title": f"[예시] {query} 기사", "description": "전용 84㎡가 지난달 12억3000만원에 거래됐다",
                      "link": "https://example.com/apt/1", "date": "2026-09-20"}]
@@ -49,6 +52,8 @@ class FakeClaude:
                     "headline_unit": "wins",
                     "story": [{"point": "올 시즌을 선발로 마쳤다", "source": s_end}]}
         if schema == PRICE_SCHEMA:
+            if "지역:" in prompt:
+                return {"found": True, "price_krw": 324_500_000, "deal_date": "2026-08", "source": 1}
             return {"found": True, "price_krw": 1_230_000_000, "deal_date": "2026-08", "source": 1}
         if schema == REVIEW_SCHEMA:
             return {"scores": [{"criterion": c, "score": 4, "reason": "예시"} for c in REVIEW_CRITERIA], "fixes": []}

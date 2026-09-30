@@ -306,6 +306,22 @@ class ContentTest(unittest.TestCase):
         assert got and all(p["players"][0]["name"] == "K" for p in got)
         assert not themes.plans(pool, set(), "s", n=3, theme="tax", used={("tax", ("K",))})
 
+    def test_places_and_items(self):
+        import yaml
+        from content.autopost import eligible, place_item, places_for
+        pool = yaml.safe_load(open("config/players.yaml", encoding="utf-8"))
+        ryu = next(p for p in pool["players"] if p["name"] == "류현진")
+        pl = places_for(pool, ryu)
+        assert pl[0]["city"] == "대전" and "소속팀" in pl[0]["relation"] and pl[0]["domestic"]
+        assert {"인천", "로스앤젤레스", "토론토"} <= {x["city"] for x in pl}
+        assert not next(x for x in pl if x["city"] == "토론토")["domestic"]
+        el = eligible(pool)
+        assert "류현진" in el["place"] and "류현진" in el["trip"]
+        apt = place_item({"city": "광주", "domestic": True}, "place")
+        assert apt["query"].startswith("광주광역시") and apt["kind"] == "region_avg" and apt["unit"] == "채"
+        trip = place_item({"city": "토론토", "domestic": False}, "trip")
+        assert trip["price_krw"] == 1423000 and trip["short"] == "토론토 여행"
+
 
 if __name__ == "__main__":
     unittest.main()

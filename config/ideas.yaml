@@ -8,13 +8,13 @@ ideas:
   - {id: tax, name: "연봉 → 세금", link: "국내 선수 연봉", ads: [세금·연말정산], data: "국세청 세율표", status: 적용}
   - {id: jersey, name: "유니폼 vs 몸값", link: "소속팀 유니폼", ads: [스포츠 용품], data: "goods.yaml (정식 판매가)", status: 적용}
   - {id: home_city_apt, name: "연고지 아파트값", link: "소속팀 연고지 (광주·대전·대구·인천·부산…)",
-     ads: [부동산], data: "지역별 아파트 평균 매매가 (한국부동산원·KB 월간 보도)", status: 측정 중,
+     ads: [부동산], data: "지역별 아파트 평균 매매가 (한국부동산원·KB 통계 보도, 글 쓰는 날 뉴스)", status: 적용 (place),
      note: "예: 김도영 1경기 몸값이면 광주 아파트 몇 채? 지역 팬이 많이 본다"}
   - {id: team_city_trip, name: "소속팀 도시 직관 여행", link: "소속팀 홈 도시 (샌프란시스코·LA·마드리드·뮌헨…)",
-     ads: [항공권, 호텔, 여행], data: "경기 티켓 정가(구단 공식) + 공공 여행 통계. 항공권은 값이 매일 바뀌어 '오늘 최저가'는 쓰지 않음",
-     status: 측정 중, note: "예: 이정후 1경기 몸값이면 샌프란시스코 직관 여행 몇 번?"}
+     ads: [항공권, 호텔, 여행], data: "국민여행조사 2025 여행 1회 평균 경비 (국내·해외). 항공권은 값이 매일 바뀌어 '오늘 최저가'는 쓰지 않음",
+     status: 적용 (trip), note: "예: 이정후 1경기 몸값이면 샌프란시스코 직관 여행 몇 번?"}
   - {id: hometown_trip, name: "출신지·과거 소속팀 지역", link: "출신지·과거 소속팀 (공개된 경력만)",
-     ads: [여행, 지역 부동산], data: "선수 공식 프로필 + 지역 통계", status: 후보}
+     ads: [여행, 지역 부동산], data: "config/places.yaml (보도·프로필로 확인한 출신지·예전 소속팀)", status: 적용 (place·trip)}
   - {id: tickets, name: "연봉 vs 직관 티켓", link: "소속팀 홈 경기", ads: [티켓·관람], data: "구단 공식 티켓 가격표", status: 후보,
      note: "광고 단가는 낮음(310원). 팬 트래픽용"}
   - {id: salary_after_tax_fan, name: "내 연봉이면 이 선수 몇 경기?", link: "평균 연봉·최저임금",
