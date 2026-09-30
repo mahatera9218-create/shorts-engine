@@ -744,6 +744,8 @@ CREATE TABLE pnl_monthly (month TEXT, topic_id TEXT, platform TEXT, revenue REAL
 
 ### 7.6 성공 기준과 확장 조건
 
+> 블로그·클립(현재 운영)의 기간별 목표·점검·판정은 `docs/운영-계획.md`를 따른다 (2026-09-30). 아래 표는 쇼츠 파일럿 첫 계획이다.
+
 | 시점 | 기준 | 다음 행동 |
 | --- | --- | --- |
 | 7일 | 투자 메모 3개, 주제 결정 | 채널·블로그 개설 |
