@@ -378,3 +378,30 @@ class TestCleanTags(unittest.TestCase):
         from content.desk import clean_tags
         self.assertEqual(clean_tags(["김도영", "3.3%", "KIA 타이거즈", "연봉·세금", "#홈런왕", "김도영"]),
                          ["김도영", "KIA타이거즈", "연봉세금", "홈런왕"])
+
+
+class TestTitlePair(unittest.TestCase):
+    SHEET = ("제목용 짧은 이름: 이정후\n썸네일: 이정후 / 올해 연봉이면 / 테슬라 모델Y 597대 (추천 제목에는 이 숫자를 다시 쓰지 않는다)\n"
+             "추천 제목 유형: 질문형 (코드가 날마다 돌린다)")
+
+    def post(self, text, typ="질문형"):
+        return {"titles": [{"text": text, "type": typ}], "recommended": 1}
+
+    def test_pair_ok(self):
+        from content.autopost import check_titles
+        self.assertEqual(check_titles(self.post("이정후 안타 하나 2억, 모델Y 몇 대?"), self.SHEET), [])
+
+    def test_off_pair_and_type(self):
+        from content.autopost import check_titles
+        got = check_titles(self.post("이정후 65승 97패 팀에서 받은 2억", "대비형"), self.SHEET)
+        self.assertTrue(any("썸네일과 다른 이야기" in x for x in got))
+        self.assertTrue(any("유형" in x for x in got))
+
+    def test_repeat_number(self):
+        from content.autopost import check_titles
+        got = check_titles(self.post("이정후 모델Y 597대, 진짜일까?"), self.SHEET)
+        self.assertTrue(any("되풀이" in x for x in got))
+
+    def test_title_type_rotates(self):
+        from content.autopost import title_type
+        self.assertEqual(len({title_type("2026-10-01", i) for i in range(5)}), 5)

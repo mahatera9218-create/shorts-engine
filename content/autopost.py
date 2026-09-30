@@ -88,6 +88,7 @@ PRICE_RULES = """너는 부동산 기사 요약문에서 실거래가 하나를 
 - deal_date는 기사에 적힌 거래 날짜 (YYYY-MM-DD 또는 YYYY-MM, 없으면 빈 문자열). source는 기사 번호 [n].
 """
 
+TITLE_TYPES = ["숫자형", "대비형", "순위형", "반전형", "질문형"]
 BRIEF_KEYS = {"reader": "독자", "reader_question": "독자의 질문", "promise": "제목·썸네일의 약속",
               "payoff": "본문에서 회수하는 곳", "only_here": "이 글에만 있는 것", "takeaway": "읽고 남는 한 줄",
               "why_naver": "네이버·광고주 기대에 맞는 이유",
@@ -110,7 +111,7 @@ POST_SCHEMA = {
         "titles": {"type": "array", "items": {
             "type": "object",
             "properties": {"text": {"type": "string"},
-                           "type": {"type": "string", "enum": ["숫자형", "대비형", "순위형", "반전형", "질문형"]}},
+                           "type": {"type": "string", "enum": TITLE_TYPES}},
             "required": ["text", "type"], "additionalProperties": False}},
         "recommended": {"type": "integer"},
         "body": {"type": "string"},
@@ -143,6 +144,8 @@ REVIEW_PASS = 4
 REVIEW_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"의 편집장이다. 위 스킬 문서의 0단계(9가지 질문과 지금의 가설)를 기준으로
 초안을 홈피드에서 이 글을 처음 보는 독자의 눈으로 읽고, 아래 7개 기준을 1~5점으로 매겨라. 후하게 주지 마라.
 - 약속 회수: 추천 제목·썸네일이 던진 궁금증을 본문 첫 화면(첫 3문단)에서 답하나. 낚시로 끝나면 1점.
+  추천 제목과 썸네일이 같은 이야기(같은 숫자에서 이어지는 궁금증, 같은 비교 대상)인가. 서로 딴 얘기면 2점 이하,
+  fixes에 "추천 제목을 썸네일과 짝이 되게"라고 적는다.
   퀴즈 정답은 규칙상 퀴즈 카드 뒤에만 나온다. 제목의 답을 첫 화면에서 줬다면 퀴즈 정답이 뒤에 있는 것은 감점하지 않는다.
   제목이 퀴즈 정답을 묻고 있으면 fixes에 "추천 제목을 첫 화면에서 답할 수 있는 궁금증으로 바꿔라"라고 적는다.
 - 새 정보: 기사·다른 블로그에 없는, 이 글이 직접 계산한 숫자가 중심인가.
@@ -197,9 +200,14 @@ WRITE_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"(닉네�
 
 출력
 - gate_pass: 숫자표로 '새로 계산한 숫자'라는 정보 이득을 만들 수 있으면 true. info_gain에 한 줄.
-- titles 5개, 유형을 모두 다르게. recommended는 추천 제목 번호(1~5).
+- titles 5개, 유형을 모두 다르게. recommended는 추천 제목 번호(1~5). 추천 제목은 숫자표의 '추천 제목 유형'으로 쓴다.
+  대표는 추천 제목 하나만 보고 발행한다. 나머지 4개는 예비다.
 
 제목 (홈판에서는 썸네일 + 제목만 보고 누를지 정한다. 가장 공들일 것)
+- 추천 제목은 썸네일과 한 쌍이다. 썸네일(숫자표 '썸네일' 줄)이 보여 주는 숫자·비교 대상을 그대로 이어받아, 그 숫자를 보고 생길
+  다음 궁금증을 던진다. 썸네일에 물건(차·아파트·유니폼·여행)이나 세금이 있으면 제목에도 그 말을 넣는다. 썸네일과 다른 숫자·다른 비교
+  대상을 주제로 삼지 않는다. 예: 썸네일 "이정후 / 올해 연봉이면 / 테슬라 모델Y 597대" → 제목 "이정후 안타 하나 2억, 모델Y 몇 대?"
+  (단, 퀴즈 카드가 묻는 단위는 피한다). 본문 첫 문단은 이 제목의 답이다.
 - 5개 모두 숫자표의 '제목용 짧은 이름'으로 시작한다 (검색 유입 + 스타 이름으로 눈길). 성+이름 전체를 쓰지 않는다.
 - 추천 제목은 짧은 이름 + 숫자 후킹 (예: "오타니 9,496억 계약인데 올해 27억?", "이정후 298억, 시즌 끝나도 다 받을까?"). 숫자로 반전·궁금증을 만든다.
 - 썸네일 금액(숫자표 '썸네일' 줄)은 추천 제목에 되풀이하지 않는다. 썸네일은 "얼마", 제목은 "왜?".
@@ -421,17 +429,26 @@ def unknown_numbers(text: str, sheet: str, extra: str = "") -> list[str]:
 
 
 TITLE_MAX = 25  # 짧은 이름 + 숫자 후킹 (대표 결정)
+TYPE_LINE = re.compile(r"^추천 제목 유형: (\S+)", re.M)
+
+
+def title_type(today: str, n: int) -> str:
+    """오늘 이 후보의 추천 제목 유형 (날짜·후보 순서로 돌린다 → 주간 점검에서 유형별 비교, 대표 결정 2026-09-30)."""
+    return TITLE_TYPES[(date.fromisoformat(today).toordinal() + n) % len(TITLE_TYPES)]
 SHORT = re.compile(r"^제목용 짧은 이름: (\S+)", re.M)
 TITLE_BANNED = ["충격", "경악", "헉", "소름", "역대급"]
-THUMB = re.compile(r"^썸네일: (.+?) / (.+?) / (\S+?)원? \(", re.M)
+THUMB = re.compile(r"^썸네일: (.+?) / (.+?) / (.+?) \(", re.M)
 
 
 def check_titles(p: dict, sheet: str) -> list[str]:
-    """제목 규칙: 짧은 이름으로 시작, 25자 이하, 과장어 금지, 추천 제목은 숫자 후킹 + 썸네일 금액 되풀이 금지."""
+    """제목 규칙: 짧은 이름으로 시작, 25자 이하, 과장어 금지, 추천 제목은 숫자 후킹 + 썸네일 금액 되풀이 금지
+    + 썸네일과 짝(같은 비교 대상) + 오늘의 추천 제목 유형."""
     m = THUMB.search(sheet)
     if not m or not p["titles"]:
         return []
-    name, money = m.group(1), m.group(3)
+    name, big = m.group(1), m.group(3).split()
+    money = big[-1].removesuffix("원")  # "8,400만원" · "597대" · "5,386만"
+    subject = [w for w in big[:-1] if len(w) >= 2 and w not in ("최대", "약")]  # "테슬라 모델Y" · "세금"
     s = SHORT.search(sheet)
     core = s.group(1) if s else name.split(" ")[0]  # '오타니 쇼헤이' → '오타니'
     out = []
@@ -446,8 +463,13 @@ def check_titles(p: dict, sheet: str) -> list[str]:
         if text.count("?") > 1 or any(w in text for w in TITLE_BANNED):
             out.append(f"제목{i}에 물음표 여러 개 또는 과장어")
     rec = p["titles"][p["recommended"] - 1]["text"] if 1 <= p["recommended"] <= len(p["titles"]) else ""
-    if money.removesuffix("원") in rec.replace(" ", ""):
-        out.append(f"추천 제목이 썸네일 금액({money})을 되풀이함 → 반전·궁금증 한 마디로")
+    if money in rec.replace(" ", ""):
+        out.append(f"추천 제목이 썸네일 숫자({money})를 되풀이함 → 반전·궁금증 한 마디로")
+    if rec and subject and not any(w in rec for w in subject):
+        out.append(f"추천 제목이 썸네일과 다른 이야기 → 썸네일의 '{' '.join(subject)}'를 제목에도 (짝으로)")
+    want = TYPE_LINE.search(sheet)
+    if rec and want and p["titles"][p["recommended"] - 1]["type"] != want.group(1):
+        out.append(f"추천 제목 유형이 오늘 정한 '{want.group(1)}'이 아님")
     if not re.search(r"\d", rec):
         out.append("추천 제목에 숫자가 없음 → 이름 + 숫자 후킹으로")
     if not any(core in t for t in p.get("tags", [])) and p.get("tags") is not None:
@@ -946,7 +968,8 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
         folder.mkdir(parents=True, exist_ok=True)
         photos.fetch_all(folder, d.get("sport", "야구"), folder.name)  # 키가 없으면 사진 없이
         n = themes.build(folder, d)
-        sheet = theme_sheet(plan, d, n, got, cfg) + "\n" + "\n".join(themes.image_lines(th))
+        sheet = (theme_sheet(plan, d, n, got, cfg) + "\n" + "\n".join(themes.image_lines(th))
+                 + f"\n추천 제목 유형: {title_type(today, len(made_today))} (코드가 날마다 돌린다)")
         category = pool["categories"].get(d.get("sport", "야구").split()[0], "야구")  # sport = "야구 (프로야구)"
         post, problems, rounds = write_post(llm, {"category": category, "angle": tinfo["angle"]}, sheet,
                                             cfg.get("max_revisions", 2))
