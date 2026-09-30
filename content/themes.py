@@ -43,7 +43,7 @@ def ratio(x: float) -> str:
 # ---------------------------------------------------------------- 뽑기
 
 def plans(pool: dict, recent: set[str], seed: str, n: int = 6, override: str | None = None,
-          theme: str | None = None) -> list[dict]:
+          theme: str | None = None, used: set = frozenset()) -> list[dict]:
     """오늘 시도할 (테마, 선수) 조합 후보 n개. 연봉 보도가 없는 선수가 있으면 다음 후보로 넘어간다."""
     rng = random.Random(seed)
     everyone = pool["players"]
@@ -53,8 +53,10 @@ def plans(pool: dict, recent: set[str], seed: str, n: int = 6, override: str | N
     def kind(p):  # 야구·축구·골프 (리그가 아니라 종목으로 같은/다른 종목을 가른다)
         return pool["sports"].get(p["sport"], {}).get("sport", p["sport"])
 
-    def pick(cands, exclude=()):
-        c = [p for p in cands if p["name"] not in exclude]
+    only = pool.get("_eligible", {})  # 테마별로 쓸 수 있는 선수 (tax: 국내 연봉, jersey: 유니폼 가격 확인된 팀)
+
+    def pick(cands, exclude=(), th=None):
+        c = [p for p in cands if p["name"] not in exclude and (th not in only or p["name"] in only[th])]
         return rng.choices(c, weights=[p.get("weight", 1) for p in c])[0] if c else None
 
     out, seen = [], set()
@@ -64,7 +66,9 @@ def plans(pool: dict, recent: set[str], seed: str, n: int = 6, override: str | N
             a = next((p for p in everyone if override in (p["name"], p.get("short"))),
                      {"name": override, "sport": "kbo", "weight": 1})
         else:
-            a = pick(fresh)
+            a = pick(fresh, th=th)
+        if not a:
+            continue
         ps = [a]
         if th in ("same", "cross"):
             b = pick([p for p in fresh if (kind(p) == kind(a)) == (th == "same")], {a["name"]})
@@ -72,7 +76,7 @@ def plans(pool: dict, recent: set[str], seed: str, n: int = 6, override: str | N
                 continue
             ps.append(b)
         key = (th, tuple(p["name"] for p in ps))
-        if key in seen:
+        if key in seen or (th, tuple(sorted(p["name"] for p in ps))) in used:
             continue
         seen.add(key)
         out.append({"theme": th, "players": ps})
@@ -117,6 +121,15 @@ def compute_vs(d: dict) -> dict:
             "common": sorted((ka & kb) - {"games"})}
 
 
+def ro(word: str) -> str:
+    """조사 (으)로: 받침 있으면 '으로', 없거나 ㄹ받침이면 '로'. 한글이 아니면 '로'."""
+    ch = word.strip()[-1:] if word.strip() else ""
+    if not ("가" <= ch <= "힣"):
+        return word + "로"
+    jong = (ord(ch) - 0xAC00) % 28
+    return word + ("로" if jong in (0, 8) else "으로")
+
+
 def compute_life(d: dict) -> dict:
     """1선수 1물건 (대표 결정): 올해 연봉과 기록 단위별 몸값을 물건 하나의 개수로 바꾼다."""
     n = receipt.compute(d)
@@ -137,17 +150,39 @@ def compute_life(d: dict) -> dict:
             "inverse_count": item["price_krw"] / pick["value"], "inverse_word": cards.word(pick["label"])}
 
 
-def pick_prices(prices: dict, seed: str) -> list[dict]:
+def pick_prices(prices: dict, seed: str, exclude: set[str] = frozenset()) -> list[dict]:
     """1선수 1물건 (대표 결정): 먼저 그룹(집·국산차·수입차)을 group_weight대로 고르고,
     그 안에서 검색량(weight)이 큰 것일수록 자주 뽑는다 (많이 검색하는 단지·차종 위주)."""
     rng = random.Random(seed)
     gw = prices.get("group_weight") or {"home": 1, "car_kr": 1, "car_import": 1}
     groups = [g for g in gw if any(i.get("group") == g for i in prices["items"])]
     group = rng.choices(groups, weights=[gw[g] for g in groups])[0]
-    pool = [i for i in prices["items"] if i.get("group") == group]
+    pool = [i for i in prices["items"] if i.get("group") == group and i["key"] not in exclude] or \
+        [i for i in prices["items"] if i.get("group") == group]  # 이 선수와 이미 쓴 물건은 빼고 (다 썼으면 다시)
     it = rng.choices(pool, weights=[max(1, i.get("weight", 1)) for i in pool])[0]
     return [{x: it[x] for x in ("key", "group", "label", "short", "unit", "price_krw", "as_of", "source",
                                 "fetch", "query", "min_krw", "max_krw") if x in it}]
+
+
+def income_tax(x: float, brackets: list) -> float:
+    for cap, rate, ded in brackets:
+        if cap is None or x <= cap:
+            return max(0.0, x * rate - ded)
+    return 0.0
+
+
+def compute_tax(d: dict, tax: dict) -> dict:
+    """연봉 세금 테마 (국내 사업소득): 확실한 원천징수 3.3%와, 경비·공제 0으로 본 세율표 상한만 계산한다."""
+    n = receipt.compute(d)
+    s = n["salary_krw"]
+    keys = [u["key"] for u in receipt.units(d)]
+    unit = "games" if "games" in keys else receipt.headline(d)
+    u = next(x for x in receipt.units(d) if x["key"] == unit)
+    wh = s * tax["withholding"]
+    top = income_tax(s, tax["brackets"]) * (1 + tax["local_rate"])
+    after = s - top
+    return {**n, "tax_unit": unit, "tax_label": u["label"], "withhold": wh, "tax_max": top, "tax_rate": top / s,
+            "after_max": after, "after_per": after / receipt.effective_count(u)}
 
 
 def quiz_item(d: dict, n: dict) -> dict:
@@ -269,7 +304,7 @@ def build_life(folder: Path, d: dict, photo: Image.Image | None) -> dict:
     center_text(dr, (W / 2, 680), line, fit(dr, line, "b", 44, W * 0.86), INK)
     imgs["card_answer.png"] = im
     im, dr = _base(4, total)
-    title = f"{name} 몸값을 {q['short']}로 바꾸면"
+    title = f"{name} 몸값을 {ro(q['short'])} 바꾸면"
     center_text(dr, (W / 2, 190), title, fit(dr, title, "display", 64, W * 0.86), INK)
     if n["inverse"]:  # 한 채 사려면 연봉 몇 년·몇 경기·몇 승
         rows = [["기준", "몸값", f"한 {q['unit']} 사려면"]]
@@ -298,6 +333,49 @@ def build_life(folder: Path, d: dict, photo: Image.Image | None) -> dict:
     return n
 
 
+def build_tax(folder: Path, d: dict, photo: Image.Image | None) -> dict:
+    from market.common import load_yaml
+    n = compute_tax(d, load_yaml("tax.yaml"))
+    name = d.get("short_name") or d["player"]
+    total = 4
+    imgs = {"thumb.png": receipt.poster(f"{d['season']} 연봉 세금", name, f"연봉 {short_won(n['salary_krw'])}이면",
+                                        f"세금 최대 {short_won(n['tax_max'])}", photo, jerseys=jersey.for_players([d["player"]]))}
+    first, ask = f"{name} 연봉 {short_won(n['salary_krw'])},", "월급날 떼는 세금은?"
+    im, dr = _base(2, total)
+    center_text(dr, (W / 2, 250), first, fit(dr, first, "display", 80, W * 0.86), INK)
+    center_text(dr, (W / 2, 360), ask, fit(dr, ask, "display", 86, W * 0.86), INK)
+    opts, idx = cards.options(n["withhold"], folder.name)
+    _big_options(dr, ["약 " + won(v) for v in opts])
+    center_text(dr, (W / 2, 985), "정답은 아래에 ↓", font("b", 40), RED)
+    imgs["card_quiz.png"] = im
+    im, dr = _base(3, total)
+    dr.text((W / 2 - 40, 260), "정답은", font=font("display", 70), fill=SOFT, anchor="rm")
+    _num(dr, (W / 2 + 10, 262), idx + 1, r=44, color=RED)
+    dr.text((W / 2 + 70, 260), "번", font=font("display", 70), fill=SOFT, anchor="lm")
+    _highlight(dr, (W / 2, 470), won(n["withhold"]), 150)
+    line = "연봉 × 3.3% (소득세 3% + 지방소득세 0.3%)"
+    center_text(dr, (W / 2, 680), line, fit(dr, line, "b", 44, W * 0.86), INK)
+    center_text(dr, (W / 2, 760), "나머지는 5월 종합소득세 신고 때 정산해요", font("r", 36), SOFT)
+    imgs["card_answer.png"] = im
+    im, dr = _base(4, total)
+    title = f"{name} 연봉과 세금 (최대로 잡으면)"
+    center_text(dr, (W / 2, 190), title, fit(dr, title, "display", 64, W * 0.86), INK)
+    rows = [["구분", "금액"], ["올해 연봉", won(n["salary_krw"])], ["월급날 떼는 3.3%", won(n["withhold"])],
+            ["세금 최대 (경비·공제 0)", won(n["tax_max"])], ["최대로 떼면 남는 돈", won(n["after_max"])],
+            [f"남는 돈 {n['tax_label']}", won(n["after_per"])]]
+    end = _table(dr, rows, [0.56, 0.44], 290, {3})
+    note = "실제 세금은 필요경비·공제만큼 이보다 적어요 · 국세청 세율표"
+    center_text(dr, (W / 2, end + 60), note, fit(dr, note, "r", 28, W * 0.86), SOFT)
+    imgs["card_table.png"] = im
+    st = {"hook": {"tag": f"{d['season']} 연봉 세금", "name": name, "label": f"연봉 {short_won(n['salary_krw'])}이면",
+                   "big": f"세금 최대 {short_won(n['tax_max'])}", "players": [d["player"]]},
+          "quiz": {"lines": [first, ask], "options": ["약 " + won(v) for v in opts], "answer": idx},
+          "answer": {"big": won(n["withhold"]), "line": line},
+          "table": {"title": title, "header": rows[0], "rows": rows[1:], "hot": [2]}}
+    _save(folder, imgs, n, st)
+    return n
+
+
 def _save(folder: Path, imgs: dict, n: dict, st: dict | None = None) -> None:
     (folder / "numbers.json").write_text(json.dumps(n, ensure_ascii=False, indent=1, default=str), encoding="utf-8")
     if st:  # 클립 영상용 줄거리 (content/clip.py)
@@ -314,8 +392,10 @@ def build(folder: Path, d: dict) -> dict:
     th = d.get("theme", "receipt")
     if th in ("same", "cross"):
         return build_vs(folder, d, photo)
-    if th == "life":
+    if th in ("life", "jersey"):  # 유니폼 테마 = 물건이 그 팀 유니폼인 생활 물가 비교
         return build_life(folder, d, photo)
+    if th == "tax":
+        return build_tax(folder, d, photo)
     return receipt.build(folder, d)
 
 
@@ -342,8 +422,15 @@ IMAGE_PLANS = {
 }
 
 
+IMAGE_PLANS["tax"] = [
+    ("첫문단아래", "thumb.png", "첫 문단 바로 아래 (홈판 카드와 같은 그림)"),
+    ("퀴즈", "card_quiz.png", "바로 앞 문장에서 월급날 떼는 세금이 얼마일지 맞혀 보라고 묻는다"),
+    ("정답", "card_answer.png", "퀴즈 바로 다음. 정답 카드보다 앞에서는 3.3% 금액을 쓰지 않는다"),
+    ("세금표", "card_table.png", "세금 최대치와 남는 돈을 말하는 문단 바로 위")]
+
+
 def image_plan(theme: str) -> list[tuple[str, str, str]]:
-    return IMAGE_PLANS["vs" if theme in ("same", "cross") else theme]
+    return IMAGE_PLANS["vs" if theme in ("same", "cross") else "life" if theme == "jersey" else theme]
 
 
 def image_lines(theme: str) -> list[str]:

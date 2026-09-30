@@ -21,12 +21,13 @@ UNITS = [("games", "1경기"), ("at_bats", "1타수"), ("hits", "1안타"), ("ho
 
 
 def won(x: float) -> str:
-    """사람이 읽는 금액 (억원·만원은 붙여 쓴다, 대표 결정): 'X억 Y만원', 'X억원', 'Y만원'."""
-    x = round(x)
+    """사람이 읽는 금액 (억원·만원은 붙여 쓴다, 대표 결정): 'X억 Y만원', 'X억원', 'Y만원'.
+    만원 아래는 버린다 (올려서 부풀리지 않는다). 100만원 미만은 원 단위 그대로 ('159,000원')."""
+    x = int(x)
+    if x < 1_000_000:
+        return f"{x:,}원"
     eok, man = divmod(x, 100_000_000)
-    man = round(man / 10_000)
-    if man == 10_000:
-        eok, man = eok + 1, 0
+    man //= 10_000
     if eok and man:
         return f"{eok:,}억 {man:,}만원"
     if eok:

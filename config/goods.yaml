@@ -1,0 +1,10 @@
+# 유니폼 테마 (대표 결정 2026-09-30): "유니폼 한 벌 vs 1경기 몸값". 팀별 공식·정식 판매처의 확인된 판매가만.
+# 이 파일에 팀이 있어야 그 팀 선수가 유니폼 테마에 뽑힌다. 가격이 바뀌면 여기만 고친다 (6개월 넘으면 확인 알림).
+teams:
+  한화 이글스:
+    {key: jersey_hanwha, label: "한화 이글스 2026 어센틱 유니폼", short: 한화 유니폼, unit: 벌, price_krw: 159000,
+     as_of: 2026-06-01, source: "한화이글스 공식 유니폼 판매처 (26 썸머 블루 어센틱 159,000원) https://spyder.co.kr/product/%ED%95%9C%ED%99%94%EC%9D%B4%EA%B8%80%EC%8A%A4-26-%EC%9D%B4%EA%B8%80%EC%8A%A4-x-%EA%BF%88%EC%88%9C%EC%9D%B4-%EC%96%B4%EC%84%BC%ED%8B%B1-%EC%9C%A0%EB%8B%88%ED%8F%BC%EC%97%B4%EB%A7%88%ED%82%B9/17559/"}
+  LA 다저스:
+    {key: jersey_dodgers, label: "나이키 LA 다저스 홈 레플리카 유니폼 (국내 판매가)", short: 다저스 유니폼, unit: 벌, price_krw: 179000,
+     as_of: 2026-09-30, source: "파나틱스 공식 입점 판매가 179,000원 https://www.musinsa.com/products/5075061"}
+# 확인 필요 (아직 없음): KIA 타이거즈, 삼성 라이온즈, SSG 랜더스, 샌프란시스코 자이언츠, 애틀랜타, 양키스, 해외축구 구단
