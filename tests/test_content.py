@@ -266,6 +266,13 @@ class ContentTest(unittest.TestCase):
         posts[1]["ok"] = False  # 차례 마케터 글이 기준 미달이면 다음 마케터
         assert today_pick(posts, "2026-10-02")["marketer"] == 3
 
+    def test_review_gate(self):
+        from content.autopost import review_ok
+        sc = lambda *v: [{"score": x} for x in v]
+        assert review_ok(sc(3, 4, 4, 4, 4, 4, 4))          # 3점 하나는 통과 (비용 효율, 2026-10-01)
+        assert not review_ok(sc(2, 5, 5, 5, 5, 5, 5))      # 2점 이하가 있으면 미달
+        assert not review_ok(sc(3, 3, 3, 3, 4, 4, 4))      # 평균 3.5 미만이면 미달
+
     def test_jersey_spec(self):
         from content import jersey
         o = jersey.spec("오타니 쇼헤이")
