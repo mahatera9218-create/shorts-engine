@@ -13,7 +13,7 @@ import re
 import shutil
 import statistics
 import sys
-from datetime import date, timedelta
+from datetime import date
 
 import yaml
 
@@ -64,15 +64,44 @@ def fetch(yt, handle: str) -> tuple[dict, list[dict]]:
     return channel, vids
 
 
+def _names() -> set[str]:
+    ps = load_yaml("players.yaml")["players"]
+    return {p.get("short") or p["name"] for p in ps} | {p["name"] for p in ps} | set(load_yaml("salaries.yaml")["players"])
+
+
+NAMES = _names()
+
+
+def guess(v: dict, log: list[dict]) -> dict | None:
+    """제목을 바꿔 올린 쇼츠 짝 찾기: 올린 날 이전 3일 안에 만든, 아직 짝 없는 쇼츠 중 제목 낱말(선수 이름·리그)이
+    2개 이상 겹치는 것 하나뿐일 때만 (애매하면 짝짓지 않고 config/shorts_links.yaml에 손으로)."""
+    def words(t):
+        return set(re.findall(r"[가-힣A-Za-z]{2,}", t)) - {"연봉", "얼마", "비교", "쇼츠"}
+
+    def names(t):
+        return {n for n in NAMES if n in t}
+
+    day = v["published"][:10]
+    nv = names(v["title"])
+    cands = [x for x in log if not x.get("video_id") and not x.get("discarded") and x["date"] <= day
+             and (date.fromisoformat(day) - date.fromisoformat(x["date"])).days <= 3
+             and (nv <= names(x["title"]) if nv else len(words(v["title"]) & words(x["title"])) >= 2)]
+    return cands[0] if len(cands) == 1 else None
+
+
 def update(channel: dict, vids: list[dict], today: str) -> dict:
     """스냅숏을 쌓고, 로그의 쇼츠와 짝을 짓는다 (log.yaml에 video_id·uploaded 기록)."""
     stats = load(STATS, {"channel": {}, "videos": {}})
     stats["channel"][today] = channel
     log = load(LOG, [])
     by_title = {_norm(x["title"]): x for x in log}
+    lf = ROOT / "config" / "shorts_links.yaml"
+    links = ((yaml.safe_load(lf.read_text(encoding="utf-8")) or {}).get("links") or {}) if lf.exists() else {}
     for v in vids:
         rec = stats["videos"].setdefault(v["id"], {"title": v["title"], "published": v["published"], "snaps": {}})
-        m = by_title.get(_norm(v["title"]))
+        m = next((x for x in log if x.get("video_id") == v["id"]), None) or by_title.get(_norm(v["title"])) \
+            or next((x for x in reversed(log) if x["key"] == links.get(v["id"]) and not x.get("video_id")), None) \
+            or guess(v, log)
         if m:
             rec |= {"kind": m["kind"], "key": m["key"]}
             m |= {"video_id": v["id"], "uploaded": v["published"]}

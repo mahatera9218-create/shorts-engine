@@ -14,11 +14,14 @@
   kind: A
   key: A-송성문
   title: 송성문이 뛸 때마다 통장에 꽂히는 돈
+  discarded: true
 - date: '2026-09-30'
   kind: B
   key: B-kbo5-nba1
   title: KBO 연봉 TOP 5를 다 합쳐도 몇 배?
+  discarded: true
 - date: '2026-09-30'
   kind: C
   key: C-kbo-month
   title: 2026 KBO 연봉 TOP 5 월급으로 치면
+  discarded: true
