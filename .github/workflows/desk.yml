@@ -38,6 +38,12 @@ jobs:
             .cache/media.txt
           key: media-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.job }}-r
           restore-keys: media-
+      - name: 새 영상 받기 (같은 실행에서 방금 만든 영상, 없으면 넘어감)
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: media-new
+          path: .
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
