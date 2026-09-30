@@ -1,0 +1,33 @@
+# 선수 사진 장부 (content/playerphoto.py가 채움, 틀린 사진은 none: true로 바꾸면 다시 안 씀)
+김도영:
+  checked: '2026-09-30'
+  none: true
+  why: 위키데이터에 종목이 맞는 사진 없음
+김혜성:
+  artist: 키움히어로즈
+  checked: '2026-09-30'
+  file: 김혜성 선수.jpg
+  license: CC BY 3.0
+  page: https://commons.wikimedia.org/wiki/File:%EA%B9%80%ED%98%9C%EC%84%B1_%EC%84%A0%EC%88%98.jpg
+  qid: Q31180625
+  thumb: https://thumb.wikimedia.org/wikipedia/commons/thumb/1/11/%EA%B9%80%ED%98%9C%EC%84%B1_%EC%84%A0%EC%88%98.jpg/1280px-%EA%B9%80%ED%98%9C%EC%84%B1_%EC%84%A0%EC%88%98.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
+류현진:
+  artist: Derral Chen on Flickr (Original version)  佾珜 (Crop)
+  checked: '2026-09-30'
+  file: Hyun jin Ryu 2013 NLDS.jpg
+  license: CC BY-SA 2.0
+  page: https://commons.wikimedia.org/wiki/File:Hyun_jin_Ryu_2013_NLDS.jpg
+  qid: Q50604
+  thumb: https://upload.wikimedia.org/wikipedia/commons/f/fd/Hyun_jin_Ryu_2013_NLDS.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled
+스테픈 커리:
+  checked: '2026-09-30'
+  none: true
+  why: 위키데이터에 종목이 맞는 사진 없음
+이정후:
+  artist: Trainholic
+  checked: '2026-09-30'
+  file: Kiwoom Heroes Lee Jeong-Hoo (2019).jpg
+  license: CC BY-SA 3.0
+  page: https://commons.wikimedia.org/wiki/File:Kiwoom_Heroes_Lee_Jeong-Hoo_(2019).jpg
+  qid: Q27952219
+  thumb: https://thumb.wikimedia.org/wikipedia/commons/thumb/0/01/Kiwoom_Heroes_Lee_Jeong-Hoo_%282019%29.jpg/1280px-Kiwoom_Heroes_Lee_Jeong-Hoo_%282019%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
