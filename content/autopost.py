@@ -26,6 +26,10 @@ from .receipt import won
 from .voice import check_draft
 
 POSTS = ROOT / "posts"
+# 외화 연봉 (2026-09-30: EPL·라리가·NBA 추가). 금액은 그날 환율로 원화 환산만 보여 주고, 통화 이름은 '기준:' 문단에만.
+FX = {"USD": {"word": "달러", "key": "fx_krw_per_usd", "range": (900, 2500), "salary": (1e5, 1.5e8)},
+      "EUR": {"word": "유로", "key": "fx_krw_per_eur", "range": (1000, 2800), "salary": (1e5, 1.5e8)},
+      "GBP": {"word": "파운드", "key": "fx_krw_per_gbp", "range": (1200, 3200), "salary": (1e5, 1.5e8)}}
 SKILLS = ROOT / ".claude" / "skills"
 EXAMPLE_POST = SKILLS / "blog-voice" / "example-post.md"  # 말투·길이 참고용 (대표가 좋다고 한 첫 글, 예고 문장 제거)
 NUM = re.compile(r"\d[\d,]*(?:\.\d+)?")
@@ -42,7 +46,7 @@ EXTRACT_SCHEMA = {
         "usable": {"type": "boolean"},
         "reason": {"type": "string"},
         "season": {"type": "integer"},
-        "salary_currency": {"type": "string", "enum": ["USD", "KRW"]},
+        "salary_currency": {"type": "string", "enum": ["USD", "EUR", "GBP", "KRW"]},
         "salary_basis": {"type": "string"},
         "facts": {"type": "array", "items": {
             "type": "object",
@@ -153,13 +157,14 @@ EXTRACT_RULES = """너는 스포츠 기사 요약문에서 숫자 사실만 뽑�
 규칙
 - 요약문에 글자로 적힌 숫자만 뽑는다. 추측·계산·기억으로 채우지 않는다. 없으면 빼거나 usable=false.
 - 같은 사실을 여러 기사가 말하면 기사마다 한 줄씩 따로 적는다 (source = 기사 번호). 어느 쪽이 맞는지는 코드가 정한다.
-- key는 영어 소문자_밑줄. 연봉은 반드시 key "salary", 올해 시즌 연봉 1년치(계약 총액 아님). 단위(unit)는 USD 또는 KRW, value는 원·달러 그대로의 숫자(예: 2200만 달러 → 22000000).
-- 연봉이 달러면 원달러 환율도 key "fx_krw_per_usd"로 뽑는다 (가장 최근 마감 환율, 1달러당 원).
+- key는 영어 소문자_밑줄. 연봉은 반드시 key "salary", 올해 시즌 연봉 1년치(계약 총액 아님). 단위(unit)는 USD·EUR·GBP·KRW 중 하나, value는 그 통화 그대로의 숫자(예: 2200만 달러 → 22000000).
+- 주급만 보도됐으면 연봉으로 바꾸지 말고 usable=false (연봉 1년치로 보도된 숫자만).
+- 연봉이 외화면 그 통화의 원화 환율도 뽑는다: key "fx_krw_per_usd"(1달러당 원) / "fx_krw_per_eur"(1유로당 원) / "fx_krw_per_gbp"(1파운드당 원), 가장 최근 마감 환율.
 - 경기·이닝·안타 같은 올 시즌 누적 기록은 key를 짧게 (games, innings, wins, strikeouts, at_bats, hits, home_runs, goals, assists 등). 타율·평균자책점도 facts에 넣되 units에는 넣지 않는다.
 - units: 연봉을 나눌 단위 2~4개. key는 facts의 key, label은 "1경기", "1이닝"처럼. 0이거나 없는 기록은 넣지 않는다.
 - headline_unit: 제목에 쓸 가장 눈길 끄는 단위 key.
 - story: 글 맥락이 되는 사실 3~6개를 짧게 네 말로 (기사 문장 복사 금지). 숫자는 facts에 있는 것만. 사생활·연애·가족·논란·도박은 빼라.
-- 계약 총액·지급 유예 금액처럼 글에 필요한 다른 돈도 facts로 뽑는다 (key 예: contract_total, deferred, unit은 USD 또는 KRW). 원화 환산은 코드가 한다.
+- 계약 총액·지급 유예 금액처럼 글에 필요한 다른 돈도 facts로 뽑는다 (key 예: contract_total, deferred, unit은 USD·EUR·GBP·KRW). 원화 환산은 코드가 한다.
 - salary_basis: 연봉 근거를 한 줄로, 금액 숫자 없이 (예: "6년 계약 중 2026년 연봉, 보도 기준", "10년 계약, 대부분 지급 유예"). 금액은 facts에만.
 - usable=false: 올해 연봉 또는 나눌 기록이 요약문에 없을 때. reason에 무엇이 없는지 적는다.
 - 사용자가 준 '종목 안내'가 있으면 따른다 (예: 골프는 연봉 대신 올해 상금).
@@ -169,7 +174,7 @@ WRITE_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"(닉네�
 위의 두 스킬 문서(blog-voice, money-content-writer)를 따른다. 특히 아래는 반드시 지킨다.
 
 숫자
-- 돈은 모두 원화로 쓴다 (달러 금액은 숫자표의 원화 환산값). "달러"라는 말은 마지막 "기준:" 문단의 환율 설명에만 쓴다.
+- 돈은 모두 원화로 쓴다 (외화 금액은 숫자표의 원화 환산값). "달러"·"유로"·"파운드"라는 말은 마지막 "기준:" 문단의 환율 설명에만 쓴다.
 - 글과 제목에는 사용자가 준 '숫자표'에 있는 숫자만 쓴다. 새로 계산하거나 반올림해서 키우지 않는다.
 - 줄여 쓰기는 버림만 허용: "2억 32만원" → "2억", "298억 4,740만원" → "약 298억원".
 - 금액은 붙여 쓴다: "9,045만원", "27억원", "2억 32만원" ("만 원", "억 원"처럼 띄우지 않는다).
@@ -332,18 +337,21 @@ def build_data(topic: dict, ex: dict, facts: dict, cfg: dict) -> tuple[dict | No
     sal = facts.get("salary")
     if not sal:
         return None, "올해 연봉을 찾지 못함"
-    usd = ex["salary_currency"] == "USD"
-    if usd and not 1e5 <= sal["value"] <= 1e8 or not usd and not 3e7 <= sal["value"] <= 1e11:
-        return None, f"연봉 숫자가 이상함 ({sal['value']:,} {ex['salary_currency']})"
+    cur = ex["salary_currency"]
+    usd = cur in FX  # 외화 연봉 (키 이름은 예전 그대로 salary_usd / fx_krw_per_usd 에 담는다: 금액·환율)
+    lo, hi = FX[cur]["salary"] if usd else (3e7, 1e11)
+    if not lo <= sal["value"] <= hi:
+        return None, f"연봉 숫자가 이상함 ({sal['value']:,} {cur})"
     d = {"player": topic["player"], "short_name": topic.get("short_name") or topic["player"].split(" ")[0],
          "team": topic.get("team", ""), "season": ex["season"],
          "salary_label": f"연봉 {won(sal['value'])} · {ex['salary_basis']}" if not usd else None}
     if usd:
-        fx = facts.get("fx_krw_per_usd")
-        if not fx or not 900 <= fx["value"] <= 2500:
-            return None, "환율을 찾지 못함"
-        d |= {"salary_usd": sal["value"], "fx_krw_per_usd": fx["value"],
-              "fx_label": f"1달러 = {fx['value']:,}원 ({fx['date']})"}
+        c = FX[cur]
+        fx = facts.get(c["key"])
+        if not fx or not c["range"][0] <= fx["value"] <= c["range"][1]:
+            return None, f"{c['word']} 환율을 찾지 못함"
+        d |= {"salary_usd": sal["value"], "fx_krw_per_usd": fx["value"], "salary_currency": cur,
+              "fx_label": f"1{c['word']} = {fx['value']:,}원 ({fx['date']})"}
     else:
         d["salary_krw"] = sal["value"]
     units = [{"key": u["key"], "label": u["label"], "count": facts[u["key"]]["value"]}
@@ -368,7 +376,8 @@ def number_sheet(d: dict, n: dict, facts: dict, ex: dict, cfg: dict) -> str:
          f"제목용 짧은 이름: {d.get('short_name') or d['player'].split(' ')[0]}",
          f"썸네일: {d['player']} / {head_label} / {receipt.short_won(n['per'][head])} (추천 제목에는 이 금액을 다시 쓰지 않는다)"]
     fx = d.get("fx_krw_per_usd")
-    L.append(f"올해 연봉: {won(n['salary_krw'])}" + (f" (달러 연봉을 {d['fx_label']} 환율로 환산)" if fx else ""))
+    cur = d.get("salary_currency", "USD")
+    L.append(f"올해 연봉: {won(n['salary_krw'])}" + (f" ({FX[cur]['word']} 연봉을 {d['fx_label']} 환율로 환산)" if fx else ""))
     L.append(f"연봉 근거: {ex['salary_basis']}")
     for u in receipt.units(d):
         L.append(f"{u['label']}당: {won(n['per'][u['key']])} (올 시즌 {u['count']:,}, 버림 표기 {won(n['per'][u['key']]).split(' ')[0]})")
@@ -378,10 +387,10 @@ def number_sheet(d: dict, n: dict, facts: dict, ex: dict, cfg: dict) -> str:
         L.append(f"최저임금 1년: {won(n['min_wage_yearly_krw'])} ({cfg['constants']['min_wage_label']})")
     L.append("기록·사실 (기사 날짜 · 정한 규칙):")
     for k, f in facts.items():
-        if k in ("salary", "fx_krw_per_usd"):
+        if k == "salary" or k.startswith("fx_krw_per_"):
             continue
-        if f["unit"] == "USD":  # 달러 금액은 원화로만 보여준다 (대표 결정: 통화는 원화로)
-            if not fx:
+        if f["unit"] in FX:  # 외화 금액은 원화로만 보여준다 (대표 결정: 통화는 원화로). 연봉과 같은 통화만 환산
+            if not fx or f["unit"] != cur:
                 continue
             L.append(f"- {f['label']}: 약 {won(f['value'] * fx)} (지금 환율로 환산 · {f['date']})")
             continue
@@ -390,7 +399,7 @@ def number_sheet(d: dict, n: dict, facts: dict, ex: dict, cfg: dict) -> str:
             continue
         v = f"{f['value']:,}" if float(f["value"]).is_integer() else f"{f['value']}"
         diff = f" · 출처끼리 차이 {f['differs']} → 본문에 '보도에 따라 약간 차이' 표기" if f["differs"] else ""
-        L.append(f"- {f['label']}: {v}{f['unit'] if f['unit'] not in ('KRW', 'USD') else ''} ({f['date']} · {f['rule']}){diff}")
+        L.append(f"- {f['label']}: {v}{f['unit'] if f['unit'] != 'KRW' and f['unit'] not in FX else ''} ({f['date']} · {f['rule']}){diff}")
     q = cards.quiz_unit(d, receipt.units(d), n["per"], receipt.headline(d))
     L.append(f"퀴즈 카드: {q['label']} 1번에 받는 돈 맞히기 (정답 {won(n['per'][q['key']])})")
     L.append("맥락 (네 말로 풀어 쓸 것):")
@@ -469,8 +478,9 @@ def check_post(p: dict, sheet: str) -> list[str]:
         problems.append("제목 5개와 추천 번호(1~5)가 필요")
     for label, text in [("본문", "\n".join(l for l in p["body"].splitlines() if not l.startswith("기준")))] + \
             [(f"제목{i}", t["text"]) for i, t in enumerate(p["titles"], 1)]:
-        if "달러" in text:
-            problems.append(f"{label}에 '달러' → 원화로 (환율은 '기준:' 문단에만)")
+        for w in ("달러", "유로", "파운드"):
+            if w in text:
+                problems.append(f"{label}에 '{w}' → 원화로 (환율은 '기준:' 문단에만)")
     m = QUIZ.search(sheet)
     if m and "card_quiz.png" in p["body"]:
         before = p["body"].split("card_quiz.png")[0]
@@ -633,12 +643,12 @@ def with_known_salary(facts: dict, ex: dict, known: dict) -> tuple[dict, dict]:
 
 def collect(hub, llm, topic: dict, today: str, cfg: dict) -> dict | str:
     """한 선수의 뉴스 → 숫자 뽑기 → 충돌 정리 → 계산 입력. 모자라면 이유(str)를 돌려준다."""
-    news = gather_news(hub, topic["queries"] + [cfg["fx_query"]])
+    news = gather_news(hub, topic["queries"] + cfg.get("fx_queries", [cfg["fx_query"]]))
     hint = f"\n종목 안내: {topic['hint']}" if topic.get("hint") else ""
     known = known_salary(topic["player"], today)
     if known:
         hint += (f"\n확인된 올해 연봉이 따로 있다 ({known['currency']}, 코드가 넣는다). 요약문에 올해 연봉이 없어도 "
-                 "나눌 기록이 있으면 usable=true. " + ("달러 연봉이니 환율(fx_krw_per_usd)은 꼭 뽑는다." if known["currency"] == "USD" else ""))
+                 "나눌 기록이 있으면 usable=true. " + (f"외화 연봉이니 환율({FX[known['currency']]['key']})은 꼭 뽑는다." if known["currency"] in FX else ""))
     ex = llm.ask_json([EXTRACT_RULES], f"선수: {topic['player']} ({topic.get('team', '')}, {topic.get('sport', '')}){hint}\n"
                       f"오늘: {today}\n\n뉴스 요약 (번호 = source):\n{news_prompt(news)}",
                       EXTRACT_SCHEMA, max_tokens=8000, **extract_opts())
@@ -804,16 +814,30 @@ def weighted_pool(hub, pool: dict, today: str) -> tuple[dict, str]:
     asked = {r["name"] for r in (req.get("requests") or [])
              if 0 <= (day - date.fromisoformat(str(r["date"]))).days <= req.get("days", 21)}
     out, hot = [], []
-    for p in pool["players"]:
+    # 화제 선수 (content/trending.py): TTL 안의 선수는 확률 3배, 풀에 없던 선수는 이 기간만 후보로 들어온다
+    ev = load_yaml("events.yaml") if (ROOT / "config" / "events.yaml").exists() else {}
+    tf = ROOT / "config" / "trending.yaml"
+    trend = {t["name"]: t for t in ((yaml.safe_load(tf.read_text(encoding="utf-8")) or {}).get("players", []) if tf.exists() else [])
+             if 0 <= (day - date.fromisoformat(str(t["date"]))).days <= ev.get("ttl_days", 14)}
+    names = {p["name"] for p in pool["players"]} | {p.get("short") for p in pool["players"]}
+    extra = [{"name": t["name"], "short": t.get("short") or t["name"], "sport": t["sport"], "team": t.get("team", ""),
+              "weight": 1, "trending": True} for t in trend.values() if t["name"] not in names and t.get("short") not in names]
+    vf = ROOT / "config" / "search_volume.yaml"
+    volume = (yaml.safe_load(vf.read_text(encoding="utf-8")) or {}).get("volume", {}) if vf.exists() else {}
+    from .trending import volume_factor
+    for p in pool["players"] + extra:
         try:
             n = sum(1 for it in hub.news(p["name"], display=100)
                     if 0 <= (day - date.fromisoformat(it["date"])).days <= NEWS_DAYS)
         except Exception:
             n = 0
-        f = (1 + min(2.0, n / NEWS_PER_BOOST)) * (req.get("boost", 3) if p["name"] in asked else 1)
+        hot_now = p["name"] in trend or p.get("short") in trend
+        f = ((1 + min(2.0, n / NEWS_PER_BOOST)) * (req.get("boost", 3) if p["name"] in asked else 1)
+             * (ev.get("boost", 3) if hot_now else 1) * volume_factor(volume.get(p["name"], 0)))
         out.append({**p, "weight": p.get("weight", 1) * f})
-        if n or p["name"] in asked:
-            hot.append((f, f"{short_name(p)} 기사 {n}건" + (" · 댓글 요청" if p["name"] in asked else "")))
+        if n or p["name"] in asked or hot_now:
+            hot.append((f, f"{short_name(p)} 기사 {n}건" + (" · 댓글 요청" if p["name"] in asked else "")
+                        + (" · 화제" if hot_now else "")))
     missing = asked - {p["name"] for p in pool["players"]}
     why = ", ".join(t for _, t in sorted(hot, reverse=True)[:5])
     if missing:
@@ -898,7 +922,7 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
                 old = [i["short"] for i in d["prices"] if (date.fromisoformat(today) - date.fromisoformat(str(i["as_of"]))).days > 180]
                 if old:
                     notes.append(f"가격 확인 필요 (6개월 넘음): {', '.join(old)} → config/prices.yaml·goods.yaml")
-            if th == "tax" and d.get("salary_usd"):
+            if th == "tax" and d.get("salary_usd"):  # 외화 연봉 (해외 리그)
                 notes.append(f"건너뜀 — {d['player']}: 세금 테마는 국내(원화) 연봉만")
                 continue
         title = themes.title_name(d)

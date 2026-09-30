@@ -322,6 +322,25 @@ class ContentTest(unittest.TestCase):
         trip = place_item({"city": "토론토", "domestic": False}, "trip")
         assert trip["price_krw"] == 1423000 and trip["short"] == "토론토 여행"
 
+    def test_trending_names_must_be_in_article(self):
+        from content import trending
+        assert trending.volume_factor(10_000) == 1 and trending.volume_factor(1_000_000) == 3
+        assert trending.volume_factor(100) == 0.5 and trending.volume_factor(0) == 1
+
+        class Hub:
+            def news(self, q, display=30):
+                return [{"title": "김도영 끝내기 홈런", "description": "KIA 김도영이 끝내기 홈런", "link": f"https://n/{q}",
+                         "date": "2026-09-29"}]
+
+        class LLM:
+            def ask_json(self, *a, **k):
+                return {"players": [
+                    {"name": "김도영", "short": "김도영", "sport": "kbo", "team": "KIA 타이거즈", "why": "끝내기", "source": 1},
+                    {"name": "없는선수", "short": "없는", "sport": "kbo", "team": "", "why": "지어냄", "source": 1}]}
+
+        got = trending.find_trending(Hub(), LLM(), "2026-09-30")
+        assert [p["name"] for p in got] == ["김도영"]
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,0 +1,33 @@
+# 화제 선수 찾기 (대표 결정 2026-09-30): 시기·경기에 따라 화제가 되는 선수를 이벤트 뉴스에서 매일 찾는다 (content/trending.py).
+# 경기 성과·기록·이적·계약·드래프트처럼 경기와 커리어에 관한 뉴스만. 사건·사고·사생활·도박 뉴스는 쓰지 않는다.
+# months: 그 이벤트가 몰리는 달 (그 달에는 이 검색어를 꼭 본다). 비워 두면 매달.
+ttl_days: 14      # 화제 선수는 14일 동안 풀에 머문다
+boost: 3          # 화제 선수는 뽑힐 확률 3배
+events:
+  kbo:
+    - {query: 한국시리즈, months: [10, 11]}
+    - {query: 프로야구 포스트시즌, months: [10]}
+    - {query: 신인드래프트 1순위, months: [9]}
+    - {query: 프로야구 트레이드}
+    - {query: 프로야구 FA 계약, months: [11, 12, 1]}
+    - {query: 끝내기 홈런}
+    - {query: 프로야구 신기록}
+  mlb:
+    - {query: 월드시리즈, months: [10, 11]}
+    - {query: 메이저리그 포스트시즌, months: [10]}
+    - {query: 메이저리그 MVP, months: [11]}
+    - {query: 메이저리그 FA 계약, months: [11, 12, 1, 2]}
+    - {query: 코리안리거 홈런}
+  soccer:
+    - {query: 챔피언스리그 골}
+    - {query: 유로파리그 골}
+    - {query: 프리미어리그 해트트릭}
+    - {query: 역대 이적료, months: [1, 6, 7, 8]}
+    - {query: 월드컵 골, months: [6, 7]}
+  nba:
+    - {query: NBA 트레이드}
+    - {query: NBA 파이널, months: [6]}
+    - {query: NBA 50득점}
+  golf:
+    - {query: PGA 투어 우승 상금}
+    - {query: LPGA 우승 상금}

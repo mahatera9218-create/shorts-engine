@@ -12,4 +12,5 @@ constants:
   min_wage_source: "고용노동부 https://www.moel.go.kr/news/enews/report/enewsView.do?news_seq=18144"
 
 fx_query: 원달러 환율 마감   # 달러 연봉일 때 환율을 뉴스에서 뽑는다
+fx_queries: [원달러 환율 마감, 원유로 환율, 원파운드 환율]   # 외화 연봉(달러·유로·파운드) 환율을 뉴스에서 뽑는다
 
