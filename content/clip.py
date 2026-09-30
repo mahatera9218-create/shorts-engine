@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import math
+import re
 import shutil
 import subprocess
 import sys
@@ -112,8 +113,18 @@ class Scene:
         raise NotImplementedError
 
 
+MONEY = re.compile(r"\d[\d,.]*\s*(?:[억만천]\s*(?:\d[\d,.]*\s*)?)*원?")
+
+
+def tease(big: str) -> str:
+    """도입부에서 답을 주지 않는다 (대표 지적 2026-09-30): 숫자 자리를 ???로 가린다. "모델Y 597대" → "모델Y ???대"."""
+    out = re.sub(r"(\?\?\?\s*){2,}", "??? ", MONEY.sub("???", big)).strip()
+    return out if "???" in out else big + "?"
+
+
 class Hook(Scene):
-    """첫 프레임부터 전부 보인다 (첫 프레임이 클립 표지): 태그·등판·이름·기록·금액 → 금액 튕기며 번쩍. 사진은 천천히 확대."""
+    """첫 프레임부터 전부 보인다 (첫 프레임이 클립 표지): 태그·등판·이름·기록 + 가린 금액(???) → 튕기며 번쩍. 사진은 천천히 확대.
+    답(금액)은 여기서 주지 않고 Reveal에서 공개한다 (끝까지 볼 이유)."""
     dur = 2.4
 
     def __init__(self, h: dict, photo: Image.Image | None, pics: list[Image.Image] = (), credit: str = ""):
@@ -148,7 +159,7 @@ class Hook(Scene):
         # 첫 프레임 = 클립 표지(네이버가 첫 장면을 표지로 씀) → 기록·금액도 처음부터 보이게, 등장 대신 튕김
         put(c, label(self.h["label"], "display", 90, WHITE, 6), W / 2, y0 + 190, 1.1 - 0.1 * ease_out(t / 0.2))
         s = 1 + 0.08 * math.sin(math.pi * clamp((t - 0.35) / 0.3))
-        put(c, label(self.h["big"], "display", 190, GOLD, 10), W / 2, y0 + 370, s)
+        put(c, label(tease(self.h["big"]), "display", 190, GOLD, 10), W / 2, y0 + 370, s)
         if 0.35 < t < 0.5:  # 번쩍
             c.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, int(110 * (1 - (t - 0.35) / 0.15)))))
 
@@ -221,6 +232,28 @@ class Answer(Scene):
             put(c, big, W / 2 + shake, 820, 2 - k, clamp((t - 0.9) / 0.1))
         if t > 1.6:
             put(c, label(self.a["line"], "b", 50, GRAY), W / 2, 1040, 1, clamp((t - 1.6) / 0.4))
+
+
+class Reveal(Scene):
+    """표지에서 가렸던 답 공개: 기록 → ??? 가 흔들리다 금액으로 쾅."""
+    dur = 2.8
+
+    def __init__(self, h: dict):
+        self.h = h
+        self.say = f"{h['name']}, {h['label']} {h['big']}."
+        self.sfx = [("boom", 1.0, 0.6)]
+
+    def draw(self, c, t):
+        put(c, label(self.h["name"], "display", 120, WHITE, 8), W / 2, 560, 1, ease_out(t / 0.25))
+        put(c, label(self.h["label"], "display", 90, WHITE, 6), W / 2, 720, 1, ease_out((t - 0.1) / 0.25))
+        if t < 1.0:
+            shake = 10 * math.sin(t * 50)
+            put(c, label(tease(self.h["big"]), "display", 170, GRAY, 8), W / 2 + shake, 930)
+        else:
+            k = ease_back((t - 1.0) / 0.35)
+            put(c, label(self.h["big"], "display", 170, GOLD, 10), W / 2, 930, 1.8 - 0.8 * k, clamp((t - 1.0) / 0.1))
+            if t < 1.15:
+                c.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, int(110 * (1 - (t - 1.0) / 0.15)))))
 
 
 class Table(Scene):
@@ -310,7 +343,9 @@ class LoopBack(Scene):
 
 def scenes(st: dict, photo: Image.Image | None, question: str = "", youtube: bool = False,
            pics: list[Image.Image] = (), credit: str = "") -> list[Scene]:
-    out: list[Scene] = [Hook(st["hook"], photo, pics, credit), Quiz(st["quiz"]), Answer(st["quiz"], st["answer"]), Table(st["table"])]
+    # 표지 질문(???) → 퀴즈 → 정답 → 표지 답 공개 → 표 → 최저임금 → 질문 (답은 가운데 이후에, 대표 지적 2026-09-30)
+    out: list[Scene] = [Hook(st["hook"], photo, pics, credit), Quiz(st["quiz"]), Answer(st["quiz"], st["answer"]),
+                        Reveal(st["hook"]), Table(st["table"])]
     if st.get("wage"):
         out.append(Wage(st["wage"]))
     out.append(Outro(question, youtube))

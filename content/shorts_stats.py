@@ -22,7 +22,7 @@ from market.common import ApiError, ROOT, load_yaml, missing_secrets
 OUT = ROOT / "reports" / "쇼츠-성과"
 STATS = OUT / "stats.yaml"
 LOG = ROOT / "shorts" / "log.yaml"
-KINDS = {"A": "A 통장형", "B": "B 비교형", "C": "C 한 장 반복형"}
+KINDS = {"A": "A 통장형", "B": "B 비교형", "C": "C 순위 카운트다운"}
 GOAL_SUBS, GOAL_VIEWS_90 = 500, 3_000_000  # 1차 목표: 확대 파트너 (쇼핑 제휴)
 MIN_GROUP = 5  # 형식 비교는 올린 지 3일 지난 영상이 형식마다 5개 이상일 때
 
