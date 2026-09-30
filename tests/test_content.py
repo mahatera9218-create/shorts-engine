@@ -349,6 +349,25 @@ class ContentTest(unittest.TestCase):
         assert "판정할 글이 아직" in weekly.judge(m, date(2026, 10, 20), names)[0]
         assert "판정할 글이 아직 0편" in weekly.judge(m, date(2026, 10, 5), names)[0]  # 7일 안 지난 글은 빼고 센다
 
+    def test_reset_drafts_keeps_published(self):
+        import tempfile
+        from pathlib import Path
+        from content import autopost, mark
+        old = (autopost.POSTS, mark.POSTS, autopost.write_index)
+        with tempfile.TemporaryDirectory() as t:
+            autopost.POSTS = mark.POSTS = Path(t)
+            for name in ("2026-10-01-life-a", "2026-10-01-tax-b", "2026-10-02-life-c"):
+                (Path(t) / name).mkdir()
+                (Path(t) / name / "post.md").write_text("# x", encoding="utf-8")
+            mark.mark("2026-10-01-life-a", "used")
+            try:
+                autopost.write_index = lambda: None
+                gone = autopost.reset_drafts("2026-10-02")
+            finally:
+                autopost.POSTS, mark.POSTS, autopost.write_index = old
+            assert gone == ["2026-10-01-tax-b"]
+            assert (Path(t) / "2026-10-01-life-a").exists() and (Path(t) / "2026-10-02-life-c").exists()
+
 
 if __name__ == "__main__":
     unittest.main()
