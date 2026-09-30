@@ -16,7 +16,7 @@ from datetime import date, timedelta
 
 import yaml
 
-from market.common import ROOT, load_yaml, missing_secrets
+from market.common import ApiError, ROOT, load_yaml, missing_secrets
 
 OUT = ROOT / "reports" / "쇼츠-성과"
 STATS = OUT / "stats.yaml"
@@ -45,7 +45,12 @@ def fetch(yt, handle: str) -> tuple[dict, list[dict]]:
     channel = {"subs": int(st.get("subscriberCount", 0) or 0), "views": int(st.get("viewCount", 0) or 0),
                "videos": int(st.get("videoCount", 0) or 0)}
     up = c["contentDetails"]["relatedPlaylists"]["uploads"]
-    pl = yt._call("playlistItems", {"part": "contentDetails", "playlistId": up, "maxResults": 50})
+    try:
+        pl = yt._call("playlistItems", {"part": "contentDetails", "playlistId": up, "maxResults": 50})
+    except ApiError as e:
+        if "404" not in str(e):
+            raise
+        pl = {}  # 아직 올린 영상이 없으면 업로드 목록이 404로 온다
     ids = [x["contentDetails"]["videoId"] for x in pl.get("items", [])]
     vids = []
     if ids:
