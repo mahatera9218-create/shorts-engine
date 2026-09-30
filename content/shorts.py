@@ -1,0 +1,385 @@
+"""유튜브 쇼츠 전용 영상 A·B·C (대표 결정 2026-09-30, reports/2026-09-30-쇼츠-스타일-분석.md).
+
+네이버 클립(1인 1주제 체감형)과 따로, 쇼츠 벤치마크에서 잘 된 형식을 매일 한 편씩 만든다. Claude를 쓰지 않는다(계산은 코드).
+- A. 통장형 (약 30초): 오늘 ✅ 후보 글의 확인된 숫자로 "{선수}가 뛸 때마다 통장에 꽂히는 돈" — 1경기·기록 단위·최저임금
+- B. 비교형 (약 25초): 확인 연봉표(config/salaries.yaml)로 두 쪽 연봉 대결 → 막대가 자라고 "N배"
+- C. 한 장 반복형 (약 7초): 확인 연봉표 순위를 한 장에 (연봉·월급·하루 단위를 돌려 가며) → 끝나면 처음으로 이어짐
+
+결과: shorts/<날짜>-<A|B|C>-<주제>/ video.mp4 · meta.txt(첫 줄 제목, 나머지 설명) · data.yaml
+- 숫자는 모두 확인된 값(글의 facts, 연봉표)과 코드 계산. 달러는 오늘 글에서 뽑은 환율(3일 안)로만 원화 환산, 없으면 달러로 둔다.
+- 선수 사진·경기 화면은 쓰지 않는다 (등판 그림만). 소리는 무음, 음악은 유튜브 앱에서.
+- 같은 주제(B·C)는 사용 기록(shorts/log.yaml)을 보고 가장 오래전에 쓴 것부터 돌린다.
+사용법: python -m content.shorts [--date YYYY-MM-DD] [--only A|B|C]
+"""
+from __future__ import annotations
+
+import argparse
+import math
+import shutil
+from datetime import date, timedelta
+from pathlib import Path
+
+import yaml
+from PIL import Image, ImageDraw
+
+from market.common import ROOT, load_yaml
+from . import clip, jersey, mark
+from .clip import (BG, FPS, GOLD, GRAY, GREEN, H, PANEL, RED, W, WHITE, Scene, clamp, ease_back, ease_out, label, pill,
+                   put)
+from .receipt import won
+from .themes import count
+
+OUT = ROOT / "shorts"
+LOG = OUT / "log.yaml"
+POSTS = ROOT / "posts"
+KEEP_DAYS = 3  # 쇼츠 폴더는 최근 3일만 둔다 (올리는 건 대표가 앱으로, 기록은 log.yaml)
+SEASON_GAMES = {"kbo": 144, "nba": 82, "mlb": 162}  # 정규시즌 경기 수 (리그 공식 일정)
+BLOG = clip.BLOG
+
+
+# ---------------------------------------------------------------- 자료
+
+def salary_table(fx: float | None) -> list[dict]:
+    """확인 연봉표 → [{name, short, sport, team, krw|None, usd|None, basis, source}]. 원화 금액은 환율이 있을 때만."""
+    pool = {p["name"]: p for p in load_yaml("players.yaml")["players"]}
+    out = []
+    for name, s in load_yaml("salaries.yaml")["players"].items():
+        p = pool.get(name, {})
+        usd = s["amount"] if s["currency"] == "USD" else None
+        krw = s["amount"] if s["currency"] == "KRW" else (usd * fx if usd and fx else None)
+        out.append({"name": name, "short": p.get("short") or name.split(" ")[0], "sport": p.get("sport", ""),
+                    "team": p.get("team", ""), "krw": krw, "usd": usd, "basis": s["basis"], "source": s["source"]})
+    return out
+
+
+def latest_fx(today: str) -> tuple[float | None, str]:
+    """오늘 글에서 뽑은 원·달러 환율 (3일 안). 없으면 None."""
+    best = (None, "")
+    for f in sorted(POSTS.glob("*/data.yaml")) if POSTS.exists() else []:
+        if f.parent.name[:10] < str(date.fromisoformat(today) - timedelta(days=3)):
+            continue
+        d = yaml.safe_load(f.read_text(encoding="utf-8")) or {}
+        if d.get("fx_krw_per_usd") and d.get("fx_label"):
+            best = (float(d["fx_krw_per_usd"]), d["fx_label"])
+    return best
+
+
+def used_log() -> list[dict]:
+    return (yaml.safe_load(LOG.read_text(encoding="utf-8")) or []) if LOG.exists() else []
+
+
+def pick(options: list[dict], kind: str) -> dict | None:
+    """가장 오래전에 쓴(또는 안 쓴) 주제."""
+    last = {x["key"]: x["date"] for x in used_log() if x["kind"] == kind}
+    return min(options, key=lambda o: last.get(o["key"], "0000")) if options else None
+
+
+def money(x: dict) -> str:
+    return won(x["krw"]) if x["krw"] else f"{x['usd']:,.0f}달러"
+
+
+# ---------------------------------------------------------------- 장면 (쇼츠 전용: 빠른 컷, 큰 글자, 움직이는 배경)
+
+BG_MOVE = None
+
+
+def bg(c, t):
+    global BG_MOVE
+    if BG_MOVE is None:
+        BG_MOVE = Image.new("RGBA", (W + 240, H), BG + (255,))
+        d = ImageDraw.Draw(BG_MOVE)
+        for i in range(-H, W + H + 240, 120):
+            d.line((i, 0, i + H, H), fill=(24, 29, 46, 255), width=40)
+    off = int(t * 50) % 120
+    c.paste(BG_MOVE.crop((off, 0, off + W, H)), (0, 0))
+
+
+class Title(Scene):
+    """첫 장면 = 쇼츠 표지. 처음부터 다 보이고 살짝 튄다."""
+
+    def __init__(self, tag: str, lines: list[str], players: list[str] = (), dur: float = 2.2):
+        self.tag, self.lines, self.dur = tag, lines, dur
+        js = jersey.for_players(list(players), 520 if len(players) < 2 else 420)
+        self.js = list(zip(js, (-5, 6) if len(js) > 1 else (-4,)))
+
+    def draw(self, c, t):
+        bg(c, t)
+        tag = label(self.tag, "display", 54, WHITE)
+        box = Image.new("RGBA", (tag.width + 50, tag.height + 30), RED + (255,))
+        box.alpha_composite(tag, (25, 15))
+        put(c, box, W / 2, 330, 1.08 - 0.08 * ease_out(t / 0.2))
+        xs = [W / 2] if len(self.js) == 1 else [W * 0.3, W * 0.7]
+        for (j, rot), x in zip(self.js, xs):
+            put(c, j.rotate(rot + 4 * math.sin(t * 2.4), resample=Image.BICUBIC, expand=True), x, 680)
+        y = 1080 if self.js else 820
+        for i, line in enumerate(self.lines):
+            col = GOLD if i == len(self.lines) - 1 else WHITE
+            put(c, label(line, "display", 118 if i == 0 else 104, col, 10), W / 2, y + i * 150,
+                1 + 0.06 * math.sin(math.pi * clamp((t - 0.3 - i * 0.1) / 0.3)))
+
+
+class Counter(Scene):
+    """한 줄 질문 → 금액이 0부터 굴러 올라가 멈춘다 (통장에 꽂히는 느낌)."""
+    dur = 3.2
+
+    def __init__(self, top: str, value: float, sub: str = ""):
+        self.top, self.value, self.sub = top, value, sub
+
+    def draw(self, c, t):
+        bg(c, t)
+        put(c, label(self.top, "display", 96, WHITE, 8), W / 2, 780, 1.15 - 0.15 * ease_out(t / 0.2))
+        k = 0.15 + 0.85 * ease_out((t - 0.25) / 1.3)  # 0원부터가 아니라 조금 채운 데서 굴러 올라간다
+        shown = won(self.value * k) if k < 0.999 else won(self.value)
+        put(c, label(shown, "display", 150, GOLD, 10), W / 2, 1000, 1 + (0.12 * math.sin(math.pi * clamp((t - 1.55) / 0.3))))
+        if 1.55 < t < 1.7:
+            c.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, int(90 * (1 - (t - 1.55) / 0.15)))))
+        if self.sub:
+            put(c, label(self.sub, "b", 56, GRAY), W / 2, 1180, 1, clamp((t - 1.7) / 0.3))
+
+
+class Bars(Scene):
+    """두 쪽 막대 대결: 막대가 자라고 끝에 'N배' 도장."""
+    dur = 5.0
+
+    def __init__(self, left: dict, right: dict, times: str):
+        self.l, self.r, self.times = left, right, times
+
+    def draw(self, c, t):
+        bg(c, t)
+        mx = max(self.l["v"], self.r["v"])
+        for i, s in enumerate((self.l, self.r)):
+            y = 640 + i * 360
+            put(c, label(s["name"], "display", 76, WHITE), 90, y, anchor="l")
+            k = ease_out((t - 0.3 - i * 0.2) / 1.4)
+            w = max(8, int((W - 180) * s["v"] / mx * k))
+            put(c, pill(w, 110, (GOLD if s["v"] == mx else GREEN) + (255,)), 90, y + 120, anchor="l")
+            put(c, label(s["label"], "b", 54, WHITE), 90, y + 240, 1, clamp((t - 1.6) / 0.3), anchor="l")
+        s = 1.6 - 0.6 * ease_back((t - 2.2) / 0.35)
+        put(c, label(self.times, "display", 150, RED, 10), W / 2, 1420, s, clamp((t - 2.2) / 0.1))
+
+
+class Board(Scene):
+    """순위 한 장: 처음부터 다 보인다 (반복 재생형, 첫 프레임이 곧 표지)."""
+
+    def __init__(self, title: str, sub: str, rows: list[tuple[str, str]], dur: float = 6.6):
+        self.title, self.sub, self.rows, self.dur = title, sub, rows, dur
+
+    def draw(self, c, t):
+        bg(c, t)
+        put(c, label(self.title, "display", 92, WHITE, 8), W / 2, 340)
+        put(c, label(self.sub, "b", 44, GRAY), W / 2, 440)
+        top = 560
+        step = min(150, 900 // max(1, len(self.rows)))
+        for i, (name, val) in enumerate(self.rows):
+            y = top + i * step
+            glow = 1 + 0.05 * math.sin(math.pi * clamp((t - 0.3 - i * 0.25) / 0.3))
+            put(c, pill(W - 120, step - 20, PANEL + (255,)), 60, y + step / 2, anchor="l")
+            put(c, label(f"{i + 1}", "display", 64, GOLD if i == 0 else GRAY), 120, y + step / 2)
+            put(c, label(name, "b", 60, WHITE, max_w=460), 200, y + step / 2, anchor="l")
+            v = label(val, "display", 64, GOLD if i == 0 else WHITE, max_w=420)
+            put(c, v, W - 90 - v.width * glow, y + step / 2, glow, anchor="l")
+
+
+class Ask(Scene):
+    """끝: 댓글 질문 + 구독 한 줄."""
+    dur = 2.4
+
+    def __init__(self, q: str):
+        self.q = q
+
+    def draw(self, c, t):
+        bg(c, t)
+        for i, (txt, w, s, col) in enumerate([(self.q, "display", 100, WHITE), ("댓글로 알려주세요", "b", 58, GOLD),
+                                              ("구독하면 매일 새 몸값", "b", 46, GRAY)]):
+            k = ease_out((t - i * 0.12) / 0.3)
+            put(c, label(txt, w, s, col, 8 if i == 0 else 0), W / 2, 820 + i * 150 + 40 * (1 - k), 1, k)
+
+
+# ---------------------------------------------------------------- A · B · C
+
+def plan_a(today: str) -> dict | None:
+    """오늘 ✅ 후보 글(생활 물가·연고지·여행·유니폼·영수증: 기록 단위가 있는 글) 중 하나로 통장형."""
+    for f in sorted(POSTS.glob(f"{today}-*/data.yaml")) if POSTS.exists() else []:
+        post = (f.parent / "post.md").read_text(encoding="utf-8")
+        if "✅ 자동 검사 통과" not in post or mark.status(f.parent).get("status") == "rejected":
+            continue
+        d = yaml.safe_load(f.read_text(encoding="utf-8")) or {}
+        sal = d.get("salary_krw") or (d.get("salary_usd", 0) * d.get("fx_krw_per_usd", 0))
+        units = [u for u in d.get("units", []) if u.get("count")]
+        if not sal or len(units) < 2 or " vs " in d.get("player", ""):
+            continue
+        name = d.get("short_name") or d["player"]
+        key = f"A-{name}"
+        if any(x["key"] == key and x["date"] >= str(date.fromisoformat(today) - timedelta(days=30)) for x in used_log()):
+            continue
+        head = d.get("headline_unit")
+        pick_u = [u for u in units if u["key"] == "games"][:1] + [u for u in units if u["key"] == head and u["key"] != "games"]
+        pick_u += [u for u in units if u not in pick_u][:3 - len(pick_u)]
+        per = [(u["label"], sal / u["count"]) for u in pick_u]
+        wage_year = d.get("min_wage_monthly_krw", 0) * 12
+        return {"kind": "A", "key": key, "name": name, "player": d["player"], "salary": sal, "per": per,
+                "wage_year": wage_year, "source": f.parent.name, "fx_label": d.get("fx_label", ""),
+                "title": f"{name}{_josa(name, '이', '가')} 뛸 때마다 통장에 꽂히는 돈"}
+    return None
+
+
+def _josa(name: str, a: str, b: str) -> str:
+    """받침 있으면 a(이·은), 없으면 b(가·는)."""
+    ch = name[-1]
+    if "가" <= ch <= "힣":
+        return a if (ord(ch) - 0xAC00) % 28 else b
+    return b
+
+
+def options_b(table: list[dict]) -> list[dict]:
+    """확인 연봉표에서 만들 수 있는 대결 (금액이 둘 다 원화로 있어야 한다)."""
+    has = [x for x in table if x["krw"]]
+    by = lambda sp: sorted((x for x in has if x["sport"] == sp), key=lambda x: -x["krw"])
+    kbo, nba, mlb = by("kbo"), by("nba"), by("mlb")
+    out = []
+    if kbo and nba:
+        out.append({"key": "B-kbo1-nba1", "left": [kbo[0]], "right": [nba[0]],
+                    "title": f"KBO 연봉 1위 vs NBA 연봉 1위", "q": "이 차이, 납득 되나요?"})
+    if len(kbo) >= 5 and nba:
+        out.append({"key": "B-kbo5-nba1", "left": kbo[:5], "right": [nba[0]], "ln": "KBO 연봉 TOP5 합계",
+                    "title": f"KBO 연봉 TOP5를 다 합쳐도", "q": "누가 더 받아야 할까요?"})
+    kor = [x for x in mlb if x["name"] in ("김하성", "김혜성", "이정후", "송성문")]
+    if len(kor) >= 2:
+        out.append({"key": "B-kor-mlb", "left": [kor[0]], "right": [kor[1]],
+                    "title": f"한국인 메이저리거 연봉 대결", "q": "누가 더 가성비일까요?"})
+    if kbo and mlb:
+        judge = next((x for x in mlb if x["name"] == "애런 저지"), None)
+        if judge:
+            out.append({"key": "B-kbo1-judge", "left": [kbo[0]], "right": [judge],
+                        "title": "KBO 연봉 1위 vs 애런 저지", "q": "몇 배일 것 같았나요?"})
+    if len(nba) >= 2 and len(kbo) >= 10:
+        out.append({"key": "B-kbo10-nba1", "left": kbo[:10], "right": [nba[0]], "ln": "KBO 연봉 TOP10 합계",
+                    "title": "KBO 연봉 TOP10 합계 vs 커리 1명", "q": "이 차이, 어디서 올까요?"})
+    return out
+
+
+def options_c(table: list[dict]) -> list[dict]:
+    """순위표 × 단위 (연봉·월급·1경기·하루)."""
+    lists = []
+    kbo = sorted((x for x in table if x["sport"] == "kbo" and x["krw"]), key=lambda x: -x["krw"])[:5]
+    if len(kbo) >= 5:
+        lists.append(("kbo", "2026 KBO 연봉 TOP5", kbo))
+    nba = sorted((x for x in table if x["sport"] == "nba" and x["krw"]), key=lambda x: -x["krw"])[:6]
+    if len(nba) >= 5:
+        lists.append(("nba", "NBA 연봉 TOP6 (2026-27)", nba))
+    units = [("year", "연봉", 1), ("month", "월급으로 치면", 12), ("day", "하루에 버는 돈", 365)]
+    out = []
+    for lk, title, rows in lists:
+        for uk, un, div in units + [("game", "1경기에 버는 돈", SEASON_GAMES.get(lk, 0))]:
+            if div:
+                out.append({"key": f"C-{lk}-{uk}", "title": title if uk == "year" else f"{title.split(' TOP')[0]} TOP{len(rows)} {un}",
+                            "unit": un, "div": div, "rows": rows, "league": lk})
+    return out
+
+
+def build(kind: str, today: str) -> tuple[dict, list[Scene]] | None:
+    fx, fx_label = latest_fx(today)
+    table = salary_table(fx)
+    if kind == "A":
+        p = plan_a(today)
+        if not p:
+            return None
+        sc = [Title("통장 체크", [p["title"].split(" 통장")[0], "통장에 꽂히는 돈"], [p["player"]], 2.2),
+              Counter("올해 연봉", p["salary"], "1년 동안 들어오는 돈"),
+              Counter("월급으로 치면", p["salary"] / 12, "12로 나눈 값"),
+              Counter("하루에", p["salary"] / 365, "쉬는 날까지 365일로 나눈 값")]
+        for i, (lab, v) in enumerate(p["per"]):
+            yrs = v / p["wage_year"] if p["wage_year"] else 0
+            sc.append(Counter(f"{lab}에", v, f"최저임금으로 {count(yrs)}년 일해야 버는 돈" if i == 0 and yrs >= 0.1 else ""))
+        sc.append(Ask("이 몸값, 적당한가요?"))
+        p["q"] = "이 몸값, 적당한가요?"
+        p["basis"] = f"오늘 글({p['source']})의 확인된 연봉·기록으로 계산" + (f", 환율 {p['fx_label']}" if p["fx_label"] else "")
+        return p, sc + [clip.LoopBack(sc[-1], sc[0])]
+    if kind == "B":
+        o = pick(options_b(table), "B")
+        if not o:
+            return None
+        lv, rv = sum(x["krw"] for x in o["left"]), sum(x["krw"] for x in o["right"])
+        ln = o.get("ln") or o["left"][0]["short"]
+        rn = o.get("rn") or o["right"][0]["short"]
+        big, small = max(lv, rv), min(lv, rv)
+        times = f"{count(big / small)}배"
+        winner = ln if lv > rv else rn
+        players = [o["left"][0]["name"], o["right"][0]["name"]]
+        sc = [Title("연봉 대결", [o["title"].split(" vs ")[0], f"vs {o['title'].split(' vs ')[1]}" if " vs " in o["title"]
+                               else f"vs {rn} 1명"], players, 2.2),
+              Bars({"name": ln, "v": lv, "label": won(lv)}, {"name": rn, "v": rv, "label": won(rv)}, times),
+              Counter(f"{winner} 쪽이", big - small, "만큼 더 받는다"),
+              Title("정리하면", [f"{winner} 연봉은", f"{rn if winner == ln else ln}의 {times}"], [], 2.4),
+              Ask(o["q"])]
+        o |= {"kind": "B", "q": o["q"], "times": times, "lv": lv, "rv": rv,
+              "basis": "확인 연봉표(config/salaries.yaml, 발표·보도)" + (f", 환율 {fx_label}" if fx_label else ""),
+              "names": [x["name"] for x in o["left"] + o["right"]]}
+        return o, sc + [clip.LoopBack(sc[-1], sc[0])]
+    if kind == "C":
+        opts = [o for o in options_c(table)]
+        o = pick(opts, "C")
+        if not o:
+            return None
+        rows = [(x["short"], won(x["krw"] / o["div"])) for x in o["rows"]]
+        sub = "2026 연봉 기준" + (" · 달러는 " + fx_label if o["league"] != "kbo" and fx_label else "")
+        board = Board(o["title"], sub, rows)
+        o |= {"kind": "C", "q": "1위 예상했나요?", "basis": "확인 연봉표(config/salaries.yaml, 발표·보도)" + (f", 환율 {fx_label}" if fx_label else ""),
+              "names": [x["name"] for x in o["rows"]]}
+        return o, [board, clip.LoopBack(board, board)]
+    return None
+
+
+def meta_text(p: dict) -> str:
+    """meta.txt: 첫 줄 제목(20자대), 나머지 설명(질문 + 계산 기준 + 블로그 이름 + 해시태그)."""
+    title = p["title"] if p["kind"] != "B" else p["title"] + (" 몇 배?" if p["title"].endswith("합쳐도") else "")
+    names = p.get("names") or [p.get("player", "")]
+    tags = ["#" + n.replace(" ", "") for n in names[:4] if n] + ["#연봉", "#몸값", "#shorts"]
+    desc = [f"{p['q']} 댓글로 알려주세요.", f"기준: {p['basis']}.", f"계산 과정은 네이버 블로그 '{BLOG}'에서.", " ".join(tags)]
+    return f"{title}\n" + "\n\n".join(desc) + "\n"
+
+
+def cleanup(today: str) -> list[str]:
+    gone = []
+    for f in (x for x in OUT.iterdir() if x.is_dir()) if OUT.exists() else []:
+        if f.name[:10] < str(date.fromisoformat(today) - timedelta(days=KEEP_DAYS - 1)):
+            shutil.rmtree(f)
+            gone.append(f.name)
+    return gone
+
+
+def make(kind: str, today: str) -> str:
+    got = build(kind, today)
+    if not got:
+        return f"{kind}: 만들 재료 없음 (건너뜀)"
+    p, sc = got
+    exe = clip.ffmpeg()
+    if not exe:
+        return f"{kind}: ffmpeg 없음"
+    slug = p["key"].split("-", 1)[1].replace(" ", "")
+    folder = OUT / f"{today}-{kind}-{slug}"
+    folder.mkdir(parents=True, exist_ok=True)
+    err = clip.encode(exe, sc, folder / "video.mp4")
+    if err:
+        return f"{kind}: 영상 실패 ({err})"
+    (folder / "meta.txt").write_text(meta_text(p), encoding="utf-8")
+    keep = {k: v for k, v in p.items() if k not in ("left", "right", "rows")}
+    (folder / "data.yaml").write_text(yaml.safe_dump(keep, allow_unicode=True, sort_keys=False), encoding="utf-8")
+    log = used_log() + [{"date": today, "kind": kind, "key": p["key"], "title": meta_text(p).split("\n")[0]}]
+    LOG.write_text(yaml.safe_dump(log, allow_unicode=True, sort_keys=False), encoding="utf-8")
+    return f"{kind}: {meta_text(p).splitlines()[0]} ({sum(s.dur for s in sc):.0f}초)"
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--date", default=str(date.today()))
+    ap.add_argument("--only")
+    a = ap.parse_args()
+    OUT.mkdir(exist_ok=True)
+    gone = cleanup(a.date)
+    lines = [make(k, a.date) for k in (a.only or "ABC")]
+    print("쇼츠: " + " / ".join(lines) + (f" (지난 쇼츠 {len(gone)}개 정리)" if gone else ""))
+
+
+if __name__ == "__main__":
+    main()

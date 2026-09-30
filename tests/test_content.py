@@ -442,3 +442,26 @@ class TestShortsScenes(unittest.TestCase):
         self.assertEqual(len(yt), len(nav) + 1)
         self.assertFalse(nav[-1].yt)
         self.assertTrue(yt[-2].yt)
+
+
+class TestShortsABC(unittest.TestCase):
+    def test_options_and_meta(self):
+        from content import shorts
+        table = shorts.salary_table(1350.0)
+        b = shorts.options_b(table)
+        c = shorts.options_c(table)
+        self.assertTrue(b and c)
+        self.assertTrue(all(x["krw"] for o in b for x in o["left"] + o["right"]))
+        self.assertEqual(len({o["key"] for o in c}), len(c))
+        m = shorts.meta_text({"kind": "C", "title": "2026 KBO 연봉 TOP5", "q": "1위 예상했나요?", "basis": "확인 연봉표",
+                              "names": ["양의지"]})
+        self.assertTrue(m.startswith("2026 KBO 연봉 TOP5\n"))
+        self.assertIn("#shorts", m)
+        self.assertEqual(shorts._josa("류현진", "이", "가"), "이")
+        self.assertEqual(shorts._josa("커리", "이", "가"), "가")
+
+    def test_no_fx_keeps_usd_out(self):
+        from content import shorts
+        table = shorts.salary_table(None)
+        self.assertTrue(all(x["krw"] is None for x in table if x["usd"]))
+        self.assertFalse(any(o["key"].startswith("C-nba") for o in shorts.options_c(table)))

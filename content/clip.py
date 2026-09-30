@@ -352,17 +352,6 @@ def caption(folder: Path, p: dict) -> str:
     return "\n\n".join(x for x in [text, credit, tags] if x) + "\n"
 
 
-def shorts_text(folder: Path, p: dict) -> str:
-    """유튜브 쇼츠 제목(첫 줄) + 설명. 제목은 추천 제목, 설명은 클립 설명 + 블로그 안내(글자만) + 해시태그."""
-    title = next((t["text"] for t in p["titles"] if t["best"]), p["titles"][0]["text"] if p["titles"] else "")
-    cf = folder / "clip_caption.txt"
-    text = cf.read_text(encoding="utf-8").strip() if cf.exists() else f"{title}\n\n정답 맞히셨나요? 댓글로 알려주세요."
-    tags = " ".join("#" + t.replace(" ", "") for t in dict.fromkeys(search_tags(folder) + p["tags"][:4] + ["shorts", "스포츠"]))
-    credit = photos.credit(folder)
-    body = "\n\n".join(x for x in [text, f"계산 과정과 출처: 네이버 블로그 '{BLOG}'", credit, tags] if x)
-    return f"{title}\n{body}\n"
-
-
 def encode(exe: str, sc: list[Scene], out: Path) -> str:
     cmd = [exe, "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(FPS),
            "-i", "-", "-f", "lavfi", "-i", "anullsrc=r=44100:cl=stereo",  # 무음 트랙 (음악은 각 앱에서)
@@ -380,8 +369,8 @@ def encode(exe: str, sc: list[Scene], out: Path) -> str:
 
 
 def make(folder: Path) -> str:
-    """네이버 클립(clip.mp4·clip.txt)과 유튜브 쇼츠(shorts.mp4·shorts.txt)를 만든다 (대표 결정 2026-09-30: 같은 장면,
-    끝 화면·문구만 다르게). 결과 한 줄을 돌려준다 (실패해도 글쓰기는 멈추지 않는다)."""
+    """네이버 클립(clip.mp4·clip.txt)을 만든다. 유튜브 쇼츠는 따로 만든다 (content/shorts.py, 대표 결정 2026-09-30).
+    결과 한 줄을 돌려준다 (실패해도 글쓰기는 멈추지 않는다)."""
     p = desk.parse(folder)
     if not p or not (folder / "clip.json").exists():
         return "클립: 줄거리(clip.json)가 없어 건너뜀 — 이미지 다시 그리기를 돌리면 생김"
@@ -397,12 +386,7 @@ def make(folder: Path) -> str:
     if err:
         return f"클립: 영상 만들기 실패 ({err})"
     (folder / "clip.txt").write_text(caption(folder, p), encoding="utf-8")
-    yt = scenes(st, photo, q, youtube=True)
-    err = encode(exe, yt, folder / "shorts.mp4")
-    if err:
-        return f"클립: 세로 영상 {sum(s.dur for s in sc):.0f}초 완성 · 쇼츠 실패 ({err})"
-    (folder / "shorts.txt").write_text(shorts_text(folder, p), encoding="utf-8")
-    return f"클립: 세로 영상 {sum(s.dur for s in sc):.0f}초 + 쇼츠 {sum(s.dur for s in yt):.0f}초 완성"
+    return f"클립: 세로 영상 {sum(s.dur for s in sc):.0f}초 완성"
 
 
 def main() -> None:
