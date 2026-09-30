@@ -1,0 +1,123 @@
+{
+ "salary": {
+  "value": 22000000,
+  "label": "2026시즌 연봉",
+  "unit": "USD",
+  "date": "2026-09-27",
+  "sources": [
+   "http://www.osen.co.kr/article/G1112882569"
+  ],
+  "rule": "모두 같음",
+  "differs": null
+ },
+ "contract_total": {
+  "value": 113000000,
+  "label": "6년 계약 총액",
+  "unit": "USD",
+  "date": "2026-09-28",
+  "sources": [
+   "https://mhnse.com/news/articleView.html?idxno=1561234"
+  ],
+  "rule": "모두 같음",
+  "differs": null
+ },
+ "games": {
+  "value": 143,
+  "label": "출전 경기",
+  "unit": "경기",
+  "date": "2026-09-29",
+  "sources": [
+   "https://www.ftimes.kr/news/articleView.html?idxno=39993"
+  ],
+  "rule": "모두 같음",
+  "differs": null
+ },
+ "at_bats": {
+  "value": 539,
+  "label": "타수",
+  "unit": "타수",
+  "date": "2026-09-28",
+  "sources": [
+   "https://sports.donga.com/sports/article/all/20260928/134743707/1"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "hits": {
+  "value": 149,
+  "label": "안타",
+  "unit": "안타",
+  "date": "2026-09-28",
+  "sources": [
+   "https://sports.donga.com/sports/article/all/20260928/134743707/1"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "home_runs": {
+  "value": 10,
+  "label": "홈런",
+  "unit": "개",
+  "date": "2026-09-28",
+  "sources": [
+   "https://sports.donga.com/sports/article/all/20260928/134743707/1"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "rbi": {
+  "value": 57,
+  "label": "타점",
+  "unit": "타점",
+  "date": "2026-09-28",
+  "sources": [
+   "https://sports.donga.com/sports/article/all/20260928/134743707/1"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "stolen_bases": {
+  "value": 12,
+  "label": "도루",
+  "unit": "개",
+  "date": "2026-09-28",
+  "sources": [
+   "https://sports.donga.com/sports/article/all/20260928/134743707/1"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "batting_avg": {
+  "value": 0.276,
+  "label": "타율",
+  "unit": "",
+  "date": "2026-09-28",
+  "sources": [
+   "https://sports.donga.com/sports/article/all/20260928/134743707/1"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "ops": {
+  "value": 0.724,
+  "label": "OPS",
+  "unit": "",
+  "date": "2026-09-28",
+  "sources": [
+   "https://www.mydaily.co.kr/page/view/2026092723243671200"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "fx_krw_per_usd": {
+  "value": 1356.7,
+  "label": "원·달러 환율(전일 마감)",
+  "unit": "KRW",
+  "date": "2026-09-30",
+  "sources": [
+   "https://www.junggi.co.kr/news/articleView.html?idxno=37940"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ }
+}

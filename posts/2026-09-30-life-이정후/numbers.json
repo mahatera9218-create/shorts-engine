@@ -1,0 +1,80 @@
+{
+ "salary_krw": 29847400000.0,
+ "per": {
+  "games": 208723076.92307693,
+  "at_bats": 55375510.20408163,
+  "hits": 200318120.80536914,
+  "home_runs": 2984740000.0
+ },
+ "min_wage_yearly_krw": 25882560,
+ "min_wage_years_per": {
+  "games": 8.064236185411216,
+  "at_bats": 2.1394912328642,
+  "hits": 7.739501842374523,
+  "home_runs": 115.31857745138039
+ },
+ "life_unit": "at_bats",
+ "life_label": "1타수",
+ "life_per": 55375510.20408163,
+ "item": {
+  "key": "model_y",
+  "group": "car_import",
+  "label": "테슬라 모델Y (프리미엄 RWD)",
+  "short": "테슬라 모델Y",
+  "unit": "대",
+  "price_krw": 49990000,
+  "as_of": "2026-08-01",
+  "source": "2026년 8월 국내 가격 보도 (4,999만원) https://web.getcha.kr/blog/tesla-model-y-price-guide-2026-trim-comparison",
+  "salary_count": 597.0674134826966,
+  "unit_count": 1.107731750431719
+ },
+ "items": [
+  {
+   "key": "model_y",
+   "group": "car_import",
+   "label": "테슬라 모델Y (프리미엄 RWD)",
+   "short": "테슬라 모델Y",
+   "unit": "대",
+   "price_krw": 49990000,
+   "as_of": "2026-08-01",
+   "source": "2026년 8월 국내 가격 보도 (4,999만원) https://web.getcha.kr/blog/tesla-model-y-price-guide-2026-trim-comparison",
+   "salary_count": 597.0674134826966,
+   "unit_count": 1.107731750431719
+  }
+ ],
+ "rows": [
+  {
+   "key": "salary",
+   "label": "올해 연봉",
+   "value": 29847400000.0,
+   "count": 597.0674134826966
+  },
+  {
+   "key": "games",
+   "label": "1경기",
+   "value": 208723076.92307693,
+   "count": 4.175296597781095
+  },
+  {
+   "key": "at_bats",
+   "label": "1타수",
+   "value": 55375510.20408163,
+   "count": 1.107731750431719
+  },
+  {
+   "key": "hits",
+   "label": "1안타",
+   "value": 200318120.80536914,
+   "count": 4.007163848877158
+  },
+  {
+   "key": "home_runs",
+   "label": "1홈런",
+   "value": 2984740000.0,
+   "count": 59.70674134826965
+  }
+ ],
+ "inverse": false,
+ "inverse_count": 0.9027456327854353,
+ "inverse_word": "타수"
+}

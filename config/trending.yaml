@@ -5,16 +5,16 @@ players:
   short: 김도영
   sport: kbo
   team: KIA 타이거즈
-  why: 아시안게임 금메달 후 복귀 첫 타석에서 시즌 41호포, KIA 구단 단일 시즌 최다 홈런 신기록
-  source: 46
+  why: 시즌 41호 홈런으로 KIA 구단 한 시즌 최다 홈런 신기록 경신
+  source: 47
   date: '2026-09-30'
-  link: https://www.newspim.com/news/view/20260929001156
+  link: https://news.jtbc.co.kr/article/NB12320587?influxDiv=NAVER
 - name: 손흥민
   short: 손흥민
   sport: soccer
   team: LAFC
-  why: 한 골로 A매치 58골·공식전 300골 이정표 달성
-  source: 55
+  why: A매치 58골·공식전 300골 달성
+  source: 56
   date: '2026-09-30'
   link: https://www.ohmynews.com/NWS_Web/View/at_pg.aspx?CNTN_CD=A0003271090&CMPT_CD=P0010&utm_source=naver&utm_medium=newsearch&utm_campaign=naver_news
 - name: 야말
@@ -29,47 +29,47 @@ players:
   short: 안현민
   sport: kbo
   team: KT 위즈
-  why: KIA전 연장 10회 결승타로 KT 승리 견인
-  source: 42
+  why: KIA전 연장 10회 결승타로 KT 승리 이끎
+  source: 44
   date: '2026-09-30'
   link: https://www.newspim.com/news/view/20260929001196
 - name: 김현수
   short: 김현수
   sport: kbo
   team: KT 위즈
-  why: KIA전 만루홈런으로 KT 승리에 기여
-  source: 42
+  why: KIA전에서 만루포를 터뜨림
+  source: 44
   date: '2026-09-30'
   link: https://www.newspim.com/news/view/20260929001196
 - name: 최경주
   short: 최경주
   sport: golf
   team: ''
-  why: 1년 만에 KPGA 투어 복귀, 자신의 이름을 건 인비테이셔널에서 후배들과 대결
-  source: 29
+  why: 1년 만에 KPGA 투어로 돌아와 자신의 인비테이셔널 출전
+  source: 33
   date: '2026-09-30'
   link: https://www.edaily.co.kr/News/Read?newsId=02820806645585368&mediaCodeNo=257&utm_source=naver&utm_medium=referral&utm_campaign=news_syndication&utm_content=original_article
 - name: 유해란
   short: 유해란
   sport: golf
   team: ''
-  why: LPGA 메이저 2승의 메이저퀸, 2년 2개월 만에 국내 무대 출전
-  source: 32
+  why: LPGA 메이저 2승을 거두고 2년 2개월 만에 국내 무대 출전
+  source: 36
   date: '2026-09-30'
   link: https://view.asiae.co.kr/article/2026093009024704654
 - name: 라이언 폭스
   short: 폭스
   sport: golf
   team: ''
-  why: 디 오픈 챔피언으로 제네시스 챔피언십 출전
-  source: 28
+  why: 디 오픈 챔피언으로 제네시스 챔피언십 출전 확정
+  source: 32
   date: '2026-09-30'
   link: https://biz.heraldcorp.com/article/10888362?ref=naver
 - name: 브라이언 브로비
   short: 브로비
   sport: epl
   team: ''
-  why: 맨시티전 해트트릭으로 맨유의 영입 관심 재부상
+  why: 맨시티전 해트트릭으로 맨유의 관심을 받음
   source: 66
   date: '2026-09-30'
   link: https://www.fourfourtwo.co.kr/news/articleView.html?idxno=98404
@@ -92,8 +92,32 @@ players:
 - name: 니콜라 요키치
   short: 요키치
   sport: nba
-  team: 덴버 너게츠
-  why: 연장 계약을 미루며 내년 계약 의사 밝힘
-  source: 25
+  team: 덴버 너기츠
+  why: 연장 계약을 미루며 내년 계약을 언급
+  source: 28
   date: '2026-09-30'
   link: http://www.rookie.co.kr/news/articleView.html?idxno=127472
+- name: 김혜성
+  short: 김혜성
+  sport: mlb
+  team: LA 다저스
+  why: NLDS 앞두고 다저스 빅리그 로스터에 복귀
+  source: 10
+  date: '2026-09-30'
+  link: https://www.xportsnews.com/article/2202287
+- name: 타구치
+  short: 타구치
+  sport: kbo
+  team: ''
+  why: 일본 국대 출신 좌완이 KBO 등 해외 진출 가능성을 열어둠
+  source: 7
+  date: '2026-09-30'
+  link: https://www.sportalkorea.com/news/articleView.html?idxno=2025052909553576881
+- name: 송성문
+  short: 송성문
+  sport: mlb
+  team: 샌디에이고 파드리스
+  why: NLWC 로스터에서 제외됨
+  source: 16
+  date: '2026-09-30'
+  link: https://www.spotvnews.co.kr/news/articleView.html?idxno=1010443
