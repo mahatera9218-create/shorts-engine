@@ -29,6 +29,15 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main   # 방금 커밋된 새 글까지 받기
+      - name: 영상 받기 (영상은 저장소가 아니라 캐시에 둔다, 2026-09-30)
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            posts/*/clip.mp4
+            shorts/*/video.mp4
+            .cache/media.txt
+          key: media-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.job }}-r
+          restore-keys: media-
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"

@@ -408,13 +408,40 @@ def meta_text(p: dict) -> str:
     return f"{title}\n" + "\n\n".join(desc) + "\n"
 
 
+def folder_of(x: dict) -> str:
+    """로그 항목 → 쇼츠 폴더 이름."""
+    return x.get("folder") or f"{x['date']}-{x['kind']}-{x['key'].split('-', 1)[1].replace(' ', '')}"
+
+
+def pending(kind: str) -> list[str]:
+    """아직 올리지 않은 쇼츠 폴더 (대표 결정 2026-09-30: 올림 처리가 안 되면 그 형식은 새로 만들지 않는다)."""
+    done = {folder_of(x) for x in used_log() if x.get("video_id") or x.get("discarded")}
+    return [f.name for f in sorted(OUT.glob(f"*-{kind}-*")) if f.is_dir() and (f / "video.mp4").exists()
+            and "-preview-" not in f.name and f.name not in done]
+
+
 def cleanup(today: str) -> list[str]:
+    """올린(또는 버린) 쇼츠 폴더와 지난 미리보기를 지운다. 올리지 않은 쇼츠는 남겨 둔다 (기록은 log.yaml)."""
+    done = {folder_of(x) for x in used_log() if x.get("video_id") or x.get("discarded")}
     gone = []
     for f in (x for x in OUT.iterdir() if x.is_dir()) if OUT.exists() else []:
-        if f.name[:10] < str(date.fromisoformat(today) - timedelta(days=KEEP_DAYS - 1)):
+        old_preview = "-preview-" in f.name and f.name[:10] < today
+        if f.name in done or old_preview or f.name.startswith(".work"):
             shutil.rmtree(f)
             gone.append(f.name)
     return gone
+
+
+def discard(name: str) -> str:
+    """도우미 '이 쇼츠 버리기' 버튼: 폴더를 지우고 기록에 버림 표시 (그 형식이 다시 만들어진다)."""
+    log = used_log()
+    hit = [x for x in log if folder_of(x) == name]
+    for x in hit:
+        x["discarded"] = True
+    if hit:
+        LOG.write_text(yaml.safe_dump(log, allow_unicode=True, sort_keys=False), encoding="utf-8")
+    shutil.rmtree(OUT / name, ignore_errors=True)
+    return f"버림: {name}" if hit else f"기록에 없는 폴더: {name}"
 
 
 SPORT_OF = {"kbo": "야구", "mlb": "야구", "nba": "농구", "golf": "골프", "epl": "축구", "laliga": "축구", "soccer": "축구"}
@@ -453,7 +480,7 @@ def make(kind: str, today: str, preview: bool = False) -> str:
     keep = {k: v for k, v in p.items() if k not in ("left", "right", "rows")}
     (folder / "data.yaml").write_text(yaml.safe_dump(keep, allow_unicode=True, sort_keys=False), encoding="utf-8")
     if not preview:
-        log = used_log() + [{"date": today, "kind": kind, "key": p["key"], "title": title}]
+        log = used_log() + [{"date": today, "kind": kind, "key": p["key"], "title": title, "folder": folder.name}]
         LOG.write_text(yaml.safe_dump(log, allow_unicode=True, sort_keys=False), encoding="utf-8")
     return (f"{kind}: {title} ({info['seconds']:.0f}초" + (", 목소리" if info["voice"] else "")
             + (", 실사 배경" if info["video_bg"] else "") + ")")
@@ -464,10 +491,17 @@ def main() -> None:
     ap.add_argument("--date", default=str(date.today()))
     ap.add_argument("--only")
     ap.add_argument("--preview", action="store_true", help="기록에 남기지 않는 미리보기 (제작 방식 확인용)")
+    ap.add_argument("--discard", help="이 쇼츠 폴더를 버린다 (도우미 버튼)")
     a = ap.parse_args()
     OUT.mkdir(exist_ok=True)
+    if a.discard:
+        print(discard(a.discard))
+        return
     gone = cleanup(a.date)
-    lines = [make(k, a.date, a.preview) for k in (a.only or "ABC")]
+    lines = []
+    for k in (a.only or "ABC"):
+        wait = [] if a.preview else pending(k)
+        lines.append(f"{k}: 아직 안 올린 쇼츠가 있어 새로 만들지 않음 ({', '.join(wait)})" if wait else make(k, a.date, a.preview))
     print("쇼츠: " + " / ".join(lines) + (f" (지난 쇼츠 {len(gone)}개 정리)" if gone else ""))
 
 

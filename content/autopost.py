@@ -15,7 +15,7 @@ import os
 import random
 import re
 from collections import Counter
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 
 import yaml
@@ -743,6 +743,27 @@ def place_item(place: dict, theme: str) -> dict:
             "price_krw": t["price_krw"], "as_of": t["as_of"], "source": t["source"]}
 
 
+NO_DATA = ROOT / "config" / "skip_players.yaml"
+NO_DATA_DAYS = 7
+
+
+def no_data_players(today: str) -> list[str]:
+    """최근 7일 안에 뉴스에서 올해 연봉·기록을 못 찾은 선수. 다시 모으면 숫자 뽑기 비용만 든다 (실측: 하루 약 11명, 비용의 약 30%)."""
+    book = (yaml.safe_load(NO_DATA.read_text(encoding="utf-8")) or {}) if NO_DATA.exists() else {}
+    return [n for n, v in book.items() if str(v.get("until", "")) >= today]
+
+
+def remember_no_data(failed: dict[str, str], today: str) -> None:
+    if not failed:
+        return
+    book = (yaml.safe_load(NO_DATA.read_text(encoding="utf-8")) or {}) if NO_DATA.exists() else {}
+    until = str(date.fromisoformat(today) + timedelta(days=NO_DATA_DAYS))
+    book = {n: v for n, v in book.items() if str(v.get("until", "")) >= today}
+    book |= {n: {"until": until, "why": why[:120]} for n, why in failed.items()}
+    NO_DATA.write_text("# 연봉·기록을 못 찾은 선수 (이 날짜까지 다시 모으지 않음, content/autopost.py가 채움)\n"
+                       + yaml.safe_dump(book, allow_unicode=True, sort_keys=True), encoding="utf-8")
+
+
 def reset_drafts(today: str) -> list[str]:
     """초안 목록 매일 리셋 (대표 결정 2026-09-30): 오늘 이전 날짜의 글 중 발행 완료(used)가 아닌 것은 지운다.
     발행한 글은 성과 기록·중복 방지(used_combos)를 위해 남긴다. 발행 안 한 후보는 재고를 쓰지 않은 것으로 본다."""
@@ -752,6 +773,9 @@ def reset_drafts(today: str) -> list[str]:
         if re.match(r"\d{4}-\d{2}-\d{2}-", f.name) and f.name[:10] < today and mark.status(f).get("status") != "used":
             shutil.rmtree(f)
             gone.append(f.name)
+        elif mark.status(f).get("status") == "used" and str(mark.status(f).get("at", ""))[:10] < today:
+            for v in ("clip.mp4", "bg.mp4"):  # 발행한 글의 클립은 올렸으니 폐기 (대표 결정 2026-09-30)
+                (f / v).unlink(missing_ok=True)
     if gone:
         write_index()
     return gone
@@ -908,6 +932,7 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
     pool, why = weighted_pool(hub, pool, today)
     skip_file = Path(os.environ["AUTOPOST_SKIP"]) if os.environ.get("AUTOPOST_SKIP") else None
     skipped = set(json.loads(skip_file.read_text(encoding="utf-8"))) if skip_file and skip_file.exists() else set()
+    skipped |= set(no_data_players(today))  # 최근 7일 안에 연봉·기록을 못 찾은 선수 (비용 줄이기, 2026-09-30)
     if why:
         notes.append("가중치: " + why)
     used, used_items = used_combos(today)
@@ -923,6 +948,8 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
         if skip_file:  # 같은 날 여러 편을 쓸 때 이미 실패한 선수는 다시 모으지 않는다
             skipped |= {p["name"] for p, g in zip(plan["players"], got) if isinstance(g, str)}
             skip_file.write_text(json.dumps(sorted(skipped), ensure_ascii=False), encoding="utf-8")
+        if out_root == POSTS and not topic_override:
+            remember_no_data({p["name"]: g for p, g in zip(plan["players"], got) if isinstance(g, str)}, today)
         if bad:
             notes += [f"건너뜀 — {b}" for b in bad if b not in notes]
             continue

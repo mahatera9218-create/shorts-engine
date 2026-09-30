@@ -7,7 +7,5 @@ __pycache__/
 .venv/
 output/
 *.mp4
-!posts/**/clip.mp4
-!shorts/**/video.mp4
 site/
 .cache/
