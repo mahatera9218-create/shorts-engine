@@ -216,6 +216,12 @@ def index(posts: list[dict]) -> str:
 <h2>오늘의 후보 (1편 골라 발행)</h2>
 {todo or '<p>후보가 아직 없어요. 내일 아침 6시 47분에 올라와요.</p>'}
 {f'<h2 style="margin-top:28px">발행한 글</h2>{done}' if done else ''}
+<div class="card" style="margin-top:28px"><h2>필요할 때만 누르는 버튼</h2>
+<a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(issue_link("다시그리기", "오늘후보", "글은 그대로 두고 사진·썸네일·클립만 새로 그려 주세요."), quote=True)}">🎨 사진·클립 다시 그리기</a>
+<div class="muted">무료 · 5~10분. 썸네일·클립 디자인을 고친 뒤 지금 있는 후보에 바로 반영할 때.</div>
+<a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(issue_link("새후보", "4편", "오늘 후보 4편을 새로 써 주세요."), quote=True)}">✍️ 후보 4편 새로 쓰기</a>
+<div class="muted">Claude 비용 약 $2~3 · 20~30분. 오늘 후보가 다 마음에 안 들 때만. 매일 아침에는 자동으로 올라와요.</div>
+<div class="muted">누르면 GitHub 화면이 열려요. 초록색 <b>Create</b>만 누르면 끝이에요.</div></div>
 </main></body></html>"""
 
 

@@ -2,7 +2,10 @@
 # 도우미 글 화면의 [✅ 발행 완료 표시] / [다른 글로 다시 뽑기]가 제목이 채워진 이슈 작성 화면을 연다.
 # 대표가 Create를 누르면: posts/<글>/status.yaml에 표시(content/mark.py) → 이슈 자동 닫힘
 #   - 발행완료: 도우미 목록에서 "발행한 글"로 (중복 발행 방지)
-#   - 다시뽑기: 목록에서 빼고, 다른 선수·테마로 새 글을 바로 쓴다 (자동 글쓰기 --again)
+#   - 다시뽑기: 목록에서 빼고, 다른 선수·테마로 새 글 1편을 바로 쓴다 (자동 글쓰기 --again)
+# 도우미 첫 화면 버튼 (글 폴더 없이):
+#   - [다시그리기]: 글은 그대로 두고 사진·썸네일·클립만 새로 그린다 (이미지 다시 그리기, Claude 비용 없음)
+#   - [새후보]: 오늘 후보 4편을 더 쓴다 (자동 글쓰기 --again, Claude 비용 듦)
 # 저장소 주인이 만든 이슈만 처리한다.
 name: 발행 도우미 버튼
 
@@ -76,6 +79,7 @@ jobs:
     with:
       mode: 실제
       again: true
+      count: "1"
     secrets: inherit
 
   desk:   # 발행완료, 또는 다시 뽑기에서 새 글 쓰기가 실패했을 때도 목록은 갱신 (버린 글이 빠지게)
@@ -84,4 +88,39 @@ jobs:
       always() && needs.mark.result == 'success' &&
       (needs.mark.outputs.action == 'used' || needs.write.result == 'failure')
     uses: ./.github/workflows/desk.yml
+    secrets: inherit
+
+  tool:   # 도우미 첫 화면 버튼: 이슈를 닫고 알맞은 워크플로를 부른다
+    if: >-
+      github.event.issue.user.login == github.repository_owner &&
+      (startsWith(github.event.issue.title, '[다시그리기]') || startsWith(github.event.issue.title, '[새후보]'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: 이슈 닫기
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUM: ${{ github.event.issue.number }}
+          TITLE: ${{ github.event.issue.title }}
+        run: |
+          case "$TITLE" in
+            "[다시그리기]"*) msg="사진·썸네일·클립을 다시 그리는 중이에요. 5~10분 뒤 발행 도우미에서 보여요." ;;
+            *) msg="후보 4편을 새로 쓰는 중이에요. 20~30분 뒤 발행 도우미에 올라와요." ;;
+          esac
+          gh issue close "$NUM" --repo "$GITHUB_REPOSITORY" --comment "$msg"
+
+  redraw:
+    needs: tool
+    if: startsWith(github.event.issue.title, '[다시그리기]')
+    uses: ./.github/workflows/rebuild-images.yml
+    secrets: inherit
+
+  fresh:
+    needs: tool
+    if: startsWith(github.event.issue.title, '[새후보]')
+    uses: ./.github/workflows/daily-post.yml
+    with:
+      mode: 실제
+      again: true
+      count: "4"
     secrets: inherit
