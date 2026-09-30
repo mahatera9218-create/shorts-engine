@@ -231,3 +231,35 @@ class VoiceTest(unittest.TestCase):
         m = voice.style_metrics(["좋아요. 그렇죠? 끝이다."])
         self.assertEqual(m["sentences"], 3)
         self.assertAlmostEqual(m["요"], 1 / 3)
+
+
+class TestShortsBench(unittest.TestCase):
+    def test_collect_and_report(self):
+        from datetime import date
+        from market import shorts_bench as sb
+
+        class FakeYT:
+            used = 0
+
+            def _call(self, kind, params):
+                self.used += 1
+                if kind == "search":
+                    return {"items": [{"id": {"videoId": f"v{i}"}} for i in range(12)]}
+                if kind == "videos":
+                    return {"items": [{"id": i, "snippet": {"title": f"오타니 연봉 {n}억? TOP5" if n % 2 else "선수 몸값",
+                                                               "channelTitle": "c", "channelId": f"ch{n % 3}",
+                                                               "publishedAt": "2026-06-01T00:00:00Z"},
+                                       "statistics": {"viewCount": str(1000 * (n + 1) ** 2)},
+                                       "contentDetails": {"duration": "PT%dS" % (20 + n) if n != 11 else "PT5M"}}
+                                      for n, i in enumerate(params["id"].split(","))]}
+                return {"items": [{"id": f"ch{k}", "statistics": {"subscriberCount": "100"}} for k in range(3)]}
+
+        cfg = {"queries": ["a", "b"], "per_query": 12, "published_days": 365, "region": "KR", "language": "ko",
+               "max_seconds": 180}
+        vs = sb.collect(FakeYT(), cfg, date(2026, 9, 30))
+        self.assertEqual(len(vs), 11)  # 5분짜리는 뺀다, 두 검색어의 같은 영상은 하나로
+        self.assertEqual(vs[0]["queries"], ["a", "b"])
+        md = sb.report(vs, cfg, date(2026, 9, 30), 6)
+        self.assertIn("## 1. 길이", md)
+        self.assertIn("캡처 부탁", md)
+        self.assertEqual(sb.seconds("PT1M5S"), 65)
