@@ -261,6 +261,8 @@ def plan_a(today: str) -> dict | None:
         if not sal or len(units) < 2 or " vs " in d.get("player", ""):
             continue
         name = d.get("short_name") or d["player"]
+        if not domestic(d["player"], "kbo" if "프로야구" in str(d.get("sport", "")) else ""):
+            continue  # A는 국내 선수만 (해외 선수는 B에서 국내 기준과 비교)
         key = f"A-{name}"
         if any(x["key"] == key and x["date"] >= str(date.fromisoformat(today) - timedelta(days=30)) for x in used_log()):
             continue
@@ -283,42 +285,45 @@ def _josa(name: str, a: str, b: str) -> str:
     return b
 
 
+def domestic(name: str, sport: str = "") -> bool:
+    """국내 선수 = KBO 선수 또는 한국 선수(해외파 포함). 해외 선수 = 해외 리그의 외국 선수 (이름에 띄어쓰기: 오타니 쇼헤이)."""
+    return sport == "kbo" or (" " not in name and len(name) <= 4)
+
+
 def options_b(table: list[dict]) -> list[dict]:
-    """확인 연봉표에서 만들 수 있는 대결 (금액이 둘 다 원화로 있어야 한다)."""
+    """해외 선수 1명 vs 국내 기준 (대표 결정 2026-09-30: 쇼츠는 국내 2 + 해외 1, 비교는 국내 시청자 체감용으로 국내 선수 기준).
+    확인 연봉표의 해외 스타(NBA·MLB 외국 선수) × 국내 기준(KBO 1위, KBO TOP 5 합계, 한국인 메이저리거)."""
     has = [x for x in table if x["krw"]]
-    by = lambda sp: sorted((x for x in has if x["sport"] == sp), key=lambda x: -x["krw"])
-    kbo, nba, mlb = by("kbo"), by("nba"), by("mlb")
+    kbo = sorted((x for x in has if x["sport"] == "kbo"), key=lambda x: -x["krw"])
+    stars = sorted((x for x in has if x["sport"] in ("nba", "mlb") and not domestic(x["name"], x["sport"])
+                    and x["name"] != "오타니 쇼헤이"),  # 오타니는 연봉 대부분이 지급 유예라 '올해 받는 돈' 비교가 오해를 부른다
+                   key=lambda x: -x["krw"])
+    kor_mlb = sorted((x for x in has if x["sport"] == "mlb" and domestic(x["name"], x["sport"])), key=lambda x: -x["krw"])
     out = []
-    if kbo and nba:
-        out.append({"key": "B-kbo1-nba1", "left": [kbo[0]], "right": [nba[0]],
-                    "title": f"KBO 연봉 1위 vs NBA 연봉 1위", "q": "이 차이, 납득 되나요?"})
-    if len(kbo) >= 5 and nba:
-        out.append({"key": "B-kbo5-nba1", "left": kbo[:5], "right": [nba[0]], "ln": "KBO 연봉 TOP 5 합계",
-                    "title": f"KBO 연봉 TOP 5를 다 합쳐도", "q": "누가 더 받아야 할까요?"})
-    kor = [x for x in mlb if x["name"] in ("김하성", "김혜성", "이정후", "송성문")]
-    if len(kor) >= 2:
-        out.append({"key": "B-kor-mlb", "left": [kor[0]], "right": [kor[1]],
-                    "title": f"한국인 메이저리거 연봉 대결", "q": "누가 더 가성비일까요?"})
-    if kbo and mlb:
-        judge = next((x for x in mlb if x["name"] == "애런 저지"), None)
-        if judge:
-            out.append({"key": "B-kbo1-judge", "left": [kbo[0]], "right": [judge],
-                        "title": "KBO 연봉 1위 vs 애런 저지", "q": "몇 배일 것 같았나요?"})
-    if len(nba) >= 2 and len(kbo) >= 10:
-        out.append({"key": "B-kbo10-nba1", "left": kbo[:10], "right": [nba[0]], "ln": "KBO 연봉 TOP 10 합계",
-                    "title": "KBO 연봉 TOP 10 합계 vs 커리 1명", "q": "이 차이, 어디서 올까요?"})
+    for s in stars:
+        slug = s["short"].replace(" ", "")
+        if kbo:
+            out.append({"key": f"B-kbo1-{slug}", "left": [kbo[0]], "right": [s],
+                        "title": f"KBO 연봉 1위 vs {s['short']}", "q": "이 차이, 납득 되나요?"})
+        if len(kbo) >= 5:
+            out.append({"key": f"B-kbo5-{slug}", "left": kbo[:5], "right": [s], "ln": "KBO 연봉 TOP 5 합계",
+                        "title": f"KBO 연봉 TOP 5 합계 vs {s['short']}", "q": "누가 더 받아야 할까요?"})
+        if kor_mlb:
+            k = kor_mlb[0]
+            out.append({"key": f"B-{k['short']}-{slug}", "left": [k], "right": [s],
+                        "title": f"{k['short']} vs {s['short']}", "q": "몇 배일 것 같았나요?"})
     return out
 
 
 def options_c(table: list[dict]) -> list[dict]:
-    """순위표 × 단위 (연봉·월급·1경기·하루)."""
+    """국내 선수 순위표 × 단위 (연봉·월급·1경기·하루)."""
     lists = []
     kbo = sorted((x for x in table if x["sport"] == "kbo" and x["krw"]), key=lambda x: -x["krw"])[:5]
     if len(kbo) >= 5:
         lists.append(("kbo", "2026 KBO 연봉 TOP 5", kbo))
-    nba = sorted((x for x in table if x["sport"] == "nba" and x["krw"]), key=lambda x: -x["krw"])[:6]
-    if len(nba) >= 5:
-        lists.append(("nba", "NBA 연봉 TOP 6 (2026-27)", nba))
+    kor = sorted((x for x in table if x["sport"] == "mlb" and x["krw"] and domestic(x["name"], "mlb")), key=lambda x: -x["krw"])
+    if len(kor) >= 3:  # 국내 선수만 (대표 결정 2026-09-30): 해외 리그 목록은 B(해외 vs 국내)에서만
+        lists.append(("mlb", f"한국인 메이저리거 연봉 TOP {len(kor)}", kor))
     units = [("year", "연봉", 1), ("month", "월급으로 치면", 12), ("day", "하루에 버는 돈", 365)]
     out = []
     for lk, title, rows in lists:

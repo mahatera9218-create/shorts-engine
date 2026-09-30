@@ -109,7 +109,7 @@ async function copyBody(b){copyText(b,bodyText())}
 async function saveClip(b,name){
   name=name||'clip.mp4';
   try{
-    const r=await fetch(name);const bl=await r.blob();const files=[new File([bl],name,{type:'video/mp4'})];
+    const r=await fetch(name);const bl=await r.blob();const files=[new File([bl],name.split('/').pop(),{type:'video/mp4'})];
     if(navigator.canShare&&navigator.canShare({files})){await navigator.share({files});flash(b,'완료 ✓');return}
   }catch(e){if(e.name==='AbortError')return}
   alert('영상을 길게 누르거나, 영상 오른쪽 아래 ⋮ 메뉴에서 저장해 주세요.')
@@ -182,13 +182,6 @@ def page(p: dict) -> str:
             + '</div>') if st.get("status") == "used" else ""
     done_btn = e(issue_link("발행완료", p["folder"], "블로그·클립 발행을 마쳤어요."), quote=True)
     again_btn = e(issue_link("다시뽑기", p["folder"], "이 글은 버리고 다른 선수·테마로 새로 써 주세요."), quote=True)
-    clip = "" if not p.get("clip") else f"""<div class="card"><h2><span class="step">6</span>클립 (블로그 발행 뒤)</h2>
-<video src="clip.mp4" controls playsinline preload="metadata" style="width:100%;max-width:320px;border-radius:10px;display:block"></video>
-<button onclick="saveClip(this)">🎬 클립 영상 저장</button>
-{copy_pair(p["clip_text"], "클립")}
-<ol class="muted"><li>블로그 앱 아래 <b>+</b> → <b>클립 만들기</b></li><li>방금 저장한 영상 고르기</li>
-<li><b>음악</b> → 추천·인기 음악 중 신나는 곡 하나 (네이버가 저작권 계약한 음원이라 안전)</li>
-<li><b>설명 복사</b> 붙여넣기 → 이어서 <b>해시태그 복사</b> 붙여넣기 → 올리기</li></ol></div>"""
     return f"""<!doctype html><html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive">
 <title>{e(best["text"] if best else p["folder"])}</title><style>{CSS}</style></head><body><main>
@@ -210,8 +203,8 @@ def page(p: dict) -> str:
 <div class="card"><h2><span class="step">5</span>태그</h2><button class="ghost" onclick="copyText(this,{e(json.dumps(tags), quote=True)})">📋 한 번에 복사: {e(tags)}</button>
 <div class="muted">한 번에 붙여넣기가 안 되면 아래 태그를 하나씩 눌러 복사 → 태그 칸에 붙여넣기 → 완료(엔터)를 반복하세요.</div>
 <div class="chips">{chips}</div></div>
-{clip}
-<div class="card"><h2><span class="step">7</span>다 올렸으면</h2>
+<div class="card"><h2>🎬 클립</h2><div class="muted">클립 영상·설명은 도우미 첫 화면의 <a href="../../#clip">클립 탭</a>에 있어요 (블로그 발행 뒤 올리기).</div></div>
+<div class="card"><h2><span class="step">6</span>다 올렸으면</h2>
 <a class="btn" href="{done_btn}">✅ 발행 완료 표시</a>
 <div class="muted">GitHub 화면이 열리면 초록 <b>Create</b>만 누르세요. 2~3분 뒤 목록에서 "발행한 글"로 내려가요 (중복 발행 방지).</div></div>
 <div class="card body"><h2>미리 읽기</h2>{body}</div>
@@ -223,7 +216,25 @@ def page(p: dict) -> str:
 </main><script>const POST={data};{JS}</script></body></html>"""
 
 
-def index(posts: list[dict], n_shorts: int = 0) -> str:
+def clip_cards(posts: list[dict]) -> str:
+    """클립 탭: 오늘 올릴 클립. 발행한 글의 클립이 맨 위, 나머지는 후보 (고른 글의 클립만 올린다)."""
+    e = html.escape
+    ps = [p for p in posts if p.get("clip") and p.get("status", {}).get("status") != "rejected"]
+    ps.sort(key=lambda p: (p.get("status", {}).get("status") != "used", p["folder"]))
+    out = []
+    for p in ps:
+        title = next((t["text"] for t in p["titles"] if t["best"]), p["folder"])
+        used = p.get("status", {}).get("status") == "used"
+        badge = '<span class="badge ok">발행한 글 → 이 클립을 올리세요</span>' if used else '<span class="badge warn">후보 (이 글을 골랐을 때만)</span>'
+        src = f"p/{slug(p['folder'])}/clip.mp4"
+        out.append(f"""<div class="card"><h2>{e(title)}</h2>{badge}
+<video src="{e(src)}" controls playsinline preload="none" style="width:100%;max-width:320px;border-radius:10px;display:block;margin-top:8px"></video>
+<button onclick="saveClip(this,{e(json.dumps(src), quote=True)})">🎬 클립 영상 저장</button>
+{copy_pair(p["clip_text"], "클립")}</div>""")
+    return "".join(out) or "<p>올릴 클립이 없어요.</p>"
+
+
+def index(posts: list[dict], n_shorts: int = 0, shorts_html: str = "") -> str:
     e = html.escape
 
     def row(p, muted=False):
@@ -236,29 +247,45 @@ def index(posts: list[dict], n_shorts: int = 0) -> str:
     used = [p for p in posts if p.get("status", {}).get("status") == "used"]
     todo = "".join(row(p) for p in sorted(live, key=lambda p: p["folder"])[-14:])
     done = "".join(row(p, True) for p in sorted(used, key=lambda p: p["status"].get("at", ""), reverse=True)[:10])
+    n_clip = sum(1 for p in posts if p.get("clip") and p.get("status", {}).get("status") == "used")
+    tabs = """<nav class="tabs"><a href="#blog" data-t="blog">📝 블로그</a><a href="#clip" data-t="clip">🎬 클립</a>
+<a href="#shorts" data-t="shorts">▶️ 쇼츠</a></nav>"""
+    tab_js = """function tab(){const h=(location.hash||'#blog').slice(1);document.querySelectorAll('section.tab').forEach(s=>s.hidden=s.id!==h);
+document.querySelectorAll('nav.tabs a').forEach(a=>a.classList.toggle('on',a.dataset.t===h))}addEventListener('hashchange',tab);tab();"""
     return f"""<!doctype html><html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive">
-<title>발행 도우미</title><style>{CSS}</style></head><body><main>
+<title>발행 도우미</title><style>{CSS}
+nav.tabs{{display:flex;gap:6px;position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:5}}
+nav.tabs a{{flex:1;text-align:center;padding:12px 4px;border-radius:12px;border:1px solid var(--line);color:var(--ink);text-decoration:none;font-weight:700}}
+nav.tabs a.on{{background:var(--btn);color:var(--btnink)}}</style></head><body><main>
 <h1>발행 도우미 · 억소리 나는 스포츠</h1>
 <p class="muted">마지막 업데이트: {datetime.now(ZoneInfo("Asia/Seoul")).strftime("%m월 %d일 %H:%M")}</p>
-<p class="muted">매일 아침 6시 47분에 오늘의 후보 4편이 올라와요. 읽어 보고 <b>마음에 드는 1편만</b> 골라 블로그·클립에 올린 뒤, 글 화면 맨 아래 <b>✅ 발행 완료 표시</b>를 눌러 주세요. 고르지 않은 후보는 다음 날 아침 자동으로 지워져요.</p>
-<h2>① 네이버 · 오늘의 후보 (1편 골라 블로그·클립 발행)</h2>
+{tabs}
+<section class="tab" id="blog">
+<p class="muted">매일 아침 6시 47분에 후보 4편이 올라와요. <b>1편만</b> 골라 올리고, 글 화면 맨 아래 <b>✅ 발행 완료 표시</b>. 고르지 않은 후보는 다음 날 아침 지워져요.</p>
+<h2>오늘의 후보</h2>
 {todo or '<p>후보가 아직 없어요. 내일 아침 6시 47분에 올라와요.</p>'}
 {f'<h2 style="margin-top:28px">발행한 글</h2>{done}' if done else ''}
-<h2 style="margin-top:28px">② 유튜브 쇼츠 모음 (A·B·C 매일 3개)</h2>
-<a class="btn" href="s/">🎬 쇼츠 영상 모음 열기{f" · 오늘 {n_shorts}개" if n_shorts else ""}</a>
-<div class="muted">네이버 클립과 다른 영상이에요. 블로그를 먼저 올리고, 시간이 날 때 3개를 올려 주세요.</div>
 <div class="card" style="margin-top:28px"><h2>필요할 때만 누르는 버튼</h2>
 <a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(issue_link("다시그리기", "오늘후보", "글은 그대로 두고 사진·썸네일·클립만 새로 그려 주세요."), quote=True)}">🎨 사진·클립 다시 그리기</a>
 <div class="muted">무료 · 5~10분. 썸네일·클립 디자인을 고친 뒤 지금 있는 후보에 바로 반영할 때.</div>
 <a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(issue_link("새후보", "4편", "오늘 후보 4편을 새로 써 주세요."), quote=True)}">✍️ 후보 4편 새로 쓰기</a>
-<div class="muted">Claude 비용 약 $2~3 · 20~30분. 오늘 후보가 다 마음에 안 들 때만. 매일 아침에는 자동으로 올라와요.</div>
+<div class="muted">Claude 비용 약 $1 · 20~30분. 오늘 후보가 다 마음에 안 들 때만.</div>
 <div class="muted">누르면 GitHub 화면이 열려요. 초록색 <b>Create</b>만 누르면 끝이에요.</div></div>
-</main></body></html>"""
+</section>
+<section class="tab" id="clip" hidden>
+<p class="muted">블로그를 올린 뒤, 그 글의 클립을 올려요. 블로그 앱 아래 <b>+</b> → <b>클립 만들기</b> → 저장한 영상 → <b>음악</b>에서 인기 음원 → <b>설명 복사</b>·<b>해시태그 복사</b> 붙여넣기 → 올리기.
+발행 완료 표시를 하면 그 글의 클립이 맨 위로 와요.</p>
+{clip_cards(posts)}
+</section>
+<section class="tab" id="shorts" hidden>
+{shorts_html}
+</section>
+</main><script>const POST={{"blocks":[],"images":[]}};{JS}{tab_js}</script></body></html>"""
 
 
 SHORTS = ROOT / "shorts"
-KIND = {"A": "A · 통장형", "B": "B · 비교형", "C": "C · 한 장 반복형"}
+KIND = {"A": "국내 선수 · 통장형", "B": "해외 선수 vs 국내 · 비교형", "C": "국내 선수 · 순위표"}
 
 
 def shorts_list() -> list[dict]:
@@ -280,30 +307,33 @@ def shorts_list() -> list[dict]:
     return out
 
 
-def shorts_page(items: list[dict]) -> str:
+def shorts_body(items: list[dict], prefix: str = "") -> str:
+    """쇼츠 안내 + 카드들 (첫 화면 쇼츠 탭과 /s/ 페이지가 같이 쓴다)."""
     e = html.escape
     cards = []
-    for i, s in enumerate(items):
-        v = f"{slug(s['folder'])}.mp4"  # 주소에 한글이 들어가지 않게
-        up = (f'<span class="badge ok">✅ 올림 · 조회 {s["views"]:,}</span>' if "views" in s else '<span class="badge ok">✅ 올림</span>') \
-            if s.get("uploaded") else '<span class="badge warn">아직 안 올림</span>'
-        cards.append(f"""<div class="card"><h2>{e(s['date'])} · {e(KIND.get(s['kind'], s['kind']))} {up}</h2>
-<video src="{e(v)}" controls playsinline preload="metadata" style="width:100%;max-width:320px;border-radius:10px;display:block"></video>
+    for s in items:
+        v = f"{prefix}{slug(s['folder'])}.mp4"  # 주소에 한글이 들어가지 않게
+        cards.append(f"""<div class="card"><h2>{e(KIND.get(s['kind'], s['kind']))}</h2><div class="muted">{e(s['date'])}</div>
+<video src="{e(v)}" controls playsinline preload="none" style="width:100%;max-width:320px;border-radius:10px;display:block;margin-top:8px"></video>
 <button onclick="saveClip(this,{e(json.dumps(v), quote=True)})">🎬 영상 저장</button>
 <button class="ghost" onclick="copyText(this,{e(json.dumps(s['title']), quote=True)})">📋 제목 복사: {e(s['title'])}</button>
 {copy_pair(s['desc'], "쇼츠")}
 <a class="muted" href="{e(issue_link("쇼츠버림", s['folder'], "이 쇼츠는 올리지 않고 버려 주세요. 같은 형식으로 새로 만들어져요."), quote=True)}">🗑 이 쇼츠는 안 올리고 버리기</a></div>""")
+    guide = """<div class="card"><ol class="muted"><li><b>영상 저장</b> → 유튜브 앱 아래 <b>+</b> → <b>동영상 업로드</b> → 저장한 영상</li>
+<li><b>사운드 추가</b>로 인기 음원 하나</li>
+<li><b>썸네일(커버) 고르기</b>가 보이면 <b>맨 앞 장면</b> (안 보여도 괜찮아요: 모든 장면 위쪽에 제목이 있어요)</li>
+<li><b>제목 복사</b> → 제목 칸, <b>설명 복사</b>·<b>해시태그 복사</b> → 설명 칸 → <b>공개</b> → 업로드</li></ol>
+<div class="muted">매일 국내 선수 2개 + 해외 리그 선수 1개. 올린 쇼츠는 다음 날 아침 자동 확인돼 사라져요. <b>안 올린 쇼츠가 있으면 그 칸은 새로 만들지 않아요</b> — 올리기 싫으면 '버리기'.</div></div>"""
+    return guide + ("".join(cards) or "<p>올릴 쇼츠가 없어요. 매일 아침 글쓰기 뒤에 만들어져요.</p>")
+
+
+def shorts_page(items: list[dict]) -> str:
     return f"""<!doctype html><html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive">
 <title>쇼츠 영상 모음</title><style>{CSS}</style></head><body><main>
-<a href="../" class="muted">← 발행 도우미</a>
+<a href="../#shorts" class="muted">← 발행 도우미</a>
 <h1>유튜브 쇼츠 모음</h1>
-<div class="card"><ol class="muted"><li><b>영상 저장</b> → 유튜브 앱 아래 <b>+</b> → <b>동영상 업로드</b> → 저장한 영상</li>
-<li>편집 화면에 <b>사운드 추가</b>가 보이면 곡 하나 (유튜브 음원이라 안전)</li>
-<li>세부정보 화면에서 <b>썸네일(커버) 고르기</b>가 보이면 <b>맨 앞 장면</b>으로 (안 보여도 괜찮아요: 모든 장면 위쪽에 제목이 있어요)</li>
-<li><b>제목 복사</b> → 제목 칸, <b>설명 복사</b>·<b>해시태그 복사</b> → 설명 칸 (둘 다) → <b>공개</b> → 업로드</li></ol>
-<div class="muted">올린 쇼츠는 다음 날 아침 자동으로 확인돼 여기서 사라져요. <b>안 올린 형식은 새로 만들지 않아요</b> — 올리기 싫은 건 아래 '버리기'를 눌러 주세요.</div></div>
-{"".join(cards) or '<p>아직 쇼츠가 없어요. 매일 아침 글쓰기 뒤에 만들어져요.</p>'}
+{shorts_body(items)}
 </main><script>const POST={{"blocks":[],"images":[]}};{JS}</script></body></html>"""
 
 
@@ -329,7 +359,7 @@ def build(out: Path) -> list[dict]:
     (out / "s" / "index.html").write_text(shorts_page(items), encoding="utf-8")
     today = max((s["date"] for s in items), default="")
     (out / "index.html").write_text(index(sorted(posts, key=lambda p: p["folder"])[-14:],
-                                          sum(s["date"] == today for s in items)), encoding="utf-8")
+                                          sum(s["date"] == today for s in items), shorts_body(items, "s/")), encoding="utf-8")
     (out / "robots.txt").write_text("User-agent: *\nDisallow: /\n", encoding="utf-8")
     (out / "_headers").write_text("/*\n  X-Robots-Tag: noindex, nofollow, noarchive\n", encoding="utf-8")
     return posts
