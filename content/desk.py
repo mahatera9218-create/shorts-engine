@@ -291,7 +291,8 @@ def shorts_page(items: list[dict]) -> str:
 <video src="{e(v)}" controls playsinline preload="metadata" style="width:100%;max-width:320px;border-radius:10px;display:block"></video>
 <button onclick="saveClip(this,{e(json.dumps(v), quote=True)})">🎬 영상 저장</button>
 <button class="ghost" onclick="copyText(this,{e(json.dumps(s['title']), quote=True)})">📋 제목 복사: {e(s['title'])}</button>
-{copy_pair(s['desc'], "쇼츠")}</div>""")
+{copy_pair(s['desc'], "쇼츠")}
+<a class="muted" href="{e(issue_link("쇼츠버림", s['folder'], "이 쇼츠는 올리지 않고 버려 주세요. 같은 형식으로 새로 만들어져요."), quote=True)}">🗑 이 쇼츠는 안 올리고 버리기</a></div>""")
     return f"""<!doctype html><html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive">
 <title>쇼츠 영상 모음</title><style>{CSS}</style></head><body><main>
@@ -301,7 +302,7 @@ def shorts_page(items: list[dict]) -> str:
 <li>편집 화면에 <b>사운드 추가</b>가 보이면 곡 하나 (유튜브 음원이라 안전)</li>
 <li>세부정보 화면에서 <b>썸네일(커버) 고르기</b>가 보이면 <b>맨 앞 장면</b>으로 (안 보여도 괜찮아요: 모든 장면 위쪽에 제목이 있어요)</li>
 <li><b>제목 복사</b> → 제목 칸, <b>설명 복사</b>·<b>해시태그 복사</b> → 설명 칸 (둘 다) → <b>공개</b> → 업로드</li></ol>
-<div class="muted">A·B·C를 2주 동안 번갈아 시험해요. 하루에 3개를 몰아서 올려도 되고, 시간 간격을 두면 더 좋아요. 최근 3일치만 보여요.</div></div>
+<div class="muted">올린 쇼츠는 다음 날 아침 자동으로 확인돼 여기서 사라져요. <b>안 올린 형식은 새로 만들지 않아요</b> — 올리기 싫은 건 아래 '버리기'를 눌러 주세요.</div></div>
 {"".join(cards) or '<p>아직 쇼츠가 없어요. 매일 아침 글쓰기 뒤에 만들어져요.</p>'}
 </main><script>const POST={{"blocks":[],"images":[]}};{JS}</script></body></html>"""
 

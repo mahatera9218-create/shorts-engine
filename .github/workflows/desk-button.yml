@@ -6,6 +6,8 @@
 # 도우미 첫 화면 버튼 (글 폴더 없이):
 #   - [다시그리기]: 글은 그대로 두고 사진·썸네일·클립만 새로 그린다 (이미지 다시 그리기, Claude 비용 없음)
 #   - [새후보]: 오늘 후보 4편을 더 쓴다 (자동 글쓰기 --again, Claude 비용 듦)
+# 쇼츠 모음 버튼:
+#   - [쇼츠버림] <폴더>: 올리지 않을 쇼츠를 버린다 → 그 형식이 다음 날 새로 만들어진다
 # 저장소 주인이 만든 이슈만 처리한다.
 name: 발행 도우미 버튼
 
@@ -123,4 +125,72 @@ jobs:
       mode: 실제
       again: true
       count: "4"
+    secrets: inherit
+
+  discard:   # 쇼츠 모음 '이 쇼츠는 안 올리고 버리기'
+    if: >-
+      github.event.issue.user.login == github.repository_owner &&
+      startsWith(github.event.issue.title, '[쇼츠버림]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: 영상 받기 (영상은 저장소가 아니라 캐시에 둔다, 2026-09-30)
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            posts/*/clip.mp4
+            shorts/*/video.mp4
+            .cache/media.txt
+          key: media-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.job }}-r
+          restore-keys: media-
+      - name: 버리기
+        env:
+          TITLE: ${{ github.event.issue.title }}   # 셸에 직접 넣지 않고 환경 변수로만
+        run: |
+          NAME=$(printf '%s' "$TITLE" | sed -E 's/^\[쇼츠버림\][[:space:]]*//')
+          printf '%s' "$NAME" | grep -Eq '^[0-9]{4}-[0-9]{2}-[0-9]{2}-[ABC]-[^/[:space:]]+$' || { echo "형식이 다름"; exit 1; }
+          python -m content.shorts --discard "$NAME"
+      - name: 저장
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A shorts/
+          git diff --cached --quiet && exit 0
+          git commit -m "쇼츠 버림"
+          for i in 1 2 3; do
+            git pull --rebase -X theirs origin main && git push origin HEAD:main && exit 0
+            sleep $((i * 5))
+          done
+          exit 1
+      - name: 캐시 표시
+        if: always()
+        run: mkdir -p .cache && date > .cache/media.txt
+      - name: 영상 캐시 저장
+        if: always()
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            posts/*/clip.mp4
+            shorts/*/video.mp4
+            .cache/media.txt
+          key: media-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.job }}
+      - name: 이슈 닫기
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUM: ${{ github.event.issue.number }}
+        run: gh issue close "$NUM" --repo "$GITHUB_REPOSITORY" --comment "버렸어요. 그 형식은 다음 날 아침 새로 만들어져요."
+
+  discard-desk:
+    needs: discard
+    uses: ./.github/workflows/desk.yml
     secrets: inherit

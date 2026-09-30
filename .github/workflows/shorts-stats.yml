@@ -29,6 +29,15 @@ jobs:
           cache: pip
       - name: 준비
         run: pip install -r requirements.txt
+      - name: 영상 받기 (영상은 저장소가 아니라 캐시에 둔다, 2026-09-30)
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            posts/*/clip.mp4
+            shorts/*/video.mp4
+            .cache/media.txt
+          key: media-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.job }}-r
+          restore-keys: media-
       - name: 쇼츠 성과 수집
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
@@ -50,3 +59,16 @@ jobs:
             done
             exit 1
           fi
+      - name: 캐시 표시
+        if: always()
+        run: mkdir -p .cache && date > .cache/media.txt
+      - name: 영상 캐시 저장
+        if: always()
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            posts/*/clip.mp4
+            shorts/*/video.mp4
+            .cache/media.txt
+          key: media-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.job }}

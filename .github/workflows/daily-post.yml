@@ -58,6 +58,15 @@ jobs:
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq fonts-nanum fonts-nanum-extra ffmpeg > /dev/null
           pip install -r requirements.txt
+      - name: 영상 받기 (영상은 저장소가 아니라 캐시에 둔다, 2026-09-30)
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            posts/*/clip.mp4
+            shorts/*/video.mp4
+            .cache/media.txt
+          key: media-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.job }}-r
+          restore-keys: media-
       - name: 화제 선수·검색량 (실패해도 글쓰기는 계속)
         if: inputs.mode != '예시'
         continue-on-error: true
@@ -113,7 +122,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A posts/; [ -d shorts ] && git add -A shorts/; for f in config/trending.yaml config/search_volume.yaml config/player_photos.yaml reports/costs.csv reports/쇼츠-성과; do [ -e "$f" ] && git add "$f"; done
+          git add -A posts/; [ -d shorts ] && git add -A shorts/; for f in config/trending.yaml config/search_volume.yaml config/player_photos.yaml config/skip_players.yaml reports/costs.csv reports/쇼츠-성과; do [ -e "$f" ] && git add "$f"; done
           if git diff --cached --quiet; then
             echo "새 글 없음"
           else
@@ -125,6 +134,19 @@ jobs:
             echo "결과를 저장하지 못했습니다. Claude에게 알려주세요." >> "$GITHUB_STEP_SUMMARY"
             exit 1
           fi
+      - name: 캐시 표시
+        if: always()
+        run: mkdir -p .cache && date > .cache/media.txt
+      - name: 영상 캐시 저장
+        if: always()
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            posts/*/clip.mp4
+            shorts/*/video.mp4
+            .cache/media.txt
+          key: media-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.job }}
 
   desk:
     needs: write

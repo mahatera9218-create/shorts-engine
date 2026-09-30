@@ -10,6 +10,7 @@
 from __future__ import annotations
 
 import re
+import shutil
 import statistics
 import sys
 from datetime import date, timedelta
@@ -75,6 +76,8 @@ def update(channel: dict, vids: list[dict], today: str) -> dict:
         if m:
             rec |= {"kind": m["kind"], "key": m["key"]}
             m |= {"video_id": v["id"], "uploaded": v["published"]}
+            from .shorts import folder_of  # 올린 쇼츠의 영상은 폐기 (대표 결정 2026-09-30, 기록은 남김)
+            shutil.rmtree(LOG.parent / folder_of(m), ignore_errors=True)
         rec["title"] = v["title"]
         rec["snaps"][today] = {"views": v["views"], "likes": v["likes"], "comments": v["comments"]}
     OUT.mkdir(parents=True, exist_ok=True)
