@@ -1,5 +1,5 @@
 # 자동 글쓰기 (하루 1편): 뉴스 수집 → Claude 숫자 뽑기 → 코드 계산·그래픽 → Claude 글쓰기 → 코드 검사 → posts/에 저장
-# - 자동 실행: 매일 오전 6시 47분 (한국 시간). 결과는 posts/README.md 목록에 올라온다.
+# - 자동 실행: 매일 오전 5시 13분 (예비 7시 37분, 한국 시간). GitHub가 늦게 시작할 때가 있어 두 번 걸어 둔다. 결과는 posts/README.md 목록에 올라온다.
 # - 수동 실행: Actions → 자동 글쓰기 → Run workflow (선수 이름을 넣으면 그 선수로 바로 씀)
 # - 발행은 운영자가 한다 (네이버 블로그는 글쓰기 API가 없음).
 # - 발행 도우미의 "다시 뽑기"는 desk-button.yml이 이 워크플로를 --again으로 부른다.
@@ -32,8 +32,9 @@ on:
       mode: {type: string, default: 실제}
       again: {type: boolean, default: false}
       count: {type: string, default: "1"}   # 다시 뽑기 = 1편, 도우미 "후보 새로 쓰기" = 4편
-  schedule:
-    - cron: "47 21 * * *"   # UTC 21:47 = 한국 다음 날 06:47
+  schedule:   # GitHub 예약 실행은 몇 시간씩 늦게 시작할 때가 있다 (9/30은 06:47 예약이 09:45에 시작, 10/1은 07시까지 시작 안 함)
+    - cron: "13 20 * * *"   # UTC 20:13 = 한국 05:13 (일찍 걸어 둔다)
+    - cron: "37 22 * * *"   # UTC 22:37 = 한국 07:37 예비: 앞 실행이 이미 썼으면 하루 한도에 걸려 글을 더 쓰지 않는다
 
 permissions:
   contents: write
