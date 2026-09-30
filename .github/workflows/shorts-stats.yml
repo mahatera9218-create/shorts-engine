@@ -32,7 +32,9 @@ jobs:
       - name: 쇼츠 성과 수집
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
-        run: python -m content.shorts_stats | tee -a "$GITHUB_STEP_SUMMARY"
+        run: |
+          set -o pipefail   # 수집이 실패하면 ❌로 보이게 (tee가 실패를 가리지 않게)
+          python -m content.shorts_stats | tee -a "$GITHUB_STEP_SUMMARY"
       - name: 결과 저장
         run: |
           git config user.name "github-actions[bot]"

@@ -492,3 +492,19 @@ class TestShortsStats(unittest.TestCase):
                 text = "\n".join(ss.summary(stats, "2026-10-03"))
                 self.assertIn("구독자 **25**", text)
                 self.assertIn("짝을 못 찾은 영상 1개", text)
+
+
+class TestShortsStatsEmpty(unittest.TestCase):
+    def test_no_uploads_yet(self):
+        from market.common import ApiError
+        from content import shorts_stats as ss
+
+        class YT:
+            def _call(self, kind, params):
+                if kind == "channels":
+                    return {"items": [{"statistics": {"subscriberCount": "3", "viewCount": "0", "videoCount": "0"},
+                                       "contentDetails": {"relatedPlaylists": {"uploads": "UUx"}}}]}
+                raise ApiError("GET playlistItems → HTTP 404: not found")
+
+        ch, vids = ss.fetch(YT(), "@x")
+        self.assertEqual((ch["subs"], vids), (3, []))
