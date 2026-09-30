@@ -227,7 +227,7 @@ WRITE_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"(닉네�
 - 본문은 brief대로 쓴다. brief와 본문이 어긋나면 본문을 고친다.
 
 클립 (네이버 클립: 홈피드에서 그 자리에서 보는 영상. 영상에 퀴즈·정답·표가 이미 있다)
-- clip_caption: 클립 설명 2~3줄. 첫 줄은 추천 제목과 같은 궁금증, 둘째 줄은 댓글로 이어질 물음. 해시태그·링크는 쓰지 않는다 (코드가 붙인다).
+- clip_caption: 클립 설명 2~3줄. 첫 줄은 추천 제목과 같은 궁금증이고, 사람들이 클립 검색창에 치는 말 '짧은 이름 + 연봉'(골프는 '상금', 예: "이정후 연봉")을 띄어쓰기 그대로 넣는다. 둘째 줄은 댓글로 이어질 물음. 해시태그·링크는 쓰지 않는다 (코드가 붙인다).
 - clip_question: 영상 마지막 화면에 크게 띄울 질문 18자 이하 (예: "누구 몸값이 궁금해요?", "이 돈이면 뭐 살래요?"). 숫자는 숫자표에 있는 것만.
 """
 
@@ -279,7 +279,7 @@ def fill_prices(hub, llm, items: list[dict], today: str, fallback: dict | None) 
             region = it.get("kind") == "region_avg"
             r = llm.ask_json([REGION_RULES if region else PRICE_RULES],
                              f"{'지역' if region else '단지'}: {it['label']}\n오늘: {today}\n\n기사\n{news_prompt(news)}",
-                             PRICE_SCHEMA, max_tokens=1000, **extract_opts())
+                             PRICE_SCHEMA, max_tokens=1000, stage="가격 기사", **extract_opts())
             src = news[r["source"] - 1] if 1 <= r["source"] <= len(news) else None
             text = (src["title"] + " " + src["description"]).replace(" ", "") if src else ""
             if not r["found"] or not src:
@@ -466,7 +466,7 @@ def check_titles(p: dict, sheet: str) -> list[str]:
     if money in rec.replace(" ", ""):
         out.append(f"추천 제목이 썸네일 숫자({money})를 되풀이함 → 반전·궁금증 한 마디로")
     if rec and subject and not any(w in rec for w in subject):
-        out.append(f"추천 제목이 썸네일과 다른 이야기 → 썸네일의 '{' '.join(subject)}'를 제목에도 (짝으로)")
+        out.append(f"추천 제목이 썸네일과 다른 이야기 → 썸네일 말('{' '.join(subject)}')을 제목에도 (짝으로)")
     want = TYPE_LINE.search(sheet)
     if rec and want and p["titles"][p["recommended"] - 1]["type"] != want.group(1):
         out.append(f"추천 제목 유형이 오늘 정한 '{want.group(1)}'이 아님")
@@ -481,6 +481,9 @@ def check_post(p: dict, sheet: str) -> list[str]:
     problems = list(check_draft(p["body"]))
     if len(p.get("clip_question", "")) > 18:
         problems.append(f"클립 질문이 18자를 넘음 ({len(p['clip_question'])}자)")
+    s = SHORT.search(sheet)
+    if s and p.get("clip_caption") and not re.search(rf"{re.escape(s.group(1))}\s?(연봉|상금)", p["clip_caption"]):
+        problems.append(f"클립 설명 첫 줄에 검색어 '{s.group(1)} 연봉'(골프는 상금)이 없음")
     for label, text in ([("본문", p["body"])] + [(f"제목{i}", t["text"]) for i, t in enumerate(p["titles"], 1)]
                         + [("클립 설명", p.get("clip_caption", "")), ("클립 질문", p.get("clip_question", ""))]):
         bad = unknown_numbers(text, sheet)
@@ -545,14 +548,14 @@ def write_post(llm, topic: dict, sheet: str, max_revisions: int) -> tuple[dict, 
     system = writer_system()
     prompt = (f"카테고리: {topic['category']}\n글 방향: {topic['angle']}\n\n숫자표\n{sheet}\n\n"
               "이 숫자표로 발행 패키지를 JSON으로 만들어라.")
-    post = llm.ask_json(system, prompt, POST_SCHEMA, **opts)
+    post = llm.ask_json(system, prompt, POST_SCHEMA, stage="글쓰기", **opts)
     problems = check_post(post, sheet)
     rounds = 0
     while problems and rounds < max_revisions and llm.cost_usd() < cap:
         rounds += 1
         fix = (prompt + "\n\n아래는 네가 쓴 초안이다. 검사에서 걸린 문제만 고치고, 나머지는 유지해서 같은 JSON 형식으로 다시 내라.\n"
                "문제:\n" + "\n".join(f"- {x}" for x in problems) + "\n\n초안:\n" + json.dumps(post, ensure_ascii=False))
-        post = llm.ask_json(system, fix, POST_SCHEMA, **opts)
+        post = llm.ask_json(system, fix, POST_SCHEMA, stage="고쳐쓰기(검사)", **opts)
         problems = check_post(post, sheet)
     # 편집장 검토 (스킬 0단계 기준): 4점 미만이 있으면 한 번 고쳐 쓰고, 고친 글이 코드 검사를 통과할 때만 바꾼다
     review = review_post(llm, sheet, post)
@@ -563,7 +566,7 @@ def write_post(llm, topic: dict, sheet: str, max_revisions: int) -> tuple[dict, 
         fix = (prompt + "\n\n아래는 네가 쓴 초안과 편집장 검토다. 검토의 수정 지시를 반영해 같은 JSON 형식으로 다시 내라. "
                "숫자는 숫자표에 있는 것만.\n검토:\n" + "\n".join(f"- {x['criterion']} {x['score']}점: {x['reason']}" for x in low)
                + "\n수정 지시:\n" + "\n".join(f"- {f}" for f in review["fixes"]) + "\n\n초안:\n" + json.dumps(post, ensure_ascii=False))
-        again = llm.ask_json(system, fix, POST_SCHEMA, **opts)
+        again = llm.ask_json(system, fix, POST_SCHEMA, stage="고쳐쓰기(편집장)", **opts)
         if check_post(again, sheet):
             break
         post, rounds = again, rounds + 1
@@ -579,7 +582,7 @@ def review_post(llm, sheet: str, post: dict) -> dict:
     docs = [(SKILLS / "money-content-writer" / "SKILL.md").read_text(encoding="utf-8"), REVIEW_RULES]
     draft = {k: post[k] for k in ("brief", "titles", "recommended", "body", "clip_caption", "clip_question")}
     return llm.ask_json(docs, f"숫자표\n{sheet}\n\n초안\n{json.dumps(draft, ensure_ascii=False)}", REVIEW_SCHEMA,
-                        max_tokens=3000, **extract_opts())
+                        max_tokens=3000, stage="편집장", **extract_opts())
 
 
 # ---------------------------------------------------------------- 패키지
@@ -674,7 +677,7 @@ def collect(hub, llm, topic: dict, today: str, cfg: dict) -> dict | str:
                  "나눌 기록이 있으면 usable=true. " + (f"외화 연봉이니 환율({FX[known['currency']]['key']})은 꼭 뽑는다." if known["currency"] in FX else ""))
     ex = llm.ask_json([EXTRACT_RULES], f"선수: {topic['player']} ({topic.get('team', '')}, {topic.get('sport', '')}){hint}\n"
                       f"오늘: {today}\n\n뉴스 요약 (번호 = source):\n{news_prompt(news)}",
-                      EXTRACT_SCHEMA, max_tokens=8000, **extract_opts())
+                      EXTRACT_SCHEMA, max_tokens=8000, stage="숫자 뽑기", **extract_opts())
     if not ex["usable"]:
         return ex["reason"]
     facts = resolve(ex["facts"], news)
@@ -899,6 +902,7 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
         if len(today_made) >= cfg.get("daily_limit", 1):
             return f"오늘 이미 {len(today_made)}편을 만들었습니다 (하루 한도 {cfg.get('daily_limit', 1)}편).", None
     notes: list[str] = []
+    start_cost = llm.cost_usd()  # 이 글에 든 비용만 (한 번 실행에서 여러 편 쓸 때 누적되지 않게)
     cache: dict[str, dict | str] = {}
     seed = today if not made_today else f"{today}-{len(made_today)}"  # 다시 뽑으면 테마도 새로
     pool, why = weighted_pool(hub, pool, today)
@@ -973,7 +977,7 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
         category = pool["categories"].get(d.get("sport", "야구").split()[0], "야구")  # sport = "야구 (프로야구)"
         post, problems, rounds = write_post(llm, {"category": category, "angle": tinfo["angle"]}, sheet,
                                             cfg.get("max_revisions", 2))
-        cost = llm.cost_usd()
+        cost = llm.cost_usd() - start_cost
         (folder / "data.yaml").write_text(yaml.safe_dump(d, allow_unicode=True, sort_keys=False), encoding="utf-8")
         (folder / "facts.json").write_text(json.dumps(facts, ensure_ascii=False, indent=1), encoding="utf-8")
         if photos.credit(folder):  # Pexels 이용 조건: 작가·Pexels 표시 (숫자 검사 뒤에 붙인다)
@@ -1056,6 +1060,11 @@ def main() -> None:
         u = llm.usage
         msg += (f"\nClaude 호출 {u['calls']}회 · 입력 {u['input']:,} · 출력 {u['output']:,} · 캐시 읽기 {u['cache_read']:,} 토큰"
                 f" · 약 ${llm.cost_usd():.2f}")
+    if getattr(llm, "by_stage", None):
+        msg += "\n단계별 비용: " + ", ".join(f"{k} ${v:.2f}" for k, v in sorted(llm.by_stage.items(), key=lambda x: -x[1]))
+        if out_root == POSTS:
+            from .llm import log_cost
+            log_cost("다시 뽑기" if a.again else "글쓰기", llm, made, a.target)
     print(msg)
     if folder:
         print(f"결과: {folder}")

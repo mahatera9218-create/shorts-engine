@@ -44,8 +44,8 @@ def status(folder: Path) -> dict:
 
 def mark(name: str, action: str) -> None:
     now = datetime.now(ZoneInfo("Asia/Seoul")).strftime("%Y-%m-%d %H:%M")
-    (POSTS / name / "status.yaml").write_text(yaml.safe_dump({"status": action, "at": now}, allow_unicode=True),
-                                              encoding="utf-8")
+    st = {**status(POSTS / name), "status": action, "at": now}  # 자동 발행 확인이 남긴 네이버 주소(url)는 둔다
+    (POSTS / name / "status.yaml").write_text(yaml.safe_dump(st, allow_unicode=True), encoding="utf-8")
 
 
 def main() -> None:

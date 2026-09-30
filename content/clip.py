@@ -18,6 +18,7 @@ import sys
 from functools import lru_cache
 from pathlib import Path
 
+import yaml
 from PIL import Image, ImageDraw
 
 from market.common import ROOT
@@ -311,13 +312,24 @@ def ffmpeg() -> str | None:
         return None
 
 
+def search_tags(folder: Path) -> list[str]:
+    """클립 검색에서 사람들이 치는 말을 해시태그 맨 앞에: 선수 이름, 이름+연봉(골프는 상금)."""
+    f = folder / "data.yaml"
+    d = (yaml.safe_load(f.read_text(encoding="utf-8")) or {}) if f.exists() else {}
+    name = d.get("short_name") or d.get("player", "").split(" ")[0]
+    if not name:
+        return []
+    return [name, name + ("상금" if "골프" in str(d.get("sport", "")) else "연봉")]
+
+
 def caption(folder: Path, p: dict) -> str:
     """클립 설명: 글쓴이가 쓴 설명(clip_caption.txt, 없으면 제목 + 기본 문구) + 사진 출처(있으면) + 해시태그."""
     hook = next((t["text"] for t in p["titles"] if t["best"]), p["titles"][0]["text"] if p["titles"] else "")
     cf = folder / "clip_caption.txt"
     text = cf.read_text(encoding="utf-8").strip() if cf.exists() else \
         f"{hook}\n\n정답 맞히셨나요? 계산 과정과 출처는 블로그 '{BLOG}'에 있어요."
-    tags = " ".join("#" + t.replace(" ", "") for t in (p["tags"] + ["몸값퀴즈", "스포츠"])[:MAX_TAGS])
+    tags = " ".join("#" + t.replace(" ", "") for t in dict.fromkeys(search_tags(folder) + p["tags"] + ["몸값퀴즈", "스포츠"]))
+    tags = " ".join(tags.split()[:MAX_TAGS])
     credit = photos.credit(folder)
     return "\n\n".join(x for x in [text, credit, tags] if x) + "\n"
 
