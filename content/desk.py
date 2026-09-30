@@ -236,7 +236,7 @@ def page(p: dict) -> str:
                f' 마땅한 게 없으면 다른 검색어: {e(" · ".join(k for k in sh["others"] if k != sh["keyword"]))}</div>'
                if sh["keyword"] else "")
             + edit_box("shopnote", sh["disclosure"], "광고 고지 복사")
-            + '<div class="muted">상품을 붙였으면 본문 끝에 광고 고지를 꼭 붙이세요. 클립에는 상품 태그를 달지 마세요 (선수 사진이 있어 선수가 광고하는 것처럼 보일 수 있어요).</div></div>'
+            + '<div class="muted">같은 상품을 <b>클립에 상품 태그로</b> 다는 게 핵심이에요 (클립 조회가 훨씬 많아요). 이 글의 클립은 선수 사진 없이 만들어져 태그를 달아도 돼요. 블로그 글에도 붙였다면 본문 끝에 광고 고지를 붙이세요.</div></div>'
             ) if sh else ""
     done_btn = e(issue_link("발행완료", p["folder"], "블로그·클립 발행을 마쳤어요."), quote=True)
     again_btn = e(issue_link("다시뽑기", p["folder"], "이 글은 버리고 다른 선수·테마로 새로 써 주세요."), quote=True)
@@ -277,6 +277,16 @@ def page(p: dict) -> str:
 </main><script>const POST={data};{JS}</script></body></html>"""
 
 
+def clip_shop(p: dict) -> str:
+    """클립 카드의 쇼핑 태그 안내 (상품군이 있는 글만: 그 클립은 선수 사진 없이 만들어진다)."""
+    sh, e = p.get("shop"), html.escape
+    if not sh or not sh.get("keyword"):
+        return ""
+    return (f'<button class="ghost" onclick="copyText(this,{e(json.dumps(sh["keyword"]), quote=True)})">🛒 상품 태그 검색어 복사: '
+            f'{e(sh["keyword"])}</button><div class="muted">클립 올릴 때 <b>상품 태그</b>에서 이 검색어로 찾아 '
+            f'{e(sh["pick"])}인 상품 1개를 다세요. 광고 고지는 설명 맨 앞에 들어 있어요.</div>')
+
+
 def clip_cards(posts: list[dict]) -> str:
     """클립 탭: 오늘 올릴 클립. 발행한 글의 클립이 맨 위, 나머지는 후보 (고른 글의 클립만 올린다)."""
     e = html.escape
@@ -291,7 +301,7 @@ def clip_cards(posts: list[dict]) -> str:
         out.append(f"""<div class="card"><h2>{e(title)}</h2>{badge}
 <video src="{e(src)}" controls playsinline preload="none" style="width:100%;max-width:320px;border-radius:10px;display:block;margin-top:8px"></video>
 <button onclick="saveClip(this,{e(json.dumps(src), quote=True)})">🎬 클립 영상 저장</button>
-{copy_pair(p["clip_text"], "클립", p["folder"])}</div>""")
+{copy_pair(p["clip_text"], "클립", p["folder"])}{clip_shop(p)}</div>""")
     return "".join(out) or "<p>올릴 클립이 없어요.</p>"
 
 
