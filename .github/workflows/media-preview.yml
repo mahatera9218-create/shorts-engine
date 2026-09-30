@@ -1,12 +1,12 @@
 # 영상 미리보기: 클립·쇼츠 제작 방식을 바꾼 뒤 실제 배경 영상·선수 사진·목소리로 한 번 만들어 본다.
-# 자동: config/media.yaml을 고쳐 main에 올리면. 수동: Actions → 영상 미리보기 → Run workflow
+# 자동: config/preview.yaml을 고쳐 main에 올리면. 수동: Actions → 영상 미리보기 → Run workflow
 name: 영상 미리보기
 
 on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ["config/media.yaml"]
+    paths: ["config/preview.yaml"]
 
 permissions:
   contents: write
@@ -17,6 +17,7 @@ concurrency:
 
 jobs:
   preview:
+    if: github.event_name != 'push' || !contains(github.event.head_commit.message, '[no preview]')
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:

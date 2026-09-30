@@ -225,6 +225,14 @@ def ai_badge() -> Image.Image:
 def produce(exe: str, scenes: list, out: Path, bg: Path | None) -> tuple[str, dict]:
     """장면 → (대사 목소리 + 효과음 + 실사 배경) → mp4. 돌려주는 값: (오류 문장 또는 "", 쓴 것 요약)."""
     from . import clip
+    if not cfg().get("sound", False):  # 영상만 (무음 트랙): 음악은 각 앱에서 인기 음원으로
+        clip.VIDEO = bg is not None
+        try:
+            err = encode(exe, clip.render(scenes, rgba=True), sum(s.dur for s in scenes), out, bg, None)
+        finally:
+            clip.VIDEO = False
+        out.with_suffix(".voice").unlink(missing_ok=True)
+        return err, {"seconds": round(sum(s.dur for s in scenes), 1), "voice": False, "video_bg": bg is not None}
     cues = narrate(scenes, [getattr(s, "say", None) for s in scenes])
     voiced = bool(cues)
     starts = cue_times(scenes)
