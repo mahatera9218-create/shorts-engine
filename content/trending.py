@@ -48,7 +48,7 @@ def find_trending(hub, llm, today: str) -> list[dict]:
     news = [n for n in gather_news(hub, queries, per_query=6) if (day - date.fromisoformat(n["date"])).days <= 3]
     if not news:
         return []
-    r = llm.ask_json([TREND_RULES], f"오늘: {today}\n\n뉴스 요약 (번호 = source):\n{news_prompt(news)}", TREND_SCHEMA,
+    r = llm.ask_json([TREND_RULES], f"오늘: {today}\n\n뉴스 요약 (번호 = source):\n{news_prompt(news)}", TREND_SCHEMA, stage="화제 선수",
                      max_tokens=3000, **extract_opts())
     out = []
     for p in r["players"]:
@@ -127,6 +127,9 @@ def main() -> None:
             lines.append("검색량 상위: " + ", ".join(f"{n} {v:,}" for n, v in top))
     except Exception as e:
         lines.append(f"검색량 재기 건너뜀: {type(e).__name__}: {str(e)[:120]}")
+    if llm and not sample:
+        from .llm import log_cost
+        log_cost("화제 선수", llm)
     print("\n".join(lines) or "화제·검색량: 키가 없어 건너뜀")
 
 

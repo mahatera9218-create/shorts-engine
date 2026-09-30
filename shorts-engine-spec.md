@@ -937,6 +937,7 @@ GitHub에서 검증된 오픈소스를 우선 쓰고, 직접 만드는 코드는
 | 테마·재고 (2026-09-30) | 생활 물가 5/10 · 세금·연고지 아파트·몸값 여행 각 1 · 영수증·같은 종목·유니폼·다른 종목 각 0.5 (`config/players.yaml`). 선수↔장소는 `config/places.yaml`. 선수 풀은 리그별 연봉 상위(KBO·MLB·EPL·라리가·NBA·골프) + 매일 화제 선수(`content/trending.py`, `config/events.yaml`, 14일) + 검색량 배수(`config/search_volume.yaml`). 같은 조합 120일 금지, `content/inventory.py`로 테마별 재고를 주간 점검. 광고 영역 확장은 `config/ideas.yaml` → `market/ad_value.py` → 가격 출처 → 테마 |
 | 블로그 카테고리 (2026-09-30) | 종목별 3개: **야구 · 축구 · 농구·골프** (`config/players.yaml` categories, 두 선수 비교는 첫 선수 종목). 태그는 한글·영문·숫자만(네이버가 특수문자 태그를 받지 않음, `content/desk.py` clean_tags) |
 | 제목 (2026-09-30) | 추천 제목 1개 = 썸네일의 짝(같은 숫자·비교 대상에서 이어지는 궁금증), 대표는 고르지 않고 그대로 씀. 추천 제목 유형은 코드가 날마다 돌림(`title_type`), 나머지 4개는 예비. 검사 `check_titles` + 편집장 |
+| 발행 확인·비용 (2026-09-30) | 네이버 블로그 RSS로 공개된 글 자동 표시(`content/published.py`, 매일 글쓰기 전). 클립 설명·해시태그에 '이름 연봉' 검색어. Claude 비용 단계별 기록 `reports/costs.csv` → 주간 보고서 |
 | 블로그 발행 도우미 화면 | 매일 자동 글쓰기(`content/autopost.py`)가 `posts/`에 발행 패키지를 만들고, **발행 도우미 페이지**(`content/desk.py`, Cloudflare Pages 무료, 검색 수집 금지)에 자동으로 올린다. 운영자는 태블릿에서 사진 한 번에 저장 · 제목/본문/태그 복사 버튼으로 약 3분에 발행 (2026-09-29 결정) |
 
 0장의 원칙(시장조사 우선, 손익 기준, 단계별 철수 규칙)과 3.6의 품질·안전 게이트(출처, 팩트체크, 원본성, AI 표시, 광고 고지)는 푸드트럭 경로에서도 그대로 지킨다.

@@ -8,6 +8,7 @@
 """
 from __future__ import annotations
 
+import csv
 import re
 import statistics
 import sys
@@ -67,6 +68,23 @@ def judge(metrics: dict, today: date, names: dict) -> list[str]:
     return out
 
 
+def cost_line(start: date, end: date, ps: list[dict]) -> str:
+    """Claude 비용: reports/costs.csv(실행마다 기록, 지운 후보·화제 선수 찾기 포함)가 있으면 그걸로, 없으면 남은 글에서."""
+    f = ROOT / "reports" / "costs.csv"
+    rows = [r for r in csv.DictReader(f.open(encoding="utf-8"))
+            if str(start) <= r["at"][:10] <= str(end)] if f.exists() else []
+    if not rows:
+        return f"- Claude 비용: 약 ${sum(p['cost'] for p in ps):.2f} (남은 글 기준, 지운 후보 빠짐)"
+    stages: dict[str, float] = {}
+    for r in rows:
+        for part in filter(None, r["stages"].split(";")):
+            k, v = part.split("=")
+            stages[k] = stages.get(k, 0.0) + float(v)
+    total = sum(float(r["usd"]) for r in rows)
+    return (f"- Claude 비용: ${total:.2f} (하루 평균 ${total / 7:.2f}, 한 달 환산 ${total / 7 * 30:.0f} · 목표 월 $40) · 단계별: "
+            + ", ".join(f"{k} ${v:.2f}" for k, v in sorted(stages.items(), key=lambda x: -x[1])))
+
+
 def report(week_start: date) -> str:
     end = week_start + timedelta(days=6)
     ps = posts_between(week_start, end)
@@ -81,7 +99,7 @@ def report(week_start: date) -> str:
          f"- 만든 글(✅): {sum(p['ok'] for p in made)}편 · 버린 글: {sum(p['status'] == 'rejected' for p in ps)}편",
          f"- 발행 완료 표시: {len(used)}편 / 7일 → 발행률 {len(used) / 7:.0%} (목표 90%)",
          f"- 편집장 평균: {statistics.mean(scores):.1f}" if scores else "- 편집장 평균: -",
-         f"- Claude 비용: 약 ${sum(p['cost'] for p in ps):.2f} (다시 쓴 글 포함)",
+         cost_line(week_start, end, ps),
          "- 테마 구성: " + (", ".join(f"{names.get(t, t)} {sum(p['theme'] == t for p in made)}" for t in sorted({p['theme'] for p in made})) or "-"),
          "", "## 2. 성과 (캡처 → config/metrics.yaml)", ""]
     wk = (metrics.get("weeks") or {}).get(str(week_start))
