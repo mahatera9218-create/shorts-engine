@@ -447,7 +447,11 @@ def make(folder: Path) -> str:
     d = yaml.safe_load((folder / "data.yaml").read_text(encoding="utf-8")) if (folder / "data.yaml").exists() else {}
     bg = produce.bg_video(folder, str(d.get("sport", "야구")), folder.name)  # A. 실사 배경 (없으면 사진·남색)
     photo = None if bg else (Image.open(folder / "photo.jpg") if (folder / "photo.jpg").exists() else None)
-    pics = playerphoto.fetch(folder, st["hook"].get("players", []))  # C. 선수 사진 (없으면 등판)
+    from .commerce import info as shop_info
+    shop = shop_info(d, folder.name)
+    if shop:  # 쇼핑 태그를 다는 클립 (대표 결정 2026-09-30): 선수 사진·등판 없이 (선수가 광고하는 것처럼 보이지 않게)
+        st["hook"] = {**st["hook"], "players": []}
+    pics = [] if shop else playerphoto.fetch(folder, st["hook"].get("players", []))  # C. 선수 사진 (없으면 등판)
     credit = " · ".join(f"사진 {i['artist'][:20]} ({i['license']})" for i in
                         (json.loads(f.read_text(encoding="utf-8")) for f in sorted(folder.glob("player*.json"))))
     qf = folder / "clip_question.txt"
@@ -456,10 +460,14 @@ def make(folder: Path) -> str:
     err, info = produce.produce(exe, sc, folder / "clip.mp4", bg)  # B·D. 효과음·목소리
     if err:
         return f"클립: 영상 만들기 실패 ({err})"
-    (folder / "clip.txt").write_text(caption(folder, p), encoding="utf-8")
+    text = caption(folder, p)
+    if shop:  # 광고 고지는 설명 맨 앞 (해시태그와 섞이지 않게)
+        text = shop["disclosure"] + "\n\n" + text
+    (folder / "clip.txt").write_text(text, encoding="utf-8")
     (folder / "bg.mp4").unlink(missing_ok=True)  # 배경 원본은 저장소에 두지 않는다 (출처는 bg.json)
     return (f"클립: 세로 영상 {info['seconds']:.0f}초 완성" + (" · 목소리" if info["voice"] else "")
-            + (" · 실사 배경" if info["video_bg"] else "") + (f" · 선수 사진 {len(pics)}" if pics else ""))
+            + (" · 실사 배경" if info["video_bg"] else "") + (f" · 선수 사진 {len(pics)}" if pics else "")
+            + (f" · 쇼핑 클립({shop['name']}, 선수 사진 없음)" if shop else ""))
 
 
 def main() -> None:
