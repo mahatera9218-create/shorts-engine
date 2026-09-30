@@ -23,10 +23,10 @@ on:
         options: ["", receipt, same, cross, life]
         default: ""
       count:
-        description: "발행 가능한 글 몇 편 (1~5). 기준 미달은 알아서 다시 씀"
+        description: "후보 몇 편 (1~5, 기본 4). 기준 미달은 알아서 다시 씀. 대표가 1편 골라 발행"
         type: choice
         options: ["1", "2", "3", "4", "5"]
-        default: "1"
+        default: "4"
   workflow_call:   # 발행 도우미 "다시 뽑기" (desk-button.yml)
     inputs:
       mode: {type: string, default: 실제}
@@ -85,7 +85,7 @@ jobs:
             [ -n "$TOPIC" ] && args+=(--topic "$TOPIC")
             [ -n "$THEME" ] && args+=(--theme "$THEME")
             [ "${{ inputs.again }}" = "true" ] && args+=(--again)
-            n="${{ inputs.count }}"; n="${n:-1}"
+            n="${{ inputs.count }}"; n="${n:-4}"   # 매일 후보 4편 (대표가 1편 골라 발행)
             # 발행 가능(✅) 글이 n편 될 때까지 최대 n×3+1번 쓴다. 기준 미달(⚠️)은 목록에서 빼고 다른 조합으로 다시.
             python -m content.autopost "${args[@]}" --target "$n" --tries $((n * 3 + 1))
           fi
@@ -94,7 +94,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add posts/ config/trending.yaml config/search_volume.yaml 2>/dev/null || git add posts/
+          git add -A posts/ config/trending.yaml config/search_volume.yaml 2>/dev/null || git add -A posts/
           if git diff --cached --quiet; then
             echo "새 글 없음"
           else

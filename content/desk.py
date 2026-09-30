@@ -196,9 +196,9 @@ def index(posts: list[dict]) -> str:
 <title>발행 도우미</title><style>{CSS}</style></head><body><main>
 <h1>발행 도우미 · 억소리 나는 스포츠</h1>
 <p class="muted">마지막 업데이트: {datetime.now(ZoneInfo("Asia/Seoul")).strftime("%m월 %d일 %H:%M")}</p>
-<p class="muted">매일 아침 6시 47분에 새 글이 올라와요. 위에서부터(오래된 글부터) 하루 1편씩 발행하고, 다 올리면 글 화면 맨 아래 <b>✅ 발행 완료 표시</b>를 눌러 주세요. ✅만 발행하고 ⚠️는 Claude에게 알려주세요.</p>
-<h2>발행할 글</h2>
-{todo or '<p>발행할 글이 없어요.</p>'}
+<p class="muted">매일 아침 6시 47분에 오늘의 후보 4편이 올라와요. 읽어 보고 <b>마음에 드는 1편만</b> 골라 블로그·클립에 올린 뒤, 글 화면 맨 아래 <b>✅ 발행 완료 표시</b>를 눌러 주세요. 고르지 않은 후보는 다음 날 아침 자동으로 지워져요.</p>
+<h2>오늘의 후보 (1편 골라 발행)</h2>
+{todo or '<p>후보가 아직 없어요. 내일 아침 6시 47분에 올라와요.</p>'}
 {f'<h2 style="margin-top:28px">발행한 글</h2>{done}' if done else ''}
 </main></body></html>"""
 
