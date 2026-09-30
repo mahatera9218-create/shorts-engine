@@ -32,6 +32,15 @@ jobs:
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq fonts-nanum fonts-nanum-extra ffmpeg > /dev/null
           pip install -r requirements.txt
+      - name: 영상 받기 (영상은 저장소가 아니라 캐시에 둔다, 2026-09-30)
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            posts/*/clip.mp4
+            shorts/*/video.mp4
+            .cache/media.txt
+          key: media-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.job }}-r
+          restore-keys: media-
       - name: 클립 다시 만들기 (오늘 후보)
         env:
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
@@ -61,6 +70,19 @@ jobs:
             done
             exit 1
           fi
+      - name: 캐시 표시
+        if: always()
+        run: mkdir -p .cache && date > .cache/media.txt
+      - name: 영상 캐시 저장
+        if: always()
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            posts/*/clip.mp4
+            shorts/*/video.mp4
+            .cache/media.txt
+          key: media-${{ github.run_id }}-${{ github.run_attempt }}-${{ github.job }}
 
   desk:
     needs: preview

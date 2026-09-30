@@ -560,3 +560,41 @@ class TestProduce(unittest.TestCase):
             self.assertEqual(len(cues), 1)
             out = produce.mix(exe, cues + [(produce.sfx(exe, "ding"), 1.0, 0.5)], s.dur, Path(d) / "m.wav")
             self.assertAlmostEqual(produce.wav_seconds(out), s.dur, delta=0.1)
+
+
+class TestLifecycle(unittest.TestCase):
+    def test_pending_discard_cleanup(self):
+        import tempfile
+        from pathlib import Path
+        from unittest import mock
+        import yaml
+        from content import shorts
+        with tempfile.TemporaryDirectory() as d:
+            d = Path(d)
+            for name in ("2026-10-01-A-류현진", "2026-10-01-B-x", "2026-09-29-C-preview-y"):
+                (d / name).mkdir()
+                (d / name / "video.mp4").write_bytes(b"0")
+            log = [{"date": "2026-10-01", "kind": "A", "key": "A-류현진", "title": "t", "video_id": "v1"},
+                   {"date": "2026-10-01", "kind": "B", "key": "B-x", "title": "u"}]
+            (d / "log.yaml").write_text(yaml.safe_dump(log, allow_unicode=True), encoding="utf-8")
+            with mock.patch.object(shorts, "OUT", d), mock.patch.object(shorts, "LOG", d / "log.yaml"):
+                self.assertEqual(shorts.pending("A"), [])            # 올린 건 대기 아님
+                self.assertEqual(shorts.pending("B"), ["2026-10-01-B-x"])
+                gone = shorts.cleanup("2026-10-02")
+                self.assertIn("2026-10-01-A-류현진", gone)           # 올린 건 폐기
+                self.assertIn("2026-09-29-C-preview-y", gone)        # 지난 미리보기 폐기
+                self.assertTrue((d / "2026-10-01-B-x").exists())    # 안 올린 건 남김
+                shorts.discard("2026-10-01-B-x")
+                self.assertEqual(shorts.pending("B"), [])
+                self.assertTrue(yaml.safe_load((d / "log.yaml").read_text(encoding="utf-8"))[1]["discarded"])
+
+    def test_no_data_memory(self):
+        import tempfile
+        from pathlib import Path
+        from unittest import mock
+        from content import autopost
+        with tempfile.TemporaryDirectory() as d:
+            with mock.patch.object(autopost, "NO_DATA", Path(d) / "s.yaml"):
+                autopost.remember_no_data({"나성범": "올해 연봉 없음"}, "2026-10-01")
+                self.assertEqual(autopost.no_data_players("2026-10-05"), ["나성범"])
+                self.assertEqual(autopost.no_data_players("2026-10-09"), [])
