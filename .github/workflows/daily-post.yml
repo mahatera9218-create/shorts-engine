@@ -57,6 +57,17 @@ jobs:
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq fonts-nanum fonts-nanum-extra ffmpeg > /dev/null
           pip install -r requirements.txt
+      - name: 화제 선수·검색량 (실패해도 글쓰기는 계속)
+        if: inputs.mode != '예시'
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          NCP_APIGW_API_KEY_ID: ${{ secrets.NCP_APIGW_API_KEY_ID }}
+          NCP_APIGW_API_KEY: ${{ secrets.NCP_APIGW_API_KEY }}
+          NAVER_AD_API_KEY: ${{ secrets.NAVER_AD_API_KEY }}
+          NAVER_AD_SECRET_KEY: ${{ secrets.NAVER_AD_SECRET_KEY }}
+          NAVER_AD_CUSTOMER_ID: ${{ secrets.NAVER_AD_CUSTOMER_ID }}
+        run: python -m content.trending | tee -a "$GITHUB_STEP_SUMMARY"
       - name: 글쓰기
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -83,7 +94,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add posts/
+          git add posts/ config/trending.yaml config/search_volume.yaml 2>/dev/null || git add posts/
           if git diff --cached --quiet; then
             echo "새 글 없음"
           else

@@ -10,6 +10,9 @@ sports:
   kbo:    {name: 프로야구, sport: 야구, hint: "타자는 경기·타수·안타·홈런, 투수는 경기·이닝·승·탈삼진"}
   mlb:    {name: 메이저리그, sport: 야구, hint: "타자는 경기·타수·안타·홈런, 투수는 경기·이닝·승·탈삼진"}
   soccer: {name: 해외축구, sport: 축구, hint: "경기·골·도움. 연봉은 주급 보도만 있으면 연봉으로 환산된 보도를 찾고, 없으면 usable=false"}
+  epl:    {name: 프리미어리그, sport: 축구, hint: "경기·골·도움. 연봉 1년치로 보도된 숫자만(주급만 있으면 usable=false). 파운드면 원파운드 환율도"}
+  laliga: {name: 라리가, sport: 축구, hint: "경기·골·도움. 연봉 1년치로 보도된 숫자만(주급만 있으면 usable=false). 유로면 원유로 환율도"}
+  nba:    {name: NBA, sport: 농구, hint: "경기·득점·리바운드·어시스트. 올 시즌(2026-27) 연봉, 달러면 원달러 환율도"}
   golf:   {name: 골프, sport: 골프, hint: "연봉 대신 올해 시즌 누적 상금 총액을 key salary로. 나눌 기록은 대회(events)·라운드(rounds)·우승(wins)"}
 
 players:
@@ -47,6 +50,56 @@ players:
   - {name: 김주형, sport: golf, team: PGA 투어, weight: 1}
   - {name: 스코티 셰플러, short: 셰플러, sport: golf, team: PGA 투어, weight: 1}
   - {name: 고진영, sport: golf, team: LPGA 투어, weight: 1}
+
+  # ---- 2026-09-30 확장 (대표 결정: 리그별 연봉 상위 + 화제 선수). 연봉은 글 쓰는 날 뉴스 또는 salaries.yaml.
+  # KBO (KBO 발표 2026 연봉·FA 보도)
+  - {name: 제임스 네일, short: 네일, sport: kbo, team: KIA 타이거즈, weight: 1, en: NAILE}
+  - {name: 오지환, sport: kbo, team: LG 트윈스, weight: 1, en: OH}
+  - {name: 김재환, sport: kbo, team: 두산 베어스, weight: 1, en: KIM}
+  - {name: 구창모, sport: kbo, team: NC 다이노스, weight: 1, en: KOO}
+  - {name: 나성범, sport: kbo, team: KIA 타이거즈, weight: 1, en: NA}
+  - {name: 강백호, sport: kbo, team: 한화 이글스, weight: 1, en: KANG}
+  - {name: 김현수, sport: kbo, team: KT 위즈, weight: 1, en: KIM}
+  - {name: 박찬호, sport: kbo, team: 두산 베어스, weight: 1, en: PARK}
+  # MLB (2026 연봉 상위 보도)
+  - {name: 후안 소토, short: 소토, sport: mlb, team: 뉴욕 메츠, weight: 1, en: SOTO}
+  - {name: 잭 휠러, short: 휠러, sport: mlb, team: 필라델피아 필리스, weight: 1, en: WHEELER}
+  - {name: 블라디미르 게레로 주니어, short: 게레로, sport: mlb, team: 토론토 블루제이스, weight: 1, en: GUERRERO JR}
+  - {name: 게릿 콜, short: 콜, sport: mlb, team: 뉴욕 양키스, weight: 1, en: COLE}
+  - {name: 제이컵 디그롬, short: 디그롬, sport: mlb, team: 텍사스 레인저스, weight: 1, en: DEGROM}
+  - {name: 카일 터커, short: 터커, sport: mlb, team: LA 다저스, weight: 1, en: TUCKER}
+  - {name: 코디 벨린저, short: 벨린저, sport: mlb, team: 뉴욕 양키스, weight: 1, en: BELLINGER}
+  # EPL (2026 주급 상위 보도 → 연봉은 연봉 1년치 보도가 있을 때만)
+  - {name: 모하메드 살라, short: 살라, sport: epl, team: 리버풀, weight: 1, en: SALAH}
+  - {name: 버질 반다이크, short: 반다이크, sport: epl, team: 리버풀, weight: 1, en: VAN DIJK}
+  - {name: 알렉산데르 이삭, short: 이삭, sport: epl, team: 리버풀, weight: 1, en: ISAK}
+  - {name: 부카요 사카, short: 사카, sport: epl, team: 아스널, weight: 1, en: SAKA}
+  - {name: 카이 하베르츠, short: 하베르츠, sport: epl, team: 아스널, weight: 1, en: HAVERTZ}
+  - {name: 필 포든, short: 포든, sport: epl, team: 맨체스터 시티, weight: 1, en: FODEN}
+  - {name: 브루노 페르난데스, short: 브루노, sport: epl, team: 맨체스터 유나이티드, weight: 1, en: B.FERNANDES}
+  # 라리가 (2026 연봉 상위 보도)
+  - {name: 비니시우스 주니오르, short: 비니시우스, sport: laliga, team: 레알 마드리드, weight: 1, en: VINI JR}
+  - {name: 주드 벨링엄, short: 벨링엄, sport: laliga, team: 레알 마드리드, weight: 1, en: BELLINGHAM}
+  - {name: 로베르트 레반도프스키, short: 레반도프스키, sport: laliga, team: FC 바르셀로나, weight: 1, en: LEWANDOWSKI}
+  - {name: 라민 야말, short: 야말, sport: laliga, team: FC 바르셀로나, weight: 1, en: YAMAL}
+  # NBA (2026-27 연봉 상위 보도)
+  - {name: 스테픈 커리, short: 커리, sport: nba, team: 골든스테이트 워리어스, weight: 1, en: CURRY, number: 30}
+  - {name: 니콜라 요키치, short: 요키치, sport: nba, team: 덴버 너기츠, weight: 1, en: JOKIC}
+  - {name: 제이슨 테이텀, short: 테이텀, sport: nba, team: 보스턴 셀틱스, weight: 1, en: TATUM}
+  - {name: 조엘 엠비드, short: 엠비드, sport: nba, team: 필라델피아 세븐티식서스, weight: 1, en: EMBIID}
+  - {name: 데빈 부커, short: 부커, sport: nba, team: 피닉스 선즈, weight: 1, en: BOOKER}
+  - {name: 칼앤서니 타운스, short: 타운스, sport: nba, team: 뉴욕 닉스, weight: 1, en: TOWNS}
+  - {name: 루카 돈치치, short: 돈치치, sport: nba, team: LA 레이커스, weight: 1, en: DONCIC}
+  - {name: 앤서니 에드워즈, short: 에드워즈, sport: nba, team: 미네소타 팀버울브스, weight: 1, en: EDWARDS}
+  - {name: 도노번 미첼, short: 미첼, sport: nba, team: 클리블랜드 캐벌리어스, weight: 1, en: MITCHELL}
+  - {name: 케이드 커닝햄, short: 커닝햄, sport: nba, team: 디트로이트 피스톤스, weight: 1, en: CUNNINGHAM}
+  # 골프 (2026 PGA 투어 상금 상위 보도)
+  - {name: 로리 매킬로이, short: 매킬로이, sport: golf, team: PGA 투어, weight: 1}
+  - {name: 캐머런 영, short: 캐머런 영, sport: golf, team: PGA 투어, weight: 1}
+  - {name: 매슈 피츠패트릭, short: 피츠패트릭, sport: golf, team: PGA 투어, weight: 1}
+  - {name: 윈덤 클라크, short: 클라크, sport: golf, team: PGA 투어, weight: 1}
+
+# 테마: weight는 뽑힐 확률 가중치, category는 네이버 블로그 카테고리
 
 # 유니폼 색 "느낌만" (대표 결정 2026-09-30): 실제 디자인·로고는 쓰지 않고 바탕색 계열·번호색·테두리색·줄무늬만.
 #   stripes: none | pin(가는 세로줄) | wide(굵은 세로줄). 여기 없는 팀은 흰 바탕·남색 번호.
@@ -90,8 +143,27 @@ cities:
   맨체스터 시티: 맨체스터
   레알 마드리드: 마드리드
   인터 마이애미: 마이애미
+  LG 트윈스: 서울
+  NC 다이노스: 창원
+  뉴욕 메츠: 뉴욕
+  필라델피아 필리스: 필라델피아
+  토론토 블루제이스: 토론토
+  텍사스 레인저스: 알링턴
+  리버풀: 리버풀
+  아스널: 런던
+  맨체스터 유나이티드: 맨체스터
+  FC 바르셀로나: 바르셀로나
+  골든스테이트 워리어스: 샌프란시스코
+  덴버 너기츠: 덴버
+  보스턴 셀틱스: 보스턴
+  필라델피아 세븐티식서스: 필라델피아
+  피닉스 선즈: 피닉스
+  뉴욕 닉스: 뉴욕
+  LA 레이커스: 로스앤젤레스
+  미네소타 팀버울브스: 미니애폴리스
+  클리블랜드 캐벌리어스: 클리블랜드
+  디트로이트 피스톤스: 디트로이트
 
-# 테마: weight는 뽑힐 확률 가중치, category는 네이버 블로그 카테고리
 themes:   # 대표 결정 2026-09-30: 생활 물가 5/10, 나머지 5를 새 테마(세금·연고지·여행)와 기존 테마가 나눔
   life:    {name: 생활 물가 비교, weight: 5, category: 선수 몸값,
             angle: "올해 연봉과 1경기 몸값을 아파트값·차값으로 바꿔 체감하게 한다"}
