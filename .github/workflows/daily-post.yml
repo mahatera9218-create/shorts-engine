@@ -27,10 +27,11 @@ on:
         type: choice
         options: ["1", "2", "3", "4", "5"]
         default: "4"
-  workflow_call:   # 발행 도우미 "다시 뽑기" (desk-button.yml)
+  workflow_call:   # 발행 도우미 버튼 "다시 뽑기"·"후보 새로 쓰기" (desk-button.yml)
     inputs:
       mode: {type: string, default: 실제}
       again: {type: boolean, default: false}
+      count: {type: string, default: "1"}   # 다시 뽑기 = 1편, 도우미 "후보 새로 쓰기" = 4편
   schedule:
     - cron: "47 21 * * *"   # UTC 21:47 = 한국 다음 날 06:47
 
