@@ -371,3 +371,10 @@ class ContentTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestCleanTags(unittest.TestCase):
+    def test_naver_tag_chars(self):
+        from content.desk import clean_tags
+        self.assertEqual(clean_tags(["김도영", "3.3%", "KIA 타이거즈", "연봉·세금", "#홈런왕", "김도영"]),
+                         ["김도영", "KIA타이거즈", "연봉세금", "홈런왕"])

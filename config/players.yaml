@@ -99,7 +99,10 @@ players:
   - {name: 매슈 피츠패트릭, short: 피츠패트릭, sport: golf, team: PGA 투어, weight: 1}
   - {name: 윈덤 클라크, short: 클라크, sport: golf, team: PGA 투어, weight: 1}
 
-# 테마: weight는 뽑힐 확률 가중치, category는 네이버 블로그 카테고리
+# 네이버 블로그 카테고리 = 종목 (대표 결정 2026-09-30). 두 선수 비교는 첫 번째 선수의 종목.
+categories: {야구: 야구, 축구: 축구, 농구: 농구·골프, 골프: 농구·골프}
+
+# 테마: weight는 뽑힐 확률 가중치
 
 # 유니폼 색 "느낌만" (대표 결정 2026-09-30): 실제 디자인·로고는 쓰지 않고 바탕색 계열·번호색·테두리색·줄무늬만.
 #   stripes: none | pin(가는 세로줄) | wide(굵은 세로줄). 여기 없는 팀은 흰 바탕·남색 번호.
@@ -165,21 +168,21 @@ cities:
   디트로이트 피스톤스: 디트로이트
 
 themes:   # 대표 결정 2026-09-30: 생활 물가 5/10, 나머지 5를 새 테마(세금·연고지·여행)와 기존 테마가 나눔
-  life:    {name: 생활 물가 비교, weight: 5, category: 몸값 체감,
+  life:    {name: 생활 물가 비교, weight: 5,
             angle: "올해 연봉과 1경기 몸값을 아파트값·차값으로 바꿔 체감하게 한다"}
-  tax:     {name: 연봉 세금, weight: 1, category: 연봉·세금,
+  tax:     {name: 연봉 세금, weight: 1,
             angle: "올해 연봉에서 월급날 떼는 세금(3.3%)과 세율표로 본 세금 최대치, 남는 돈을 보여 준다 (국내 리그만)"}
-  place:   {name: 연고지·고향 아파트, weight: 1, category: 몸값 체감,
+  place:   {name: 연고지·고향 아파트, weight: 1,
             angle: "선수의 소속팀 연고지·출신지·예전 소속팀 도시의 아파트 평균 매매가로 연봉과 1경기 몸값을 바꿔 본다"}
-  trip:    {name: 몸값 여행, weight: 1, category: 몸값 체감,
+  trip:    {name: 몸값 여행, weight: 1,
             angle: "선수와 이어진 도시(연고지·출신지·예전 소속팀)를 계기로, 여행 한 번 평균 경비로 1경기 몸값을 바꿔 본다"}
-  receipt: {name: 연봉 영수증, weight: 0.5, category: 연봉·세금,
+  receipt: {name: 연봉 영수증, weight: 0.5,
             angle: "올해 연봉(상금)을 경기·기록 단위로 쪼갠다"}
-  same:    {name: 같은 종목 비교, weight: 0.5, category: 몸값 대결,
+  same:    {name: 같은 종목 비교, weight: 0.5,
             angle: "같은 종목 두 선수의 올해 연봉과 1경기 몸값을 비교한다"}
-  jersey:  {name: 유니폼 vs 몸값, weight: 0.5, category: 몸값 체감,
+  jersey:  {name: 유니폼 vs 몸값, weight: 0.5,
             angle: "그 팀 유니폼 한 벌 값과 연봉·1경기 몸값을 비교한다 (유니폼 가격을 확인한 팀만)"}
-  cross:   {name: 다른 종목 비교, weight: 0.5, category: 몸값 대결,
+  cross:   {name: 다른 종목 비교, weight: 0.5,
             angle: "종목이 다른 두 스타의 올해 연봉과 1경기 몸값을 비교한다"}
 
 recent_posts: 5   # 최근 몇 편에 나온 선수는 다시 뽑지 않는다
