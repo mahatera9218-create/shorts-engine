@@ -298,15 +298,16 @@ def _josa(name: str, a: str, b: str) -> str:
 
 
 def domestic(name: str, sport: str = "") -> bool:
-    """국내 선수 = KBO 선수 또는 한국 선수(해외파 포함). 해외 선수 = 해외 리그의 외국 선수 (이름에 띄어쓰기: 오타니 쇼헤이)."""
-    return sport == "kbo" or (" " not in name and len(name) <= 4)
+    """국내 선수 = 한국 선수 (KBO·해외파). 외국 선수 = 이름에 띄어쓰기 (오타니 쇼헤이, KBO 외국인 제임스 네일 포함).
+    KBO 순위는 KBO 발표처럼 외국인을 뺀다 (2026-09-30: C 순위표에 네일이 섞여 발표 순위와 달랐음)."""
+    return " " not in name and len(name) <= 4
 
 
 def options_b(table: list[dict]) -> list[dict]:
     """해외 선수 1명 vs 국내 기준 (대표 결정 2026-09-30: 쇼츠는 국내 2 + 해외 1, 비교는 국내 시청자 체감용으로 국내 선수 기준).
     확인 연봉표의 해외 스타(NBA·MLB 외국 선수) × 국내 기준(KBO 1위, KBO TOP 5 합계, 한국인 메이저리거)."""
     has = [x for x in table if x["krw"]]
-    kbo = sorted((x for x in has if x["sport"] == "kbo"), key=lambda x: -x["krw"])
+    kbo = sorted((x for x in has if x["sport"] == "kbo" and domestic(x["name"])), key=lambda x: -x["krw"])
     stars = sorted((x for x in has if x["sport"] in ("nba", "mlb") and not domestic(x["name"], x["sport"])
                     and x["name"] != "오타니 쇼헤이"),  # 오타니는 연봉 대부분이 지급 유예라 '올해 받는 돈' 비교가 오해를 부른다
                    key=lambda x: -x["krw"])
@@ -330,7 +331,7 @@ def options_b(table: list[dict]) -> list[dict]:
 def options_c(table: list[dict]) -> list[dict]:
     """국내 선수 순위표 × 단위 (연봉·월급·1경기·하루)."""
     lists = []
-    kbo = sorted((x for x in table if x["sport"] == "kbo" and x["krw"]), key=lambda x: -x["krw"])[:5]
+    kbo = sorted((x for x in table if x["sport"] == "kbo" and x["krw"] and domestic(x["name"])), key=lambda x: -x["krw"])[:5]
     if len(kbo) >= 5:
         lists.append(("kbo", "2026 KBO 연봉 TOP 5", kbo))
     kor = sorted((x for x in table if x["sport"] == "mlb" and x["krw"] and domestic(x["name"], "mlb")), key=lambda x: -x["krw"])

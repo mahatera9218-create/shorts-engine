@@ -1,0 +1,40 @@
+# 순위·총정리형 글 (대표 결정 2026-09-30, 양찬군주 벤치마크): 주 1~2편, 정한 요일의 첫 후보 1편을 순위 글로.
+# 숫자는 확인 연봉표(config/salaries.yaml)만 쓴다 (뉴스 수집·추측 없음). 순위는 여기 적은 선수 안에서만 매긴다.
+# players: 순위라고 말해도 되는 범위만 적는다 (발표·보도로 그 순위가 확인된 선수). 확인 못 한 선수를 끼워 'TOP N'이라 하지 않는다.
+# complete: true면 "N위"라고 부르고, false면 "N명 중 N위"·"주요 선수 N명 비교"로만 부른다 (전체 순위가 아님).
+# season: 목록의 시즌 표기 (없으면 연봉표 season). teams: 선수 풀에 없는 선수의 소속팀.
+days: [2, 5]        # 요일 (월=0): 수·토
+repeat_days: 21     # 같은 목록은 21일 안에 다시 쓰지 않는다
+lists:
+  - key: kbo-top5
+    title: 2026 KBO 연봉 순위 TOP 5
+    short: KBO
+    tag: 2026 연봉 순위
+    sport: 야구 (프로야구)
+    league: kbo
+    games: 144
+    complete: true
+    basis: "KBO 발표 2026 연봉 순위 (외국인·신인 제외), 보도"
+    players: [양의지, 고영표, 최정, 류현진, 박세웅]
+  - key: nba-top5
+    title: 2026-27 NBA 연봉 순위 TOP 5
+    short: NBA
+    tag: 2026-27 연봉 순위
+    sport: 농구 (NBA)
+    league: nba
+    season: 2026-27
+    games: 82
+    complete: true
+    basis: "2026-27시즌 NBA 연봉 상위 25명 보도 (야후 스포츠)"
+    players: [스테픈 커리, 니콜라 요키치, 제이슨 테이텀, 조엘 엠비드, 데빈 부커, 칼앤서니 타운스]
+  - key: kor-mlb
+    title: 2026 한국인 메이저리거 연봉 비교
+    short: MLB
+    tag: 2026 연봉 비교
+    sport: 야구 (메이저리그)
+    league: mlb
+    games: 162
+    complete: false
+    basis: "각 선수 계약 보도 (주요 한국인 메이저리거 4명, 전체 명단 아님)"
+    players: [이정후, 김하성, 김혜성, 송성문]
+    teams: {송성문: 샌디에이고 파드리스}   # 선수 풀에 없는 선수의 팀 (공개 소속)
