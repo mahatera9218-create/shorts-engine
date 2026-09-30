@@ -124,6 +124,25 @@ async function saveAll(b){
 """
 
 
+def split_tags(text: str) -> tuple[str, str]:
+    """설명과 해시태그를 나눈다 (대표 요청: 따로 복사). 모든 단어가 #으로 시작하는 줄 = 해시태그."""
+    desc, tags = [], []
+    for line in text.strip().splitlines():
+        (tags if line.strip() and all(w.startswith("#") for w in line.split()) else desc).append(line)
+    return "\n".join(desc).strip(), " ".join(tags).strip()
+
+
+def copy_pair(text: str, what: str) -> str:
+    """설명 복사 · 해시태그 복사 버튼 두 개."""
+    e = html.escape
+    desc, tags = split_tags(text)
+    out = f'<button class="ghost" onclick="copyText(this,{e(json.dumps(desc), quote=True)})">📋 {what} 설명 복사</button>'
+    if tags:
+        out += (f'<button class="ghost" onclick="copyText(this,{e(json.dumps(tags), quote=True)})">📋 해시태그 복사: '
+                f'<span class="muted">{e(tags)}</span></button>')
+    return out
+
+
 def issue_link(kind: str, folder: str, note: str) -> str:
     """제목이 채워진 GitHub 이슈 작성 화면 (대표가 Create만 누르면 워크플로가 처리)."""
     q = urllib.parse.urlencode({"title": f"[{kind}] {folder}",
@@ -166,10 +185,10 @@ def page(p: dict) -> str:
     clip = "" if not p.get("clip") else f"""<div class="card"><h2><span class="step">6</span>클립 (블로그 발행 뒤)</h2>
 <video src="clip.mp4" controls playsinline preload="metadata" style="width:100%;max-width:320px;border-radius:10px;display:block"></video>
 <button onclick="saveClip(this)">🎬 클립 영상 저장</button>
-<button class="ghost" onclick="copyText(this,{e(json.dumps(p["clip_text"]), quote=True)})">📋 클립 설명·해시태그 복사</button>
+{copy_pair(p["clip_text"], "클립")}
 <ol class="muted"><li>블로그 앱 아래 <b>+</b> → <b>클립 만들기</b></li><li>방금 저장한 영상 고르기</li>
 <li><b>음악</b> → 추천·인기 음악 중 신나는 곡 하나 (네이버가 저작권 계약한 음원이라 안전)</li>
-<li>설명 칸에 붙여넣기 → 올리기</li></ol></div>"""
+<li><b>설명 복사</b> 붙여넣기 → 이어서 <b>해시태그 복사</b> 붙여넣기 → 올리기</li></ol></div>"""
     return f"""<!doctype html><html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive">
 <title>{e(best["text"] if best else p["folder"])}</title><style>{CSS}</style></head><body><main>
@@ -272,7 +291,7 @@ def shorts_page(items: list[dict]) -> str:
 <video src="{e(v)}" controls playsinline preload="metadata" style="width:100%;max-width:320px;border-radius:10px;display:block"></video>
 <button onclick="saveClip(this,{e(json.dumps(v), quote=True)})">🎬 영상 저장</button>
 <button class="ghost" onclick="copyText(this,{e(json.dumps(s['title']), quote=True)})">📋 제목 복사: {e(s['title'])}</button>
-<button class="ghost" onclick="copyText(this,{e(json.dumps(s['desc']), quote=True)})">📋 설명·해시태그 복사</button></div>""")
+{copy_pair(s['desc'], "쇼츠")}</div>""")
     return f"""<!doctype html><html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive">
 <title>쇼츠 영상 모음</title><style>{CSS}</style></head><body><main>
@@ -281,7 +300,7 @@ def shorts_page(items: list[dict]) -> str:
 <div class="card"><ol class="muted"><li><b>영상 저장</b> → 유튜브 앱 아래 <b>+</b> → <b>동영상 업로드</b> → 저장한 영상</li>
 <li>편집 화면에 <b>사운드 추가</b>가 보이면 곡 하나 (유튜브 음원이라 안전)</li>
 <li>세부정보 화면에서 <b>썸네일(커버) 고르기</b>가 보이면 <b>맨 앞 장면</b>으로 (안 보여도 괜찮아요: 모든 장면 위쪽에 제목이 있어요)</li>
-<li><b>제목 복사</b>·<b>설명 복사</b> 붙여넣기 → <b>공개</b> → 업로드</li></ol>
+<li><b>제목 복사</b> → 제목 칸, <b>설명 복사</b>·<b>해시태그 복사</b> → 설명 칸 (둘 다) → <b>공개</b> → 업로드</li></ol>
 <div class="muted">A·B·C를 2주 동안 번갈아 시험해요. 하루에 3개를 몰아서 올려도 되고, 시간 간격을 두면 더 좋아요. 최근 3일치만 보여요.</div></div>
 {"".join(cards) or '<p>아직 쇼츠가 없어요. 매일 아침 글쓰기 뒤에 만들어져요.</p>'}
 </main><script>const POST={{"blocks":[],"images":[]}};{JS}</script></body></html>"""
