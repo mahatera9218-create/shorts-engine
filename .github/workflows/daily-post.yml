@@ -77,6 +77,7 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}   # 클립 AI 목소리 (없으면 목소리 없이)
           NCP_APIGW_API_KEY_ID: ${{ secrets.NCP_APIGW_API_KEY_ID }}
           NCP_APIGW_API_KEY: ${{ secrets.NCP_APIGW_API_KEY }}
           TOPIC: ${{ inputs.topic }}
@@ -103,13 +104,16 @@ jobs:
       - name: 유튜브 쇼츠 A·B·C (코드 계산만, Claude 비용 없음. 실패해도 글은 저장)
         if: inputs.mode != '예시' && !inputs.again
         continue-on-error: true
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
         run: python -m content.shorts | tee -a "$GITHUB_STEP_SUMMARY"
       - name: 결과 저장 (posts/ 커밋)
         if: inputs.mode != '예시'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A posts/; [ -d shorts ] && git add -A shorts/; for f in config/trending.yaml config/search_volume.yaml reports/costs.csv reports/쇼츠-성과; do [ -e "$f" ] && git add "$f"; done
+          git add -A posts/; [ -d shorts ] && git add -A shorts/; for f in config/trending.yaml config/search_volume.yaml config/player_photos.yaml reports/costs.csv reports/쇼츠-성과; do [ -e "$f" ] && git add "$f"; done
           if git diff --cached --quiet; then
             echo "새 글 없음"
           else
