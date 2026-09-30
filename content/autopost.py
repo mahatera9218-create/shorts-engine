@@ -21,7 +21,7 @@ from pathlib import Path
 import yaml
 
 from market.common import ROOT, load_yaml, missing_secrets
-from . import cards, clip, mark, photos, receipt, themes
+from . import cards, clip, mark, photos, ranking, receipt, themes
 from .desk import clean_tags
 from .receipt import won
 from .voice import check_draft
@@ -472,8 +472,7 @@ def check_titles(p: dict, sheet: str) -> list[str]:
         out.append(f"추천 제목 유형이 오늘 정한 '{want.group(1)}'이 아님")
     if not re.search(r"\d", rec):
         out.append("추천 제목에 숫자가 없음 → 이름 + 숫자 후킹으로")
-    if not any(core in t for t in p.get("tags", [])) and p.get("tags") is not None:
-        out.append(f"태그에 선수 이름({core}) 없음")
+    # 태그의 선수 이름은 코드가 붙인다 (base_tags, 2026-09-30)
     return out
 
 
@@ -931,6 +930,8 @@ def _league(x: dict) -> str:
 
 def base_tags(d: dict) -> list[str]:
     """코드가 붙이는 기본 태그: 선수(짧은·전체 이름)·팀·리그·'이름+연봉'·'리그+연봉'·'연도+리그'. 글쓴이 태그 앞에 둔다."""
+    if d.get("theme") == "rank":
+        return ranking.tags(d)
     out = []
     for x in _people(d):
         nm, lg, mw = x.get("short_name") or x["player"], _league(x), _money_word(x)
@@ -941,6 +942,8 @@ def base_tags(d: dict) -> list[str]:
 def search_suffix(d: dict, title: str) -> str:
     """추천 제목 뒤에 붙이는 검색어 괄호 (대표 결정 2026-09-30, 1주 시험): 사람들이 치는 '이름 연봉'을 제목에 그대로.
     예: "(이정후 연봉 2026 · 샌프란시스코 자이언츠)". 제목에 이미 있는 말은 빼고, 붙일 게 없으면 빈 문자열."""
+    if d.get("theme") == "rank":
+        return ranking.suffix(d, title)
     ppl = _people(d)
     flat = title.replace(" ", "")
     words = [f"{x.get('short_name') or x['player']} {_money_word(x)}" for x in ppl]
@@ -951,6 +954,53 @@ def search_suffix(d: dict, title: str) -> str:
     team = ppl[0].get("team", "") if len(ppl) == 1 else ""
     words[-1] = " ".join([words[-1]] + tail)
     return "(" + " · ".join(words + ([team] if team and team not in title else [])) + ")"
+
+
+
+def finish(llm, *, cfg: dict, pool: dict, notes: list[str], start_cost: float, today: str, made_today: list[str],
+           out_root: Path, th: str, d: dict, facts: dict, title: str, slug: str, make_sheet, news_count: int
+           ) -> tuple[str, Path]:
+    """숫자가 모인 뒤 공통: 폴더·사진·카드 → 숫자표 → 글쓰기(Claude)·검사 → 발행 패키지 → 클립."""
+    tinfo = pool["themes"][th]
+    folder = out_root / f"{today}-{th}-{slug}"
+    folder.mkdir(parents=True, exist_ok=True)
+    photos.fetch_all(folder, d.get("sport", "야구"), folder.name)  # 키가 없으면 사진 없이
+    n = ranking.build(folder, d) if th == "rank" else themes.build(folder, d)
+    sheet = (make_sheet(n) + "\n" + "\n".join(themes.image_lines(th))
+             + f"\n추천 제목 유형: {title_type(today, len(made_today))} (코드가 날마다 돌린다)")
+    category = pool["categories"].get(d.get("sport", "야구").split()[0], "야구")  # sport = "야구 (프로야구)"
+    post, problems, rounds = write_post(llm, {"category": category, "angle": tinfo["angle"]}, sheet,
+                                        cfg.get("max_revisions", 2))
+    cost = llm.cost_usd() - start_cost
+    post["tags"] = clean_tags(base_tags(d) + list(post.get("tags", [])), TAGS_MAX)
+    rec_t = post["titles"][post["recommended"] - 1] if 1 <= post["recommended"] <= len(post["titles"]) else None
+    if rec_t and (suf := search_suffix(d, rec_t["text"])):  # 검사는 본 제목(25자)으로 끝났다. 발행 제목에만 덧붙인다
+        rec_t["text"] = f"{rec_t['text'].strip()} {suf}"
+    (folder / "data.yaml").write_text(yaml.safe_dump(d, allow_unicode=True, sort_keys=False), encoding="utf-8")
+    (folder / "facts.json").write_text(json.dumps(facts, ensure_ascii=False, indent=1), encoding="utf-8")
+    if photos.credit(folder):  # Pexels 이용 조건: 작가·Pexels 표시 (숫자 검사 뒤에 붙인다)
+        post["body"] = post["body"].strip() + "\n\n" + photos.credit(folder)
+    (folder / "body.txt").write_text(post["body"].strip() + "\n", encoding="utf-8")
+    extra = [f"{i['label']}: {i['source']}" for i in d.get("prices", [])]
+    if th == "rank" and d.get("fx_label"):
+        extra.append(f"환율: {d['fx_label']} (오늘 자동 글쓰기에서 뽑은 값)")
+    if th == "tax":
+        tx = load_yaml("tax.yaml")
+        extra += [f"종합소득세 세율: {tx['source']}", f"원천징수 3.3%: {tx['withholding_source']}"]
+    (folder / "post.md").write_text(package_md(f"{title} · {tinfo['name']}", th, category, facts, post,
+                                               problems, rounds, cfg, news_count, cost, extra),
+                                    encoding="utf-8")
+    for key in ("clip_caption", "clip_question"):  # 클립 설명·마지막 화면 질문 (content/clip.py가 읽는다)
+        if post.get(key):
+            (folder / f"{key}.txt").write_text(post[key].strip() + "\n", encoding="utf-8")
+    try:  # 네이버 클립용 세로 영상 (실패해도 글은 그대로)
+        notes.append(clip.make(folder))
+    except Exception as ex:
+        notes.append(f"클립: 오류로 건너뜀 ({ex})")
+    if out_root == POSTS:
+        write_index()
+    head = "✅ 발행 가능" if not problems and post["gate_pass"] else "⚠️ 확인 필요: " + "; ".join(problems or ["게이트 미통과"])
+    return "\n".join(notes + [f"{title} ({tinfo['name']}) 글 완성 — {head}"]), folder
 
 
 def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str | None = None,
@@ -969,6 +1019,22 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
     start_cost = llm.cost_usd()  # 이 글에 든 비용만 (한 번 실행에서 여러 편 쓸 때 누적되지 않게)
     cache: dict[str, dict | str] = {}
     seed = today if not made_today else f"{today}-{len(made_today)}"  # 다시 뽑으면 테마도 새로
+    rc = ranking.cfg()
+    if theme == "rank" or (not theme and not topic_override and not again and not made_today and out_root == POSTS
+                           and ranking.due(today, rc)):
+        # 순위·총정리형 (대표 결정 2026-09-30): 정한 요일의 첫 후보. 못 쓰면 평소 글로 넘어간다
+        from .shorts import latest_fx
+        for lst in ranking.pick(today, rc):
+            got = ranking.data(lst, today, latest_fx(today))
+            if isinstance(got, str):
+                notes.append(f"순위 글 건너뜀 — {got}")
+                continue
+            d, facts = got
+            return finish(llm, cfg=cfg, pool=pool, notes=notes, start_cost=start_cost, today=today,
+                          made_today=made_today, out_root=out_root, th="rank", d=d, facts=facts, title=d["title"],
+                          slug=d["key"], make_sheet=lambda n, d=d: ranking.sheet(d, n, cfg["constants"]), news_count=0)
+        if theme == "rank":
+            return "\n".join(notes + ["순위 글: 오늘 쓸 수 있는 목록이 없음 (config/rankings.yaml, 21일 안에 다 씀)"]), None
     pool, why = weighted_pool(hub, pool, today)
     skip_file = Path(os.environ["AUTOPOST_SKIP"]) if os.environ.get("AUTOPOST_SKIP") else None
     skipped = set(json.loads(skip_file.read_text(encoding="utf-8"))) if skip_file and skip_file.exists() else set()
@@ -994,7 +1060,6 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
             notes += [f"건너뜀 — {b}" for b in bad if b not in notes]
             continue
         th = plan["theme"]
-        tinfo = pool["themes"][th]
         if th in ("same", "cross"):
             d = {"theme": th, "season": got[0]["d"]["season"], "sport": got[0]["d"].get("sport", "야구"),
                  "a": got[0]["d"], "b": got[1]["d"]}
@@ -1035,43 +1100,10 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
                 continue
         title = themes.title_name(d)
         slug = "-".join(x["d"].get("short_name", x["d"]["player"]).replace(" ", "") for x in got)
-        folder = out_root / f"{today}-{th}-{slug}"
-        folder.mkdir(parents=True, exist_ok=True)
-        photos.fetch_all(folder, d.get("sport", "야구"), folder.name)  # 키가 없으면 사진 없이
-        n = themes.build(folder, d)
-        sheet = (theme_sheet(plan, d, n, got, cfg) + "\n" + "\n".join(themes.image_lines(th))
-                 + f"\n추천 제목 유형: {title_type(today, len(made_today))} (코드가 날마다 돌린다)")
-        category = pool["categories"].get(d.get("sport", "야구").split()[0], "야구")  # sport = "야구 (프로야구)"
-        post, problems, rounds = write_post(llm, {"category": category, "angle": tinfo["angle"]}, sheet,
-                                            cfg.get("max_revisions", 2))
-        cost = llm.cost_usd() - start_cost
-        post["tags"] = clean_tags(base_tags(d) + list(post.get("tags", [])), TAGS_MAX)
-        rec_t = post["titles"][post["recommended"] - 1] if 1 <= post["recommended"] <= len(post["titles"]) else None
-        if rec_t and (suf := search_suffix(d, rec_t["text"])):  # 검사는 본 제목(25자)으로 끝났다. 발행 제목에만 덧붙인다
-            rec_t["text"] = f"{rec_t['text'].strip()} {suf}"
-        (folder / "data.yaml").write_text(yaml.safe_dump(d, allow_unicode=True, sort_keys=False), encoding="utf-8")
-        (folder / "facts.json").write_text(json.dumps(facts, ensure_ascii=False, indent=1), encoding="utf-8")
-        if photos.credit(folder):  # Pexels 이용 조건: 작가·Pexels 표시 (숫자 검사 뒤에 붙인다)
-            post["body"] = post["body"].strip() + "\n\n" + photos.credit(folder)
-        (folder / "body.txt").write_text(post["body"].strip() + "\n", encoding="utf-8")
-        extra = [f"{i['label']}: {i['source']}" for i in d.get("prices", [])]
-        if th == "tax":
-            tx = load_yaml("tax.yaml")
-            extra += [f"종합소득세 세율: {tx['source']}", f"원천징수 3.3%: {tx['withholding_source']}"]
-        (folder / "post.md").write_text(package_md(f"{title} · {tinfo['name']}", th, category, facts, post,
-                                                   problems, rounds, cfg, sum(len(x["news"]) for x in got), cost, extra),
-                                        encoding="utf-8")
-        for key in ("clip_caption", "clip_question"):  # 클립 설명·마지막 화면 질문 (content/clip.py가 읽는다)
-            if post.get(key):
-                (folder / f"{key}.txt").write_text(post[key].strip() + "\n", encoding="utf-8")
-        try:  # 네이버 클립용 세로 영상 (실패해도 글은 그대로)
-            notes.append(clip.make(folder))
-        except Exception as ex:
-            notes.append(f"클립: 오류로 건너뜀 ({ex})")
-        if out_root == POSTS:
-            write_index()
-        head = "✅ 발행 가능" if not problems and post["gate_pass"] else "⚠️ 확인 필요: " + "; ".join(problems or ["게이트 미통과"])
-        return "\n".join(notes + [f"{title} ({tinfo['name']}) 글 완성 — {head}"]), folder
+        return finish(llm, cfg=cfg, pool=pool, notes=notes, start_cost=start_cost, today=today, made_today=made_today,
+                      out_root=out_root, th=th, d=d, facts=facts, title=title, slug=slug,
+                      make_sheet=lambda n, plan=plan, d=d, got=got: theme_sheet(plan, d, n, got, cfg),
+                      news_count=sum(len(x["news"]) for x in got))
     return "\n".join(notes + ["쓸 수 있는 조합을 찾지 못했습니다 (연봉 보도가 있는 선수 부족). config/players.yaml 확인 필요."]), None
 
 
@@ -1079,7 +1111,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--sample", action="store_true", help="키 없이 가짜 뉴스·가짜 응답으로 모양만 확인")
     ap.add_argument("--topic", default=None, help="선수 이름 (비우면 선수 풀에서 무작위)")
-    ap.add_argument("--theme", default=None, choices=["receipt", "same", "cross", "life", "tax", "jersey", "place", "trip"], help="테마 고정 (비우면 무작위)")
+    ap.add_argument("--theme", default=None, choices=["receipt", "same", "cross", "life", "tax", "jersey", "place", "trip", "rank"], help="테마 고정 (비우면 무작위)")
     ap.add_argument("--out", default=None, help="결과 폴더 (기본 posts/)")
     ap.add_argument("--again", action="store_true", help="다시 뽑기: 하루 한도를 건너뛰고 새 조합으로")
     ap.add_argument("--target", type=int, default=1, help="발행 가능한(✅) 글을 몇 편 만들지")

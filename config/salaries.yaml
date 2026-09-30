@@ -54,4 +54,8 @@ players:
              source: "https://www.newsis.com/view/NISX20251230_0003459636"}
   김혜성:   {amount: 3750000,  currency: USD, basis: "다저스 3년 1250만 달러 계약 중 2026년 연봉, 보도", as_of: 2025-01-04,
              source: "https://www.hankyung.com/article/2025010453707"}
+  이정후:   {amount: 22000000, currency: USD, basis: "샌프란시스코 6년 계약 중 2026시즌 연봉, 보도", as_of: 2026-09-27,
+             source: "http://www.osen.co.kr/article/G1112882569"}
+  송성문:   {amount: 2750000,  currency: USD, basis: "샌디에이고 4년 계약 중 2026시즌 연봉 (스포트랙 기준), 보도", as_of: 2026-08-26,
+             source: "https://isplus.com/article/view/isp202608260087"}
 # 확인 못 함 (넣지 않음): 양현종(2+1년 총액 45억, 연도별 미공개), 구자욱, 해외축구(주급 보도만), 골프(상금은 뉴스에서)

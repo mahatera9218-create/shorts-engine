@@ -432,6 +432,13 @@ IMAGE_PLANS["tax"] = [
     ("세금표", "card_table.png", "세금 최대치와 남는 돈을 말하는 문단 바로 위")]
 
 
+IMAGE_PLANS["rank"] = [  # 순위·총정리형 (content/ranking.py)
+    ("첫문단아래", "thumb.png", "첫 문단 바로 아래 (홈판 카드와 같은 그림)"),
+    ("순위표", "card_table.png", "순위를 차례로 말하기 바로 전"),
+    ("단위별", "card_units.png", "월급·하루·1경기로 바꿔 말하는 문단 바로 위"),
+    ("최저임금", "card_wage.png", "최저임금 비교 문단 바로 위")]
+
+
 def image_plan(theme: str) -> list[tuple[str, str, str]]:
     return IMAGE_PLANS["vs" if theme in ("same", "cross") else "life" if theme in ("jersey", "place", "trip") else theme]
 
