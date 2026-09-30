@@ -1,0 +1,72 @@
+{
+ "salary_krw": 2100000000,
+ "per": {
+  "games": 84000000.0,
+  "innings": 15403422.982885085,
+  "wins": 233333333.33333334
+ },
+ "min_wage_yearly_krw": 25882560,
+ "min_wage_years_per": {
+  "games": 3.2454285820258892,
+  "innings": 0.5951274905915445,
+  "wins": 9.01507939451636
+ },
+ "life_unit": "games",
+ "life_label": "1경기",
+ "life_per": 84000000.0,
+ "item": {
+  "key": "grandeur",
+  "group": "car_kr",
+  "label": "현대 그랜저 (2027년형 2.5 가솔린 시작가)",
+  "short": "그랜저",
+  "unit": "대",
+  "price_krw": 42450000,
+  "as_of": "2026-07-01",
+  "source": "2027년형 가격 보도 (개별소비세 환원 후 4,245만원부터) https://web.getcha.kr/blog/new-model-year-hyundai-grandeur-3298",
+  "salary_count": 49.46996466431096,
+  "unit_count": 1.9787985865724382
+ },
+ "items": [
+  {
+   "key": "grandeur",
+   "group": "car_kr",
+   "label": "현대 그랜저 (2027년형 2.5 가솔린 시작가)",
+   "short": "그랜저",
+   "unit": "대",
+   "price_krw": 42450000,
+   "as_of": "2026-07-01",
+   "source": "2027년형 가격 보도 (개별소비세 환원 후 4,245만원부터) https://web.getcha.kr/blog/new-model-year-hyundai-grandeur-3298",
+   "salary_count": 49.46996466431096,
+   "unit_count": 1.9787985865724382
+  }
+ ],
+ "rows": [
+  {
+   "key": "salary",
+   "label": "올해 연봉",
+   "value": 2100000000,
+   "count": 49.46996466431096
+  },
+  {
+   "key": "games",
+   "label": "1경기",
+   "value": 84000000.0,
+   "count": 1.9787985865724382
+  },
+  {
+   "key": "innings",
+   "label": "1이닝",
+   "value": 15403422.982885085,
+   "count": 0.3628603765108383
+  },
+  {
+   "key": "wins",
+   "label": "1승",
+   "value": 233333333.33333334,
+   "count": 5.496662740478995
+  }
+ ],
+ "inverse": false,
+ "inverse_count": 0.5053571428571428,
+ "inverse_word": "경기"
+}

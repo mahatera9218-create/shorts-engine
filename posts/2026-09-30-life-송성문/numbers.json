@@ -1,0 +1,82 @@
+{
+ "salary_krw": 3730925000.0,
+ "per": {
+  "games": 47832371.79487179,
+  "at_bats": 28480343.51145038,
+  "hits": 149237000.0,
+  "home_runs": 3730925000.0
+ },
+ "min_wage_yearly_krw": 25882560,
+ "min_wage_years_per": {
+  "games": 1.8480541258234036,
+  "at_bats": 1.1003681054521028,
+  "hits": 5.765928872569019,
+  "home_runs": 144.14822181422548
+ },
+ "life_unit": "home_runs",
+ "life_label": "1홈런",
+ "life_per": 3730925000.0,
+ "item": {
+  "key": "seoul_apt",
+  "group": "home",
+  "weight": 12600,
+  "label": "서울 아파트 평균 매매가",
+  "short": "서울 아파트",
+  "unit": "채",
+  "price_krw": 1607390000,
+  "as_of": "2026-08-10",
+  "source": "헤럴드경제 보도 (KB부동산 월간, 8월 10일 기준 16억739만원) https://biz.heraldcorp.com/article/10849948",
+  "salary_count": 2.321107509689621,
+  "unit_count": 2.321107509689621
+ },
+ "items": [
+  {
+   "key": "seoul_apt",
+   "group": "home",
+   "weight": 12600,
+   "label": "서울 아파트 평균 매매가",
+   "short": "서울 아파트",
+   "unit": "채",
+   "price_krw": 1607390000,
+   "as_of": "2026-08-10",
+   "source": "헤럴드경제 보도 (KB부동산 월간, 8월 10일 기준 16억739만원) https://biz.heraldcorp.com/article/10849948",
+   "salary_count": 2.321107509689621,
+   "unit_count": 2.321107509689621
+  }
+ ],
+ "rows": [
+  {
+   "key": "salary",
+   "label": "올해 연봉",
+   "value": 3730925000.0,
+   "count": 2.321107509689621
+  },
+  {
+   "key": "games",
+   "label": "1경기",
+   "value": 47832371.79487179,
+   "count": 0.02975778858576437
+  },
+  {
+   "key": "at_bats",
+   "label": "1타수",
+   "value": 28480343.51145038,
+   "count": 0.01771837793656199
+  },
+  {
+   "key": "hits",
+   "label": "1안타",
+   "value": 149237000.0,
+   "count": 0.09284430038758484
+  },
+  {
+   "key": "home_runs",
+   "label": "1홈런",
+   "value": 3730925000.0,
+   "count": 2.321107509689621
+  }
+ ],
+ "inverse": false,
+ "inverse_count": 0.43082881591026356,
+ "inverse_word": "홈런"
+}

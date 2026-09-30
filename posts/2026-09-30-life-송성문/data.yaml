@@ -1,0 +1,50 @@
+player: 송성문
+short_name: 송성문
+team: 샌디에이고 파드리스
+season: 2026
+salary_usd: 2750000
+fx_krw_per_usd: 1356.7
+salary_currency: USD
+fx_label: 1달러 = 1,356.7원 (2026-09-30)
+units:
+- key: games
+  label: 1경기
+  count: 78
+- key: at_bats
+  label: 1타수
+  count: 131
+- key: hits
+  label: 1안타
+  count: 25
+- key: home_runs
+  label: 1홈런
+  count: 1
+headline_unit: hits
+salary_basis: 4년 계약 중 2026시즌 연봉, 연봉 전문 사이트 스포트랙 보도 기준
+min_wage_monthly_krw: 2156880
+sport: 야구 (메이저리그)
+card:
+- label: 안타
+  value: '25'
+- label: 경기
+  value: '78'
+- label: 타수
+  value: '131'
+- label: 홈런
+  value: '1'
+- label: 4년 계약 총액
+  value: 15,000,000
+- label: 타율
+  value: '0.191'
+card_date: '2026-09-30'
+theme: life
+prices:
+- key: seoul_apt
+  group: home
+  weight: 12600
+  label: 서울 아파트 평균 매매가
+  short: 서울 아파트
+  unit: 채
+  price_krw: 1607390000
+  as_of: 2026-08-10
+  source: 헤럴드경제 보도 (KB부동산 월간, 8월 10일 기준 16억739만원) https://biz.heraldcorp.com/article/10849948

@@ -1,0 +1,104 @@
+{
+ "games": {
+  "value": 43,
+  "label": "올 시즌 빅리그 출전 경기",
+  "unit": "경기",
+  "date": "2026-09-30",
+  "sources": [
+   "https://www.newsis.com/view/NISX20260930_0003808398"
+  ],
+  "rule": "모두 같음",
+  "differs": null
+ },
+ "at_bats": {
+  "value": 116,
+  "label": "올 시즌 빅리그 타수",
+  "unit": "타수",
+  "date": "2026-09-30",
+  "sources": [
+   "https://www.newsis.com/view/NISX20260930_0003808398"
+  ],
+  "rule": "모두 같음",
+  "differs": null
+ },
+ "hits": {
+  "value": 30,
+  "label": "올 시즌 빅리그 안타",
+  "unit": "안타",
+  "date": "2026-09-30",
+  "sources": [
+   "https://www.newsis.com/view/NISX20260930_0003808398"
+  ],
+  "rule": "모두 같음",
+  "differs": null
+ },
+ "home_runs": {
+  "value": 1,
+  "label": "올 시즌 빅리그 홈런",
+  "unit": "개",
+  "date": "2026-09-30",
+  "sources": [
+   "https://www.newsis.com/view/NISX20260930_0003808398"
+  ],
+  "rule": "모두 같음",
+  "differs": null
+ },
+ "batting_average": {
+  "value": 0.259,
+  "label": "올 시즌 빅리그 타율",
+  "unit": "",
+  "date": "2026-09-30",
+  "sources": [
+   "https://www.newsis.com/view/NISX20260930_0003808398"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "stolen_bases": {
+  "value": 5,
+  "label": "올 시즌 빅리그 도루",
+  "unit": "개",
+  "date": "2026-09-30",
+  "sources": [
+   "https://www.newsis.com/view/NISX20260930_0003808398"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "salary": {
+  "value": 3750000,
+  "label": "내년 연봉 (올해와 같다고 보도)",
+  "unit": "USD",
+  "date": "2026-09-02",
+  "sources": [
+   "https://www.sportschosun.com/baseball/2026-09-02/202609020100013510000666"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "contract_total": {
+  "value": 22000000,
+  "label": "계약 총액 (3+2년 최대)",
+  "unit": "USD",
+  "date": "2026-09-27",
+  "sources": [
+   "http://www.osen.co.kr/article/G1112882784"
+  ],
+  "rule": "최신 기사",
+  "differs": [
+   12500000,
+   22000000
+  ]
+ },
+ "fx_krw_per_usd": {
+  "value": 1356.7,
+  "label": "원·달러 환율 (30일 마감)",
+  "unit": "KRW",
+  "date": "2026-09-30",
+  "sources": [
+   "https://www.junggi.co.kr/news/articleView.html?idxno=37940"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ }
+}
