@@ -429,8 +429,9 @@ def make(folder: Path) -> str:
 
 def main() -> None:
     folders = [Path(a) for a in sys.argv[1:]] or sorted(p for p in (ROOT / "posts").iterdir() if (p / "post.md").exists())
+    from content import clip as mod  # python -m으로 실행하면 이 파일이 __main__이 되어, 실사 배경 표시(VIDEO)가 다른 사본에 켜진다
     for f in folders:
-        print(f"{f.name}: {make(f)}")
+        print(f"{f.name}: {mod.make(f)}")
 
 
 if __name__ == "__main__":
