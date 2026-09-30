@@ -158,7 +158,7 @@ jobs:
           THEME: ${{ inputs.theme }}
           AUTOPOST_SKIP: ${{ runner.temp }}/skip.json   # 여러 번 시도할 때 이미 실패한 선수는 다시 모으지 않음
         run: |
-          args=(--marketer "${{ matrix.marketer }}" --target 1 --tries 4)
+          args=(--marketer "${{ matrix.marketer }}" --target 1 --tries 2)   # 2번 안에 못 쓰면 그 마케터는 오늘 쉰다 (비용 효율)
           [ -n "$TOPIC" ] && args+=(--topic "$TOPIC")
           [ -n "$THEME" ] && args+=(--theme "$THEME")
           [ "${{ inputs.again }}" = "true" ] && args+=(--again)
