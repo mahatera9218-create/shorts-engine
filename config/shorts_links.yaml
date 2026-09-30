@@ -1,0 +1,6 @@
+# 올린 쇼츠 ↔ 만든 쇼츠 짝 (제목을 바꿔 올려 자동으로 못 찾은 것만). 영상 ID: 쇼츠 key (shorts/log.yaml)
+# 영상 ID는 유튜브 주소 끝 (youtube.com/shorts/<ID>). 틀리면 고치면 된다.
+links:
+  NRjz5n2aXa0: A-류현진        # "류현진 연봉, 경기당 얼마?"
+  t69Y1YUeteQ: B-kbo1-nba1     # "KBO vs NBA 연봉 비교"
+  ojZp3VASXSE: C-kbo-year      # "2026년 9월 30일" (제목 없이 올린 첫 묶음의 C로 추정, 2026-09-30)
