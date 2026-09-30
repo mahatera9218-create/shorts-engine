@@ -85,7 +85,7 @@ def _shop(folder: Path) -> dict | None:
     if not f.exists():
         return None
     from .commerce import info
-    return info(yaml.safe_load(f.read_text(encoding="utf-8")) or {})
+    return info(yaml.safe_load(f.read_text(encoding="utf-8")) or {}, folder.name)
 
 
 def slug(name: str) -> str:
@@ -231,9 +231,12 @@ def page(p: dict) -> str:
     sh = p.get("shop")
     shop = (f'<div class="card"><h2>🛒 쇼핑커넥트: {e(sh["name"])}</h2>'
             + "".join(f'<a class="btn" href="{e(x["url"], quote=True)}">{e(x["name"])}</a>' for x in sh["products"])
-            + ('' if sh["products"] else '<div class="muted">이 상품군의 상품을 아직 고르지 않았어요.</div>')
+            + (f'<button onclick="copyText(this,{e(json.dumps(sh["keyword"]), quote=True)})">🔎 검색어 복사: {e(sh["keyword"])}</button>'
+               f'<div class="muted">브랜드 커넥트에서 이 검색어로 찾아 <b>{e(sh["pick"])}</b>인 상품 1개를 글에 붙이세요.'
+               f' 마땅한 게 없으면 다른 검색어: {e(" · ".join(k for k in sh["others"] if k != sh["keyword"]))}</div>'
+               if sh["keyword"] else "")
             + edit_box("shopnote", sh["disclosure"], "광고 고지 복사")
-            + '<div class="muted">본문 끝에 광고 고지를 꼭 붙이세요. 선수 사진이 나오는 클립에는 상품 태그를 달지 않아요.</div></div>'
+            + '<div class="muted">상품을 붙였으면 본문 끝에 광고 고지를 꼭 붙이세요. 클립에는 상품 태그를 달지 마세요 (선수 사진이 있어 선수가 광고하는 것처럼 보일 수 있어요).</div></div>'
             ) if sh else ""
     done_btn = e(issue_link("발행완료", p["folder"], "블로그·클립 발행을 마쳤어요."), quote=True)
     again_btn = e(issue_link("다시뽑기", p["folder"], "이 글은 버리고 다른 선수·테마로 새로 써 주세요."), quote=True)
