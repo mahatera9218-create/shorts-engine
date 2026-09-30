@@ -99,12 +99,35 @@ img{max-width:100%;border-radius:10px;display:block}.thumb{max-width:360px}
 .body p{margin:0 0 14px;white-space:pre-wrap}.body .ph{margin:10px 0 16px}.ph small{display:block;color:var(--soft);margin-top:4px}
 .step{display:inline-block;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;text-align:center;font-weight:800;margin-right:6px;line-height:26px}
 a{color:inherit}ol{padding-left:20px}li{margin:6px 0}
+textarea.ed{width:100%;font:inherit;line-height:1.6;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:6px 0;background:var(--card);color:var(--ink);resize:none;overflow:hidden}
+textarea.ed.changed{border-color:var(--warn);box-shadow:0 0 0 2px rgba(184,110,0,.18)}textarea.ttl{font-weight:700;font-size:18px}
+.row{display:flex;gap:8px}.row button{flex:1}button.small{min-height:40px;font-size:15px;padding:6px 10px}
 """
 
 JS = """
 function flash(b,t){const o=b.dataset.o||b.textContent;b.dataset.o=o;b.textContent=t;b.classList.add('done');setTimeout(()=>{b.textContent=o;b.classList.remove('done')},1600)}
 async function copyText(b,t){try{await navigator.clipboard.writeText(t);flash(b,'복사됨 ✓')}catch(e){prompt('길게 눌러 복사하세요',t)}}
-function bodyText(){return POST.blocks.map(x=>x.text?x.text:'📷 사진 '+x.n+' ('+x.label+')').join('\\n\\n')}
+// 고치기 (대표 요청 2026-09-30): 고친 글은 이 휴대폰에 저장되고, 복사 버튼은 고친 글을 복사한다
+function ls(k,v){const key='ed:'+(POST.folder||location.pathname)+':'+k;try{if(v===undefined)return localStorage.getItem(key);if(v===null)localStorage.removeItem(key);else localStorage.setItem(key,v)}catch(e){return null}}
+function grow(t){t.style.height='auto';t.style.height=(t.scrollHeight+4)+'px'}
+function ed(k){return document.querySelector('textarea.ed[data-k="'+k+'"]')}
+function val(k){const t=ed(k);return t?t.value.trim():''}
+function paint(t){t.classList.toggle('changed',t.value!==t.defaultValue);const c=document.querySelector('[data-count="'+t.dataset.k+'"]');if(c)c.textContent=t.value.trim().length+'자'+(t.value!==t.defaultValue?' · 고침':'')}
+function setEd(k,v){const t=ed(k);if(!t)return;t.value=v;ls(k,v===t.defaultValue?null:v);paint(t);grow(t)}
+function resetEd(k){const t=ed(k);if(t)setEd(k,t.defaultValue)}
+function copyEd(b,k){copyText(b,val(k))}
+document.addEventListener('DOMContentLoaded',()=>document.querySelectorAll('textarea.ed').forEach(t=>{const v=ls(t.dataset.k);if(v!=null)t.value=v;paint(t);grow(t);
+  t.addEventListener('input',()=>{if(t.classList.contains('one'))t.value=t.value.replace(/\\n/g,' ');ls(t.dataset.k,t.value===t.defaultValue?null:t.value);paint(t);grow(t)})}))
+function bodyText(){return POST.blocks.map((x,i)=>x.text!==undefined?(val('b'+i)||x.text):'📷 사진 '+x.n+' ('+x.label+')').join('\\n\\n')}
+async function saveEdits(b){
+  let body='';const t=ed('title');if(t&&t.value!==t.defaultValue)body+='제목: '+val('title')+'\\n\\n';
+  document.querySelectorAll('textarea.ed[data-k^="b"]').forEach(x=>{if(x.value!==x.defaultValue)body+='[문단 '+x.dataset.k.slice(1)+']\\n'+x.value.trim()+'\\n\\n'});
+  if(!body){alert('고친 곳이 없어요.');return}
+  const base='https://github.com/'+POST.repo+'/issues/new?title='+encodeURIComponent('[수정] '+POST.folder);
+  let url=base+'&body='+encodeURIComponent(body+'아래 초록색 Create 버튼만 누르면 됩니다.');
+  if(url.length>7000){try{await navigator.clipboard.writeText(body)}catch(e){prompt('길게 눌러 복사하세요',body)}
+    alert('고친 내용이 길어서 복사해 뒀어요. 열리는 화면의 본문 칸을 길게 눌러 붙여넣은 뒤 Create를 누르세요.');url=base}
+  location.href=url}
 async function copyBody(b){copyText(b,bodyText())}
 async function saveClip(b,name){
   name=name||'clip.mp4';
@@ -132,11 +155,21 @@ def split_tags(text: str) -> tuple[str, str]:
     return "\n".join(desc).strip(), " ".join(tags).strip()
 
 
-def copy_pair(text: str, what: str) -> str:
-    """설명 복사 · 해시태그 복사 버튼 두 개."""
+def edit_box(key: str, text: str, label: str, one_line: bool = False) -> str:
+    """고칠 수 있는 칸 + 복사·되돌리기 (고친 글은 그 휴대폰에 저장, 대표 요청 2026-09-30)."""
+    e = html.escape
+    k = e(key, quote=True)
+    return (f'<textarea class="ed{" ttl one" if one_line else ""}" data-k="{k}" rows="{2 if one_line else 4}">{e(text)}</textarea>'
+            f'<div class="muted" data-count="{k}"></div>'
+            f'<div class="row"><button onclick="copyEd(this,\'{k}\')">📋 {e(label)}</button>'
+            f'<button class="ghost small" onclick="resetEd(\'{k}\')">↩ 원래대로</button></div>')
+
+
+def copy_pair(text: str, what: str, key: str = "") -> str:
+    """설명(고칠 수 있는 칸 + 복사) · 해시태그 복사."""
     e = html.escape
     desc, tags = split_tags(text)
-    out = f'<button class="ghost" onclick="copyText(this,{e(json.dumps(desc), quote=True)})">📋 {what} 설명 복사</button>'
+    out = edit_box(f"d:{key or what}", desc, f"{what} 설명 복사")
     if tags:
         out += (f'<button class="ghost" onclick="copyText(this,{e(json.dumps(tags), quote=True)})">📋 해시태그 복사: '
                 f'<span class="muted">{e(tags)}</span></button>')
@@ -160,19 +193,24 @@ def page(p: dict) -> str:
         return (f'<button class="{cls}" onclick="copyText(this,{e(json.dumps(t["text"]), quote=True)})">'
                 f'{e(t["text"])} <span class="muted">· {e(t["type"])} · {len(t["text"])}자</span></button>')
 
-    rest = "".join(tbtn(t) for t in p["titles"] if t is not best)
-    titles = (tbtn(best, "ghost") if best else "") + (
+    def pick(t):
+        return (f'<button class="ghost" onclick="setEd(\'title\',{e(json.dumps(t["text"]), quote=True)})">'
+                f'{e(t["text"])} <span class="muted">· {e(t["type"])} · 이 제목으로 바꾸기</span></button>')
+
+    rest = "".join(pick(t) for t in p["titles"] if t is not best)
+    titles = (edit_box("title", best["text"], "제목 복사", one_line=True) if best else "") + (
         f'<details><summary class="muted">다른 제목 {len(p["titles"]) - 1}개 (썸네일과 짝이 아니라 예비)</summary>{rest}</details>'
         if rest else "")
     body = "".join(
-        f'<p>{e(b["text"])}</p>' if "text" in b else
+        f'<textarea class="ed" data-k="b{i}" rows="3">{e(b["text"])}</textarea>' if "text" in b else
         f'<div class="ph"><img src="{e(b["img"])}" alt="사진 {b["n"]}" loading="lazy"><small>📷 사진 {b["n"]} · {e(b["label"])}</small></div>'
-        for b in p["blocks"])
+        for i, b in enumerate(p["blocks"]))
     each = "".join(f'<div class="ph"><img src="{e(x["file"])}" alt="사진 {x["n"]}" loading="lazy"><small>📷 사진 {x["n"]} · {e(x["label"])}'
                    f'{" · 대표이미지로 지정" if x["n"] == 1 else ""} (길게 눌러 저장)</small></div>' for x in p["images"])
     tags = " ".join("#" + t for t in p["tags"])
     chips = "".join(f'<button class="ghost chip" onclick="copyText(this,{e(json.dumps(t), quote=True)})">{e(t)}</button>' for t in p["tags"])
-    data = json.dumps({"blocks": p["blocks"], "images": p["images"]}, ensure_ascii=False).replace("</", "<\\/")
+    data = json.dumps({"blocks": p["blocks"], "images": p["images"], "folder": p["folder"], "repo": REPO},
+                      ensure_ascii=False).replace("</", "<\\/")
     thumb = next((x["file"] for x in p["images"] if x["n"] == 1), "thumb.png")
     st = p.get("status", {})
     used = (f'<div class="card" style="border-color:var(--warn)"><b>⚠️ 이미 발행한 글이에요 ({e(st.get("at", ""))})</b>'
@@ -192,13 +230,13 @@ def page(p: dict) -> str:
 <div class="card"><h2><span class="step">1</span>사진 저장</h2>
 <button onclick="saveAll(this)">📷 사진 {len(p["images"])}장 한 번에 저장</button>
 <div class="muted">공유 창이 뜨면 "이미지 저장" / "사진에 저장"을 누르세요. 파일 이름 앞 번호가 넣는 순서예요.</div></div>
-<div class="card"><h2><span class="step">2</span>제목 (눌러서 복사)</h2>{titles}
-<div class="muted">썸네일과 짝으로 만든 제목이에요. 고르지 말고 이걸 그대로 쓰세요.</div></div>
+<div class="card"><h2><span class="step">2</span>제목</h2>{titles}
+<div class="muted">썸네일과 짝으로 만든 제목이에요. 칸을 눌러 바로 고칠 수 있어요 (고친 글은 이 휴대폰에 저장, 복사하면 고친 제목이 복사돼요).</div></div>
 <div class="card"><h2><span class="step">3</span>대표 사진 (썸네일)</h2><img class="thumb" src="{e(thumb)}" alt="썸네일">
 <div class="muted">본문에 넣은 뒤 이 사진을 대표이미지로 지정하세요.</div></div>
 <div class="card"><h2><span class="step">4</span>본문</h2>
 <button onclick="copyBody(this)">📋 본문 복사 (사진 자리 📷 표시)</button>
-<div class="muted">네이버 앱에 붙여넣고, "📷 사진 N" 줄을 지운 자리에 N번 사진을 넣으세요.</div>
+<div class="muted">네이버 앱에 붙여넣고, "📷 사진 N" 줄을 지운 자리에 N번 사진을 넣으세요. 고치고 싶은 문단은 아래 <a href="#draft">초안</a>에서 바로 고치면 복사에 반영돼요.</div>
 </div>
 <div class="card"><h2><span class="step">5</span>태그</h2><button class="ghost" onclick="copyText(this,{e(json.dumps(tags), quote=True)})">📋 한 번에 복사: {e(tags)}</button>
 <div class="muted">한 번에 붙여넣기가 안 되면 아래 태그를 하나씩 눌러 복사 → 태그 칸에 붙여넣기 → 완료(엔터)를 반복하세요.</div>
@@ -207,7 +245,10 @@ def page(p: dict) -> str:
 <div class="card"><h2><span class="step">6</span>다 올렸으면</h2>
 <a class="btn" href="{done_btn}">✅ 발행 완료 표시</a>
 <div class="muted">GitHub 화면이 열리면 초록 <b>Create</b>만 누르세요. 2~3분 뒤 목록에서 "발행한 글"로 내려가요 (중복 발행 방지).</div></div>
-<div class="card body"><h2>미리 읽기</h2>{body}</div>
+<div class="card body" id="draft"><h2>✏️ 초안 (눌러서 고치기)</h2>
+<div class="muted">고친 문단은 주황 테두리로 보여요. 이 휴대폰에 자동 저장되고, 위 <b>본문 복사</b>에 반영돼요.</div>{body}
+<button onclick="saveEdits(this)">💾 고친 내용 저장 (도우미에 반영)</button>
+<div class="muted">GitHub 화면이 열리면 초록 <b>Create</b>만 누르세요. 2~3분 뒤 도우미에 반영되고, 어떻게 고치셨는지 모아서 다음 글쓰기에 반영해요.</div></div>
 <div class="card"><h2>🔄 이 글이 마음에 안 들면</h2>
 <a class="btn" style="background:var(--card);color:var(--ink);border:1px solid var(--line)" href="{again_btn}">다른 글로 다시 뽑기</a>
 <div class="muted">GitHub 화면에서 <b>Create</b>를 누르면 이 글은 목록에서 빠지고, 다른 선수·테마로 새 글을 써요 (약 5~10분).</div></div>
@@ -230,7 +271,7 @@ def clip_cards(posts: list[dict]) -> str:
         out.append(f"""<div class="card"><h2>{e(title)}</h2>{badge}
 <video src="{e(src)}" controls playsinline preload="none" style="width:100%;max-width:320px;border-radius:10px;display:block;margin-top:8px"></video>
 <button onclick="saveClip(this,{e(json.dumps(src), quote=True)})">🎬 클립 영상 저장</button>
-{copy_pair(p["clip_text"], "클립")}</div>""")
+{copy_pair(p["clip_text"], "클립", p["folder"])}</div>""")
     return "".join(out) or "<p>올릴 클립이 없어요.</p>"
 
 
@@ -316,8 +357,8 @@ def shorts_body(items: list[dict], prefix: str = "") -> str:
         cards.append(f"""<div class="card"><h2>{e(KIND.get(s['kind'], s['kind']))}</h2><div class="muted">{e(s['date'])}</div>
 <video src="{e(v)}" controls playsinline preload="none" style="width:100%;max-width:320px;border-radius:10px;display:block;margin-top:8px"></video>
 <button onclick="saveClip(this,{e(json.dumps(v), quote=True)})">🎬 영상 저장</button>
-<button class="ghost" onclick="copyText(this,{e(json.dumps(s['title']), quote=True)})">📋 제목 복사: {e(s['title'])}</button>
-{copy_pair(s['desc'], "쇼츠")}
+{edit_box("t:" + s['folder'], s['title'], "제목 복사", one_line=True)}
+{copy_pair(s['desc'], "쇼츠", s['folder'])}
 <a class="muted" href="{e(issue_link("쇼츠버림", s['folder'], "이 쇼츠는 올리지 않고 버려 주세요. 같은 형식으로 새로 만들어져요."), quote=True)}">🗑 이 쇼츠는 안 올리고 버리기</a></div>""")
     guide = """<div class="card"><ol class="muted"><li><b>영상 저장</b> → 유튜브 앱 아래 <b>+</b> → <b>동영상 업로드</b> → 저장한 영상</li>
 <li><b>사운드 추가</b>로 인기 음원 하나</li>

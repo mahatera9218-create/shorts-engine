@@ -237,6 +237,22 @@ class ContentTest(unittest.TestCase):
         assert ranking.suffix(d, "KBO 1위 하루 1,150만원") == "(2026 KBO 연봉 순위 · 양의지 박세웅 류현진)"
         assert ranking.due("2026-09-30") and not ranking.due("2026-10-01")  # 수요일 O, 목요일 X
 
+    def test_desk_edits(self):
+        import shutil
+        import tempfile
+        from pathlib import Path
+        from content import desk, edits
+        src = next(Path("posts").glob("*/body.txt")).parent
+        with tempfile.TemporaryDirectory() as t:
+            f = Path(t) / src.name
+            shutil.copytree(src, f)
+            title, blocks = edits.parse("제목: 새 제목\r\n\r\n[문단 0]\r\n고친 첫 문단\r\n\r\n" + edits.FOOTER)
+            assert title == "새 제목" and blocks == {0: "고친 첫 문단"}
+            assert edits.apply(f, title, blocks) == ["제목", "문단 0"]
+            p = desk.parse(f)
+            assert [x["text"] for x in p["titles"] if x["best"]] == ["새 제목"] and p["blocks"][0]["text"] == "고친 첫 문단"
+            assert (f / "edits.md").exists()
+
     def test_jersey_spec(self):
         from content import jersey
         o = jersey.spec("오타니 쇼헤이")
