@@ -1,0 +1,55 @@
+# 블로그 벤치마크: 겹치는 주제의 잘 되는 블로그 vs 우리 블로그 (RSS·공식 검색 API 숫자만) → reports/블로그-벤치마크/
+# 자동: 매주 월요일 오전 8시 41분(한국) + config/blog_bench.yaml 또는 market/blog_bench.py를 고쳐 main에 올리면. 수동: Actions → 블로그 벤치마크 → Run workflow
+name: 블로그 벤치마크
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["config/blog_bench.yaml", "market/blog_bench.py"]
+  schedule:
+    - cron: "41 23 * * 0"   # UTC 일요일 23:41 = 한국 월요일 08:41 (주간 점검 전에)
+
+permissions:
+  contents: write
+
+concurrency:
+  group: repo-reports
+  cancel-in-progress: false
+
+jobs:
+  blog-bench:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      TZ: Asia/Seoul
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: 준비
+        run: pip install -r requirements.txt
+      - name: 블로그 벤치마크
+        env:
+          NCP_APIGW_API_KEY_ID: ${{ secrets.NCP_APIGW_API_KEY_ID }}
+          NCP_APIGW_API_KEY: ${{ secrets.NCP_APIGW_API_KEY }}
+        run: |
+          set -o pipefail
+          python -m market.blog_bench | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: 결과 저장 (reports/ 커밋)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/
+          if git diff --cached --quiet; then
+            echo "바뀐 결과 없음"
+          else
+            git commit -m "블로그 벤치마크 $(date +%F)"
+            for i in 1 2 3; do
+              git pull --rebase -X theirs origin "${GITHUB_REF_NAME}" && git push && exit 0
+              sleep $((i * 5))
+            done
+            exit 1
+          fi
