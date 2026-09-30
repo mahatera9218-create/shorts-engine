@@ -37,6 +37,7 @@ jobs:
       - name: 다시 그리기
         env:
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
           FOLDER: ${{ inputs.folder }}
         run: |
           if [ -n "$FOLDER" ]; then python -m content.rebuild "posts/$FOLDER"; else python -m content.rebuild; fi | tee -a "$GITHUB_STEP_SUMMARY"
@@ -44,7 +45,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add posts/
+          git add posts/; [ -e config/player_photos.yaml ] && git add config/player_photos.yaml
           if git diff --cached --quiet; then
             echo "바뀐 이미지 없음"
           else

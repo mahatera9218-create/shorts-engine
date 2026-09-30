@@ -10,3 +10,4 @@ output/
 !posts/**/clip.mp4
 !shorts/**/video.mp4
 site/
+.cache/

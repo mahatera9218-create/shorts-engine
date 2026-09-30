@@ -508,3 +508,55 @@ class TestShortsStatsEmpty(unittest.TestCase):
 
         ch, vids = ss.fetch(YT(), "@x")
         self.assertEqual((ch["subs"], vids), (3, []))
+
+
+class TestProduce(unittest.TestCase):
+    def test_license_filter(self):
+        from content.playerphoto import OK_LICENSE
+        for ok in ("CC BY-SA 4.0", "CC BY 2.0", "CC0", "Public domain"):
+            self.assertTrue(OK_LICENSE.match(ok), ok)
+        for bad in ("CC BY-NC 2.0", "CC BY-ND 4.0", "", "All rights reserved"):
+            self.assertFalse(OK_LICENSE.match(bad), bad)
+
+    def test_find_needs_sport_word(self):
+        from unittest import mock
+        from content import playerphoto as pp
+        calls = []
+
+        def fake(url, params):
+            calls.append(params["action"])
+            if params["action"] == "wbsearchentities":
+                return {"search": [{"id": "Q1"}, {"id": "Q2"}]}
+            if params["action"] == "wbgetentities":
+                p18 = [{"mainsnak": {"datavalue": {"value": "X.jpg"}}}]
+                return {"entities": {"Q1": {"descriptions": {"ko": {"value": "대한민국의 가수"}}, "claims": {"P18": p18}},
+                                     "Q2": {"descriptions": {"ko": {"value": "대한민국의 야구 선수"}}, "claims": {"P18": p18}}}}
+            return {"query": {"pages": {"1": {"imageinfo": [{"url": "u", "thumburl": "t", "descriptionurl": "d",
+                                                              "extmetadata": {"LicenseShortName": {"value": "CC BY-SA 4.0"},
+                                                                              "Artist": {"value": "<a>Kim</a>"}}}]}}}}
+        with mock.patch.object(pp, "_get", fake):
+            r = pp.find("이정후", "mlb")
+        self.assertEqual((r["qid"], r["artist"], r["license"]), ("Q2", "Kim", "CC BY-SA 4.0"))
+
+    def test_narrate_extends_scene(self):
+        import subprocess, tempfile
+        from pathlib import Path
+        from unittest import mock
+        from content import clip, produce
+        exe = clip.ffmpeg()
+        if not exe:
+            self.skipTest("ffmpeg 없음")
+        with tempfile.TemporaryDirectory() as d:
+            wav = Path(d) / "a.wav"
+            subprocess.run([exe, "-y", "-loglevel", "error", "-f", "lavfi", "-i", "sine=d=4", "-ar", "44100", str(wav)], check=True)
+
+            class S(clip.Scene):
+                dur = 2.0
+                say = "안녕"
+            s = S()
+            with mock.patch.object(produce, "tts", lambda text: wav):
+                cues = produce.narrate([s], [s.say])
+            self.assertGreater(s.dur, 4.0)
+            self.assertEqual(len(cues), 1)
+            out = produce.mix(exe, cues + [(produce.sfx(exe, "ding"), 1.0, 0.5)], s.dur, Path(d) / "m.wav")
+            self.assertAlmostEqual(produce.wav_seconds(out), s.dur, delta=0.1)

@@ -71,6 +71,7 @@
 | `CLOUDFLARE_API_TOKEN` | Cloudflare Pages 편집 토큰 ([발행 도우미 안내](운영자-안내-발행-도우미.md)) | 발행 도우미에 필요 |
 | `CLOUDFLARE_ACCOUNT_ID` | Cloudflare 계정 ID | 발행 도우미에 필요 |
 | `PEXELS_API_KEY` | Pexels 사진 API 키 (썸네일 실사 배경, [발급 안내](운영자-안내-Pexels-키.md)) | 썸네일 사진에 필요 |
+| `GOOGLE_TTS_API_KEY` | 구글 클라우드 Text-to-Speech 키 ([안내](운영자-안내-구글-TTS-키.md)) | 클립·쇼츠 AI 목소리에 필요 |
 | `ANTHROPIC_API_KEY` | Claude API 키 (자동 글쓰기, [발급 안내](운영자-안내-Claude-API-키.md)) | 자동 글쓰기에 필요 |
 
 넣은 값은 다시 볼 수 없습니다(정상). 잘못 넣었으면 이름 옆 **연필 → 새 값 입력**으로 덮어씁니다.
