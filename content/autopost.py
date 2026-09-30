@@ -21,7 +21,7 @@ from pathlib import Path
 import yaml
 
 from market.common import ROOT, load_yaml, missing_secrets
-from . import cards, clip, mark, photos, ranking, receipt, themes
+from . import cards, clip, mark, marketers, photos, ranking, receipt, themes
 from .desk import clean_tags
 from .receipt import won
 from .voice import check_draft
@@ -587,12 +587,13 @@ def review_post(llm, sheet: str, post: dict) -> dict:
 # ---------------------------------------------------------------- 패키지
 
 def package_md(title: str, theme: str, category: str, facts: dict, post: dict, problems: list[str], rounds: int,
-               cfg: dict, news_count: int, cost: float | None, extra_sources: list[str] = ()) -> str:
+               cfg: dict, news_count: int, cost: float | None, extra_sources: list[str] = (), marketer: str = "") -> str:
     rec = post["recommended"]
     status = "✅ 자동 검사 통과" if not problems and post["gate_pass"] else "⚠️ 검사 미통과 — 발행하지 말고 Claude에게 알려주세요"
     out = [f"# 발행 패키지 · {title}", "",
            f"**상태:** {status}  ", f"**게이트:** {'통과' if post['gate_pass'] else '미통과'} — 정보 이득: {post['info_gain']}  ",
-           f"**자동 작성:** Claude 초안 → 코드 검사 (고쳐 쓰기 {rounds}회)" + (f" · API 비용 약 ${cost:.2f}" if cost else ""), ""]
+           f"**자동 작성:** Claude 초안 → 코드 검사 (고쳐 쓰기 {rounds}회)" + (f" · API 비용 약 ${cost:.2f}" if cost else "")
+           + ("  " if marketer else ""), *([f"**마케터:** {marketer}"] if marketer else []), ""]
     if problems:
         out += ["**남은 문제:**", ""] + [f"- {p}" for p in problems] + [""]
     if post.get("brief"):
@@ -897,7 +898,7 @@ def weighted_pool(hub, pool: dict, today: str) -> tuple[dict, str]:
         hot_now = p["name"] in trend or p.get("short") in trend
         f = ((1 + min(2.0, n / NEWS_PER_BOOST)) * (req.get("boost", 3) if p["name"] in asked else 1)
              * (ev.get("boost", 3) if hot_now else 1) * volume_factor(volume.get(p["name"], 0)))
-        out.append({**p, "weight": p.get("weight", 1) * f})
+        out.append({**p, "weight": p.get("weight", 1) * f, "news": n})  # news: 마케터 화제형이 선수를 가를 때 씀
         if n or p["name"] in asked or hot_now:
             hot.append((f, f"{short_name(p)} 기사 {n}건" + (" · 댓글 요청" if p["name"] in asked else "")
                         + (" · 화제" if hot_now else "")))
@@ -958,16 +959,18 @@ def search_suffix(d: dict, title: str) -> str:
 
 
 def finish(llm, *, cfg: dict, pool: dict, notes: list[str], start_cost: float, today: str, made_today: list[str],
-           out_root: Path, th: str, d: dict, facts: dict, title: str, slug: str, make_sheet, news_count: int
-           ) -> tuple[str, Path]:
+           out_root: Path, th: str, d: dict, facts: dict, title: str, slug: str, make_sheet, news_count: int,
+           marketer: int | None = None) -> tuple[str, Path]:
     """숫자가 모인 뒤 공통: 폴더·사진·카드 → 숫자표 → 글쓰기(Claude)·검사 → 발행 패키지 → 클립."""
     tinfo = pool["themes"][th]
+    if marketer:
+        d["marketer"] = marketer
     folder = out_root / f"{today}-{th}-{slug}"
     folder.mkdir(parents=True, exist_ok=True)
     photos.fetch_all(folder, d.get("sport", "야구"), folder.name)  # 키가 없으면 사진 없이
     n = ranking.build(folder, d) if th == "rank" else themes.build(folder, d)
     sheet = (make_sheet(n) + "\n" + "\n".join(themes.image_lines(th))
-             + f"\n추천 제목 유형: {title_type(today, len(made_today))} (코드가 날마다 돌린다)")
+             + f"\n추천 제목 유형: {title_type(today, marketer or len(made_today))} (코드가 날마다 돌린다)")
     category = pool["categories"].get(d.get("sport", "야구").split()[0], "야구")  # sport = "야구 (프로야구)"
     post, problems, rounds = write_post(llm, {"category": category, "angle": tinfo["angle"]}, sheet,
                                         cfg.get("max_revisions", 2))
@@ -988,7 +991,8 @@ def finish(llm, *, cfg: dict, pool: dict, notes: list[str], start_cost: float, t
         tx = load_yaml("tax.yaml")
         extra += [f"종합소득세 세율: {tx['source']}", f"원천징수 3.3%: {tx['withholding_source']}"]
     (folder / "post.md").write_text(package_md(f"{title} · {tinfo['name']}", th, category, facts, post,
-                                               problems, rounds, cfg, news_count, cost, extra),
+                                               problems, rounds, cfg, news_count, cost, extra,
+                                               marketers.label(marketer)),
                                     encoding="utf-8")
     for key in ("clip_caption", "clip_question"):  # 클립 설명·마지막 화면 질문 (content/clip.py가 읽는다)
         if post.get(key):
@@ -1003,12 +1007,21 @@ def finish(llm, *, cfg: dict, pool: dict, notes: list[str], start_cost: float, t
     return "\n".join(notes + [f"{title} ({tinfo['name']}) 글 완성 — {head}"]), folder
 
 
+def marketer_of(folder: str) -> int | None:
+    f = POSTS / folder / "data.yaml"
+    return ((yaml.safe_load(f.read_text(encoding="utf-8")) or {}).get("marketer") if f.exists() else None)
+
+
 def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str | None = None,
-        out_root: Path = POSTS, again: bool = False) -> tuple[str, Path | None]:
-    """again: 발행 도우미 '다시 뽑기' — 하루 한도를 건너뛰고 다른 조합으로 쓴다 (버린 글의 선수는 최근 목록에 있어 제외된다)."""
+        out_root: Path = POSTS, again: bool = False, marketer: int | None = None) -> tuple[str, Path | None]:
+    """again: 발행 도우미 '다시 뽑기' — 하루 한도를 건너뛰고 다른 조합으로 쓴다 (버린 글의 선수는 최근 목록에 있어 제외된다).
+    marketer: 마케터 번호 (config/marketers.yaml, 2026-10-01). 그 마케터의 선수·테마로만, 하루 1편."""
     cfg = load_yaml("post_queue.yaml")
     pool = load_yaml("players.yaml")
     made_today = [p for p in done_ids() if p.startswith(today)] if out_root == POSTS else []
+    if marketer:
+        made_today = [p for p in made_today if marketer_of(p) == marketer]
+        cfg = {**cfg, "daily_limit": 1}
     if not topic_override and not theme and out_root == POSTS and not again:
         today_made = [p for p in made_today if (POSTS / p / "post.md").exists()
                       and "**자동 작성:**" in (POSTS / p / "post.md").read_text(encoding="utf-8", errors="ignore")
@@ -1018,10 +1031,11 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
     notes: list[str] = []
     start_cost = llm.cost_usd()  # 이 글에 든 비용만 (한 번 실행에서 여러 편 쓸 때 누적되지 않게)
     cache: dict[str, dict | str] = {}
-    seed = today if not made_today else f"{today}-{len(made_today)}"  # 다시 뽑으면 테마도 새로
+    seed = (today if not made_today else f"{today}-{len(made_today)}") + (f"-m{marketer}" if marketer else "")  # 다시 뽑으면 테마도 새로
     rc = ranking.cfg()
+    rank_ok = not marketer or marketers.info(marketer).get("rank")  # 마케터가 있으면 순위 글은 비교형만
     if theme == "rank" or (not theme and not topic_override and not again and not made_today and out_root == POSTS
-                           and ranking.due(today, rc)):
+                           and rank_ok and ranking.due(today, rc)):
         # 순위·총정리형 (대표 결정 2026-09-30): 정한 요일의 첫 후보. 못 쓰면 평소 글로 넘어간다
         from .shorts import latest_fx
         for lst in ranking.pick(today, rc):
@@ -1031,11 +1045,16 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
                 continue
             d, facts = got
             return finish(llm, cfg=cfg, pool=pool, notes=notes, start_cost=start_cost, today=today,
-                          made_today=made_today, out_root=out_root, th="rank", d=d, facts=facts, title=d["title"],
+                          made_today=made_today, out_root=out_root, th="rank", d=d, facts=facts, title=d["title"], marketer=marketer,
                           slug=d["key"], make_sheet=lambda n, d=d: ranking.sheet(d, n, cfg["constants"]), news_count=0)
         if theme == "rank":
             return "\n".join(notes + ["순위 글: 오늘 쓸 수 있는 목록이 없음 (config/rankings.yaml, 21일 안에 다 씀)"]), None
     pool, why = weighted_pool(hub, pool, today)
+    if marketer and not topic_override:  # 마케터의 선수·테마만 (같은 날 다른 마케터와 선수가 겹치지 않게)
+        pool = {**pool, "players": marketers.players(pool["players"], marketer)}
+        if not theme:
+            pool = {**pool, "themes": {**marketers.themes(pool["themes"], marketer),
+                                       **({"rank": pool["themes"]["rank"]} if "rank" in pool["themes"] else {})}}
     skip_file = Path(os.environ["AUTOPOST_SKIP"]) if os.environ.get("AUTOPOST_SKIP") else None
     skipped = set(json.loads(skip_file.read_text(encoding="utf-8"))) if skip_file and skip_file.exists() else set()
     skipped |= set(no_data_players(today))  # 최근 7일 안에 연봉·기록을 못 찾은 선수 (비용 줄이기, 2026-09-30)
@@ -1101,7 +1120,7 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
         title = themes.title_name(d)
         slug = "-".join(x["d"].get("short_name", x["d"]["player"]).replace(" ", "") for x in got)
         return finish(llm, cfg=cfg, pool=pool, notes=notes, start_cost=start_cost, today=today, made_today=made_today,
-                      out_root=out_root, th=th, d=d, facts=facts, title=title, slug=slug,
+                      out_root=out_root, th=th, d=d, facts=facts, title=title, slug=slug, marketer=marketer,
                       make_sheet=lambda n, plan=plan, d=d, got=got: theme_sheet(plan, d, n, got, cfg),
                       news_count=sum(len(x["news"]) for x in got))
     return "\n".join(notes + ["쓸 수 있는 조합을 찾지 못했습니다 (연봉 보도가 있는 선수 부족). config/players.yaml 확인 필요."]), None
@@ -1116,6 +1135,7 @@ def main() -> None:
     ap.add_argument("--again", action="store_true", help="다시 뽑기: 하루 한도를 건너뛰고 새 조합으로")
     ap.add_argument("--target", type=int, default=1, help="발행 가능한(✅) 글을 몇 편 만들지")
     ap.add_argument("--tries", type=int, default=1, help="최대 몇 번 쓸지 (⚠️ 글은 목록에서 빼고 다시 쓴다)")
+    ap.add_argument("--marketer", type=int, default=None, help="마케터 번호 (config/marketers.yaml). 동시에 여러 마케터가 쓸 때")
     a = ap.parse_args()
     today = date.today().isoformat()
     out_root = Path(a.out) if a.out else POSTS
@@ -1133,7 +1153,7 @@ def main() -> None:
         from .llm import Claude
         hub = ApiHub(load_yaml("global.yaml")["endpoints"]["naver_hub"])
         llm = Claude()
-    if out_root == POSTS and not a.again and not a.topic and not a.theme:
+    if out_root == POSTS and not a.again and not a.topic and not a.theme and not a.marketer:  # 마케터 동시 실행은 모으는 단계에서 정리
         gone = reset_drafts(today)  # 대표 결정 2026-09-30: 초안 목록은 매일 리셋
         if gone:
             print(f"지난 초안 {len(gone)}편 정리 (발행한 글은 남김)")
@@ -1141,7 +1161,7 @@ def main() -> None:
     for attempt in range(max(a.tries, a.target)):
         try:
             msg, folder = run(hub, llm, today=today, topic_override=a.topic, theme=a.theme, out_root=out_root,
-                              again=a.again or made > 0)
+                              again=a.again or made > 0, marketer=a.marketer)
         except Exception as e:  # 키·요금·API 오류: 메시지만 남기고 실패로 끝낸다 (키 값은 메시지에 없음)
             _summary(f"❌ 글쓰기 실패: {type(e).__name__}: {str(e)[:300]}\n\nClaude에게 이 화면을 알려주세요.")
             raise
@@ -1167,7 +1187,7 @@ def main() -> None:
         msg += "\n단계별 비용: " + ", ".join(f"{k} ${v:.2f}" for k, v in sorted(llm.by_stage.items(), key=lambda x: -x[1]))
         if out_root == POSTS:
             from .llm import log_cost
-            log_cost("다시 뽑기" if a.again else "글쓰기", llm, made, a.target)
+            log_cost(("다시 뽑기" if a.again else "글쓰기") + (f"·마케터{a.marketer}" if a.marketer else ""), llm, made, a.target)
     print(msg)
     if folder:
         print(f"결과: {folder}")

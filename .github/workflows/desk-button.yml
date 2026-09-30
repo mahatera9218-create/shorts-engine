@@ -34,6 +34,7 @@ jobs:
     timeout-minutes: 10
     outputs:
       action: ${{ steps.m.outputs.action }}
+      marketer: ${{ steps.m.outputs.marketer }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -84,6 +85,7 @@ jobs:
       mode: 실제
       again: true
       count: "1"
+      marketer: ${{ needs.mark.outputs.marketer }}   # 버린 글을 쓴 마케터가 다시 (2026-10-01)
     secrets: inherit
 
   desk:   # 발행완료, 또는 다시 뽑기에서 새 글 쓰기가 실패했을 때도 목록은 갱신 (버린 글이 빠지게)
@@ -176,7 +178,7 @@ jobs:
     with:
       mode: 실제
       again: true
-      count: "4"
+      count: "all"
     secrets: inherit
 
   discard:   # 쇼츠 모음 '이 쇼츠는 안 올리고 버리기'

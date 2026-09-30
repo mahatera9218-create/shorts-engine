@@ -253,6 +253,19 @@ class ContentTest(unittest.TestCase):
             assert [x["text"] for x in p["titles"] if x["best"]] == ["새 제목"] and p["blocks"][0]["text"] == "고친 첫 문단"
             assert (f / "edits.md").exists()
 
+    def test_marketers(self):
+        from content import marketers as M
+        from content.desk import today_pick
+        assert [M.turn(d) for d in ("2026-10-01", "2026-10-02", "2026-10-03", "2026-10-04")] == [1, 2, 3, 1]
+        ps = [{"name": f"선수{i}", "news": (30 - i if i < 12 else 0)} for i in range(40)]
+        sets = [{p["name"] for p in M.players(ps, m)} for m in (1, 2, 3)]
+        assert not (sets[0] & sets[1] or sets[0] & sets[2] or sets[1] & sets[2])  # 같은 날 선수가 겹치지 않게
+        assert {"선수0", "선수1"} <= sets[2]  # 화제형 = 뉴스 많은 선수
+        posts = [{"date": "2026-10-02", "ok": True, "marketer": m, "folder": f"f{m}", "status": {}} for m in (1, 2, 3)]
+        assert today_pick(posts, "2026-10-02")["marketer"] == 2
+        posts[1]["ok"] = False  # 차례 마케터 글이 기준 미달이면 다음 마케터
+        assert today_pick(posts, "2026-10-02")["marketer"] == 3
+
     def test_jersey_spec(self):
         from content import jersey
         o = jersey.spec("오타니 쇼헤이")
