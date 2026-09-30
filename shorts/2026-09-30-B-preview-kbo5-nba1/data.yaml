@@ -1,0 +1,16 @@
+key: B-kbo5-nba1
+ln: KBO 연봉 TOP5 합계
+title: KBO 연봉 TOP5를 다 합쳐도
+q: 누가 더 받아야 할까요?
+kind: B
+times: 6.3배
+lv: 13400000000
+rv: 84911997258.6
+basis: 확인 연봉표(config/salaries.yaml, 발표·보도), 환율 1달러 = 1,356.7원 (2026-09-30)
+names:
+- 양의지
+- 고영표
+- 제임스 네일
+- 최정
+- 류현진
+- 스테픈 커리
