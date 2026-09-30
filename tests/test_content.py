@@ -286,6 +286,26 @@ class ContentTest(unittest.TestCase):
         facts, _ = with_known_salary({"salary": {"value": 300000000, "differs": None}}, {"salary_currency": "KRW"}, known)
         assert facts["salary"]["value"] == 300000000 and facts["salary"]["differs"] == [250000000, 300000000]
 
+    def test_tax_theme_and_long_run(self):
+        import yaml
+        from content import themes
+        from content.receipt import won
+        tax = yaml.safe_load(open("config/tax.yaml", encoding="utf-8"))
+        assert round(themes.income_tax(2_100_000_000, tax["brackets"])) == 879_060_000  # 21억: 45% - 6,594만
+        assert round(themes.income_tax(10_000_000, tax["brackets"])) == 600_000
+        d = {"player": "류현진", "season": 2026, "salary_krw": 2_100_000_000,
+             "units": [{"key": "games", "label": "1경기", "count": 25}]}
+        n = themes.compute_tax(d, tax)
+        assert round(n["withhold"]) == 69_300_000 and n["tax_max"] < d["salary_krw"] * 0.5
+        assert themes.ro("유니폼") == "유니폼으로" and themes.ro("아반떼") == "아반떼로" and themes.ro("서울") == "서울로"
+        assert won(159000) == "159,000원" and won(29_999_999) == "2,999만원"  # 버림
+        pool = {"sports": {"kbo": {"sport": "야구"}}, "themes": {"tax": {"weight": 1}},
+                "players": [{"name": "K", "sport": "kbo"}, {"name": "M", "sport": "mlb"}],
+                "_eligible": {"tax": {"K"}}}
+        got = themes.plans(pool, set(), "s", n=3, theme="tax")
+        assert got and all(p["players"][0]["name"] == "K" for p in got)
+        assert not themes.plans(pool, set(), "s", n=3, theme="tax", used={("tax", ("K",))})
+
 
 if __name__ == "__main__":
     unittest.main()

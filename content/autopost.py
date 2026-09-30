@@ -643,6 +643,34 @@ def collect(hub, llm, topic: dict, today: str, cfg: dict) -> dict | str:
     return {"d": d, "facts": facts, "ex": ex, "news": news}
 
 
+USED_DAYS = 120  # 같은 테마·같은 선수(조합)는 이 기간 안에 다시 쓰지 않는다 (콘텐츠가 마르지 않게 고르게 쓴다)
+
+
+def used_combos(today: str, days: int = USED_DAYS) -> tuple[set, dict[str, set[str]]]:
+    """최근 쓴 (테마, 선수들) 조합과, 선수별로 이미 비교한 물건 key. 버린 글(rejected)은 세지 않는다."""
+    combos, items = set(), {}
+    day = date.fromisoformat(today)
+    for f in (x for x in POSTS.iterdir() if (x / "data.yaml").exists()) if POSTS.exists() else []:
+        try:
+            if (day - date.fromisoformat(f.name[:10])).days > days or mark.status(f).get("status") == "rejected":
+                continue
+        except ValueError:
+            continue
+        d = yaml.safe_load((f / "data.yaml").read_text(encoding="utf-8")) or {}
+        names = tuple(sorted(themes.names_in(d)))
+        combos.add((d.get("theme", "receipt"), names))
+        for pr in d.get("prices", []):
+            items.setdefault(d.get("player", ""), set()).add(pr.get("key"))
+    return combos, items
+
+
+def eligible(pool: dict) -> dict[str, set[str]]:
+    """테마별로 쓸 수 있는 선수: 세금은 국내 리그(사업소득·원화), 유니폼은 가격을 확인한 팀."""
+    goods = load_yaml("goods.yaml").get("teams", {}) if (ROOT / "config" / "goods.yaml").exists() else {}
+    return {"tax": {p["name"] for p in pool["players"] if p["sport"] == "kbo"},
+            "jersey": {p["name"] for p in pool["players"] if p.get("team") in goods}}
+
+
 def recent_players(k: int) -> set[str]:
     names = set()
     for f in sorted((x for x in POSTS.iterdir() if (x / "data.yaml").exists()), reverse=True)[:k] if POSTS.exists() else []:
@@ -671,6 +699,22 @@ def theme_sheet(plan: dict, d: dict, n: dict, got: list[dict], cfg: dict) -> str
         for x, key in zip(got, ("a", "b")):
             L += ["", f"[{x['d'].get('short_name') or x['d']['player']} 상세]",
                   strip_lines(number_sheet(x["d"], n[key], x["facts"], x["ex"], cfg), "썸네일:", "제목용", "퀴즈 카드:")]
+        return "\n".join(L)
+    if th == "tax":
+        name = d.get("short_name") or d["player"]
+        tax = load_yaml("tax.yaml")
+        L = [strip_lines(number_sheet(d, n, got[0]["facts"], got[0]["ex"], cfg), "썸네일:", "퀴즈 카드:"),
+             f"썸네일: {name} / 연봉 {receipt.short_won(n['salary_krw'])}이면 / 세금 최대 {receipt.short_won(n['tax_max'])}"
+             " (추천 제목에는 이 금액을 다시 쓰지 않는다)",
+             "세금 (코드 계산, 국세청 종합소득세 세율표):",
+             f"- 월급날 떼는 세금 (사업소득 원천징수 3.3% = 소득세 3% + 지방소득세 0.3%): {won(n['withhold'])}",
+             f"- 세금 최대 (필요경비·공제를 하나도 안 뺐다고 치고 세율표만 적용, 지방소득세 포함): {won(n['tax_max'])}"
+             f" = 연봉의 {themes.ratio(n['tax_rate'] * 100)}%",
+             f"- 최대로 떼면 남는 돈: {won(n['after_max'])}, {n['tax_label']}당 {won(n['after_per'])}",
+             "- 쓰는 법: 선수 연봉은 사업소득이라 구단이 3.3%를 떼고, 5월에 종합소득세를 신고한다. 실제 세금은 필요경비·공제에 따라"
+             " 상한보다 적고 정확한 금액은 공개되지 않는다. '실제로 낸 세금'이라고 쓰지 말고 '최대'·'많아야'로만 쓴다. 절세·투자 권유 금지.",
+             f"- 세율 출처: {tax['source']}",
+             f"퀴즈 카드: 월급날 떼는 세금 맞히기 (정답 {won(n['withhold'])})"]
         return "\n".join(L)
     q = n["item"]
     L = [strip_lines(number_sheet(d, n, got[0]["facts"], got[0]["ex"], cfg), "썸네일:", "퀴즈 카드:"),
@@ -745,8 +789,10 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
     skipped = set(json.loads(skip_file.read_text(encoding="utf-8"))) if skip_file and skip_file.exists() else set()
     if why:
         notes.append("가중치: " + why)
+    used, used_items = used_combos(today)
+    pool = {**pool, "_eligible": eligible(pool)}
     for plan in themes.plans(pool, recent_players(pool.get("recent_posts", 5)) | skipped, seed, n=10,
-                             override=topic_override, theme=theme):
+                             override=topic_override, theme=theme, used=used):
         got = []
         for p in plan["players"]:
             if p["name"] not in cache:
@@ -772,12 +818,23 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
             if th == "life":
                 prices = load_yaml("prices.yaml")
                 fallback = next((i for i in prices["items"] if i["key"] == "seoul_apt"), None)
-                d["prices"], pn = fill_prices(hub, llm, themes.pick_prices(prices, f"{today}-{d['player']}"),
+                d["prices"], pn = fill_prices(hub, llm, themes.pick_prices(prices, f"{today}-{d['player']}",
+                                                                           used_items.get(d["player"], set())),
                                               today, fallback)
                 notes += pn
+            if th == "jersey":  # 유니폼 테마: 물건 = 그 팀 유니폼 (config/goods.yaml)
+                g = load_yaml("goods.yaml")["teams"].get(d.get("team", ""))
+                if not g:
+                    notes.append(f"건너뜀 — {d['player']}: 유니폼 가격 없음 ({d.get('team', '')})")
+                    continue
+                d["prices"] = [{**g, "group": "goods"}]
+            if th in ("life", "jersey"):
                 old = [i["short"] for i in d["prices"] if (date.fromisoformat(today) - date.fromisoformat(str(i["as_of"]))).days > 180]
                 if old:
-                    notes.append(f"가격 확인 필요 (6개월 넘음): {', '.join(old)} → config/prices.yaml")
+                    notes.append(f"가격 확인 필요 (6개월 넘음): {', '.join(old)} → config/prices.yaml·goods.yaml")
+            if th == "tax" and d.get("salary_usd"):
+                notes.append(f"건너뜀 — {d['player']}: 세금 테마는 국내(원화) 연봉만")
+                continue
         title = themes.title_name(d)
         slug = "-".join(x["d"].get("short_name", x["d"]["player"]).replace(" ", "") for x in got)
         folder = out_root / f"{today}-{th}-{slug}"
@@ -794,6 +851,9 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
             post["body"] = post["body"].strip() + "\n\n" + photos.credit(folder)
         (folder / "body.txt").write_text(post["body"].strip() + "\n", encoding="utf-8")
         extra = [f"{i['label']}: {i['source']}" for i in d.get("prices", [])]
+        if th == "tax":
+            tx = load_yaml("tax.yaml")
+            extra += [f"종합소득세 세율: {tx['source']}", f"원천징수 3.3%: {tx['withholding_source']}"]
         (folder / "post.md").write_text(package_md(f"{title} · {tinfo['name']}", th, tinfo["category"], facts, post,
                                                    problems, rounds, cfg, sum(len(x["news"]) for x in got), cost, extra),
                                         encoding="utf-8")
@@ -815,7 +875,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--sample", action="store_true", help="키 없이 가짜 뉴스·가짜 응답으로 모양만 확인")
     ap.add_argument("--topic", default=None, help="선수 이름 (비우면 선수 풀에서 무작위)")
-    ap.add_argument("--theme", default=None, choices=["receipt", "same", "cross", "life"], help="테마 고정 (비우면 무작위)")
+    ap.add_argument("--theme", default=None, choices=["receipt", "same", "cross", "life", "tax", "jersey"], help="테마 고정 (비우면 무작위)")
     ap.add_argument("--out", default=None, help="결과 폴더 (기본 posts/)")
     ap.add_argument("--again", action="store_true", help="다시 뽑기: 하루 한도를 건너뛰고 새 조합으로")
     ap.add_argument("--target", type=int, default=1, help="발행 가능한(✅) 글을 몇 편 만들지")

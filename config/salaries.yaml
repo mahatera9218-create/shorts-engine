@@ -14,6 +14,14 @@ players:
              source: "https://v.daum.net/v/20260318142802406"}
   김광현:   {amount: 1500000000, currency: KRW, basis: "KBO 발표 2026 연봉, 보도", as_of: 2026-03-18,
              source: "https://v.daum.net/v/20260318142802406"}
+  양의지:   {amount: 4200000000, currency: KRW, basis: "KBO 발표 2026 연봉 1위, 보도", as_of: 2026-03-18,
+             source: "https://v.daum.net/v/20260318142802406"}
+  고영표:   {amount: 2600000000, currency: KRW, basis: "KBO 발표 2026 연봉 2위, 보도", as_of: 2026-03-18,
+             source: "https://v.daum.net/v/20260318142802406"}
+  최정:     {amount: 2200000000, currency: KRW, basis: "KBO 발표 2026 연봉 3위, 보도", as_of: 2026-03-18,
+             source: "https://v.daum.net/v/20260318142802406"}
+  박세웅:   {amount: 2100000000, currency: KRW, basis: "KBO 발표 2026 연봉 공동 4위, 보도", as_of: 2026-03-18,
+             source: "https://v.daum.net/v/20260318142802406"}
   문동주:   {amount: 220000000,  currency: KRW, basis: "2026시즌 연봉 계약 (120% 인상), 보도", as_of: 2026-01-21,
              source: "https://v.daum.net/v/YPC2Yu6bGV"}
   오타니 쇼헤이: {amount: 2000000, currency: USD, basis: "10년 7억 달러 계약 중 2026년 실제 지급 연봉 (나머지 지급 유예)", as_of: 2026-04-01,

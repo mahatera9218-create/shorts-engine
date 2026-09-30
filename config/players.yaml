@@ -22,6 +22,11 @@ players:
   - {name: 노시환, sport: kbo, team: 한화 이글스, weight: 1, en: NOH, number: 8}
   - {name: 원태인, sport: kbo, team: 삼성 라이온즈, weight: 1, en: WON, number: 18}
   - {name: 문동주, sport: kbo, team: 한화 이글스, weight: 1, en: MOON, number: 1}
+  # 2026 KBO 연봉 상위 (KBO 발표 보도, 2026-09-30 추가: 세금·생활 물가 테마 재고 확보)
+  - {name: 양의지, sport: kbo, team: 두산 베어스, weight: 1, en: YANG, number: 25}
+  - {name: 고영표, sport: kbo, team: KT 위즈, weight: 1, en: KO}          # 등번호 확인 못 함 → 이름만
+  - {name: 최정, sport: kbo, team: SSG 랜더스, weight: 1, en: CHOI, number: 14}
+  - {name: 박세웅, sport: kbo, team: 롯데 자이언츠, weight: 1, en: PARK, number: 21}
   # 메이저리그
   - {name: 이정후, sport: mlb, team: 샌프란시스코 자이언츠, weight: 3, en: LEE, number: 51}
   - {name: 오타니 쇼헤이, short: 오타니, sport: mlb, team: LA 다저스, weight: 2, en: OHTANI, number: 17}
@@ -61,16 +66,44 @@ teams:
   맨체스터 시티:         {base: [120, 180, 230], num: [255, 255, 255], trim: [20, 40, 80],  stripes: none}
   레알 마드리드:         {base: [248, 248, 250], num: [30, 35, 60],   trim: [200, 165, 80], stripes: none}
   인터 마이애미:         {base: [245, 180, 200], num: [20, 20, 22],   trim: [20, 20, 22],   stripes: none}
+  두산 베어스:           {base: [248, 248, 250], num: [20, 30, 70],   trim: [220, 30, 40],  stripes: none}
+  KT 위즈:               {base: [25, 25, 28],   num: [255, 255, 255], trim: [220, 30, 40],  stripes: none}
+  롯데 자이언츠:         {base: [248, 248, 250], num: [20, 35, 80],   trim: [215, 30, 45],  stripes: none}
+
+# 연고지·홈 도시 (여행·지역 아파트 테마 아이디어용, config/ideas.yaml). 구단 연고지는 공식 정보.
+cities:
+  KIA 타이거즈: 광주
+  한화 이글스: 대전
+  삼성 라이온즈: 대구
+  SSG 랜더스: 인천
+  두산 베어스: 서울
+  KT 위즈: 수원
+  롯데 자이언츠: 부산
+  샌프란시스코 자이언츠: 샌프란시스코
+  LA 다저스: 로스앤젤레스
+  애틀랜타 브레이브스: 애틀랜타
+  뉴욕 양키스: 뉴욕
+  아틀레티코 마드리드: 마드리드
+  LAFC: 로스앤젤레스
+  바이에른 뮌헨: 뮌헨
+  샬케 04: 겔젠키르헨
+  맨체스터 시티: 맨체스터
+  레알 마드리드: 마드리드
+  인터 마이애미: 마이애미
 
 # 테마: weight는 뽑힐 확률 가중치, category는 네이버 블로그 카테고리
-themes:
-  receipt: {name: 연봉 영수증, weight: 3, category: 선수 몸값,
+themes:   # 대표 결정 2026-09-30: 생활 물가 5/10 (광고 단가 최고: 자동차 6,225원·부동산 2,480원 vs 스포츠 85원), 나머지 5를 나눔
+  life:    {name: 생활 물가 비교, weight: 5, category: 선수 몸값,
+            angle: "올해 연봉과 1경기 몸값을 아파트값·차값으로 바꿔 체감하게 한다"}
+  tax:     {name: 연봉 세금, weight: 1.5, category: 선수 몸값,
+            angle: "올해 연봉에서 월급날 떼는 세금(3.3%)과 세율표로 본 세금 최대치, 남는 돈을 보여 준다 (국내 리그만)"}
+  receipt: {name: 연봉 영수증, weight: 1, category: 선수 몸값,
             angle: "올해 연봉(상금)을 경기·기록 단위로 쪼갠다"}
-  same:    {name: 같은 종목 비교, weight: 2, category: 몸값 대결,
+  same:    {name: 같은 종목 비교, weight: 1, category: 몸값 대결,
             angle: "같은 종목 두 선수의 올해 연봉과 1경기 몸값을 비교한다"}
-  cross:   {name: 다른 종목 비교, weight: 2, category: 몸값 대결,
+  jersey:  {name: 유니폼 vs 몸값, weight: 1, category: 선수 몸값,
+            angle: "그 팀 유니폼 한 벌 값과 연봉·1경기 몸값을 비교한다 (유니폼 가격을 확인한 팀만)"}
+  cross:   {name: 다른 종목 비교, weight: 0.5, category: 몸값 대결,
             angle: "종목이 다른 두 스타의 올해 연봉과 1경기 몸값을 비교한다"}
-  life:    {name: 생활 물가 비교, weight: 3, category: 선수 몸값,
-            angle: "올해 연봉과 1경기 몸값을 서울 아파트값·차값으로 바꿔 체감하게 한다"}
 
 recent_posts: 5   # 최근 몇 편에 나온 선수는 다시 뽑지 않는다
