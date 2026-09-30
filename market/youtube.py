@@ -8,7 +8,7 @@ from __future__ import annotations
 from .common import request_json, secret
 
 BASE = "https://www.googleapis.com/youtube/v3"
-COST = {"search": 100, "videos": 1, "channels": 1}
+COST = {"search": 100, "videos": 1, "channels": 1, "playlistItems": 1}
 
 
 class QuotaExceeded(RuntimeError):
