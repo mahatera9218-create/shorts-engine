@@ -1,7 +1,7 @@
 """썸네일 배경 사진: Pexels API (무료 상업 이용, 허용된 통로).
 
 API 이용 조건: 글에 Pexels 링크와 작가 이름을 표시한다 ("사진: 작가 / Pexels" + 사진 주소).
-선수 사진은 쓰지 않는다 (초상권). 경기장·공·배트처럼 사물·장소 위주 검색어를 쓴다.
+선수 사진은 쓰지 않는다 (초상권). 경기장·공·배트처럼 사물·장소 위주 검색어를 쓰고, 사람이 나온 사진은 설명(alt)으로 거른다.
 키는 환경 변수 PEXELS_API_KEY (GitHub Secrets). 없으면 사진 없이 그린 썸네일로 대신한다.
 """
 from __future__ import annotations
@@ -19,6 +19,9 @@ from market.common import ROOT, secret
 SEARCH = "https://api.pexels.com/v1/search"
 MUST = {"야구": "baseball", "축구": ("soccer", "football"), "농구": "basketball", "골프": "golf"}  # 사진 설명에 있어야 할 말
 GRAYISH = ("black and white", "black-and-white", "monochrome", "grayscale")
+# 사람이 알아볼 수 있게 나온 사진은 뺀다 (2026-09-30): 모르는 사람이 그 선수처럼 보이면 오해·초상권 문제. 관중석처럼 작게 보이는 건 괜찮다
+PEOPLE = ("man", "men", "woman", "women", "boy", "girl", "child", "kid", "person", "people", "player", "batter",
+          "pitcher", "catcher", "coach", "umpire", "athlete", "portrait", "face", "father", "son", "team", "golfer")
 QUERIES = {  # photo = 썸네일 배경 (본문은 카드뉴스라 사진을 쓰지 않는다)
     "photo": {"야구": ["baseball stadium", "baseball field", "baseball stadium night lights"],
               "축구": ["soccer stadium", "football stadium lights"],
@@ -60,7 +63,8 @@ def fetch(folder: Path, sport: str, seed: str, name: str = "photo") -> dict | No
         must = MUST[kind] if isinstance(MUST[kind], tuple) else (MUST[kind],)
         photos = [p for p in r.json().get("photos", []) if p["id"] not in used_ids()
                   and any(w in (p.get("alt") or "").lower() for w in must)       # 종목과 상관없는 사진 빼기
-                  and not any(g in (p.get("alt") or "").lower() for g in GRAYISH)]  # 흑백 빼기
+                  and not any(g in (p.get("alt") or "").lower() for g in GRAYISH)  # 흑백 빼기
+                  and not any(w in (p.get("alt") or "").lower().replace(",", " ").split() for w in PEOPLE)]  # 사람 빼기
         start = h % max(1, min(len(photos), 10))  # 상위 10장 안에서 글마다 다르게
         for p in photos[start:] + photos[:start]:
             img = requests.get(p["src"]["large2x"], timeout=30)

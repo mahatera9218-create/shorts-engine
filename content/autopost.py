@@ -775,7 +775,7 @@ def theme_sheet(plan: dict, d: dict, n: dict, got: list[dict], cfg: dict) -> str
         name = d.get("short_name") or d["player"]
         tax = load_yaml("tax.yaml")
         L = [strip_lines(number_sheet(d, n, got[0]["facts"], got[0]["ex"], cfg), "썸네일:", "퀴즈 카드:"),
-             f"썸네일: {name} / 연봉 {receipt.short_won(n['salary_krw'])}이면 / 세금 최대 {receipt.short_won(n['tax_max'])}"
+             f"썸네일: {name} / 연봉 {won(n['salary_krw'])}이면 / 세금 최대 {receipt.short_won(n['tax_max'])}"
              " (추천 제목에는 이 금액을 다시 쓰지 않는다)",
              "세금 (코드 계산, 국세청 종합소득세 세율표):",
              f"- 월급날 떼는 세금 (사업소득 원천징수 3.3% = 소득세 3% + 지방소득세 0.3%): {won(n['withhold'])}",

@@ -341,7 +341,7 @@ def build_tax(folder: Path, d: dict, photo: Image.Image | None) -> dict:
     n = compute_tax(d, load_yaml("tax.yaml"))
     name = d.get("short_name") or d["player"]
     total = 4
-    imgs = {"thumb.png": receipt.poster(f"{d['season']} 연봉 세금", name, f"연봉 {short_won(n['salary_krw'])}이면",
+    imgs = {"thumb.png": receipt.poster(f"{d['season']} 연봉 세금", name, f"연봉 {won(n['salary_krw'])}이면",
                                         f"세금 최대 {short_won(n['tax_max'])}", photo, jerseys=jersey.for_players([d["player"]]))}
     first, ask = f"{name} 연봉 {short_won(n['salary_krw'])},", "월급날 떼는 세금은?"
     im, dr = _base(2, total)
@@ -370,7 +370,7 @@ def build_tax(folder: Path, d: dict, photo: Image.Image | None) -> dict:
     note = "실제 세금은 필요경비·공제만큼 이보다 적어요 · 국세청 세율표"
     center_text(dr, (W / 2, end + 60), note, fit(dr, note, "r", 28, W * 0.86), SOFT)
     imgs["card_table.png"] = im
-    st = {"hook": {"tag": f"{d['season']} 연봉 세금", "name": name, "label": f"연봉 {short_won(n['salary_krw'])}이면",
+    st = {"hook": {"tag": f"{d['season']} 연봉 세금", "name": name, "label": f"연봉 {won(n['salary_krw'])}이면",
                    "big": f"세금 최대 {short_won(n['tax_max'])}", "players": [d["player"]]},
           "quiz": {"lines": [first, ask], "options": ["약 " + won(v) for v in opts], "answer": idx},
           "answer": {"big": won(n["withhold"]), "line": line},

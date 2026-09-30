@@ -130,7 +130,8 @@ def poster(tag: str, name: str, label: str, big: str, photo: Image.Image | None 
     dr.text((x0 + w * 0.025, w * 0.06 + w * 0.02 - t), tag, font=tf, fill=WHITE)
     dr.text((x0 - w * 0.005, w * 0.31), name, font=fit(dr, name, "display", int(w * 0.2), w * 0.88), fill=WHITE,
             anchor="lm", stroke_width=int(w * 0.012), stroke_fill=(0, 0, 0))
-    dr.text((x0, w * 0.56), label, font=font("display", int(w * 0.085)), fill=WHITE, anchor="lm",
+    dr.text((x0, w * 0.56), label, font=fit(dr, label, "display", int(w * 0.085), w * (0.55 if jerseys else 0.88)),
+            fill=WHITE, anchor="lm",
             stroke_width=int(w * 0.007), stroke_fill=(0, 0, 0))
     dr.text((x0 - w * 0.005, w * 0.75), big, font=fit(dr, big, "display", int(w * 0.24), w * 0.88), fill=GOLD,
             anchor="lm", stroke_width=int(w * 0.01), stroke_fill=(0, 0, 0))
