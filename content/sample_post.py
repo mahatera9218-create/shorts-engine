@@ -55,6 +55,8 @@ class FakeClaude:
             if "지역:" in prompt:
                 return {"found": True, "price_krw": 324_500_000, "deal_date": "2026-08", "source": 1}
             return {"found": True, "price_krw": 1_230_000_000, "deal_date": "2026-08", "source": 1}
+        if schema.get("properties", {}).get("players"):  # 화제 선수 (예시에서는 없음)
+            return {"players": []}
         if schema == REVIEW_SCHEMA:
             return {"scores": [{"criterion": c, "score": 4, "reason": "예시"} for c in REVIEW_CRITERIA], "fixes": []}
         if schema == POST_SCHEMA:
