@@ -8,5 +8,5 @@ __pycache__/
 output/
 *.mp4
 !posts/**/clip.mp4
-!posts/**/shorts.mp4
+!shorts/**/video.mp4
 site/
