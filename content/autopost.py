@@ -211,11 +211,11 @@ WRITE_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"(닉네�
 - 5개 모두 숫자표의 '제목용 짧은 이름'으로 시작한다 (검색 유입 + 스타 이름으로 눈길). 성+이름 전체를 쓰지 않는다.
 - 추천 제목은 짧은 이름 + 숫자 후킹 (예: "오타니 9,496억 계약인데 올해 27억?", "이정후 298억, 시즌 끝나도 다 받을까?"). 숫자로 반전·궁금증을 만든다.
 - 썸네일 금액(숫자표 '썸네일' 줄)은 추천 제목에 되풀이하지 않는다. 썸네일은 "얼마", 제목은 "왜?".
-- 25자 이하 (띄어쓰기 포함). 던진 궁금증은 본문 첫 화면(첫 3문단)에서 답한다. 선수 이름은 태그에도 넣는다.
+- 25자 이하 (띄어쓰기 포함). 발행 때 코드가 추천 제목 뒤에 검색어 괄호('(이름 연봉 2026 · 팀)')를 붙이니 제목에 그 말을 억지로 넣지 않는다. 던진 궁금증은 본문 첫 화면(첫 3문단)에서 답한다. 선수 이름은 태그에도 넣는다.
 - 추천 제목은 퀴즈 카드의 정답(누가 더 비싼지, 몇 대인지, 얼마짜리인지)을 묻지 않는다. 퀴즈 정답은 퀴즈 카드 뒤에서만 공개되므로
   제목이 그걸 물으면 첫 화면에서 답할 수 없다. 제목의 궁금증은 첫 화면에서 풀고, 퀴즈는 그다음 궁금증으로 쓴다.
 - 물음표는 1개까지. "충격", "경악", "헉", "소름", "역대급" 같은 과장어 금지.
-- tags: 10개 이하, 띄어쓰기 없이, 한글·영문·숫자만 (점·%·가운뎃점·하이픈 같은 특수문자 금지: 네이버가 태그로 받지 않는다).
+- tags: 10개 안팎, 이 글에만 맞는 말(테마의 물건·세금·도시, 기록 단위, 비교 상대 등). 선수·팀·리그 태그는 코드가 앞에 붙인다. 띄어쓰기 없이, 한글·영문·숫자만 (점·%·가운뎃점·하이픈 같은 특수문자 금지: 네이버가 태그로 받지 않는다).
 - cross_compare: 본문에 쓴 교차 비교 한 줄 요약.
 
 설계 (brief: 본문보다 먼저 채운다. 스킬 0단계의 9가지 질문을 이 글에 적용한 답)
@@ -913,6 +913,46 @@ def short_name(p: dict) -> str:
     return p.get("short") or p["name"]
 
 
+TAGS_MAX = 15  # 대표 결정 2026-09-30 (양찬군주 벤치마크: 글당 30개 → 억지 태그 없이 15개 안팎부터)
+
+
+def _people(d: dict) -> list[dict]:
+    return [d["a"], d["b"]] if d.get("theme") in ("same", "cross") else [d]
+
+
+def _money_word(x: dict) -> str:
+    return "상금" if "골프" in str(x.get("sport", "")) else "연봉"
+
+
+def _league(x: dict) -> str:
+    m = re.search(r"\((.+?)\)", str(x.get("sport", "")))  # "야구 (메이저리그)" → 메이저리그
+    return m.group(1) if m else str(x.get("sport", "")).split(" ")[0]
+
+
+def base_tags(d: dict) -> list[str]:
+    """코드가 붙이는 기본 태그: 선수(짧은·전체 이름)·팀·리그·'이름+연봉'·'리그+연봉'·'연도+리그'. 글쓴이 태그 앞에 둔다."""
+    out = []
+    for x in _people(d):
+        nm, lg, mw = x.get("short_name") or x["player"], _league(x), _money_word(x)
+        out += [nm, x["player"], f"{nm}{mw}", x.get("team", ""), lg, f"{lg}{mw}", f"{d.get('season', '')}{lg}"]
+    return [t for t in out if t]
+
+
+def search_suffix(d: dict, title: str) -> str:
+    """추천 제목 뒤에 붙이는 검색어 괄호 (대표 결정 2026-09-30, 1주 시험): 사람들이 치는 '이름 연봉'을 제목에 그대로.
+    예: "(이정후 연봉 2026 · 샌프란시스코 자이언츠)". 제목에 이미 있는 말은 빼고, 붙일 게 없으면 빈 문자열."""
+    ppl = _people(d)
+    flat = title.replace(" ", "")
+    words = [f"{x.get('short_name') or x['player']} {_money_word(x)}" for x in ppl]
+    words = [w for w in words if w.replace(" ", "") not in flat]
+    if not words:
+        return ""
+    tail = [str(d.get("season", ""))] if str(d.get("season", "")) not in title else []
+    team = ppl[0].get("team", "") if len(ppl) == 1 else ""
+    words[-1] = " ".join([words[-1]] + tail)
+    return "(" + " · ".join(words + ([team] if team and team not in title else [])) + ")"
+
+
 def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str | None = None,
         out_root: Path = POSTS, again: bool = False) -> tuple[str, Path | None]:
     """again: 발행 도우미 '다시 뽑기' — 하루 한도를 건너뛰고 다른 조합으로 쓴다 (버린 글의 선수는 최근 목록에 있어 제외된다)."""
@@ -1005,6 +1045,10 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
         post, problems, rounds = write_post(llm, {"category": category, "angle": tinfo["angle"]}, sheet,
                                             cfg.get("max_revisions", 2))
         cost = llm.cost_usd() - start_cost
+        post["tags"] = clean_tags(base_tags(d) + list(post.get("tags", [])), TAGS_MAX)
+        rec_t = post["titles"][post["recommended"] - 1] if 1 <= post["recommended"] <= len(post["titles"]) else None
+        if rec_t and (suf := search_suffix(d, rec_t["text"])):  # 검사는 본 제목(25자)으로 끝났다. 발행 제목에만 덧붙인다
+            rec_t["text"] = f"{rec_t['text'].strip()} {suf}"
         (folder / "data.yaml").write_text(yaml.safe_dump(d, allow_unicode=True, sort_keys=False), encoding="utf-8")
         (folder / "facts.json").write_text(json.dumps(facts, ensure_ascii=False, indent=1), encoding="utf-8")
         if photos.credit(folder):  # Pexels 이용 조건: 작가·Pexels 표시 (숫자 검사 뒤에 붙인다)

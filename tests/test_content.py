@@ -208,12 +208,23 @@ class ContentTest(unittest.TestCase):
               "answer": {"big": "3,167만원", "line": "x"},
               "table": {"title": "t", "header": ["기준", "1번에"], "rows": [["경기", "1"]] * 4, "hot": [0]}, "wage": None}
         sc = clip.scenes(st, None)
-        assert [type(s).__name__ for s in sc] == ["Hook", "Quiz", "Answer", "Table", "Outro"]
+        assert [type(s).__name__ for s in sc] == ["Hook", "Quiz", "Answer", "Reveal", "Table", "Outro"]
         assert 15 <= sum(s.dur for s in sc) <= 25  # 15~25초
+        assert clip.tease("9,045만원") == "???" and clip.tease("모델Y 597대") == "모델Y ???대"  # 표지에서 답을 가린다
+        assert clip.tease("2억원 vs 1억원") == "??? vs ???"
         with tempfile.TemporaryDirectory() as t:
             p = {"titles": [{"text": "오타니 1홈런에 9,045만원", "type": "숫자형", "best": True}], "tags": ["오타니", "연봉"]}
             text = clip.caption(Path(t), p)
             assert text.startswith("오타니 1홈런에 9,045만원") and "#오타니 #연봉" in text
+
+    def test_tags_and_title_suffix(self):
+        from content.autopost import base_tags, search_suffix
+        from content.desk import clean_tags
+        d = {"player": "이정후", "team": "샌프란시스코 자이언츠", "season": 2026, "sport": "야구 (메이저리그)", "theme": "life"}
+        tags = clean_tags(base_tags(d) + ["테슬라"] * 3 + [f"t{i}" for i in range(20)])
+        assert tags[:3] == ["이정후", "이정후연봉", "샌프란시스코자이언츠"] and len(tags) == 15
+        assert search_suffix(d, "이정후 안타 하나 2억, 모델Y 몇 대?") == "(이정후 연봉 2026 · 샌프란시스코 자이언츠)"
+        assert search_suffix(d, "이정후 연봉 2026 샌프란시스코 자이언츠") == ""
     def test_jersey_spec(self):
         from content import jersey
         o = jersey.spec("오타니 쇼헤이")

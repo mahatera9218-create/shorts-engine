@@ -1,9 +1,10 @@
 """유튜브 쇼츠 전용 영상 A·B·C (대표 결정 2026-09-30, reports/2026-09-30-쇼츠-스타일-분석.md).
 
 네이버 클립(1인 1주제 체감형)과 따로, 쇼츠 벤치마크에서 잘 된 형식을 매일 한 편씩 만든다. Claude를 쓰지 않는다(계산은 코드).
-- A. 통장형 (약 30초): 오늘 ✅ 후보 글의 확인된 숫자로 "{선수}가 뛸 때마다 통장에 꽂히는 돈" — 1경기·기록 단위·최저임금
-- B. 비교형 (약 25초): 확인 연봉표(config/salaries.yaml)로 두 쪽 연봉 대결 → 막대가 자라고 "N배"
-- C. 한 장 반복형 (약 7초): 확인 연봉표 순위를 한 장에 (연봉·월급·하루 단위를 돌려 가며) → 끝나면 처음으로 이어짐
+도입부에서 답을 주지 않는다 (대표 지적 2026-09-30): 첫 화면은 질문, 답은 맨 끝.
+- A. 통장형 (약 25초): 오늘 ✅ 후보 글의 확인된 숫자로 "{선수} {기록} 1번에 얼마?" → 하루·월급·연봉… 작은 돈부터 → 답은 끝
+- B. 비교형 (약 20초): 확인 연봉표(config/salaries.yaml)로 "누가 더?" → 한쪽씩 공개 → 막대 "N배"는 끝
+- C. 순위 카운트다운 (약 9초): 확인 연봉표 순위, 첫 화면은 가린 칸(???) → 꼴찌부터 공개, 1위는 맨 끝 → 처음으로 이어짐
 
 결과: shorts/<날짜>-<A|B|C>-<주제>/ video.mp4 · meta.txt(첫 줄 제목, 나머지 설명) · data.yaml
 - 숫자는 모두 확인된 값(글의 facts, 연봉표)과 코드 계산. 달러는 오늘 글에서 뽑은 환율(3일 안)로만 원화 환산, 없으면 달러로 둔다.
@@ -174,11 +175,17 @@ class Bars(Scene):
 
 
 class Board(Scene):
-    """순위 한 장: 처음부터 다 보인다 (반복 재생형, 첫 프레임이 곧 표지)."""
+    """순위표 카운트다운: 첫 프레임은 제목 + 가린 칸(???) (표지), 꼴찌부터 한 줄씩 공개, 1위는 맨 끝에 번쩍.
+    (대표 지적 2026-09-30: 처음부터 다 보이면 볼 이유가 없다)"""
+    STEP, START, HOLD = 1.1, 0.9, 1.8
 
-    def __init__(self, title: str, sub: str, rows: list[tuple[str, str]], dur: float = 6.6):
-        self.title, self.sub, self.rows, self.dur = title, sub, rows, dur
-        self.say = f"{title}. " + ", ".join(f"{i + 1}위 {n} {v}" for i, (n, v) in enumerate(rows)) + "."
+    def __init__(self, title: str, sub: str, rows: list[tuple[str, str]], dur: float | None = None):
+        self.title, self.sub, self.rows = title, sub, rows
+        self.dur = dur or self.START + self.STEP * len(rows) + self.HOLD
+        self.say = f"{title}. " + ", ".join(f"{i + 1}위 {n} {v}" for i, (n, v) in reversed(list(enumerate(rows)))) + "."
+
+    def shown_at(self, i: int) -> float:
+        return self.START + self.STEP * (len(self.rows) - 1 - i)
 
     def draw(self, c, t):
         bg(c, t)
@@ -188,12 +195,16 @@ class Board(Scene):
         step = min(150, 900 // max(1, len(self.rows)))
         for i, (name, val) in enumerate(self.rows):
             y = top + i * step
-            glow = 1 + 0.05 * math.sin(math.pi * clamp((t - 0.3 - i * 0.25) / 0.3))
+            t0 = self.shown_at(i)
+            open_ = t >= t0
+            glow = 1 + (0.12 if i == 0 else 0.06) * math.sin(math.pi * clamp((t - t0) / 0.3)) if open_ else 1
             put(c, pill(W - 120, step - 20, PANEL + (255,)), 60, y + step / 2, anchor="l")
             put(c, label(f"{i + 1}", "display", 64, GOLD if i == 0 else GRAY), 120, y + step / 2)
-            put(c, label(name, "b", 60, WHITE, max_w=460), 200, y + step / 2, anchor="l")
-            v = label(val, "display", 64, GOLD if i == 0 else WHITE, max_w=420)
+            put(c, label(name if open_ else "???", "b", 60, WHITE if open_ else GRAY, max_w=460), 200, y + step / 2, anchor="l")
+            v = label(val if open_ else "???", "display", 64, (GOLD if i == 0 else WHITE) if open_ else GRAY, max_w=420)
             put(c, v, W - 90 - v.width * glow, y + step / 2, glow, anchor="l")
+        if self.rows and 0 <= t - self.shown_at(0) < 0.15:  # 1위 공개 번쩍
+            c.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, int(100 * (1 - (t - self.shown_at(0)) / 0.15)))))
 
 
 class Ask(Scene):
@@ -271,9 +282,10 @@ def plan_a(today: str) -> dict | None:
         pick_u += [u for u in units if u not in pick_u][:3 - len(pick_u)]
         per = [(u["label"], sal / u["count"]) for u in pick_u]
         wage_year = d.get("min_wage_monthly_krw", 0) * 12
+        head_lab = per[1][0] if len(per) > 1 else per[0][0]  # 질문 = 대표 기록 1번에 얼마 (끝에서 공개)
         return {"kind": "A", "key": key, "name": name, "player": d["player"], "salary": sal, "per": per,
-                "wage_year": wage_year, "source": f.parent.name, "fx_label": d.get("fx_label", ""),
-                "title": f"{name}{_josa(name, '이', '가')} 뛸 때마다 통장에 꽂히는 돈"}
+                "head": head_lab, "wage_year": wage_year, "source": f.parent.name, "fx_label": d.get("fx_label", ""),
+                "title": f"{name} {head_lab}에 버는 돈, 얼마?"}
     return None
 
 
@@ -354,13 +366,15 @@ def build(kind: str, today: str, folder: Path | None = None) -> tuple[dict, list
         if not p:
             return None
         pics, cr = pics_for(folder, [p["player"]])
-        sc = [Title("통장 체크", [p["title"].split(" 통장")[0], "통장에 꽂히는 돈"], [p["player"]], 2.2, pics, cr),
-              Counter("올해 연봉", p["salary"], "1년 동안 들어오는 돈"),
-              Counter("월급으로 치면", p["salary"] / 12, "12로 나눈 값"),
-              Counter("하루에", p["salary"] / 365, "쉬는 날까지 365일로 나눈 값")]
-        for i, (lab, v) in enumerate(p["per"]):
-            yrs = v / p["wage_year"] if p["wage_year"] else 0
-            sc.append(Counter(f"{lab}에", v, f"최저임금으로 {count(yrs)}년 일해야 버는 돈" if i == 0 and yrs >= 0.1 else ""))
+        # 도입부에서 답을 주지 않는다 (대표 지적 2026-09-30): 질문(대표 기록 1번에 얼마?) → 작은 돈부터 쌓아 올리고 → 답은 맨 끝
+        steps = [("하루에", p["salary"] / 365, "쉬는 날까지 365일로 나눈 값"), ("월급으로 치면", p["salary"] / 12, "12로 나눈 값"),
+                 ("올해 연봉", p["salary"], "1년 동안 들어오는 돈")]
+        steps += [(f"{lab}에", v, "") for lab, v in p["per"] if lab != p["head"] and lab == "1경기"]  # 너무 길지 않게 (약 20초)
+        sc = [Title("통장 체크", [p["name"], f"{p['head']}에 얼마?"], [p["player"]], 2.2, pics, cr)]
+        sc += [Counter(a, v, sub) for a, v, sub in sorted(steps, key=lambda x: x[1])]
+        v = dict(p["per"])[p["head"]]
+        yrs = v / p["wage_year"] if p["wage_year"] else 0
+        sc.append(Counter(f"그래서 {p['head']}에", v, f"최저임금으로 {count(yrs)}년 일해야 버는 돈" if yrs >= 0.1 else ""))
         sc.append(Ask("이 몸값, 적당한가요?"))
         p["q"] = "이 몸값, 적당한가요?"
         p["basis"] = f"오늘 글({p['source']})의 확인된 연봉·기록으로 계산" + (f", 환율 {p['fx_label']}" if p["fx_label"] else "")
@@ -375,15 +389,15 @@ def build(kind: str, today: str, folder: Path | None = None) -> tuple[dict, list
         rn = o.get("rn") or o["right"][0]["short"]
         big, small = max(lv, rv), min(lv, rv)
         times = f"{count(big / small)}배"
-        winner = ln if lv > rv else rn
         players = ([o["left"][0]["name"]] if len(o["left"]) == 1 else []) + [o["right"][0]["name"]]  # 합계 쪽은 한 사람 얼굴을 쓰지 않는다
         pics, cr = pics_for(folder, players)
+        # 도입부에서 답을 주지 않는다 (대표 지적 2026-09-30): 누가 더? → 한쪽씩 공개 → 몇 배는 맨 끝 막대에서
         sc = [Title("연봉 대결", [o["title"].split(" vs ")[0], f"vs {o['title'].split(' vs ')[1]}" if " vs " in o["title"]
-                               else f"vs {rn} 1명"], players, 2.2, pics, cr,
-                    say=o["title"].replace(" vs ", " 대 ") + ("" if " vs " in o["title"] else f", {rn} 1명보다 많을까요?")),
+                               else f"vs {rn} 1명", "누가 더 받을까?"], players, 2.2, pics, cr,
+                    say=o["title"].replace(" vs ", " 대 ") + ", 누가 더 받을까요?"),
+              Counter(ln, lv, f"{len(o['left'])}명 연봉 합계" if len(o["left"]) > 1 else "올해 연봉"),
+              Counter(rn, rv, "올해 연봉"),
               Bars({"name": ln, "v": lv, "label": won(lv)}, {"name": rn, "v": rv, "label": won(rv)}, times),
-              Counter(f"{winner} 쪽이", big - small, "만큼 더 받는다"),
-              Title("정리하면", [f"{winner} 연봉은", f"{rn if winner == ln else ln}의 {times}"], [], 2.4),
               Ask(o["q"])]
         o |= {"kind": "B", "q": o["q"], "times": times, "lv": lv, "rv": rv,
               "basis": "확인 연봉표(config/salaries.yaml, 발표·보도)" + (f", 환율 {fx_label}" if fx_label else ""),
