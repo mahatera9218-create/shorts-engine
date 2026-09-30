@@ -139,7 +139,14 @@ REVIEW_SCHEMA = {
     "required": ["scores", "fixes"],
     "additionalProperties": False,
 }
-REVIEW_PASS = 4
+REVIEW_PASS = 4     # 4점 미만 기준이 있으면 한 번 고쳐 쓴다
+REVIEW_FLOOR = 2    # 고쳐 쓴 뒤 2점 이하가 있거나
+REVIEW_MEAN = 3.5   # 평균이 3.5 미만이면 기준 미달 (대표 결정 2026-10-01 비용 효율: 전부 4점 이상만 통과시키니 9편 중 1편만 남음)
+
+
+def review_ok(scores: list[dict]) -> bool:
+    vals = [x["score"] for x in scores]
+    return bool(vals) and min(vals) > REVIEW_FLOOR and sum(vals) / len(vals) >= REVIEW_MEAN
 
 REVIEW_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"의 편집장이다. 위 스킬 문서의 0단계(9가지 질문과 지금의 가설)를 기준으로
 초안을 홈피드에서 이 글을 처음 보는 독자의 눈으로 읽고, 아래 7개 기준을 1~5점으로 매겨라. 후하게 주지 마라.
@@ -558,9 +565,9 @@ def write_post(llm, topic: dict, sheet: str, max_revisions: int) -> tuple[dict, 
         problems = check_post(post, sheet)
     # 편집장 검토 (스킬 0단계 기준): 4점 미만이 있으면 한 번 고쳐 쓰고, 고친 글이 코드 검사를 통과할 때만 바꾼다
     review = review_post(llm, sheet, post)
-    for _ in range(2):
+    for _ in range(1):  # 편집장 고쳐 쓰기는 1번만 (비용 효율, 2026-10-01)
         low = [x for x in review["scores"] if x["score"] < REVIEW_PASS]
-        if not low or problems or llm.cost_usd() >= cap:
+        if review_ok(review["scores"]) or problems or llm.cost_usd() >= cap:  # 통과 기준이면 고쳐 쓰지 않는다 (비용 효율)
             break
         fix = (prompt + "\n\n아래는 네가 쓴 초안과 편집장 검토다. 검토의 수정 지시를 반영해 같은 JSON 형식으로 다시 내라. "
                "숫자는 숫자표에 있는 것만.\n검토:\n" + "\n".join(f"- {x['criterion']} {x['score']}점: {x['reason']}" for x in low)
@@ -571,8 +578,8 @@ def write_post(llm, topic: dict, sheet: str, max_revisions: int) -> tuple[dict, 
         post, rounds = again, rounds + 1
         review = review_post(llm, sheet, post)
     post["review"] = review
-    low = [x["criterion"] for x in review["scores"] if x["score"] < REVIEW_PASS]
-    if low:  # 고쳐 써도 기준 미달이면 발행 가능으로 두지 않는다 (도우미에서 ⚠️, 다시 뽑기 권장)
+    if not review_ok(review["scores"]):  # 고쳐 써도 기준 미달이면 발행 가능으로 두지 않는다 (도우미에서 ⚠️, 다시 뽑기 권장)
+        low = [x["criterion"] for x in review["scores"] if x["score"] < REVIEW_PASS]
         problems = problems + [f"편집장 기준 미달 ({', '.join(low)}) — 다시 뽑기 권장"]
     return post, problems, rounds
 
@@ -866,6 +873,7 @@ def theme_sheet(plan: dict, d: dict, n: dict, got: list[dict], cfg: dict) -> str
 
 
 DAILY_CAP_USD = 5.0  # 한 번 실행에서 쓸 Claude 비용 상한 (후보 4편 + 재시도 포함)
+MARKETER_CAP_USD = 0.8  # 마케터 한 명의 하루 상한 (비용 효율, 2026-10-01): 넘으면 그날은 더 안 쓴다
 NEWS_DAYS = 3        # 최근 며칠 기사 수로 "지금 궁금한 선수"를 잰다
 NEWS_PER_BOOST = 15  # 기사 15건마다 가중치 +1배 (최대 3배)
 
@@ -1173,8 +1181,9 @@ def main() -> None:
         made += ok
         if made >= a.target or (not folder and "오늘 이미" in msg):
             break
-        if llm.cost_usd() >= DAILY_CAP_USD:
-            lines.append(f"하루 비용 상한 ${DAILY_CAP_USD:.0f}에 닿아 멈춥니다.")
+        cap_usd = MARKETER_CAP_USD if a.marketer else DAILY_CAP_USD
+        if llm.cost_usd() >= cap_usd:
+            lines.append(f"비용 상한 ${cap_usd:.1f}에 닿아 멈춥니다.")
             break
     msg = "\n\n".join(lines) + f"\n\n결과: 발행 가능 {made}편 / 목표 {a.target}편"
     if made < a.target:
