@@ -9,6 +9,7 @@ on:
         description: "글 폴더 이름 (비우면 posts/ 전부)"
         type: string
         required: false
+  workflow_call:   # 발행 도우미 "사진·클립 다시 그리기" 버튼 (desk-button.yml)
 
 permissions:
   contents: write
