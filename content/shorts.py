@@ -293,8 +293,8 @@ def options_b(table: list[dict]) -> list[dict]:
         out.append({"key": "B-kbo1-nba1", "left": [kbo[0]], "right": [nba[0]],
                     "title": f"KBO 연봉 1위 vs NBA 연봉 1위", "q": "이 차이, 납득 되나요?"})
     if len(kbo) >= 5 and nba:
-        out.append({"key": "B-kbo5-nba1", "left": kbo[:5], "right": [nba[0]], "ln": "KBO 연봉 TOP5 합계",
-                    "title": f"KBO 연봉 TOP5를 다 합쳐도", "q": "누가 더 받아야 할까요?"})
+        out.append({"key": "B-kbo5-nba1", "left": kbo[:5], "right": [nba[0]], "ln": "KBO 연봉 TOP 5 합계",
+                    "title": f"KBO 연봉 TOP 5를 다 합쳐도", "q": "누가 더 받아야 할까요?"})
     kor = [x for x in mlb if x["name"] in ("김하성", "김혜성", "이정후", "송성문")]
     if len(kor) >= 2:
         out.append({"key": "B-kor-mlb", "left": [kor[0]], "right": [kor[1]],
@@ -305,8 +305,8 @@ def options_b(table: list[dict]) -> list[dict]:
             out.append({"key": "B-kbo1-judge", "left": [kbo[0]], "right": [judge],
                         "title": "KBO 연봉 1위 vs 애런 저지", "q": "몇 배일 것 같았나요?"})
     if len(nba) >= 2 and len(kbo) >= 10:
-        out.append({"key": "B-kbo10-nba1", "left": kbo[:10], "right": [nba[0]], "ln": "KBO 연봉 TOP10 합계",
-                    "title": "KBO 연봉 TOP10 합계 vs 커리 1명", "q": "이 차이, 어디서 올까요?"})
+        out.append({"key": "B-kbo10-nba1", "left": kbo[:10], "right": [nba[0]], "ln": "KBO 연봉 TOP 10 합계",
+                    "title": "KBO 연봉 TOP 10 합계 vs 커리 1명", "q": "이 차이, 어디서 올까요?"})
     return out
 
 
@@ -315,16 +315,16 @@ def options_c(table: list[dict]) -> list[dict]:
     lists = []
     kbo = sorted((x for x in table if x["sport"] == "kbo" and x["krw"]), key=lambda x: -x["krw"])[:5]
     if len(kbo) >= 5:
-        lists.append(("kbo", "2026 KBO 연봉 TOP5", kbo))
+        lists.append(("kbo", "2026 KBO 연봉 TOP 5", kbo))
     nba = sorted((x for x in table if x["sport"] == "nba" and x["krw"]), key=lambda x: -x["krw"])[:6]
     if len(nba) >= 5:
-        lists.append(("nba", "NBA 연봉 TOP6 (2026-27)", nba))
+        lists.append(("nba", "NBA 연봉 TOP 6 (2026-27)", nba))
     units = [("year", "연봉", 1), ("month", "월급으로 치면", 12), ("day", "하루에 버는 돈", 365)]
     out = []
     for lk, title, rows in lists:
         for uk, un, div in units + [("game", "1경기에 버는 돈", SEASON_GAMES.get(lk, 0))]:
             if div:
-                out.append({"key": f"C-{lk}-{uk}", "title": title if uk == "year" else f"{title.split(' TOP')[0]} TOP{len(rows)} {un}",
+                out.append({"key": f"C-{lk}-{uk}", "title": title if uk == "year" else f"{title.split(' TOP')[0]} TOP {len(rows)} {un}",
                             "unit": un, "div": div, "rows": rows, "league": lk})
     return out
 
