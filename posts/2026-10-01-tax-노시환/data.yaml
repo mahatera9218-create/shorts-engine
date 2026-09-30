@@ -1,0 +1,39 @@
+player: 노시환
+short_name: 노시환
+team: 한화 이글스
+season: 2026
+salary_label: 연봉 10억원 · 2026시즌 연봉 계약 (다년 계약은 2027년부터), 보도
+salary_krw: 1000000000
+units:
+- key: games
+  label: 1경기
+  count: 118
+- key: at_bats
+  label: 1타수
+  count: 470
+- key: hits
+  label: 1안타
+  count: 132
+- key: home_runs
+  label: 1홈런
+  count: 27
+headline_unit: home_runs
+salary_basis: 2026시즌 연봉 계약 (다년 계약은 2027년부터), 보도
+min_wage_monthly_krw: 2156880
+sport: 야구 (프로야구)
+card:
+- label: 홈런
+  value: '27'
+- label: 경기
+  value: '118'
+- label: 타수
+  value: '470'
+- label: 안타
+  value: '132'
+- label: 타율
+  value: '0.281'
+- label: 타점
+  value: '90'
+card_date: '2026-09-28'
+theme: tax
+marketer: 3

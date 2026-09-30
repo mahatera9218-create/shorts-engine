@@ -1,0 +1,101 @@
+{
+ "salary": {
+  "value": 3000000000,
+  "label": "올해 연봉",
+  "unit": "KRW",
+  "date": "2026-09-03",
+  "sources": [
+   "https://www.spotvnews.co.kr/news/articleView.html?idxno=1005291"
+  ],
+  "rule": "모두 같음",
+  "differs": null
+ },
+ "contract_total": {
+  "value": 10000000000,
+  "label": "계약 총액(4년 최대)",
+  "unit": "KRW",
+  "date": "2026-10-01",
+  "sources": [
+   "https://www.ftimes.kr/news/articleView.html?idxno=40077"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "games": {
+  "value": 122,
+  "label": "경기",
+  "unit": "games",
+  "date": "2026-09-30",
+  "sources": [
+   "https://mhnse.com/news/articleView.html?idxno=1563766"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "at_bats": {
+  "value": 474,
+  "label": "타수",
+  "unit": "at_bats",
+  "date": "2026-09-30",
+  "sources": [
+   "https://mhnse.com/news/articleView.html?idxno=1563766"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "hits": {
+  "value": 137,
+  "label": "안타",
+  "unit": "hits",
+  "date": "2026-09-30",
+  "sources": [
+   "https://mhnse.com/news/articleView.html?idxno=1563766"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "home_runs": {
+  "value": 33,
+  "label": "홈런",
+  "unit": "home_runs",
+  "date": "2026-09-30",
+  "sources": [
+   "https://mhnse.com/news/articleView.html?idxno=1563766"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "rbi": {
+  "value": 113,
+  "label": "타점",
+  "unit": "rbi",
+  "date": "2026-09-30",
+  "sources": [
+   "https://mhnse.com/news/articleView.html?idxno=1563766"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "batting_avg": {
+  "value": 0.289,
+  "label": "타율",
+  "unit": "avg",
+  "date": "2026-09-30",
+  "sources": [
+   "https://mhnse.com/news/articleView.html?idxno=1563766"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "ops": {
+  "value": 0.901,
+  "label": "OPS",
+  "unit": "ops",
+  "date": "2026-09-30",
+  "sources": [
+   "https://mhnse.com/news/articleView.html?idxno=1563766"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ }
+}

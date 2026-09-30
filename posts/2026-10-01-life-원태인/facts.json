@@ -1,0 +1,90 @@
+{
+ "salary": {
+  "value": 1000000000,
+  "label": "2026시즌 연봉",
+  "unit": "KRW",
+  "date": "2026-09-23",
+  "sources": [
+   "https://www.maniareport.com/view.php?ud=2026092306424030091b55a0d56_19"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "games": {
+  "value": 23,
+  "label": "경기 (9월 21일 롯데전 전까지)",
+  "unit": "경기",
+  "date": "2026-09-21",
+  "sources": [
+   "https://www.mk.co.kr/article/12157693"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "innings": {
+  "value": 132,
+  "label": "이닝 (9월 21일 롯데전 전까지)",
+  "unit": "이닝",
+  "date": "2026-09-21",
+  "sources": [
+   "https://www.mk.co.kr/article/12157693"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "wins": {
+  "value": 7,
+  "label": "승 (9월 21일 롯데전 전까지)",
+  "unit": "승",
+  "date": "2026-09-21",
+  "sources": [
+   "https://www.mk.co.kr/article/12157693"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "losses": {
+  "value": 7,
+  "label": "패 (9월 21일 롯데전 전까지)",
+  "unit": "패",
+  "date": "2026-09-21",
+  "sources": [
+   "https://www.mk.co.kr/article/12157693"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "era": {
+  "value": 4.16,
+  "label": "평균자책점 (9월 21일 롯데전 전까지)",
+  "unit": "점",
+  "date": "2026-09-21",
+  "sources": [
+   "https://www.mk.co.kr/article/12157693"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "innings_2": {
+  "value": 135.33,
+  "label": "이닝 (9월 23일 기준)",
+  "unit": "이닝",
+  "date": "2026-09-23",
+  "sources": [
+   "https://www.sportschosun.com/baseball/2026-09-23/202609230100161370010546"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "compensation_max": {
+  "value": 3000000000,
+  "label": "타 구단 영입 시 최대 보상금",
+  "unit": "KRW",
+  "date": "2026-09-23",
+  "sources": [
+   "https://www.maniareport.com/view.php?ud=2026092306424030091b55a0d56_19"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ }
+}

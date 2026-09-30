@@ -1,0 +1,70 @@
+theme: same
+season: 2026
+sport: 야구 (프로야구)
+a:
+  player: 박찬호
+  short_name: 박찬호
+  team: 두산 베어스
+  season: 2026
+  salary_label: 연봉 28억원 · 4년 최대 80억원 FA 계약 중 올해 연봉, 보도 기준
+  salary_krw: 2800000000
+  units:
+  - key: games
+    label: 1경기
+    count: 134
+  - key: hits
+    label: 1안타
+    count: 141
+  - key: home_runs
+    label: 1홈런
+    count: 5
+  - key: stolen_bases
+    label: 1도루
+    count: 31
+  headline_unit: home_runs
+  salary_basis: 4년 최대 80억원 FA 계약 중 올해 연봉, 보도 기준
+  min_wage_monthly_krw: 2156880
+  sport: 야구 (프로야구)
+  card:
+  - label: 올 시즌 홈런
+    value: '5'
+  - label: 올 시즌 출전 경기
+    value: '134'
+  - label: 올 시즌 안타
+    value: '141'
+  - label: 올 시즌 도루
+    value: '31'
+  - label: 4년 FA 계약 최대 총액
+    value: 8,000,000,000
+  - label: 올 시즌 타율
+    value: '0.281'
+  card_date: '2026-09-29'
+b:
+  player: 오타니 쇼헤이
+  short_name: 오타니
+  team: LA 다저스
+  season: 2026
+  salary_usd: 2000000
+  fx_krw_per_usd: 1352.8
+  salary_currency: USD
+  fx_label: 1달러 = 1,352.8원 (2026-10-01)
+  units:
+  - key: games
+    label: 1경기
+    count: 135
+  - key: home_runs
+    label: 홈런 1개
+    count: 30
+  headline_unit: home_runs
+  salary_basis: 10년 7억 달러 계약 중 2026년 실제 지급 연봉 (나머지 지급 유예)
+  min_wage_monthly_krw: 2156880
+  sport: 야구 (메이저리그)
+  card:
+  - label: 홈런
+    value: '30'
+  - label: 타자 출전 경기
+    value: '135'
+  - label: 다저스와의 10년 계약 총액
+    value: 700,000,000
+  card_date: '2026-09-29'
+marketer: 2

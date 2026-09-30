@@ -1,0 +1,40 @@
+{
+ "a": {
+  "salary_krw": 2800000000,
+  "per": {
+   "games": 20895522.3880597,
+   "hits": 19858156.028368793,
+   "home_runs": 560000000.0,
+   "stolen_bases": 90322580.64516129
+  },
+  "min_wage_yearly_krw": 25882560,
+  "min_wage_years_per": {
+   "games": 0.8073205427925098,
+   "hits": 0.7672407995333071,
+   "home_runs": 21.636190546839263,
+   "stolen_bases": 3.48970815271601
+  }
+ },
+ "b": {
+  "salary_krw": 2705600000.0,
+  "per": {
+   "games": 20041481.48148148,
+   "home_runs": 90186666.66666667
+  },
+  "min_wage_yearly_krw": 25882560,
+  "min_wage_years_per": {
+   "games": 0.7743237717397924,
+   "home_runs": 3.484456972829066
+  }
+ },
+ "unit": "games",
+ "unit_label": "1경기",
+ "va": 20895522.3880597,
+ "vb": 20041481.48148148,
+ "winner": "a",
+ "ratio": 1.04261366143852,
+ "salary_ratio": 1.0348905972797162,
+ "common": [
+  "home_runs"
+ ]
+}

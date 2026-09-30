@@ -1,0 +1,38 @@
+player: 김하성
+short_name: 김하성
+team: 애틀랜타 브레이브스
+season: 2026
+salary_usd: 20000000
+fx_krw_per_usd: 1352.8
+salary_currency: USD
+fx_label: 1달러 = 1,352.8원 (2026-10-01)
+units:
+- key: games
+  label: 1경기
+  count: 51
+- key: at_bats
+  label: 1타수
+  count: 129
+- key: hits
+  label: 1안타
+  count: 15
+headline_unit: hits
+salary_basis: 애틀랜타와 1년 계약, 2026년 연봉 보도 기준
+min_wage_monthly_krw: 2156880
+sport: 야구 (메이저리그)
+card:
+- label: 정규시즌 안타
+  value: '15'
+- label: 정규시즌 경기 수
+  value: '51'
+- label: 정규시즌 타수
+  value: '129'
+- label: 정규시즌 홈런
+  value: '0'
+- label: 정규시즌 타율
+  value: '0.116'
+- label: 정규시즌 타점
+  value: '9'
+card_date: '2026-09-30'
+theme: receipt
+marketer: 3

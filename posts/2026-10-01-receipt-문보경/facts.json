@@ -1,0 +1,79 @@
+{
+ "salary": {
+  "value": 480000000,
+  "label": "문보경 연봉",
+  "unit": "KRW",
+  "date": "2026-09-28",
+  "sources": [
+   "https://www.newsworker.co.kr/news/articleView.html?idxno=506198"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "games": {
+  "value": 97,
+  "label": "경기",
+  "unit": "경기",
+  "date": "2026-09-29",
+  "sources": [
+   "https://www.sportschosun.com/baseball/2026-09-29/202609290100198900013115"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "plate_appearances": {
+  "value": 383,
+  "label": "타석",
+  "unit": "타석",
+  "date": "2026-09-29",
+  "sources": [
+   "https://www.sportschosun.com/baseball/2026-09-29/202609290100198900013115"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "home_runs": {
+  "value": 9,
+  "label": "홈런",
+  "unit": "개",
+  "date": "2026-09-29",
+  "sources": [
+   "https://www.sportschosun.com/baseball/2026-09-29/202609290100198900013115"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "batting_average": {
+  "value": 0.252,
+  "label": "타율",
+  "unit": "",
+  "date": "2026-09-29",
+  "sources": [
+   "https://www.sportschosun.com/baseball/2026-09-29/202609290100198900013115"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "on_base_percentage": {
+  "value": 0.36,
+  "label": "출루율",
+  "unit": "",
+  "date": "2026-09-29",
+  "sources": [
+   "https://www.sportschosun.com/baseball/2026-09-29/202609290100198900013115"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "slugging_percentage": {
+  "value": 0.377,
+  "label": "장타율",
+  "unit": "",
+  "date": "2026-09-29",
+  "sources": [
+   "https://www.sportschosun.com/baseball/2026-09-29/202609290100198900013115"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ }
+}

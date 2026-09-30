@@ -1,0 +1,48 @@
+player: 강백호
+short_name: 강백호
+team: 한화 이글스
+season: 2026
+salary_label: 연봉 30억원 · 4년 최대 100억 원 계약(계약금·연봉·옵션 구성) 중 연봉 몫, 보도 기준
+salary_krw: 3000000000
+units:
+- key: games
+  label: 1경기
+  count: 122
+- key: at_bats
+  label: 1타수
+  count: 474
+- key: hits
+  label: 1안타
+  count: 137
+- key: home_runs
+  label: 1홈런
+  count: 33
+headline_unit: home_runs
+salary_basis: 4년 최대 100억 원 계약(계약금·연봉·옵션 구성) 중 연봉 몫, 보도 기준
+min_wage_monthly_krw: 2156880
+sport: 야구 (프로야구)
+card:
+- label: 홈런
+  value: '33'
+- label: 경기
+  value: '122'
+- label: 타수
+  value: '474'
+- label: 안타
+  value: '137'
+- label: 계약 총액(4년 최대)
+  value: 10,000,000,000
+- label: 타점
+  value: '113'
+card_date: '2026-10-01'
+theme: jersey
+prices:
+- key: jersey_hanwha
+  label: 한화 이글스 2026 어센틱 유니폼
+  short: 한화 유니폼
+  unit: 벌
+  price_krw: 159000
+  as_of: 2026-06-01
+  source: 한화이글스 공식 유니폼 판매처 (26 썸머 블루 어센틱 159,000원) https://spyder.co.kr/product/%ED%95%9C%ED%99%94%EC%9D%B4%EA%B8%80%EC%8A%A4-26-%EC%9D%B4%EA%B8%80%EC%8A%A4-x-%EA%BF%88%EC%88%9C%EC%9D%B4-%EC%96%B4%EC%84%BC%ED%8B%B1-%EC%9C%A0%EB%8B%88%ED%8F%BC%EC%97%B4%EB%A7%88%ED%82%B9/17559/
+  group: goods
+marketer: 1
