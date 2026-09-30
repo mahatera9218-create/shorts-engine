@@ -30,14 +30,14 @@ from .mark import status as read_status
 TAG_OK = re.compile(r"^[0-9A-Za-z가-힣_]+$")  # 네이버 블로그 태그: 한글·영문·숫자·_ 만 (특수문자면 거절됨)
 
 
-def clean_tags(tags: list[str]) -> list[str]:
-    """띄어쓰기·가운뎃점은 떼고, 그래도 특수문자(. % - 등)가 남는 태그는 뺀다. 최대 10개."""
+def clean_tags(tags: list[str], limit: int = 15) -> list[str]:
+    """띄어쓰기·가운뎃점은 떼고, 그래도 특수문자(. % - 등)가 남는 태그는 뺀다. 최대 15개 (2026-09-30, 전엔 10개)."""
     out = []
     for x in tags:
         x = re.sub(r"[\s·#]", "", x)
         if TAG_OK.match(x) and x not in out:
             out.append(x)
-    return out[:10]
+    return out[:limit]
 
 POSTS = ROOT / "posts"
 REPO = os.environ.get("GITHUB_REPOSITORY", "mahatera9218-create/shorts-engine")
