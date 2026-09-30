@@ -428,3 +428,17 @@ class TestPublished(unittest.TestCase):
                 f.mkdir()
                 (f / "data.yaml").write_text(f"player: {f.name.rsplit('-', 1)[1]}\n", encoding="utf-8")
             self.assertEqual(published.match(it[0], [old, other, future]), old)
+
+
+class TestShortsScenes(unittest.TestCase):
+    def test_youtube_variant_loops_back(self):
+        from content import clip
+        st = {"hook": {"tag": "t", "name": "n", "label": "l", "big": "b", "players": []},
+              "quiz": {"lines": ["a", "b"], "options": ["1", "2", "3"], "answer": 0},
+              "answer": {"big": "x", "line": "y"}, "table": {"title": "t", "head": ["a", "b"], "rows": [["1", "2"]]}}
+        nav = clip.scenes(st, None, "q")
+        yt = clip.scenes(st, None, "q", youtube=True)
+        self.assertEqual(type(yt[-1]).__name__, "LoopBack")
+        self.assertEqual(len(yt), len(nav) + 1)
+        self.assertFalse(nav[-1].yt)
+        self.assertTrue(yt[-2].yt)

@@ -73,7 +73,9 @@ def parse(folder: Path) -> dict | None:
             "category": cat.group(1) if cat else "", "blocks": blocks, "images": images, "sources": sources,
             "clip": (folder / "clip.mp4").exists(), "status": read_status(folder),
             "review": (re.search(r"## 편집장 검토[^\n]*\n\n(.+)", t) or [None, ""])[1].strip(),
-            "clip_text": (folder / "clip.txt").read_text(encoding="utf-8") if (folder / "clip.txt").exists() else ""}
+            "clip_text": (folder / "clip.txt").read_text(encoding="utf-8") if (folder / "clip.txt").exists() else "",
+            "shorts": (folder / "shorts.mp4").exists(),
+            "shorts_text": (folder / "shorts.txt").read_text(encoding="utf-8") if (folder / "shorts.txt").exists() else ""}
 
 
 def slug(name: str) -> str:
@@ -104,9 +106,10 @@ function flash(b,t){const o=b.dataset.o||b.textContent;b.dataset.o=o;b.textConte
 async function copyText(b,t){try{await navigator.clipboard.writeText(t);flash(b,'복사됨 ✓')}catch(e){prompt('길게 눌러 복사하세요',t)}}
 function bodyText(){return POST.blocks.map(x=>x.text?x.text:'📷 사진 '+x.n+' ('+x.label+')').join('\\n\\n')}
 async function copyBody(b){copyText(b,bodyText())}
-async function saveClip(b){
+async function saveClip(b,name){
+  name=name||'clip.mp4';
   try{
-    const r=await fetch('clip.mp4');const bl=await r.blob();const files=[new File([bl],'clip.mp4',{type:'video/mp4'})];
+    const r=await fetch(name);const bl=await r.blob();const files=[new File([bl],name,{type:'video/mp4'})];
     if(navigator.canShare&&navigator.canShare({files})){await navigator.share({files});flash(b,'완료 ✓');return}
   }catch(e){if(e.name==='AbortError')return}
   alert('영상을 길게 누르거나, 영상 오른쪽 아래 ⋮ 메뉴에서 저장해 주세요.')
@@ -167,6 +170,15 @@ def page(p: dict) -> str:
 <ol class="muted"><li>블로그 앱 아래 <b>+</b> → <b>클립 만들기</b></li><li>방금 저장한 영상 고르기</li>
 <li><b>음악</b> → 추천·인기 음악 중 신나는 곡 하나 (네이버가 저작권 계약한 음원이라 안전)</li>
 <li>설명 칸에 붙여넣기 → 올리기</li></ol></div>"""
+    yt_title, _, yt_desc = p.get("shorts_text", "").partition("\n")
+    shorts = "" if not p.get("shorts") else f"""<div class="card"><h2><span class="step">7</span>유튜브 쇼츠 (클립 뒤, 바쁘면 건너뛰기)</h2>
+<video src="shorts.mp4" controls playsinline preload="metadata" style="width:100%;max-width:320px;border-radius:10px;display:block"></video>
+<button onclick="saveClip(this,'shorts.mp4')">🎬 쇼츠 영상 저장</button>
+<button class="ghost" onclick="copyText(this,{e(json.dumps(yt_title), quote=True)})">📋 제목 복사: {e(yt_title)}</button>
+<button class="ghost" onclick="copyText(this,{e(json.dumps(yt_desc.strip()), quote=True)})">📋 설명·해시태그 복사</button>
+<ol class="muted"><li>유튜브 앱 아래 <b>+</b> → <b>동영상 업로드</b> → 방금 저장한 쇼츠 영상 (클립용 영상과 다른 파일이에요)</li>
+<li>편집 화면에서 <b>사운드 추가</b>가 보이면 신나는 곡 하나 (유튜브 음원이라 안전)</li>
+<li>제목·설명 붙여넣기 → 공개 범위 <b>공개</b> → 업로드</li></ol></div>"""
     return f"""<!doctype html><html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive">
 <title>{e(best["text"] if best else p["folder"])}</title><style>{CSS}</style></head><body><main>
@@ -189,7 +201,8 @@ def page(p: dict) -> str:
 <div class="muted">한 번에 붙여넣기가 안 되면 아래 태그를 하나씩 눌러 복사 → 태그 칸에 붙여넣기 → 완료(엔터)를 반복하세요.</div>
 <div class="chips">{chips}</div></div>
 {clip}
-<div class="card"><h2><span class="step">7</span>다 올렸으면</h2>
+{shorts}
+<div class="card"><h2><span class="step">8</span>다 올렸으면</h2>
 <a class="btn" href="{done_btn}">✅ 발행 완료 표시</a>
 <div class="muted">GitHub 화면이 열리면 초록 <b>Create</b>만 누르세요. 2~3분 뒤 목록에서 "발행한 글"로 내려가요 (중복 발행 방지).</div></div>
 <div class="card body"><h2>미리 읽기</h2>{body}</div>
@@ -244,8 +257,9 @@ def build(out: Path) -> list[dict]:
             src = POSTS / p["folder"] / x["file"]
             if src.exists():
                 shutil.copy(src, d / x["file"])
-        if p.get("clip"):
-            shutil.copy(POSTS / p["folder"] / "clip.mp4", d / "clip.mp4")
+        for v in ("clip.mp4", "shorts.mp4"):
+            if (POSTS / p["folder"] / v).exists():
+                shutil.copy(POSTS / p["folder"] / v, d / v)
         (d / "index.html").write_text(page(p), encoding="utf-8")
     (out / "index.html").write_text(index(sorted(posts, key=lambda p: p["folder"])[-14:]), encoding="utf-8")
     (out / "robots.txt").write_text("User-agent: *\nDisallow: /\n", encoding="utf-8")
