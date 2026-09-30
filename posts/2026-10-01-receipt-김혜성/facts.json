@@ -1,0 +1,92 @@
+{
+ "salary": {
+  "value": 3750000,
+  "label": "올해 연봉",
+  "unit": "USD",
+  "date": "2026-09-02",
+  "sources": [
+   "https://www.sportschosun.com/baseball/2026-09-02/202609020100013510000666"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "fx_krw_per_usd": {
+  "value": 1352.8,
+  "label": "원·달러 환율 (9월 30일 주간 종가)",
+  "unit": "KRW",
+  "date": "2026-10-01",
+  "sources": [
+   "http://www.newskr.kr/news/articleView.html?idxno=106800",
+   "https://www.fntimes.com/html/view.php?ud=202610010710043392141825007d_18",
+   "https://www.kdpress.co.kr/news/articleView.html?idxno=208979"
+  ],
+  "rule": "모두 같음",
+  "differs": null
+ },
+ "games": {
+  "value": 43,
+  "label": "메이저리그 출전 경기",
+  "unit": "경기",
+  "date": "2026-09-30",
+  "sources": [
+   "https://www.newsis.com/view/NISX20260930_0003808398"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "at_bats": {
+  "value": 116,
+  "label": "메이저리그 타수",
+  "unit": "타수",
+  "date": "2026-09-30",
+  "sources": [
+   "https://www.newsis.com/view/NISX20260930_0003808398"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "hits": {
+  "value": 30,
+  "label": "메이저리그 안타",
+  "unit": "안타",
+  "date": "2026-09-30",
+  "sources": [
+   "https://www.newsis.com/view/NISX20260930_0003808398"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "home_runs": {
+  "value": 1,
+  "label": "메이저리그 홈런",
+  "unit": "홈런",
+  "date": "2026-09-30",
+  "sources": [
+   "https://www.newsis.com/view/NISX20260930_0003808398"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "batting_average": {
+  "value": 0.259,
+  "label": "메이저리그 타율",
+  "unit": "",
+  "date": "2026-09-30",
+  "sources": [
+   "https://www.newsis.com/view/NISX20260930_0003808398"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "contract_total": {
+  "value": 12500000,
+  "label": "계약 총액",
+  "unit": "USD",
+  "date": "2026-09-02",
+  "sources": [
+   "https://www.sportschosun.com/baseball/2026-09-02/202609020100013510000666"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ }
+}

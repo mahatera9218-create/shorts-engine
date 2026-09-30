@@ -1,0 +1,95 @@
+{
+ "salary": {
+  "value": 20000000,
+  "label": "올해 연봉",
+  "unit": "USD",
+  "date": "2026-09-29",
+  "sources": [
+   "https://www.mydaily.co.kr/page/view/2026092910292313498"
+  ],
+  "rule": "모두 같음",
+  "differs": null
+ },
+ "fx_krw_per_usd": {
+  "value": 1352.8,
+  "label": "원·달러 환율(9월 30일 마감)",
+  "unit": "KRW",
+  "date": "2026-10-01",
+  "sources": [
+   "http://www.newskr.kr/news/articleView.html?idxno=106800",
+   "https://www.cbci.co.kr/news/articleView.html?idxno=611253",
+   "https://www.fntimes.com/html/view.php?ud=202610010710043392141825007d_18"
+  ],
+  "rule": "모두 같음",
+  "differs": null
+ },
+ "games": {
+  "value": 51,
+  "label": "정규시즌 경기 수",
+  "unit": "경기",
+  "date": "2026-09-30",
+  "sources": [
+   "https://sports.khan.co.kr/article/202609301227003?pt=nv",
+   "https://www.starnewskorea.com/sports/2026/09/30/2026093001520813723"
+  ],
+  "rule": "모두 같음",
+  "differs": null
+ },
+ "at_bats": {
+  "value": 129,
+  "label": "정규시즌 타수",
+  "unit": "타수",
+  "date": "2026-09-30",
+  "sources": [
+   "https://sports.khan.co.kr/article/202609301227003?pt=nv",
+   "https://www.starnewskorea.com/sports/2026/09/30/2026093001520813723"
+  ],
+  "rule": "모두 같음",
+  "differs": null
+ },
+ "hits": {
+  "value": 15,
+  "label": "정규시즌 안타",
+  "unit": "안타",
+  "date": "2026-09-30",
+  "sources": [
+   "https://sports.khan.co.kr/article/202609301227003?pt=nv",
+   "https://www.starnewskorea.com/sports/2026/09/30/2026093001520813723"
+  ],
+  "rule": "모두 같음",
+  "differs": null
+ },
+ "home_runs": {
+  "value": 0,
+  "label": "정규시즌 홈런",
+  "unit": "개",
+  "date": "2026-09-30",
+  "sources": [
+   "https://www.starnewskorea.com/sports/2026/09/30/2026093001520813723"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "batting_average": {
+  "value": 0.116,
+  "label": "정규시즌 타율",
+  "unit": "",
+  "date": "2026-09-30",
+  "sources": [
+   "https://www.starnewskorea.com/sports/2026/09/30/2026093001520813723"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "rbi": {
+  "value": 9,
+  "label": "정규시즌 타점",
+  "unit": "타점",
+  "date": "2026-09-30",
+  "sources": [
+   "https://www.starnewskorea.com/sports/2026/09/30/2026093001520813723"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ }
+}

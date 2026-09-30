@@ -1,0 +1,72 @@
+{
+ "salary_krw": 1000000000,
+ "per": {
+  "games": 43478260.86956522,
+  "innings": 7575757.575757576,
+  "wins": 142857142.85714287
+ },
+ "min_wage_yearly_krw": 25882560,
+ "min_wage_years_per": {
+  "games": 1.6798284586055328,
+  "innings": 0.29269738293884284,
+  "wins": 5.519436363989608
+ },
+ "life_unit": "wins",
+ "life_label": "1승",
+ "life_per": 142857142.85714287,
+ "item": {
+  "key": "e_class",
+  "group": "car_import",
+  "label": "벤츠 E클래스 (E300 4MATIC 익스클루시브)",
+  "short": "벤츠 E클래스",
+  "unit": "대",
+  "price_krw": 94800000,
+  "as_of": "2026-09-01",
+  "source": "국내 판매가 보도 (9,480만원) https://m.carisyou.com/car/7669",
+  "salary_count": 10.548523206751055,
+  "unit_count": 1.5069318866787222
+ },
+ "items": [
+  {
+   "key": "e_class",
+   "group": "car_import",
+   "label": "벤츠 E클래스 (E300 4MATIC 익스클루시브)",
+   "short": "벤츠 E클래스",
+   "unit": "대",
+   "price_krw": 94800000,
+   "as_of": "2026-09-01",
+   "source": "국내 판매가 보도 (9,480만원) https://m.carisyou.com/car/7669",
+   "salary_count": 10.548523206751055,
+   "unit_count": 1.5069318866787222
+  }
+ ],
+ "rows": [
+  {
+   "key": "salary",
+   "label": "올해 연봉",
+   "value": 1000000000,
+   "count": 10.548523206751055
+  },
+  {
+   "key": "games",
+   "label": "1경기",
+   "value": 43478260.86956522,
+   "count": 0.458631443771785
+  },
+  {
+   "key": "innings",
+   "label": "1이닝",
+   "value": 7575757.575757576,
+   "count": 0.0799130545965989
+  },
+  {
+   "key": "wins",
+   "label": "1승",
+   "value": 142857142.85714287,
+   "count": 1.5069318866787222
+  }
+ ],
+ "inverse": false,
+ "inverse_count": 0.6636,
+ "inverse_word": "승"
+}

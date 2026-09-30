@@ -1,0 +1,45 @@
+player: 원태인
+short_name: 원태인
+team: 삼성 라이온즈
+season: 2026
+salary_label: 연봉 10억원 · 2026시즌 연봉, 보도 기준 (FA 자격 취득 앞둠)
+salary_krw: 1000000000
+units:
+- key: games
+  label: 1경기
+  count: 23
+- key: innings
+  label: 1이닝
+  count: 132
+- key: wins
+  label: 1승
+  count: 7
+headline_unit: innings
+salary_basis: 2026시즌 연봉, 보도 기준 (FA 자격 취득 앞둠)
+min_wage_monthly_krw: 2156880
+sport: 야구 (프로야구)
+card:
+- label: 이닝 (9월 21일 롯데전 전까지)
+  value: '132'
+- label: 경기 (9월 21일 롯데전 전까지)
+  value: '23'
+- label: 승 (9월 21일 롯데전 전까지)
+  value: '7'
+- label: 패 (9월 21일 롯데전 전까지)
+  value: '7'
+- label: 평균자책점 (9월 21일 롯데전 전까지)
+  value: '4.16'
+- label: 이닝 (9월 23일 기준)
+  value: '135.33'
+card_date: '2026-09-23'
+theme: life
+prices:
+- key: e_class
+  group: car_import
+  label: 벤츠 E클래스 (E300 4MATIC 익스클루시브)
+  short: 벤츠 E클래스
+  unit: 대
+  price_krw: 94800000
+  as_of: 2026-09-01
+  source: 국내 판매가 보도 (9,480만원) https://m.carisyou.com/car/7669
+marketer: 1

@@ -1,0 +1,68 @@
+{
+ "games": {
+  "value": 29,
+  "label": "경기",
+  "unit": "경기",
+  "date": "2026-09-29",
+  "sources": [
+   "http://www.osen.co.kr/article/G1112883445"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "innings": {
+  "value": 169.6667,
+  "label": "이닝",
+  "unit": "이닝",
+  "date": "2026-09-29",
+  "sources": [
+   "http://www.osen.co.kr/article/G1112883445"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "wins": {
+  "value": 12,
+  "label": "승",
+  "unit": "승",
+  "date": "2026-09-29",
+  "sources": [
+   "http://www.osen.co.kr/article/G1112883445"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "era": {
+  "value": 3.45,
+  "label": "평균자책점",
+  "unit": "점",
+  "date": "2026-09-29",
+  "sources": [
+   "http://www.osen.co.kr/article/G1112883445"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "contract_total": {
+  "value": 2000000,
+  "label": "올 시즌 재계약 총액",
+  "unit": "USD",
+  "date": "2026-09-14",
+  "sources": [
+   "https://www.spotvnews.co.kr/news/articleView.html?idxno=1007408"
+  ],
+  "rule": "모두 같음",
+  "differs": null
+ },
+ "salary": {
+  "value": 2300000000,
+  "label": "올해 연봉",
+  "unit": "KRW",
+  "date": "2026-03-18",
+  "sources": [
+   "https://www.ggilbo.com/news/articleView.html?idxno=1138406"
+  ],
+  "rule": "확인 연봉표",
+  "differs": null
+ }
+}
