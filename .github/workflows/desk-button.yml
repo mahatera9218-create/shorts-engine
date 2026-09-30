@@ -6,6 +6,8 @@
 # 도우미 첫 화면 버튼 (글 폴더 없이):
 #   - [다시그리기]: 글은 그대로 두고 사진·썸네일·클립만 새로 그린다 (이미지 다시 그리기, Claude 비용 없음)
 #   - [새후보]: 오늘 후보 4편을 더 쓴다 (자동 글쓰기 --again, Claude 비용 듦)
+# 글 화면 [💾 고친 내용 저장] (2026-09-30):
+#   - [수정] <글>: 이슈 본문의 고친 제목·문단을 글에 반영 (content/edits.py) → 도우미 다시 올림
 # 쇼츠 모음 버튼:
 #   - [쇼츠버림] <폴더>: 올리지 않을 쇼츠를 버린다 → 그 형식이 다음 날 새로 만들어진다
 # 저장소 주인이 만든 이슈만 처리한다.
@@ -89,6 +91,56 @@ jobs:
     if: >-
       always() && needs.mark.result == 'success' &&
       (needs.mark.outputs.action == 'used' || needs.write.result == 'failure')
+    uses: ./.github/workflows/desk.yml
+    secrets: inherit
+
+  edit:   # 글 화면 '고친 내용 저장': 대표가 고친 제목·문단을 글에 반영
+    if: >-
+      github.event.issue.user.login == github.repository_owner &&
+      startsWith(github.event.issue.title, '[수정]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: 반영
+        env:
+          TITLE: ${{ github.event.issue.title }}   # 제목·본문은 셸에 직접 넣지 않고 환경 변수로만
+          BODY: ${{ github.event.issue.body }}
+        run: |
+          printf '%s' "$BODY" > "$RUNNER_TEMP/edit.txt"
+          python -m content.edits --title "$TITLE" --body-file "$RUNNER_TEMP/edit.txt" | tee "$RUNNER_TEMP/result.txt"
+      - name: 저장 (posts/ 커밋)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add posts/
+          git diff --cached --quiet && exit 0
+          git commit -m "발행 도우미: 대표 수정 반영"
+          for i in 1 2 3; do
+            git pull --rebase -X theirs origin main && git push origin HEAD:main && exit 0
+            sleep $((i * 5))
+          done
+          exit 1
+      - name: 이슈 닫기
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUM: ${{ github.event.issue.number }}
+          OK: ${{ job.status }}
+        run: |
+          if [ "$OK" = "success" ]; then msg="$(cat "$RUNNER_TEMP/result.txt"). 2~3분 뒤 발행 도우미에 보여요."
+          else msg="반영하지 못했어요. 이 화면을 Claude에게 알려주세요."; fi
+          gh issue close "$NUM" --repo "$GITHUB_REPOSITORY" --comment "$msg"
+
+  edit-desk:
+    needs: edit
     uses: ./.github/workflows/desk.yml
     secrets: inherit
 
