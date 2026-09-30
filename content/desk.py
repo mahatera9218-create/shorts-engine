@@ -154,7 +154,10 @@ def page(p: dict) -> str:
     thumb = next((x["file"] for x in p["images"] if x["n"] == 1), "thumb.png")
     st = p.get("status", {})
     used = (f'<div class="card" style="border-color:var(--warn)"><b>⚠️ 이미 발행한 글이에요 ({e(st.get("at", ""))})</b>'
-            '<div class="muted">같은 글을 두 번 올리지 마세요.</div></div>') if st.get("status") == "used" else ""
+            '<div class="muted">같은 글을 두 번 올리지 마세요.</div>'
+            + (f'<a class="btn" href="{e(st["url"], quote=True)}">네이버에 올라간 글 보기</a>' if st.get("url") else
+               '<div class="muted">네이버 공개 확인 전 (매일 아침 자동 확인)</div>')
+            + '</div>') if st.get("status") == "used" else ""
     done_btn = e(issue_link("발행완료", p["folder"], "블로그·클립 발행을 마쳤어요."), quote=True)
     again_btn = e(issue_link("다시뽑기", p["folder"], "이 글은 버리고 다른 선수·테마로 새로 써 주세요."), quote=True)
     clip = "" if not p.get("clip") else f"""<div class="card"><h2><span class="step">6</span>클립 (블로그 발행 뒤)</h2>

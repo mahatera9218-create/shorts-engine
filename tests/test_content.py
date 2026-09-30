@@ -405,3 +405,26 @@ class TestTitlePair(unittest.TestCase):
     def test_title_type_rotates(self):
         from content.autopost import title_type
         self.assertEqual(len({title_type("2026-10-01", i) for i in range(5)}), 5)
+
+
+class TestPublished(unittest.TestCase):
+    RSS = """<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>x</title>
+<item><title><![CDATA[이정후 안타 하나에 2억, 비싼가? (다듬음)]]></title>
+<link>https://blog.naver.com/tenbillionsound/224000000001?fromRss=true&amp;trackingCode=rss</link>
+<pubDate>Tue, 30 Sep 2026 13:00:00 +0900</pubDate></item></channel></rss>"""
+
+    def test_items_and_match(self):
+        import tempfile
+        from pathlib import Path
+        from content import published
+        it = published.items(self.RSS)
+        self.assertEqual(it[0]["url"], "https://blog.naver.com/tenbillionsound/224000000001")
+        self.assertEqual(it[0]["at"], "2026-09-30 13:00")
+        with tempfile.TemporaryDirectory() as d:
+            old = Path(d) / "2026-09-30-life-이정후"
+            other = Path(d) / "2026-09-30-life-류현진"
+            future = Path(d) / "2026-10-01-life-이정후"
+            for f in (old, other, future):
+                f.mkdir()
+                (f / "data.yaml").write_text(f"player: {f.name.rsplit('-', 1)[1]}\n", encoding="utf-8")
+            self.assertEqual(published.match(it[0], [old, other, future]), old)
