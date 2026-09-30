@@ -77,7 +77,6 @@
 
 기준: 연봉은 2026시즌 재계약 KIA 발표 보도, 성적은 2026년 9월 말 보도, 세금은 국세청 종합소득세 세율표(지방소득세 포함, 필요경비·공제 미반영), 최저임금은 2026년 시급 10,320원에 월 209시간 기준이에요.
 
-대표 사진: Pixabay / Pexels (https://www.pexels.com/photo/man-kneeling-on-baseball-field-beside-man-264337/)
 
 ## 출처
 
