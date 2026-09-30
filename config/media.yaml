@@ -1,0 +1,6 @@
+# 영상 제작 설정 (content/produce.py). 대표 결정 2026-09-30: 클립·쇼츠에 실사 배경·효과음·선수 사진·AI 목소리.
+tts:                      # 구글 클라우드 Text-to-Speech (키: GitHub Secrets GOOGLE_TTS_API_KEY, 월 무료 한도 안)
+  voice: ko-KR-Chirp3-HD-Charon   # 안 되면 fallback으로
+  fallback: ko-KR-Neural2-C
+  rate: 1.12              # 말 빠르기 (쇼츠는 빠른 편이 끝까지 본다)
+preview: 2026-10-01       # 이 값을 바꿔 main에 올리면 '영상 미리보기'가 돈다 (오늘 후보 클립·쇼츠를 새 방식으로 다시 만든다)

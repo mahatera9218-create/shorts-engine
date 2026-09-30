@@ -35,6 +35,7 @@ RED = (226, 58, 58)
 GREEN = (38, 170, 95)
 BLOG = "억소리 나는 스포츠"
 MAX_TAGS = 8
+VIDEO = False  # 실사 배경 영상 위에 그릴 때 True (장면이 불투명 배경을 칠하지 않는다, content/produce.py)
 SAFE_BOTTOM = 1480  # 클립 화면 아래쪽은 설명·버튼이 덮는다 → 중요한 글자는 이 위에
 
 
@@ -115,15 +116,23 @@ class Hook(Scene):
     """첫 프레임부터 전부 보인다 (첫 프레임이 클립 표지): 태그·등판·이름·기록·금액 → 금액 튕기며 번쩍. 사진은 천천히 확대."""
     dur = 2.4
 
-    def __init__(self, h: dict, photo: Image.Image | None):
-        self.h, self.bg = h, cover(photo)
-        js = jersey.for_players(h.get("players", []), 560 if len(h.get("players", [])) < 2 else 440)
-        self.jerseys = [(j, rot) for j, rot in zip(js, (-5, 6) if len(js) > 1 else (-4,))]
+    def __init__(self, h: dict, photo: Image.Image | None, pics: list[Image.Image] = (), credit: str = ""):
+        self.h, self.bg, self.credit = h, cover(photo), credit
+        n = len(h.get("players", []))
+        if pics:  # 선수 사진(위키미디어 자유 이용)이 있으면 등판 대신 사진 카드
+            from .playerphoto import card
+            self.jerseys = [(card(p, 560 if len(pics) < 2 else 420), rot) for p, rot in zip(pics, (-3, 3) if len(pics) > 1 else (0,))]
+        else:
+            js = jersey.for_players(h.get("players", []), 560 if n < 2 else 440)
+            self.jerseys = [(j, rot) for j, rot in zip(js, (-5, 6) if len(js) > 1 else (-4,))]
+        self.say = f"{h['name']}, {h['label']} {h['big']}."
+        self.sfx = [("boom", 0.35, 0.6)]
 
     def draw(self, c, t):
-        z = 1 + 0.05 * t / self.dur
-        bg = self.bg.resize((int(self.bg.width * z / 1.1), int(self.bg.height * z / 1.1)), Image.BILINEAR)
-        c.paste(bg.crop(((bg.width - W) // 2, (bg.height - H) // 2, (bg.width - W) // 2 + W, (bg.height - H) // 2 + H)))
+        if not VIDEO:
+            z = 1 + 0.05 * t / self.dur
+            bg = self.bg.resize((int(self.bg.width * z / 1.1), int(self.bg.height * z / 1.1)), Image.BILINEAR)
+            c.paste(bg.crop(((bg.width - W) // 2, (bg.height - H) // 2, (bg.width - W) // 2 + W, (bg.height - H) // 2 + H)))
         tag = label(self.h["tag"], "display", 52, WHITE)
         box = Image.new("RGBA", (tag.width + 50, tag.height + 30), RED + (255,))
         box.alpha_composite(tag, (25, 15))
@@ -133,6 +142,8 @@ class Hook(Scene):
             wob = rot + 4 * math.sin(t * 2.2)
             put(c, j.rotate(wob, resample=Image.BICUBIC, expand=True), x, 610, 1.15 - 0.15 * ease_out(t / 0.25))
         y0 = 1010 if self.jerseys else 600
+        if self.credit:
+            put(c, label(self.credit, "r", 26, GRAY), W / 2, 905, 1, 0.8)
         put(c, label(self.h["name"], "display", 200, WHITE, 12), W / 2, y0, 1.1 - 0.1 * ease_out(t / 0.2))
         # 첫 프레임 = 클립 표지(네이버가 첫 장면을 표지로 씀) → 기록·금액도 처음부터 보이게, 등장 대신 튕김
         put(c, label(self.h["label"], "display", 90, WHITE, 6), W / 2, y0 + 190, 1.1 - 0.1 * ease_out(t / 0.2))
@@ -148,6 +159,8 @@ class Quiz(Scene):
 
     def __init__(self, q: dict):
         self.q = q
+        self.say = " ".join(q["lines"])
+        self.sfx = [("tick", 1.6, 0.5), ("tick", 2.7, 0.5), ("tick", 3.8, 0.5)]
 
     def draw(self, c, t):
         for i, ln in enumerate(self.q["lines"]):
@@ -180,6 +193,8 @@ class Answer(Scene):
 
     def __init__(self, q: dict, a: dict):
         self.q, self.a = q, a
+        self.say = f"정답은 {a['big']}."
+        self.sfx = [("ding", 0.9, 0.6)]
 
     def draw(self, c, t):
         n = len(self.q["options"])
@@ -213,6 +228,7 @@ class Table(Scene):
 
     def __init__(self, tb: dict):
         self.tb = tb
+        self.say = tb["title"]
         self.rows = tb["rows"][:6]
         self.dur = 1.2 + 0.35 * len(self.rows) + 1.6
 
@@ -245,6 +261,8 @@ class Wage(Scene):
 
     def __init__(self, w: dict):
         self.w = w
+        self.say = f"{w['title']} {w['big']}."
+        self.sfx = [("boom", 0.4, 0.5)]
 
     def draw(self, c, t):
         put(c, label(self.w["title"], "display", 84, WHITE), W / 2, 640, 1, ease_out(t / 0.3))
@@ -260,6 +278,7 @@ class Outro(Scene):
 
     def __init__(self, question: str = "", youtube: bool = False):
         self.q, self.yt = question, youtube
+        self.say = f"{question} 댓글로 알려 주세요." if question else "정답 맞히셨나요? 댓글로 알려 주세요."
 
     def draw(self, c, t):
         tail = ("구독하면 매일 새 몸값 퀴즈", "b", 44, GRAY) if self.yt else (f"계산 과정은 블로그 '{BLOG}'", "b", 44, GRAY)
@@ -289,18 +308,20 @@ class LoopBack(Scene):
         c.paste(Image.blend(a, b, clamp(t / self.dur)))
 
 
-def scenes(st: dict, photo: Image.Image | None, question: str = "", youtube: bool = False) -> list[Scene]:
-    out: list[Scene] = [Hook(st["hook"], photo), Quiz(st["quiz"]), Answer(st["quiz"], st["answer"]), Table(st["table"])]
+def scenes(st: dict, photo: Image.Image | None, question: str = "", youtube: bool = False,
+           pics: list[Image.Image] = (), credit: str = "") -> list[Scene]:
+    out: list[Scene] = [Hook(st["hook"], photo, pics, credit), Quiz(st["quiz"]), Answer(st["quiz"], st["answer"]), Table(st["table"])]
     if st.get("wage"):
         out.append(Wage(st["wage"]))
     out.append(Outro(question, youtube))
     return out + [LoopBack(out[-1], out[0])] if youtube else out
 
 
-def render(sc: list[Scene]):
-    """프레임을 차례로 만든다 (위쪽 진행 막대 + 블로그 이름은 모든 장면 공통)."""
+def render(sc: list[Scene], rgba: bool = False, badge: Image.Image | None = None):
+    """프레임을 차례로 만든다 (위쪽 진행 막대 + 블로그 이름은 모든 장면 공통).
+    rgba=True: 투명 바탕(실사 배경 위에 얹을 전경, 실사면 글자가 읽히게 어두운 막을 깐다). badge: 'AI 음성' 표기."""
     total = sum(s.dur for s in sc)
-    base = Image.new("RGBA", (W, H), BG + (255,))
+    base = Image.new("RGBA", (W, H), ((8, 10, 18, 105) if VIDEO else (0, 0, 0, 0)) if rgba else BG + (255,))
     brand = label(BLOG, "b", 36, GRAY)
     t0 = 0.0
     for s in sc:
@@ -313,7 +334,9 @@ def render(sc: list[Scene]):
             d.rectangle((0, 0, W, 10), fill=(40, 44, 58))
             d.rectangle((0, 0, int(W * g), 10), fill=GOLD)
             put(c, brand, W / 2, 110, 1, 0.9)
-            yield c.convert("RGB")
+            if badge is not None:
+                put(c, badge, W - 60 - badge.width, 110, anchor="l")
+            yield c if rgba else c.convert("RGB")
         t0 += s.dur
 
 
@@ -348,8 +371,15 @@ def caption(folder: Path, p: dict) -> str:
         f"{hook}\n\n정답 맞히셨나요? 계산 과정과 출처는 블로그 '{BLOG}'에 있어요."
     tags = " ".join("#" + t.replace(" ", "") for t in dict.fromkeys(search_tags(folder) + p["tags"] + ["몸값퀴즈", "스포츠"]))
     tags = " ".join(tags.split()[:MAX_TAGS])
-    credit = photos.credit(folder)
-    return "\n\n".join(x for x in [text, credit, tags] if x) + "\n"
+    from .produce import credits
+    credit = "\n".join([x for x in [photos.credit(folder)] if x] + credits(folder))
+    ai = "※ 이 영상의 목소리는 AI 음성입니다." if (folder / "clip.mp4").exists() and _has_voice(folder / "clip.mp4") else ""
+    return "\n\n".join(x for x in [text, credit, ai, tags] if x) + "\n"
+
+
+def _has_voice(mp4: Path) -> bool:
+    """영상에 목소리를 넣었는지 (produce가 남긴 표시)."""
+    return mp4.with_suffix(".voice").exists()
 
 
 def encode(exe: str, sc: list[Scene], out: Path) -> str:
@@ -378,15 +408,23 @@ def make(folder: Path) -> str:
     if not exe:
         return "클립: ffmpeg가 없어 영상을 만들지 못함"
     st = json.loads((folder / "clip.json").read_text(encoding="utf-8"))
-    photo = Image.open(folder / "photo.jpg") if (folder / "photo.jpg").exists() else None
+    from . import playerphoto, produce
+    d = yaml.safe_load((folder / "data.yaml").read_text(encoding="utf-8")) if (folder / "data.yaml").exists() else {}
+    bg = produce.bg_video(folder, str(d.get("sport", "야구")), folder.name)  # A. 실사 배경 (없으면 사진·남색)
+    photo = None if bg else (Image.open(folder / "photo.jpg") if (folder / "photo.jpg").exists() else None)
+    pics = playerphoto.fetch(folder, st["hook"].get("players", []))  # C. 선수 사진 (없으면 등판)
+    credit = " · ".join(f"사진 {i['artist'][:20]} ({i['license']})" for i in
+                        (json.loads(f.read_text(encoding="utf-8")) for f in sorted(folder.glob("player*.json"))))
     qf = folder / "clip_question.txt"
     q = qf.read_text(encoding="utf-8").strip() if qf.exists() else ""
-    sc = scenes(st, photo, q)
-    err = encode(exe, sc, folder / "clip.mp4")
+    sc = scenes(st, photo, q, pics=pics, credit=credit)
+    err, info = produce.produce(exe, sc, folder / "clip.mp4", bg)  # B·D. 효과음·목소리
     if err:
         return f"클립: 영상 만들기 실패 ({err})"
     (folder / "clip.txt").write_text(caption(folder, p), encoding="utf-8")
-    return f"클립: 세로 영상 {sum(s.dur for s in sc):.0f}초 완성"
+    (folder / "bg.mp4").unlink(missing_ok=True)  # 배경 원본은 저장소에 두지 않는다 (출처는 bg.json)
+    return (f"클립: 세로 영상 {info['seconds']:.0f}초 완성" + (" · 목소리" if info["voice"] else "")
+            + (" · 실사 배경" if info["video_bg"] else "") + (f" · 선수 사진 {len(pics)}" if pics else ""))
 
 
 def main() -> None:

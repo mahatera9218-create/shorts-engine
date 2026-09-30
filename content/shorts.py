@@ -85,6 +85,8 @@ BG_MOVE = None
 
 def bg(c, t):
     global BG_MOVE
+    if clip.VIDEO:  # 실사 배경 영상 위에 그릴 때는 줄무늬를 칠하지 않는다
+        return
     if BG_MOVE is None:
         BG_MOVE = Image.new("RGBA", (W + 240, H), BG + (255,))
         d = ImageDraw.Draw(BG_MOVE)
@@ -97,10 +99,17 @@ def bg(c, t):
 class Title(Scene):
     """첫 장면 = 쇼츠 표지. 처음부터 다 보이고 살짝 튄다."""
 
-    def __init__(self, tag: str, lines: list[str], players: list[str] = (), dur: float = 2.2):
-        self.tag, self.lines, self.dur = tag, lines, dur
-        js = jersey.for_players(list(players), 520 if len(players) < 2 else 420)
-        self.js = list(zip(js, (-5, 6) if len(js) > 1 else (-4,)))
+    def __init__(self, tag: str, lines: list[str], players: list[str] = (), dur: float = 2.2,
+                 pics: list[Image.Image] = (), credit: str = "", say: str | None = None):
+        self.tag, self.lines, self.dur, self.credit = tag, lines, dur, credit
+        if pics:  # 선수 사진(위키미디어 자유 이용)이 있으면 등판 대신
+            from .playerphoto import card
+            js = [card(x, 540 if len(pics) < 2 else 400) for x in pics]
+            self.js = list(zip(js, (-3, 3) if len(js) > 1 else (0,)))
+        else:
+            js = jersey.for_players(list(players), 520 if len(players) < 2 else 420)
+            self.js = list(zip(js, (-5, 6) if len(js) > 1 else (-4,)))
+        self.say = " ".join(lines) + "." if say is None else say
 
     def draw(self, c, t):
         bg(c, t)
@@ -112,6 +121,8 @@ class Title(Scene):
         for (j, rot), x in zip(self.js, xs):
             put(c, j.rotate(rot + 4 * math.sin(t * 2.4), resample=Image.BICUBIC, expand=True), x, 680)
         y = 1080 if self.js else 820
+        if self.credit:
+            put(c, label(self.credit, "r", 26, GRAY), W / 2, 975, 1, 0.8)
         for i, line in enumerate(self.lines):
             col = GOLD if i == len(self.lines) - 1 else WHITE
             put(c, label(line, "display", 118 if i == 0 else 104, col, 10), W / 2, y + i * 150,
@@ -124,6 +135,8 @@ class Counter(Scene):
 
     def __init__(self, top: str, value: float, sub: str = ""):
         self.top, self.value, self.sub = top, value, sub
+        self.say = f"{top} {won(value)}." + (f" {sub}." if sub and "나눈" not in sub else "")
+        self.sfx = [("ding", 1.55, 0.5)]
 
     def draw(self, c, t):
         bg(c, t)
@@ -143,6 +156,8 @@ class Bars(Scene):
 
     def __init__(self, left: dict, right: dict, times: str):
         self.l, self.r, self.times = left, right, times
+        self.say = f"{left['name']} {left['label']}, {right['name']} {right['label']}. 무려 {times}."
+        self.sfx = [("boom", 2.2, 0.6)]
 
     def draw(self, c, t):
         bg(c, t)
@@ -163,6 +178,7 @@ class Board(Scene):
 
     def __init__(self, title: str, sub: str, rows: list[tuple[str, str]], dur: float = 6.6):
         self.title, self.sub, self.rows, self.dur = title, sub, rows, dur
+        self.say = f"{title}. " + ", ".join(f"{i + 1}위 {n} {v}" for i, (n, v) in enumerate(rows)) + "."
 
     def draw(self, c, t):
         bg(c, t)
@@ -186,6 +202,7 @@ class Ask(Scene):
 
     def __init__(self, q: str):
         self.q = q
+        self.say = f"{q} 댓글로 알려 주세요."
 
     def draw(self, c, t):
         bg(c, t)
@@ -201,6 +218,7 @@ class Banner(Scene):
 
     def __init__(self, scene: Scene, text: str):
         self.scene, self.dur = scene, scene.dur
+        self.say, self.sfx = getattr(scene, "say", None), getattr(scene, "sfx", [])
         words, lines, cur = text.split(), [], ""
         for w in words:  # 두 줄로 나눈다 (한 줄이 너무 길면)
             if cur and len(cur) + len(w) + 1 > max(10, len(text) // 2 + 2):
@@ -311,14 +329,27 @@ def options_c(table: list[dict]) -> list[dict]:
     return out
 
 
-def build(kind: str, today: str) -> tuple[dict, list[Scene]] | None:
+def pics_for(folder: Path | None, names: list[str]) -> tuple[list[Image.Image], str]:
+    """선수 사진 (위키미디어 자유 이용) + 화면 출처 한 줄. folder가 없으면(시험) 사진 없이."""
+    if folder is None:
+        return [], ""
+    from . import playerphoto
+    import json as _json
+    pics = playerphoto.fetch(folder, names)
+    credit = " · ".join(f"사진 {i['artist'][:20]} ({i['license']})" for i in
+                        (_json.loads(f.read_text(encoding="utf-8")) for f in sorted(folder.glob("player*.json"))))
+    return pics, credit
+
+
+def build(kind: str, today: str, folder: Path | None = None) -> tuple[dict, list[Scene]] | None:
     fx, fx_label = latest_fx(today)
     table = salary_table(fx)
     if kind == "A":
         p = plan_a(today)
         if not p:
             return None
-        sc = [Title("통장 체크", [p["title"].split(" 통장")[0], "통장에 꽂히는 돈"], [p["player"]], 2.2),
+        pics, cr = pics_for(folder, [p["player"]])
+        sc = [Title("통장 체크", [p["title"].split(" 통장")[0], "통장에 꽂히는 돈"], [p["player"]], 2.2, pics, cr),
               Counter("올해 연봉", p["salary"], "1년 동안 들어오는 돈"),
               Counter("월급으로 치면", p["salary"] / 12, "12로 나눈 값"),
               Counter("하루에", p["salary"] / 365, "쉬는 날까지 365일로 나눈 값")]
@@ -340,9 +371,11 @@ def build(kind: str, today: str) -> tuple[dict, list[Scene]] | None:
         big, small = max(lv, rv), min(lv, rv)
         times = f"{count(big / small)}배"
         winner = ln if lv > rv else rn
-        players = [o["left"][0]["name"], o["right"][0]["name"]]
+        players = ([o["left"][0]["name"]] if len(o["left"]) == 1 else []) + [o["right"][0]["name"]]  # 합계 쪽은 한 사람 얼굴을 쓰지 않는다
+        pics, cr = pics_for(folder, players)
         sc = [Title("연봉 대결", [o["title"].split(" vs ")[0], f"vs {o['title'].split(' vs ')[1]}" if " vs " in o["title"]
-                               else f"vs {rn} 1명"], players, 2.2),
+                               else f"vs {rn} 1명"], players, 2.2, pics, cr,
+                    say=o["title"].replace(" vs ", " 대 ") + ("" if " vs " in o["title"] else f", {rn} 1명보다 많을까요?")),
               Bars({"name": ln, "v": lv, "label": won(lv)}, {"name": rn, "v": rv, "label": won(rv)}, times),
               Counter(f"{winner} 쪽이", big - small, "만큼 더 받는다"),
               Title("정리하면", [f"{winner} 연봉은", f"{rn if winner == ln else ln}의 {times}"], [], 2.4),
@@ -384,36 +417,57 @@ def cleanup(today: str) -> list[str]:
     return gone
 
 
-def make(kind: str, today: str) -> str:
-    got = build(kind, today)
-    if not got:
-        return f"{kind}: 만들 재료 없음 (건너뜀)"
-    p, sc = got
+SPORT_OF = {"kbo": "야구", "mlb": "야구", "nba": "농구", "golf": "골프", "epl": "축구", "laliga": "축구", "soccer": "축구"}
+
+
+def make(kind: str, today: str, preview: bool = False) -> str:
+    from . import produce
     exe = clip.ffmpeg()
     if not exe:
         return f"{kind}: ffmpeg 없음"
+    work = OUT / f".work-{kind}"
+    shutil.rmtree(work, ignore_errors=True)
+    work.mkdir(parents=True)
+    got = build(kind, today, work)
+    if not got:
+        shutil.rmtree(work, ignore_errors=True)
+        return f"{kind}: 만들 재료 없음 (건너뜀)"
+    p, sc = got
     slug = p["key"].split("-", 1)[1].replace(" ", "")
-    folder = OUT / f"{today}-{kind}-{slug}"
-    folder.mkdir(parents=True, exist_ok=True)
-    err = clip.encode(exe, sc, folder / "video.mp4")
+    folder = OUT / f"{today}-{kind}-{'preview-' if preview else ''}{slug}"  # 미리보기는 기록에 남기지 않는다
+    shutil.rmtree(folder, ignore_errors=True)
+    work.rename(folder)
+    sport = next((SPORT_OF[x["sport"]] for x in p.get("left", []) + p.get("rows", []) if x.get("sport") in SPORT_OF), None) \
+        or str(p.get("sport") or "야구")
+    bg = produce.bg_video(folder, sport, folder.name)  # A. 실사 배경
+    err, info = produce.produce(exe, sc, folder / "video.mp4", bg)  # B·D. 효과음·목소리
     if err:
         return f"{kind}: 영상 실패 ({err})"
-    (folder / "meta.txt").write_text(meta_text(p), encoding="utf-8")
+    meta = meta_text(p)
+    extra = produce.credits(folder) + (["※ 이 영상의 목소리는 AI 음성입니다."] if info["voice"] else [])
+    title, _, desc = meta.partition("\n")
+    if preview:
+        title = "[미리보기 · 올리지 마세요] " + title
+    (folder / "meta.txt").write_text(f"{title}\n" + "\n\n".join([desc.strip()] + extra) + "\n", encoding="utf-8")
+    (folder / "bg.mp4").unlink(missing_ok=True)  # 배경 원본은 저장소에 두지 않는다
     keep = {k: v for k, v in p.items() if k not in ("left", "right", "rows")}
     (folder / "data.yaml").write_text(yaml.safe_dump(keep, allow_unicode=True, sort_keys=False), encoding="utf-8")
-    log = used_log() + [{"date": today, "kind": kind, "key": p["key"], "title": meta_text(p).split("\n")[0]}]
-    LOG.write_text(yaml.safe_dump(log, allow_unicode=True, sort_keys=False), encoding="utf-8")
-    return f"{kind}: {meta_text(p).splitlines()[0]} ({sum(s.dur for s in sc):.0f}초)"
+    if not preview:
+        log = used_log() + [{"date": today, "kind": kind, "key": p["key"], "title": title}]
+        LOG.write_text(yaml.safe_dump(log, allow_unicode=True, sort_keys=False), encoding="utf-8")
+    return (f"{kind}: {title} ({info['seconds']:.0f}초" + (", 목소리" if info["voice"] else "")
+            + (", 실사 배경" if info["video_bg"] else "") + ")")
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--date", default=str(date.today()))
     ap.add_argument("--only")
+    ap.add_argument("--preview", action="store_true", help="기록에 남기지 않는 미리보기 (제작 방식 확인용)")
     a = ap.parse_args()
     OUT.mkdir(exist_ok=True)
     gone = cleanup(a.date)
-    lines = [make(k, a.date) for k in (a.only or "ABC")]
+    lines = [make(k, a.date, a.preview) for k in (a.only or "ABC")]
     print("쇼츠: " + " / ".join(lines) + (f" (지난 쇼츠 {len(gone)}개 정리)" if gone else ""))
 
 
