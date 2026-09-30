@@ -41,6 +41,7 @@ on:
 
 permissions:
   contents: write
+  actions: read
 
 concurrency:
   group: repo-reports
