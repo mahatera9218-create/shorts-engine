@@ -195,6 +195,40 @@ class Ask(Scene):
             put(c, label(txt, w, s, col, 8 if i == 0 else 0), W / 2, 820 + i * 150 + 40 * (1 - k), 1, k)
 
 
+class Banner(Scene):
+    """모든 장면 위쪽에 제목을 고정한다 (대표 요청 2026-09-30): 유튜브가 영상 중간 장면을 썸네일로 골라도,
+    피드에서 어느 순간에 봐도 무슨 영상인지 보이게. 첫 장면(Title)에는 제목이 이미 크게 있어 겹치지 않게 뺀다."""
+
+    def __init__(self, scene: Scene, text: str):
+        self.scene, self.dur = scene, scene.dur
+        words, lines, cur = text.split(), [], ""
+        for w in words:  # 두 줄로 나눈다 (한 줄이 너무 길면)
+            if cur and len(cur) + len(w) + 1 > max(10, len(text) // 2 + 2):
+                lines.append(cur)
+                cur = w
+            else:
+                cur = f"{cur} {w}".strip()
+        lines.append(cur)
+        ims = [label(x, "display", 70, WHITE if i == 0 else GOLD, 6, max_w=int(W * 0.86)) for i, x in enumerate(lines[:2])]
+        h = sum(im.height for im in ims) + 20 * (len(ims) - 1) + 50
+        box = pill(int(W * 0.92), h, (10, 12, 20, 215))
+        box = Image.new("RGBA", box.size, (0, 0, 0, 0))
+        ImageDraw.Draw(box).rounded_rectangle((0, 0, box.width - 1, h - 1), radius=36, fill=(10, 12, 20, 215))
+        y = 25
+        for im in ims:
+            box.alpha_composite(im, ((box.width - im.width) // 2, y))
+            y += im.height + 20
+        self.box = box
+
+    def draw(self, c, t):
+        self.scene.draw(c, t)
+        put(c, self.box, W / 2, 190 + self.box.height / 2)
+
+
+def with_banner(sc: list[Scene], text: str) -> list[Scene]:
+    return [s if isinstance(s, (Title, Board)) else Banner(s, text) for s in sc]
+
+
 # ---------------------------------------------------------------- A · B · C
 
 def plan_a(today: str) -> dict | None:
@@ -294,6 +328,7 @@ def build(kind: str, today: str) -> tuple[dict, list[Scene]] | None:
         sc.append(Ask("이 몸값, 적당한가요?"))
         p["q"] = "이 몸값, 적당한가요?"
         p["basis"] = f"오늘 글({p['source']})의 확인된 연봉·기록으로 계산" + (f", 환율 {p['fx_label']}" if p["fx_label"] else "")
+        sc = with_banner(sc, p["title"])
         return p, sc + [clip.LoopBack(sc[-1], sc[0])]
     if kind == "B":
         o = pick(options_b(table), "B")
@@ -315,6 +350,7 @@ def build(kind: str, today: str) -> tuple[dict, list[Scene]] | None:
         o |= {"kind": "B", "q": o["q"], "times": times, "lv": lv, "rv": rv,
               "basis": "확인 연봉표(config/salaries.yaml, 발표·보도)" + (f", 환율 {fx_label}" if fx_label else ""),
               "names": [x["name"] for x in o["left"] + o["right"]]}
+        sc = with_banner(sc, meta_text(o | {"kind": "B"}).split("\n")[0])
         return o, sc + [clip.LoopBack(sc[-1], sc[0])]
     if kind == "C":
         opts = [o for o in options_c(table)]
