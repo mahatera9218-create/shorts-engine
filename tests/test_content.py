@@ -225,6 +225,7 @@ class ContentTest(unittest.TestCase):
         assert tags[:3] == ["이정후", "이정후연봉", "샌프란시스코자이언츠"] and len(tags) == 15
         assert search_suffix(d, "이정후 안타 하나 2억, 모델Y 몇 대?") == "(이정후 연봉 2026 · 샌프란시스코 자이언츠)"
         assert search_suffix(d, "이정후 연봉 2026 샌프란시스코 자이언츠") == ""
+
     def test_jersey_spec(self):
         from content import jersey
         o = jersey.spec("오타니 쇼헤이")
