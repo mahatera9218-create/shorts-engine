@@ -1,0 +1,7 @@
+# 성과 기록 (docs/운영-계획.md 3장). 대표가 주 1회 보낸 캡처에서 Claude가 옮겨 적는다. 숫자는 캡처에 보이는 그대로.
+# posts: 글 폴더 이름 → 발행일·7일 조회수·평균 사용 시간(초)·댓글·공감·클립 조회·클립 좋아요
+# weeks: 주 시작일(월) → 일 방문자 평균·주간 조회수·홈판 유입 %·검색 유입 %·애드포스트 수익(원)
+posts: {}
+#  2026-09-30-receipt-이정후: {published: 2026-10-01, views_7d: 0, avg_time_sec: 0, comments: 0, likes: 0, clip_views: 0, clip_likes: 0}
+weeks: {}
+#  2026-10-05: {visitors_day: 0, views_week: 0, homefeed_pct: 0, search_pct: 0, adpost_krw: 0}

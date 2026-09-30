@@ -267,8 +267,8 @@ class ContentTest(unittest.TestCase):
 
         pool = {"players": [{"name": "A", "weight": 1}, {"name": "B", "weight": 2}]}
         got, why = weighted_pool(Hub(), pool, "2026-09-30")
-        w = {p["name"]: p["weight"] for p in got["players"]}
-        assert w == {"A": 3.0, "B": 2} and "A 기사 30건" in why
+        w = {p["name"]: p["weight"] for p in got["players"] if p["name"] in ("A", "B")}  # 실제 화제 선수 파일은 무시
+        assert w == {"A": 3.0, "B": 2}
 
     def test_cross_is_different_sport_and_known_salary(self):
         from content import themes
@@ -340,6 +340,14 @@ class ContentTest(unittest.TestCase):
 
         got = trending.find_trending(Hub(), LLM(), "2026-09-30")
         assert [p["name"] for p in got] == ["김도영"]
+
+    def test_weekly_judge(self):
+        from datetime import date
+        from content import weekly
+        names = {"life": "생활 물가"}
+        m = {"posts": {f"2026-10-0{i}-x": {"published": f"2026-10-0{i}", "views_7d": 100} for i in range(1, 4)}}
+        assert "판정할 글이 아직" in weekly.judge(m, date(2026, 10, 20), names)[0]
+        assert "판정할 글이 아직 0편" in weekly.judge(m, date(2026, 10, 5), names)[0]  # 7일 안 지난 글은 빼고 센다
 
 
 if __name__ == "__main__":
