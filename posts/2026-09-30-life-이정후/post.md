@@ -84,6 +84,7 @@
 
 기준: 연봉·계약은 계약 세부 공개 보도, 성적은 2026년 9월 말 보도, 환율은 2026년 9월 30일 기준 1달러 1,356.7원, 최저임금은 2026년 시급 10,320원과 월 209시간, 모델Y 가격은 2026년 8월 1일 기준 프리미엄 RWD 4,999만원이에요.
 
+대표 사진: Mazin Omron / Pexels (https://www.pexels.com/photo/aerial-view-of-san-mateo-baseball-field-33613968/)
 
 ## 출처
 
