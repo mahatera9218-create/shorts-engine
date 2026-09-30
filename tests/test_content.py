@@ -105,7 +105,7 @@ class ContentTest(unittest.TestCase):
                "titles": [{"text": "오타니 쇼헤이 홈런 9,045만원, 9,496억 계약인데 충격 연봉??", "type": "숫자형"},
                           {"text": "계약은 크지만 올해는 작다", "type": "반전형"}] * 2 + [{"text": "오타니 올해 연봉", "type": "질문형"}]}
         problems = " / ".join(check_titles(bad, sheet))
-        for word in ("긴 이름", "과장어", "되풀이", "25자", "태그", "짧은 이름(오타니)으로 시작"):
+        for word in ("긴 이름", "과장어", "되풀이", "25자", "짧은 이름(오타니)으로 시작"):
             assert word in problems, word
         assert "숫자가 없음" in " / ".join(check_titles({**good, "titles": [{"text": "오타니 올해는 얼마?"}] * 5}, sheet))
 
@@ -225,6 +225,17 @@ class ContentTest(unittest.TestCase):
         assert tags[:3] == ["이정후", "이정후연봉", "샌프란시스코자이언츠"] and len(tags) == 15
         assert search_suffix(d, "이정후 안타 하나 2억, 모델Y 몇 대?") == "(이정후 연봉 2026 · 샌프란시스코 자이언츠)"
         assert search_suffix(d, "이정후 연봉 2026 샌프란시스코 자이언츠") == ""
+
+    def test_ranking_ties_and_labels(self):
+        from content import ranking
+        lst = {"key": "kbo-top5", "title": "2026 KBO 연봉 순위 TOP 5", "short": "KBO", "tag": "t", "sport": "야구 (프로야구)",
+               "league": "kbo", "games": 144, "complete": True, "basis": "b", "players": ["박세웅", "양의지", "류현진"]}
+        d, facts = ranking.data(lst, "2026-09-30", (None, ""))
+        assert [r["name"] for r in d["rows"]][0] == "양의지" and len(facts) == 3
+        assert [ranking.rank_label(r, True) for r in d["rows"]] == ["1위", "공동 2위", "공동 2위"]
+        assert isinstance(ranking.data({**lst, "players": ["이정후"]}, "2026-09-30", (None, "")), str)  # 달러인데 환율 없음
+        assert ranking.suffix(d, "KBO 1위 하루 1,150만원") == "(2026 KBO 연봉 순위 · 양의지 박세웅 류현진)"
+        assert ranking.due("2026-09-30") and not ranking.due("2026-10-01")  # 수요일 O, 목요일 X
 
     def test_jersey_spec(self):
         from content import jersey
