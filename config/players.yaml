@@ -165,19 +165,19 @@ cities:
   디트로이트 피스톤스: 디트로이트
 
 themes:   # 대표 결정 2026-09-30: 생활 물가 5/10, 나머지 5를 새 테마(세금·연고지·여행)와 기존 테마가 나눔
-  life:    {name: 생활 물가 비교, weight: 5, category: 선수 몸값,
+  life:    {name: 생활 물가 비교, weight: 5, category: 몸값 체감,
             angle: "올해 연봉과 1경기 몸값을 아파트값·차값으로 바꿔 체감하게 한다"}
-  tax:     {name: 연봉 세금, weight: 1, category: 선수 몸값,
+  tax:     {name: 연봉 세금, weight: 1, category: 연봉·세금,
             angle: "올해 연봉에서 월급날 떼는 세금(3.3%)과 세율표로 본 세금 최대치, 남는 돈을 보여 준다 (국내 리그만)"}
-  place:   {name: 연고지·고향 아파트, weight: 1, category: 선수 몸값,
+  place:   {name: 연고지·고향 아파트, weight: 1, category: 몸값 체감,
             angle: "선수의 소속팀 연고지·출신지·예전 소속팀 도시의 아파트 평균 매매가로 연봉과 1경기 몸값을 바꿔 본다"}
-  trip:    {name: 몸값 여행, weight: 1, category: 선수 몸값,
+  trip:    {name: 몸값 여행, weight: 1, category: 몸값 체감,
             angle: "선수와 이어진 도시(연고지·출신지·예전 소속팀)를 계기로, 여행 한 번 평균 경비로 1경기 몸값을 바꿔 본다"}
-  receipt: {name: 연봉 영수증, weight: 0.5, category: 선수 몸값,
+  receipt: {name: 연봉 영수증, weight: 0.5, category: 연봉·세금,
             angle: "올해 연봉(상금)을 경기·기록 단위로 쪼갠다"}
   same:    {name: 같은 종목 비교, weight: 0.5, category: 몸값 대결,
             angle: "같은 종목 두 선수의 올해 연봉과 1경기 몸값을 비교한다"}
-  jersey:  {name: 유니폼 vs 몸값, weight: 0.5, category: 선수 몸값,
+  jersey:  {name: 유니폼 vs 몸값, weight: 0.5, category: 몸값 체감,
             angle: "그 팀 유니폼 한 벌 값과 연봉·1경기 몸값을 비교한다 (유니폼 가격을 확인한 팀만)"}
   cross:   {name: 다른 종목 비교, weight: 0.5, category: 몸값 대결,
             angle: "종목이 다른 두 스타의 올해 연봉과 1경기 몸값을 비교한다"}
