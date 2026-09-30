@@ -19,7 +19,7 @@ GRAY = (150, 158, 175)
 
 
 FONTS = ROOT / "assets" / "fonts"  # 저장소에 넣은 글꼴 (모두 SIL OFL, 라이선스 파일 같이 있음)
-BUNDLED = {"display": "BlackHanSans-Regular.ttf",       # 썸네일 제목
+BUNDLED = {"display": "Pretendard-Black.otf",           # 제목·큰 숫자 (2026-09-30: Black Han Sans의 5가 S처럼 보여 교체)
            "mono": "NanumGothicCoding-Regular.ttf",      # 영수증 (고정폭)
            "monob": "NanumGothicCoding-Bold.ttf"}
 
