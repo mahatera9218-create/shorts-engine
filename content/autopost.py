@@ -532,22 +532,51 @@ def check_titles(p: dict, sheet: str) -> list[str]:
         out.append(f"추천 제목이 썸네일 숫자({money})를 되풀이함 → 반전·궁금증 한 마디로")
     if rec and subject and not any(w in rec for w in subject):
         out.append(f"추천 제목이 썸네일과 다른 이야기 → 썸네일 말('{' '.join(subject)}')을 제목에도 (짝으로)")
-    # 제목은 검색하는 사람이 물어볼 질문 그대로 (대표 지시 2026-10-02): 키워드 나열·괄호·가운뎃점 금지, 물음표로 끝
-    for i, t in enumerate(p["titles"], 1):
-        text = t["text"].strip()
-        if not text.endswith("?"):
-            out.append(f"제목{i}이 질문이 아님 → 검색하는 사람이 물을 질문 그대로 (예: '{core} 연봉, 1경기에 얼마일까?')")
-        if any(ch in text for ch in "·()[]|/"):
-            out.append(f"제목{i}에 키워드 나열 기호(· 괄호 / |) → 질문 한 문장으로")
-    money_word = "상금" if "상금" in sheet else "연봉"
-    if rec and not any(w in rec for w in ("연봉", "상금", "몸값", "세금", "월급")):
-        out.append(f"추천 제목에 '{core} {money_word}'처럼 사람들이 검색하는 말이 없음")
     # 태그의 선수 이름은 코드가 붙인다 (base_tags, 2026-09-30)
     return out
 
 
 VAGUE = ["많이", "많은", "대부분", "상당히", "상당수", "엄청", "수많은", "적지 않", "꽤 많"]
 DASHES = ("—", "–", "―")
+
+
+def title_style(p: dict, sheet: str) -> list[str]:
+    """제목은 검색하는 사람이 물어볼 질문 그대로 (대표 지시 2026-10-02): 키워드 나열·괄호·가운뎃점 금지, 물음표로 끝."""
+    s = SHORT.search(sheet)
+    core = s.group(1) if s else ""
+    out = []
+    for i, t in enumerate(p["titles"], 1):
+        text = t["text"].strip()
+        if not text.endswith("?"):
+            out.append(f"제목{i}이 질문이 아님 → 검색하는 사람이 물을 질문 그대로 (예: '{core} 연봉, 1경기에 얼마일까?')")
+        if any(ch in text for ch in "·()[]|/"):
+            out.append(f"제목{i}에 키워드 나열 기호(· 괄호 / |) → 질문 한 문장으로")
+    rec = p["titles"][p["recommended"] - 1]["text"] if 1 <= p.get("recommended", 0) <= len(p["titles"]) else ""
+    if rec and not any(w in rec for w in ("연봉", "상금", "몸값", "세금", "월급")):
+        out.append(f"추천 제목에 '{core} {'상금' if '상금' in sheet else '연봉'}'처럼 사람들이 검색하는 말이 없음")
+    return out
+
+
+def check_style(p: dict, sheet: str) -> list[str]:
+    """말투·형식 검사 (비용 효율 2026-10-02): 이것만 걸렸을 때는 다시 쓰지 않는다. 사실·안전 문제(check_post)로
+    다시 쓸 때, 또는 편집장이 고쳐 쓰라고 할 때 같이 고친다. 남은 것은 발행 패키지에 '참고'로 (✅는 유지)."""
+    out = list(check_draft(p["body"])) + title_style(p, sheet) + style_rules(p, sheet)
+    gaps = human_gaps(p["body"])
+    if gaps:
+        out.append(f"글쓴이의 생각·느낌·의견이 안 보이는 문단 {len(gaps)}개 (문단마다 하나씩, 꾸민 경험은 금지): "
+                   + " / ".join(f"'{g}…'" for g in gaps))
+    return out
+
+
+def code_fixes(p: dict) -> dict:
+    """코드로 고칠 수 있는 형식은 Claude 없이 고친다: 긴 대시 → 쉼표, [대표 한마디] 자리 없으면 '기준:' 앞에."""
+    p = {**p, "titles": [{**t, "text": undash(t["text"])} for t in p["titles"]],
+         "body": undash(p["body"]), "clip_caption": undash(p.get("clip_caption", ""))}
+    if "[대표 한마디]" not in p["body"]:
+        paras = [x for x in p["body"].strip().split("\n\n")]
+        at = next((i for i, x in enumerate(paras) if x.strip().startswith("기준")), len(paras))
+        p["body"] = "\n\n".join(paras[:at] + ["[대표 한마디]"] + paras[at:])
+    return p
 
 
 def undash(text: str) -> str:
@@ -584,7 +613,8 @@ def style_rules(p: dict, sheet: str) -> list[str]:
 
 
 def check_post(p: dict, sheet: str) -> list[str]:
-    problems = list(check_draft(p["body"]))
+    """사실·안전·구조 검사: 걸리면 고쳐 쓴다 (말투·형식은 check_style)."""
+    problems = []
     if len(p.get("clip_question", "")) > 18:
         problems.append(f"클립 질문이 18자를 넘음 ({len(p['clip_question'])}자)")
     s = SHORT.search(sheet)
@@ -625,11 +655,6 @@ def check_post(p: dict, sheet: str) -> list[str]:
         problems.append("정답 카드가 퀴즈 카드보다 앞에 있음")
     if re.search(r"^#|\*\*", p["body"], re.M):
         problems.append("마크다운 기호(#, **)를 빼고 일반 텍스트로")
-    problems += style_rules(p, sheet)
-    gaps = human_gaps(p["body"])
-    if gaps:
-        problems.append(f"글쓴이의 생각·느낌·의견이 안 보이는 문단 {len(gaps)}개 (문단마다 하나씩, 꾸민 경험은 금지): "
-                        + " / ".join(f"'{g}…'" for g in gaps))
     return problems
 
 
@@ -670,14 +695,17 @@ def write_post(llm, topic: dict, sheet: str, max_revisions: int) -> tuple[dict, 
     system = writer_system()
     prompt = (f"카테고리: {topic['category']}\n글 방향: {topic['angle']}\n\n숫자표\n{sheet}\n\n"
               "이 숫자표로 발행 패키지를 JSON으로 만들어라.")
-    post = llm.ask_json(system, prompt, POST_SCHEMA, stage="글쓰기", **opts)
+    # 다시 쓰기를 줄인다 (대표 지시 2026-10-02, 비용 증가 막기): 사실·안전·구조 문제(check_post)만 고쳐 쓰기를 부르고,
+    # 말투·형식(check_style)은 그때 같이 고친다. 대시·[대표 한마디] 자리는 코드가 고친다. 검사 고쳐 쓰기는 1번까지.
+    post = code_fixes(llm.ask_json(system, prompt, POST_SCHEMA, stage="글쓰기", **opts))
     problems = check_post(post, sheet)
     rounds = 0
-    while problems and rounds < max_revisions and llm.cost_usd() < cap:
+    while problems and rounds < min(max_revisions, 1) and llm.cost_usd() < cap:
         rounds += 1
+        style = check_style(post, sheet)
         fix = (prompt + "\n\n아래는 네가 쓴 초안이다. 검사에서 걸린 문제만 고치고, 나머지는 유지해서 같은 JSON 형식으로 다시 내라.\n"
-               "문제:\n" + "\n".join(f"- {x}" for x in problems) + "\n\n초안:\n" + json.dumps(post, ensure_ascii=False))
-        post = llm.ask_json(system, fix, POST_SCHEMA, stage="고쳐쓰기(검사)", **opts)
+               "문제:\n" + "\n".join(f"- {x}" for x in problems + style) + "\n\n초안:\n" + json.dumps(post, ensure_ascii=False))
+        post = code_fixes(llm.ask_json(system, fix, POST_SCHEMA, stage="고쳐쓰기(검사)", **opts))
         problems = check_post(post, sheet)
     # 편집장 검토 (스킬 0단계 기준): 4점 미만이 있으면 한 번 고쳐 쓰고, 고친 글이 코드 검사를 통과할 때만 바꾼다
     review = review_post(llm, sheet, post)
@@ -687,13 +715,15 @@ def write_post(llm, topic: dict, sheet: str, max_revisions: int) -> tuple[dict, 
             break
         fix = (prompt + "\n\n아래는 네가 쓴 초안과 편집장 검토다. 검토의 수정 지시를 반영해 같은 JSON 형식으로 다시 내라. "
                "숫자는 숫자표에 있는 것만.\n검토:\n" + "\n".join(f"- {x['criterion']} {x['score']}점: {x['reason']}" for x in low)
-               + "\n수정 지시:\n" + "\n".join(f"- {f}" for f in review["fixes"]) + "\n\n초안:\n" + json.dumps(post, ensure_ascii=False))
-        again = llm.ask_json(system, fix, POST_SCHEMA, stage="고쳐쓰기(편집장)", **opts)
+               + "\n수정 지시:\n" + "\n".join(f"- {f}" for f in review["fixes"] + check_style(post, sheet))
+               + "\n\n초안:\n" + json.dumps(post, ensure_ascii=False))
+        again = code_fixes(llm.ask_json(system, fix, POST_SCHEMA, stage="고쳐쓰기(편집장)", **opts))
         if check_post(again, sheet):
             break
         post, rounds = again, rounds + 1
         review = review_post(llm, sheet, post)
     post["review"] = review
+    post["style_notes"] = check_style(post, sheet)  # 다시 쓰지 않은 말투·형식 문제 (패키지에 참고로, ✅는 유지)
     if not review_ok(review["scores"]):  # 고쳐 써도 기준 미달이면 발행 가능으로 두지 않는다 (도우미에서 ⚠️, 다시 뽑기 권장)
         low = [x["criterion"] for x in review["scores"] if x["score"] < REVIEW_PASS]
         problems = problems + [f"편집장 기준 미달 ({', '.join(low)}) — 다시 뽑기 권장"]
@@ -719,6 +749,8 @@ def package_md(title: str, theme: str, category: str, facts: dict, post: dict, p
            + ("  " if marketer else ""), *([f"**마케터:** {marketer}"] if marketer else []), ""]
     if problems:
         out += ["**남은 문제:**", ""] + [f"- {p}" for p in problems] + [""]
+    if post.get("style_notes"):  # 비용 효율로 다시 쓰지 않은 말투·형식 (2026-10-02). 대표가 도우미에서 고쳐도 되고, 주간 점검에서 규칙에 반영
+        out += ["**참고 (말투·형식, 발행은 가능):**", ""] + [f"- {p}" for p in post["style_notes"]] + [""]
     if post.get("brief"):
         out += ["## 이 글의 설계 (독자·네이버 관점, 스킬 0단계)", ""]
         out += [f"- {BRIEF_KEYS[k]}: {v}" for k, v in post["brief"].items() if k in BRIEF_KEYS] + [""]
