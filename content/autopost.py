@@ -995,6 +995,16 @@ def table_lines(folder: Path) -> str:
             f"\n표 내용 (코드가 넣는다, 본문에 숫자를 옮길 때는 이 값만):\n{rows}")
 
 
+def shop_line(d: dict) -> str:
+    """쇼핑커넥트 상품 자리 (2026-10-01): 체감 비교가 끝난 바로 다음 한 줄. 글은 상품을 권하지 않는다."""
+    from .commerce import info
+    sh = info(d)
+    if not sh:
+        return ""
+    return (f'\n상품 자리: 비교 물건 이야기가 끝난 문단 바로 다음(표·첫 화면보다 뒤)에 "[상품 자리]" 한 줄. '
+            f"대표가 {sh['name']} 상품 카드를 넣는다. 상품을 권하거나 소개하는 문장은 쓰지 않는다.")
+
+
 def finish(llm, *, cfg: dict, pool: dict, notes: list[str], start_cost: float, today: str, made_today: list[str],
            out_root: Path, th: str, d: dict, facts: dict, title: str, slug: str, make_sheet, news_count: int,
            marketer: int | None = None) -> tuple[str, Path]:
@@ -1013,7 +1023,7 @@ def finish(llm, *, cfg: dict, pool: dict, notes: list[str], start_cost: float, t
             (folder / "table.json").write_text(json.dumps(t, ensure_ascii=False, indent=1), encoding="utf-8")
     except (KeyError, TypeError, ZeroDivisionError) as ex:
         notes.append(f"데이터 표 건너뜀 ({ex})")
-    sheet = (make_sheet(n) + "\n" + "\n".join(themes.image_lines(th)) + table_lines(folder)
+    sheet = (make_sheet(n) + "\n" + "\n".join(themes.image_lines(th)) + table_lines(folder) + shop_line(d)
              + f"\n추천 제목 유형: {title_type(today, marketer or len(made_today))} (코드가 날마다 돌린다)")
     category = pool["categories"].get(d.get("sport", "야구").split()[0], "야구")  # sport = "야구 (프로야구)"
     post, problems, rounds = write_post(llm, {"category": category, "angle": tinfo["angle"]}, sheet,
