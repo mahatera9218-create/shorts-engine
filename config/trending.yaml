@@ -13,8 +13,8 @@ players:
   short: 김혜성
   sport: mlb
   team: LA 다저스
-  why: 메이저리그 콜업 후 디비전 시리즈 PS 로스터 합류 여부에 관심 집중
-  source: 2
+  why: MLB 콜업 후 디비전시리즈 포스트시즌 로스터 합류 여부에 관심 집중
+  source: 6
   date: '2026-10-02'
   link: https://www.spotvnews.co.kr/news/articleView.html?idxno=1010893
 - name: 힐리어드
@@ -37,48 +37,48 @@ players:
   short: 최원준
   sport: kbo
   team: KT 위즈
-  why: 올 시즌 프로야구 최고의 급등주로 꼽히며 트레이드 성공 사례로 화제
-  source: 10
+  why: 올 시즌 최고의 급등주로 꼽히며 KT의 트레이드 성공 사례로 조명
+  source: 12
   date: '2026-10-02'
   link: https://www.joongang.co.kr/article/25466505
 - name: 무라카미
   short: 무라카미
   sport: mlb
   team: 시카고 화이트삭스
-  why: 메이저리그 데뷔 시즌 35홈런 77타점을 올리고 PS 승리 뒤 인터뷰로 화제
-  source: 26
+  why: MLB 데뷔 시즌 35홈런, 와일드카드 시리즈 승리 후 인터뷰 화제
+  source: 31
   date: '2026-10-02'
   link: https://mhnse.com/news/articleView.html?idxno=1569065
 - name: 하피냐
   short: 하피냐
   sport: laliga
   team: 바르셀로나
-  why: 시즌 초반 8경기 14골 활약에 쿠르투아가 극찬
-  source: 31
+  why: 시즌 초반 8경기 14골, 쿠르투아가 극찬
+  source: 37
   date: '2026-10-02'
   link: https://sports.khan.co.kr/article/202610020500003?pt=nv
 - name: 이강인
   short: 이강인
   sport: laliga
   team: 아틀레티코 마드리드
-  why: 시즌 초반 맹활약으로 아틀레티코 연계 플레이의 핵심으로 극찬
-  source: 46
+  why: 맹활약으로 마르카 등 현지 매체의 연이은 극찬
+  source: 36
   date: '2026-10-02'
-  link: https://www.mydaily.co.kr/page/view/2026100109532757896
+  link: https://www.fourfourtwo.co.kr/news/articleView.html?idxno=98660
 - name: 리디아 고
   short: 리디아 고
   sport: golf
   team: ''
-  why: 롯데 챔피언십에서 소렌스탐을 제치고 LPGA 통산 상금 1위에 도전
-  source: 37
+  why: 롯데 챔피언십에서 소렌스탐의 통산 상금 1위 기록 추격
+  source: 44
   date: '2026-10-02'
   link: https://www.topstarnews.net/news/articleView.html?idxno=16233488
 - name: 김민솔
   short: 김민솔
   sport: golf
   team: ''
-  why: KLPGA 하이트진로 챔피언십 1라운드 2언더파로 단독 선두
-  source: 62
+  why: KLPGA 하이트진로 챔피언십 1라운드 단독 선두
+  source: 63
   date: '2026-10-02'
   link: https://news.sbs.co.kr/news/endPage.do?news_id=N1008779600&plink=ORI&cooper=NAVER
 - name: 송민혁
@@ -97,6 +97,46 @@ players:
   source: 14
   date: '2026-10-02'
   link: https://www.starnewskorea.com/sports/2026/10/02/2026100119530919772
+- name: 손흥민
+  short: 손흥민
+  sport: soccer
+  team: LAFC
+  why: 토트넘 시절 최고의 순간을 밝혀 화제
+  source: 55
+  date: '2026-10-02'
+  link: https://www.starnewskorea.com/sports/2026/10/01/2026100110090964063
+- name: 구자욱
+  short: 구자욱
+  sport: kbo
+  team: 삼성 라이온즈
+  why: 가을야구 직전 또 부상으로 포스트시즌 출전에 빨간불
+  source: 2
+  date: '2026-10-02'
+  link: https://www.sportschosun.com/baseball/2026-10-02/202610020100011290000451
+- name: 김하성
+  short: 김하성
+  sport: mlb
+  team: 애틀랜타
+  why: 와일드카드 시리즈 3차전 벤치 출발, 포스트시즌 무안타
+  source: 33
+  date: '2026-10-02'
+  link: https://mhnse.com/news/articleView.html?idxno=1568995
+- name: 데이비스 대니엘
+  short: 대니엘
+  sport: kbo
+  team: KT 위즈
+  why: 6이닝 13K 투구로 가을야구 1선발 후보로 부상
+  source: 8
+  date: '2026-10-02'
+  link: https://www.newspim.com/news/view/20261001000699
+- name: 이정후
+  short: 이정후
+  sport: mlb
+  team: 샌프란시스코 자이언츠
+  why: 투수 영입을 위한 트레이드설 거론
+  source: 32
+  date: '2026-10-02'
+  link: https://www.mydaily.co.kr/page/view/2026100114203782413
 - name: 김도영
   short: 김도영
   sport: kbo
@@ -105,14 +145,6 @@ players:
   source: 47
   date: '2026-09-30'
   link: https://news.jtbc.co.kr/article/NB12320587?influxDiv=NAVER
-- name: 손흥민
-  short: 손흥민
-  sport: soccer
-  team: LAFC
-  why: A매치 58골·공식전 300골 달성
-  source: 56
-  date: '2026-09-30'
-  link: https://www.ohmynews.com/NWS_Web/View/at_pg.aspx?CNTN_CD=A0003271090&CMPT_CD=P0010&utm_source=naver&utm_medium=newsearch&utm_campaign=naver_news
 - name: 야말
   short: 야말
   sport: laliga
