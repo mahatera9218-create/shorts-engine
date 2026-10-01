@@ -179,8 +179,9 @@ class Board(Scene):
     (대표 지적 2026-09-30: 처음부터 다 보이면 볼 이유가 없다)"""
     STEP, START, HOLD = 1.1, 0.9, 1.8
 
-    def __init__(self, title: str, sub: str, rows: list[tuple[str, str]], dur: float | None = None):
-        self.title, self.sub, self.rows = title, sub, rows
+    def __init__(self, title: str, sub: str, rows: list[tuple[str, str]], dur: float | None = None,
+                 ratios: list[float] | None = None):
+        self.title, self.sub, self.rows, self.ratios = title, sub, rows, ratios  # ratios: 1위 대비 막대 길이 (0~1)
         self.dur = dur or self.START + self.STEP * len(rows) + self.HOLD
         self.say = f"{title}. " + ", ".join(f"{i + 1}위 {n} {v}" for i, (n, v) in reversed(list(enumerate(rows)))) + "."
 
@@ -199,6 +200,11 @@ class Board(Scene):
             open_ = t >= t0
             glow = 1 + (0.12 if i == 0 else 0.06) * math.sin(math.pi * clamp((t - t0) / 0.3)) if open_ else 1
             put(c, pill(W - 120, step - 20, PANEL + (255,)), 60, y + step / 2, anchor="l")
+            if open_ and self.ratios:  # 열린 줄은 1위 대비 막대가 깔린다 (도식화)
+                k = ease_out((t - t0) / 0.5)
+                bw = int((W - 120) * self.ratios[i] * k)
+                if bw > step - 20:
+                    put(c, pill(bw, step - 20, ((90, 70, 20) if i == 0 else (40, 52, 80)) + (255,)), 60, y + step / 2, anchor="l")
             put(c, label(f"{i + 1}", "display", 64, GOLD if i == 0 else GRAY), 120, y + step / 2)
             put(c, label(name if open_ else "???", "b", 60, WHITE if open_ else GRAY, max_w=460), 200, y + step / 2, anchor="l")
             v = label(val if open_ else "???", "display", 64, (GOLD if i == 0 else WHITE) if open_ else GRAY, max_w=420)
@@ -376,6 +382,8 @@ def build(kind: str, today: str, folder: Path | None = None) -> tuple[dict, list
         v = dict(p["per"])[p["head"]]
         yrs = v / p["wage_year"] if p["wage_year"] else 0
         sc.append(Counter(f"그래서 {p['head']}에", v, f"최저임금으로 {count(yrs)}년 일해야 버는 돈" if yrs >= 0.1 else ""))
+        if yrs >= 1:  # 그림 단위: 최저임금 몇 년치인지 칸으로 (정보성 강화, 2026-10-01)
+            sc.append(clip.IconGrid(f"{p['head']} 몸값 = 최저임금", yrs, "년", f"{count(yrs)}년치", top=560))
         sc.append(Ask("이 몸값, 적당한가요?"))
         p["q"] = "이 몸값, 적당한가요?"
         p["basis"] = f"오늘 글({p['source']})의 확인된 연봉·기록으로 계산" + (f", 환율 {p['fx_label']}" if p["fx_label"] else "")
@@ -412,7 +420,7 @@ def build(kind: str, today: str, folder: Path | None = None) -> tuple[dict, list
             return None
         rows = [(x["short"], won(x["krw"] / o["div"])) for x in o["rows"]]
         sub = "2026 연봉 기준" + (" · 달러는 " + fx_label if o["league"] != "kbo" and fx_label else "")
-        board = Board(o["title"], sub, rows)
+        board = Board(o["title"], sub, rows, ratios=[x["krw"] / o["rows"][0]["krw"] for x in o["rows"]])
         o |= {"kind": "C", "q": "1위 예상했나요?", "basis": "확인 연봉표(config/salaries.yaml, 발표·보도)" + (f", 환율 {fx_label}" if fx_label else ""),
               "names": [x["name"] for x in o["rows"]]}
         return o, [board, clip.LoopBack(board, board)]

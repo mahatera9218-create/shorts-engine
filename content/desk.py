@@ -42,6 +42,7 @@ def clean_tags(tags: list[str], limit: int = 15) -> list[str]:
 POSTS = ROOT / "posts"
 REPO = os.environ.get("GITHUB_REPOSITORY", "mahatera9218-create/shorts-engine")
 IMG_LINE = re.compile(r"^\[이미지 (\d+)_([^:\]]*):\s*([^\]]+)\]$")
+TABLE_LINE = re.compile(r"^\[표 (\d+):\s*([^\]]+)\]$")  # 네이버 표 자리 (AI 브리핑 인용, 2026-10-01)
 TITLE_LINE = re.compile(r"^\d+\.\s+(★\s+)?(.+?)\s+—\s+(\S+)$")
 
 
@@ -63,6 +64,14 @@ def parse(folder: Path) -> dict | None:
         t.split("## 본문", 1)[1].split("\n", 1)[1].split("\n## 출처", 1)[0] if "## 본문" in t else ""
     blocks, images = [], []
     for para in [p.strip() for p in body.strip().split("\n\n") if p.strip()]:
+        tm = TABLE_LINE.match(para)
+        if tm:
+            cj = folder / "clip.json"
+            tb = (json.loads(cj.read_text(encoding="utf-8")).get("table") if cj.exists() else None) or {}
+            if tb.get("rows"):
+                blocks.append({"table": int(tm.group(1)), "title": tb.get("title", tm.group(2)),
+                               "header": [str(x) for x in tb["header"]], "rows": [[str(x) for x in r] for r in tb["rows"]]})
+                continue
         m = IMG_LINE.match(para)
         if m:
             images.append({"n": int(m.group(1)), "label": m.group(2), "file": m.group(3).strip()})
@@ -132,6 +141,7 @@ img{max-width:100%;border-radius:10px;display:block}.thumb{max-width:360px}
 .body p{margin:0 0 14px;white-space:pre-wrap}.body .ph{margin:10px 0 16px}.ph small{display:block;color:var(--soft);margin-top:4px}
 .step{display:inline-block;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;text-align:center;font-weight:800;margin-right:6px;line-height:26px}
 a{color:inherit}ol{padding-left:20px}li{margin:6px 0}
+table.nt{border-collapse:collapse;width:100%;margin:8px 0;font-size:15px}table.nt th,table.nt td{border:1px solid var(--line);padding:6px 8px;text-align:center}table.nt th{background:var(--bg)}
 textarea.ed{width:100%;font:inherit;line-height:1.6;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:6px 0;background:var(--card);color:var(--ink);resize:none;overflow:hidden}
 textarea.ed.changed{border-color:var(--warn);box-shadow:0 0 0 2px rgba(184,110,0,.18)}textarea.ttl{font-weight:700;font-size:18px}
 .row{display:flex;gap:8px}.row button{flex:1}button.small{min-height:40px;font-size:15px;padding:6px 10px}
@@ -151,7 +161,15 @@ function resetEd(k){const t=ed(k);if(t)setEd(k,t.defaultValue)}
 function copyEd(b,k){copyText(b,val(k))}
 document.addEventListener('DOMContentLoaded',()=>document.querySelectorAll('textarea.ed').forEach(t=>{const v=ls(t.dataset.k);if(v!=null)t.value=v;paint(t);grow(t);
   t.addEventListener('input',()=>{if(t.classList.contains('one'))t.value=t.value.replace(/\\n/g,' ');ls(t.dataset.k,t.value===t.defaultValue?null:t.value);paint(t);grow(t)})}))
-function bodyText(){return POST.blocks.map((x,i)=>x.text!==undefined?(val('b'+i)||x.text):'📷 사진 '+x.n+' ('+x.label+')').join('\\n\\n')}
+function tableText(x){return [x.header].concat(x.rows).map(r=>r.join(' | ')).join('\\n')}
+function esc(t){return String(t).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+function tableHtml(x){return '<table border="1" style="border-collapse:collapse"><tr>'+x.header.map(h=>'<th>'+esc(h)+'</th>').join('')+'</tr>'+x.rows.map(r=>'<tr>'+r.map(c=>'<td>'+esc(c)+'</td>').join('')+'</tr>').join('')+'</table>'}
+function bodyText(){return POST.blocks.map((x,i)=>x.text!==undefined?(val('b'+i)||x.text):x.table?tableText(x):'📷 사진 '+x.n+' ('+x.label+')').join('\\n\\n')}
+function bodyHtml(){return POST.blocks.map((x,i)=>x.text!==undefined?'<p>'+esc(val('b'+i)||x.text).replace(/\\n/g,'<br>')+'</p>':x.table?tableHtml(x):'<p>📷 사진 '+x.n+' ('+esc(x.label)+')</p>').join('')}
+async function copyRich(b,html,text){  // 표가 표로 붙게 HTML과 글자를 같이 넣는다 (안 되는 브라우저는 글자만)
+  try{await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([text],{type:'text/plain'})})]);flash(b,'복사됨 ✓')}
+  catch(e){copyText(b,text)}}
+function copyTable(b,n){const x=POST.blocks.find(y=>y.table===n);copyRich(b,tableHtml(x),tableText(x))}
 async function saveEdits(b){
   let body='';const t=ed('title');if(t&&t.value!==t.defaultValue)body+='제목: '+val('title')+'\\n\\n';
   document.querySelectorAll('textarea.ed[data-k^="b"]').forEach(x=>{if(x.value!==x.defaultValue)body+='[문단 '+x.dataset.k.slice(1)+']\\n'+x.value.trim()+'\\n\\n'});
@@ -161,7 +179,7 @@ async function saveEdits(b){
   if(url.length>7000){try{await navigator.clipboard.writeText(body)}catch(e){prompt('길게 눌러 복사하세요',body)}
     alert('고친 내용이 길어서 복사해 뒀어요. 열리는 화면의 본문 칸을 길게 눌러 붙여넣은 뒤 Create를 누르세요.');url=base}
   location.href=url}
-async function copyBody(b){copyText(b,bodyText())}
+async function copyBody(b){copyRich(b,bodyHtml(),bodyText())}
 async function saveClip(b,name){
   name=name||'clip.mp4';
   try{
@@ -234,8 +252,15 @@ def page(p: dict) -> str:
     titles = (edit_box("title", best["text"], "제목 복사", one_line=True) if best else "") + (
         f'<details><summary class="muted">다른 제목 {len(p["titles"]) - 1}개 (썸네일과 짝이 아니라 예비)</summary>{rest}</details>'
         if rest else "")
+    def tbl(b):
+        head = "".join(f"<th>{e(x)}</th>" for x in b["header"])
+        rows = "".join("<tr>" + "".join(f"<td>{e(x)}</td>" for x in r) + "</tr>" for r in b["rows"])
+        return (f'<div class="ph"><b>📊 표 {b["table"]} · {e(b["title"])}</b><table class="nt"><tr>{head}</tr>{rows}</table>'
+                f'<button class="ghost small" onclick="copyTable(this,{b["table"]})">📋 이 표만 복사</button>'
+                '<small>네이버 앱에 붙여넣으면 표로 들어가요. 글자로만 들어가면 앱의 <b>표</b> 버튼으로 표를 넣고 칸에 옮겨 주세요 (AI 브리핑은 이미지가 아니라 표를 인용해요).</small></div>')
+
     body = "".join(
-        f'<textarea class="ed" data-k="b{i}" rows="3">{e(b["text"])}</textarea>' if "text" in b else
+        f'<textarea class="ed" data-k="b{i}" rows="3">{e(b["text"])}</textarea>' if "text" in b else tbl(b) if "table" in b else
         f'<div class="ph"><img src="{e(b["img"])}" alt="사진 {b["n"]}" loading="lazy"><small>📷 사진 {b["n"]} · {e(b["label"])}</small></div>'
         for i, b in enumerate(p["blocks"]))
     each = "".join(f'<div class="ph"><img src="{e(x["file"])}" alt="사진 {x["n"]}" loading="lazy"><small>📷 사진 {x["n"]} · {e(x["label"])}'
