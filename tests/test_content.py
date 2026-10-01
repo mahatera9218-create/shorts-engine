@@ -79,6 +79,12 @@ class ContentTest(unittest.TestCase):
         problems = " / ".join(check_post(bad, sheet))
         assert "금지 주제" in problems and "3.5" in problems and "제목1" in problems
 
+    def test_human_gaps(self):
+        from content.voice import human_gaps
+        body = ("1경기에 489만원이 남아요.\n\n[이미지 1: thumb.png]\n\n세금은 4억원이에요. 연봉의 42%죠.\n\n"
+                "세금은 얼마일까요?\n\n솔직히 이렇게 많이 뗄 줄은 몰랐어요.\n\n[대표 한마디]\n\n기준: 국세청 세율표")
+        assert human_gaps(body) == ["세금은 4억원이에요. 연봉의 42%죠."]
+
     def test_quiz_answer_not_before_quiz(self):
         sheet = "1안타당: 2억 32만 원\n1홈런당: 29억 8,474만 원\n퀴즈 카드: 1홈런 1번에 받는 돈 맞히기 (정답 29억 8,474만 원)"
         imgs = "[1: thumb.png]\n{q}\n[2: card_quiz.png]\n[3: card_answer.png]\n[4: card_wage.png]\n[5: card_table.png]"

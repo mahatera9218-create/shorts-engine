@@ -1,0 +1,79 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive">
+<title>쇼츠 영상 모음</title><style>
+:root{--bg:#f6f4ef;--card:#fff;--ink:#1d1d20;--soft:#6b6a66;--line:#e2ddd3;--accent:#d93636;--ok:#1f8a4c;--warn:#b86e00;--btn:#1d1d20;--btnink:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#141416;--card:#1f1f23;--ink:#f0efeb;--soft:#a3a19b;--line:#34343a;--btn:#f0efeb;--btnink:#141416}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+main{max-width:760px;margin:0 auto;padding:16px 16px 80px}h1{font-size:22px;margin:8px 0 4px}h2{font-size:18px;margin:0 0 10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0}
+.muted{color:var(--soft);font-size:14px}.badge{display:inline-block;padding:2px 10px;border-radius:99px;font-size:14px;font-weight:700;color:#fff}
+.ok{background:var(--ok)}.warn{background:var(--warn)}
+button,.btn{display:block;width:100%;min-height:52px;margin:8px 0;padding:12px 14px;border:0;border-radius:12px;background:var(--btn);color:var(--btnink);font-size:17px;font-weight:700;text-align:center;text-decoration:none;cursor:pointer}
+button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);font-weight:600;text-align:left}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.chips button.chip{width:auto;min-height:44px;margin:0;padding:8px 12px}
+button.done{background:var(--ok)!important;color:#fff!important}
+img{max-width:100%;border-radius:10px;display:block}.thumb{max-width:360px}
+.body p{margin:0 0 14px;white-space:pre-wrap}.body .ph{margin:10px 0 16px}.ph small{display:block;color:var(--soft);margin-top:4px}
+.step{display:inline-block;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;text-align:center;font-weight:800;margin-right:6px;line-height:26px}
+a{color:inherit}ol{padding-left:20px}li{margin:6px 0}
+table.nt{border-collapse:collapse;width:100%;margin:8px 0;font-size:15px}table.nt th,table.nt td{border:1px solid var(--line);padding:6px 8px;text-align:center}table.nt th{background:var(--bg)}
+textarea.ed{width:100%;font:inherit;line-height:1.6;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:6px 0;background:var(--card);color:var(--ink);resize:none;overflow:hidden}
+textarea.ed.changed{border-color:var(--warn);box-shadow:0 0 0 2px rgba(184,110,0,.18)}textarea.ttl{font-weight:700;font-size:18px}
+.row{display:flex;gap:8px}.row button{flex:1}button.small{min-height:40px;font-size:15px;padding:6px 10px}
+</style></head><body><main>
+<a href="../#shorts" class="muted">← 발행 도우미</a>
+<h1>유튜브 쇼츠 모음</h1>
+<div class="card"><ol class="muted"><li><b>영상 저장</b> → 유튜브 앱 아래 <b>+</b> → <b>동영상 업로드</b> → 저장한 영상</li>
+<li><b>사운드 추가</b>로 인기 음원 하나</li>
+<li><b>썸네일(커버) 고르기</b>가 보이면 <b>맨 앞 장면</b> (안 보여도 괜찮아요: 모든 장면 위쪽에 제목이 있어요)</li>
+<li><b>제목 복사</b> → 제목 칸, <b>설명 복사</b>·<b>해시태그 복사</b> → 설명 칸 → <b>공개</b> → 업로드</li></ol>
+<div class="muted">매일 국내 선수 2개 + 해외 리그 선수 1개. 올린 쇼츠는 다음 날 아침 자동 확인돼 사라져요. <b>안 올린 쇼츠가 있으면 그 칸은 새로 만들지 않아요</b> — 올리기 싫으면 '버리기'.</div></div><p>올릴 쇼츠가 없어요. 매일 아침 글쓰기 뒤에 만들어져요.</p>
+</main><script>const POST={"blocks":[],"images":[]};
+function flash(b,t){const o=b.dataset.o||b.textContent;b.dataset.o=o;b.textContent=t;b.classList.add('done');setTimeout(()=>{b.textContent=o;b.classList.remove('done')},1600)}
+async function copyText(b,t){try{await navigator.clipboard.writeText(t);flash(b,'복사됨 ✓')}catch(e){prompt('길게 눌러 복사하세요',t)}}
+// 고치기 (대표 요청 2026-09-30): 고친 글은 이 휴대폰에 저장되고, 복사 버튼은 고친 글을 복사한다
+function ls(k,v){const key='ed:'+(POST.folder||location.pathname)+':'+k;try{if(v===undefined)return localStorage.getItem(key);if(v===null)localStorage.removeItem(key);else localStorage.setItem(key,v)}catch(e){return null}}
+function grow(t){t.style.height='auto';t.style.height=(t.scrollHeight+4)+'px'}
+function ed(k){return document.querySelector('textarea.ed[data-k="'+k+'"]')}
+function val(k){const t=ed(k);return t?t.value.trim():''}
+function paint(t){t.classList.toggle('changed',t.value!==t.defaultValue);const c=document.querySelector('[data-count="'+t.dataset.k+'"]');if(c)c.textContent=t.value.trim().length+'자'+(t.value!==t.defaultValue?' · 고침':'')}
+function setEd(k,v){const t=ed(k);if(!t)return;t.value=v;ls(k,v===t.defaultValue?null:v);paint(t);grow(t)}
+function resetEd(k){const t=ed(k);if(t)setEd(k,t.defaultValue)}
+function copyEd(b,k){copyText(b,val(k))}
+document.addEventListener('DOMContentLoaded',()=>document.querySelectorAll('textarea.ed').forEach(t=>{const v=ls(t.dataset.k);if(v!=null)t.value=v;paint(t);grow(t);
+  t.addEventListener('input',()=>{if(t.classList.contains('one'))t.value=t.value.replace(/\n/g,' ');ls(t.dataset.k,t.value===t.defaultValue?null:t.value);paint(t);grow(t)})}))
+function tableText(x){return [x.header].concat(x.rows).map(r=>r.join(' | ')).join('\n')}
+function esc(t){return String(t).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+function tableHtml(x){return '<table border="1" style="border-collapse:collapse"><tr>'+x.header.map(h=>'<th>'+esc(h)+'</th>').join('')+'</tr>'+x.rows.map(r=>'<tr>'+r.map(c=>'<td>'+esc(c)+'</td>').join('')+'</tr>').join('')+'</table>'}
+function bodyText(){return POST.blocks.map((x,i)=>x.mine&&!val('b'+i).trim()?null:x.text!==undefined?(val('b'+i)||x.text):x.table?tableText(x):x.shop?'🛒 상품 자리 (상품 카드를 넣고 이 줄은 지우기)':'📷 사진 '+x.n+' ('+x.label+')').filter(s=>s!==null).join('\n\n')}
+function bodyHtml(){return POST.blocks.map((x,i)=>x.mine&&!val('b'+i).trim()?'':x.text!==undefined?'<p>'+esc(val('b'+i)||x.text).replace(/\n/g,'<br>')+'</p>':x.table?tableHtml(x):x.shop?'<p>🛒 상품 자리 (상품 카드를 넣고 이 줄은 지우기)</p>':'<p>📷 사진 '+x.n+' ('+esc(x.label)+')</p>').join('')}
+async function copyRich(b,html,text){  // 표가 표로 붙게 HTML과 글자를 같이 넣는다 (안 되는 브라우저는 글자만)
+  try{await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([text],{type:'text/plain'})})]);flash(b,'복사됨 ✓')}
+  catch(e){copyText(b,text)}}
+function copyTable(b,n){const x=POST.blocks.find(y=>y.table===n);copyRich(b,tableHtml(x),tableText(x))}
+async function saveEdits(b){
+  let body='';const t=ed('title');if(t&&t.value!==t.defaultValue)body+='제목: '+val('title')+'\n\n';
+  document.querySelectorAll('textarea.ed[data-k^="b"]').forEach(x=>{if(x.value!==x.defaultValue)body+='[문단 '+x.dataset.k.slice(1)+']\n'+x.value.trim()+'\n\n'});
+  if(!body){alert('고친 곳이 없어요.');return}
+  const base='https://github.com/'+POST.repo+'/issues/new?title='+encodeURIComponent('[수정] '+POST.folder);
+  let url=base+'&body='+encodeURIComponent(body+'아래 초록색 Create 버튼만 누르면 됩니다.');
+  if(url.length>7000){try{await navigator.clipboard.writeText(body)}catch(e){prompt('길게 눌러 복사하세요',body)}
+    alert('고친 내용이 길어서 복사해 뒀어요. 열리는 화면의 본문 칸을 길게 눌러 붙여넣은 뒤 Create를 누르세요.');url=base}
+  location.href=url}
+async function copyBody(b){copyRich(b,bodyHtml(),bodyText())}
+async function saveClip(b,name){
+  name=name||'clip.mp4';
+  try{
+    const r=await fetch(name);const bl=await r.blob();const files=[new File([bl],name.split('/').pop(),{type:'video/mp4'})];
+    if(navigator.canShare&&navigator.canShare({files})){await navigator.share({files});flash(b,'완료 ✓');return}
+  }catch(e){if(e.name==='AbortError')return}
+  alert('영상을 길게 누르거나, 영상 오른쪽 아래 ⋮ 메뉴에서 저장해 주세요.')
+}
+async function saveAll(b){
+  try{
+    const files=await Promise.all(POST.images.map(async x=>{const r=await fetch(x.file);const bl=await r.blob();return new File([bl],String(x.n).padStart(2,'0')+'_'+x.file,{type:bl.type||'image/png'})}));
+    if(navigator.canShare&&navigator.canShare({files})){await navigator.share({files});flash(b,'완료 ✓');return}
+  }catch(e){if(e.name==='AbortError')return}
+  document.getElementById('each').scrollIntoView({behavior:'smooth'});alert('한 번에 저장이 안 되는 브라우저예요. 아래 사진을 하나씩 길게 눌러 저장해 주세요.')
+}
+</script></body></html>
