@@ -186,7 +186,11 @@ async function saveEdits(b){
   if(url.length>7000){try{await navigator.clipboard.writeText(body)}catch(e){prompt('길게 눌러 복사하세요',body)}
     alert('고친 내용이 길어서 복사해 뒀어요. 열리는 화면의 본문 칸을 길게 눌러 붙여넣은 뒤 Create를 누르세요.');url=base}
   location.href=url}
-async function copyBody(b){copyRich(b,bodyHtml(),bodyText())}
+async function copyBody(b){  // 대표가 겪은 일 한 줄은 꼭 (대표 지시 2026-10-02): 비었으면 첫 번째 누름은 그 칸으로 안내, 한 번 더 누르면 그냥 복사
+  const i=POST.blocks.findIndex(x=>x.mine);
+  if(i>=0&&!val('b'+i).trim()&&!b.dataset.warned){b.dataset.warned='1';const t=ed('b'+i);if(t){t.scrollIntoView({block:'center'});t.focus()}
+    flash(b,'✍️ 대표 한마디 먼저 (한 번 더 누르면 그냥 복사)');return}
+  copyRich(b,bodyHtml(),bodyText())}
 async function saveClip(b,name){
   name=name||'clip.mp4';
   try{
@@ -267,8 +271,8 @@ def page(p: dict) -> str:
                 '<small>네이버 앱에 붙여넣으면 표로 들어가요. 글자로만 들어가면 앱의 <b>표</b> 버튼으로 표를 넣고 칸에 옮겨 주세요 (AI 브리핑은 이미지가 아니라 표를 인용해요).</small></div>')
 
     body = "".join(
-        (f'<div class="ph" style="border:2px dashed var(--accent);border-radius:10px;padding:10px"><b>✍️ 대표 한마디 (선택)</b>'
-         f'<small>이 선수에 대한 대표님 생각이나 기억을 한두 문장. 예: 직접 본 경기, 응원하는 이유, 이 연봉을 보고 든 생각. 비워 두면 복사에서 빠져요.</small>'
+        (f'<div class="ph" style="border:2px dashed var(--accent);border-radius:10px;padding:10px"><b>✍️ 대표 한마디 (꼭 한 줄)</b>'
+         f'<small>대표님이 실제로 겪은 일 한 줄. AI가 쓸 수 없는 부분이라 글 신뢰도에 가장 커요. 예: 직접 본 경기, 응원하게 된 계기, 이 연봉을 보고 떠오른 내 월급날. 비워 두면 복사에서 빠져요.</small>'
          f'<textarea class="ed" data-k="b{i}" rows="2"></textarea></div>') if b.get("mine") else
         f'<textarea class="ed" data-k="b{i}" rows="3">{e(b["text"])}</textarea>' if "text" in b else tbl(b) if "table" in b else
         '<div class="ph" style="border:2px dashed var(--warn);border-radius:10px;padding:10px"><b>🛒 상품 자리</b><small>쇼핑커넥트 상품 카드를 여기에 1개 넣으세요 (없으면 이 줄 지우기)</small></div>' if "shop" in b else

@@ -11,6 +11,9 @@ import re
 from .receipt import won
 
 SKIP = {"salary"}
+UNIT_KO = {"games": "경기", "innings": "이닝", "wins": "승", "losses": "패", "hits": "개", "home_runs": "개", "goals": "골",
+           "assists": "개", "at_bats": "타수", "events": "개 대회", "rounds": "라운드", "strikeouts": "개"}
+ROWS_MIN, ROWS_MAX = 8, 10  # 표 항목 8~10개 (대표 지시 2026-10-02: AI 브리핑이 잘라 가기 좋은 크기)
 GENERIC = {"contract_total": "계약 총액", "games": "출전 경기", "home_runs": "홈런", "hits": "안타", "wins": "승",
            "innings": "이닝", "goals": "골", "assists": "도움", "points": "득점"}
 
@@ -53,6 +56,8 @@ def _value(f: dict, fx: float | None) -> str:
         amt = (f"{eok:,}억" + (f" {man:,}만" if man else "")) if eok else (f"{man:,}만" if man else f"{v:,.0f}")
         return f"{amt} {word}" + (f" (약 {won(v * fx)})" if fx and u == "USD" else "")
     num = f"{v:,}" if float(v).is_integer() else f"{v}"
+    if re.fullmatch(r"[A-Za-z_]+", u or ""):  # 뉴스 뽑기가 단위를 영어 key로 줄 때 ("9games" 방지, 2026-10-02)
+        u = UNIT_KO.get(u.lower(), "")
     return num + ("" if u in ("점", "") else u)
 
 
@@ -76,6 +81,12 @@ def build(d: dict, n: dict, facts: dict) -> dict | None:
     season = d.get("season", "")
     if th == "rank":
         rows = [[f"{r['rank']}위", r["name"], r.get("team") or "-", won(r["krw"]), won(r["krw"] / d["games"])] for r in d["rows"]]
+        ks = [r["krw"] for r in d["rows"] if r.get("krw")]
+        if ks:  # 항목 8개 이상 (2026-10-02): 합계·평균·1위와 끝 순위 차이 (계산)
+            extra = [[f"{len(ks)}명 합계 (계산)", "-", "-", won(sum(ks)), won(sum(ks) / d["games"])],
+                     [f"{len(ks)}명 평균 (계산)", "-", "-", won(sum(ks) / len(ks)), won(sum(ks) / len(ks) / d["games"])],
+                     ["1위와 끝 순위 차이 (계산)", "-", "-", won(max(ks) - min(ks)), won((max(ks) - min(ks)) / d["games"])]]
+            rows += extra[:max(0, ROWS_MAX - len(rows))]
         return {"title": d["title"], "header": ["순위", "선수", "팀", f"{season} 연봉", "1경기당"], "rows": rows}
     if th in ("same", "cross"):
         a, b = d["a"], d["b"]
@@ -99,8 +110,13 @@ def build(d: dict, n: dict, facts: dict) -> dict | None:
                 va, vb = _with_detail(va, label, common), _with_detail(vb, other, common)
                 label = common
             rows.append([label, va, vb])
-        if n.get("unit_label") and n.get("va"):
-            rows.append([f"{n['unit_label']}당 연봉 (계산)", won(n["va"]), won(n["vb"])])
+        calc = [[f"{n['unit_label']}당 연봉 (계산)", won(n["va"]), won(n["vb"])]] if n.get("unit_label") and n.get("va") else []
+        sa, sb = n["a"]["salary_krw"], n["b"]["salary_krw"]
+        rows = rows[:2] + rows[2:][:ROWS_MAX - 2 - len(calc)]  # 항목 8~10개 (2026-10-02)
+        more = [["월급으로 치면 (계산)", won(sa / 12), won(sb / 12)], ["하루로 치면 (계산)", won(sa / 365), won(sb / 365)]]
+        while len(rows) + len(calc) < ROWS_MIN and more:
+            calc.append(more.pop(0))
+        rows += calc
         return {"title": f"{an} vs {bn} {season} 연봉·기록", "header": ["항목", an, bn], "rows": rows}
     name = d.get("short_name") or d.get("player", "")
     fx = d.get("fx_krw_per_usd")
@@ -115,10 +131,22 @@ def build(d: dict, n: dict, facts: dict) -> dict | None:
         if f.get("date"):
             dates.add(str(f["date"]))
     per = n.get("per", {})
+    calc = []
     if per.get("games"):
-        rows.append(["1경기당 연봉 (계산)", won(per["games"])])
+        calc.append(["1경기당 연봉 (계산)", won(per["games"])])
     if n.get("min_wage_yearly_krw") and n.get("salary_krw"):
-        rows.append(["최저임금 몇 년치 (계산)", f"{n['salary_krw'] / n['min_wage_yearly_krw']:.1f}년"])
-    if dates:
-        rows.append(["기준", f"{max(dates)}까지 보도된 기록 (기록마다 날짜가 조금 다를 수 있음)"])
+        calc.append(["최저임금 몇 년치 (계산)", f"{n['salary_krw'] / n['min_wage_yearly_krw']:.1f}년"])
+    tail = [["기준", f"{max(dates)}까지 보도된 기록 (기록마다 날짜가 조금 다를 수 있음)"]] if dates else []
+    # 항목 8~10개 (2026-10-02): 많으면 시즌 기록을 뒤에서부터 덜고, 모자라면 계산 항목을 더한다
+    head = rows[:3] if d.get("salary_basis") else rows[:2]
+    stats = rows[len(head):]
+    room = ROWS_MAX - len(head) - len(calc) - len(tail)
+    stats = stats[:max(2, room)]
+    units = {u["key"]: u["label"] for u in d.get("units", [])}
+    more = [[f"{units[k]}당 연봉 (계산)", won(v)] for k, v in per.items() if k != "games" and k in units and v]
+    if n.get("salary_krw"):
+        more += [["월급으로 치면 (계산)", won(n["salary_krw"] / 12)], ["하루로 치면 (계산)", won(n["salary_krw"] / 365)]]
+    while len(head) + len(stats) + len(calc) + len(tail) < ROWS_MIN and more:
+        calc.append(more.pop(0))
+    rows = (head + stats + calc + tail)[:ROWS_MAX]
     return {"title": f"{name} {season} 연봉·시즌 기록", "header": ["항목", "내용"], "rows": rows}
