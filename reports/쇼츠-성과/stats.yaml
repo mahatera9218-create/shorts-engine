@@ -66,6 +66,8 @@ videos:
         views: 5
         likes: 0
         comments: 0
+    kind: B
+    key: B-kbo1-커리
   52ga_LTBhoI:
     title: 2026 KBO 연봉 TOP 5 하루에 버는 돈
     published: '2026-09-30'
@@ -74,3 +76,5 @@ videos:
         views: 8
         likes: 0
         comments: 0
+    kind: C
+    key: C-kbo-day
