@@ -64,6 +64,9 @@ def parse(folder: Path) -> dict | None:
         t.split("## 본문", 1)[1].split("\n", 1)[1].split("\n## 출처", 1)[0] if "## 본문" in t else ""
     blocks, images = [], []
     for para in [p.strip() for p in body.strip().split("\n\n") if p.strip()]:
+        if para == "[상품 자리]":  # 쇼핑커넥트 상품 카드 자리 (2026-10-01)
+            blocks.append({"shop": True})
+            continue
         tm = TABLE_LINE.match(para)
         if tm:
             tj, cj = folder / "table.json", folder / "clip.json"  # 선수 실제 데이터 표, 없으면 클립 표
@@ -165,8 +168,8 @@ document.addEventListener('DOMContentLoaded',()=>document.querySelectorAll('text
 function tableText(x){return [x.header].concat(x.rows).map(r=>r.join(' | ')).join('\\n')}
 function esc(t){return String(t).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
 function tableHtml(x){return '<table border="1" style="border-collapse:collapse"><tr>'+x.header.map(h=>'<th>'+esc(h)+'</th>').join('')+'</tr>'+x.rows.map(r=>'<tr>'+r.map(c=>'<td>'+esc(c)+'</td>').join('')+'</tr>').join('')+'</table>'}
-function bodyText(){return POST.blocks.map((x,i)=>x.text!==undefined?(val('b'+i)||x.text):x.table?tableText(x):'📷 사진 '+x.n+' ('+x.label+')').join('\\n\\n')}
-function bodyHtml(){return POST.blocks.map((x,i)=>x.text!==undefined?'<p>'+esc(val('b'+i)||x.text).replace(/\\n/g,'<br>')+'</p>':x.table?tableHtml(x):'<p>📷 사진 '+x.n+' ('+esc(x.label)+')</p>').join('')}
+function bodyText(){return POST.blocks.map((x,i)=>x.text!==undefined?(val('b'+i)||x.text):x.table?tableText(x):x.shop?'🛒 상품 자리 (상품 카드를 넣고 이 줄은 지우기)':'📷 사진 '+x.n+' ('+x.label+')').join('\\n\\n')}
+function bodyHtml(){return POST.blocks.map((x,i)=>x.text!==undefined?'<p>'+esc(val('b'+i)||x.text).replace(/\\n/g,'<br>')+'</p>':x.table?tableHtml(x):x.shop?'<p>🛒 상품 자리 (상품 카드를 넣고 이 줄은 지우기)</p>':'<p>📷 사진 '+x.n+' ('+esc(x.label)+')</p>').join('')}
 async function copyRich(b,html,text){  // 표가 표로 붙게 HTML과 글자를 같이 넣는다 (안 되는 브라우저는 글자만)
   try{await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([text],{type:'text/plain'})})]);flash(b,'복사됨 ✓')}
   catch(e){copyText(b,text)}}
@@ -262,6 +265,7 @@ def page(p: dict) -> str:
 
     body = "".join(
         f'<textarea class="ed" data-k="b{i}" rows="3">{e(b["text"])}</textarea>' if "text" in b else tbl(b) if "table" in b else
+        '<div class="ph" style="border:2px dashed var(--warn);border-radius:10px;padding:10px"><b>🛒 상품 자리</b><small>쇼핑커넥트 상품 카드를 여기에 1개 넣으세요 (없으면 이 줄 지우기)</small></div>' if "shop" in b else
         f'<div class="ph"><img src="{e(b["img"])}" alt="사진 {b["n"]}" loading="lazy"><small>📷 사진 {b["n"]} · {e(b["label"])}</small></div>'
         for i, b in enumerate(p["blocks"]))
     each = "".join(f'<div class="ph"><img src="{e(x["file"])}" alt="사진 {x["n"]}" loading="lazy"><small>📷 사진 {x["n"]} · {e(x["label"])}'
@@ -285,7 +289,7 @@ def page(p: dict) -> str:
                f' 마땅한 게 없으면 다른 검색어: {e(" · ".join(k for k in sh["others"] if k != sh["keyword"]))}</div>'
                if sh["keyword"] else "")
             + edit_box("shopnote", sh["disclosure"], "광고 고지 복사")
-            + '<div class="muted">같은 상품을 <b>클립에 상품 태그로</b> 다는 게 핵심이에요 (클립 조회가 훨씬 많아요). 이 글의 클립은 선수 사진 없이 만들어져 태그를 달아도 돼요. 블로그 글에도 붙였다면 본문 끝에 광고 고지를 붙이세요.</div></div>'
+            + '<div class="muted">같은 상품을 <b>클립에 상품 태그로</b> 다는 게 핵심이에요 (클립 조회가 훨씬 많아요). 이 글의 클립은 선수 사진 없이 만들어져 태그를 달아도 돼요. 블로그 글에 붙일 때는 <b>본문 맨 첫 줄</b>에 광고 고지를 넣고(공정위 지침: 글 첫 부분), 상품 카드는 본문의 <b>🛒 상품 자리</b>에 넣으세요.</div></div>'
             ) if sh else ""
     done_btn = e(issue_link("발행완료", p["folder"], "블로그·클립 발행을 마쳤어요."), quote=True)
     again_btn = e(issue_link("다시뽑기", p["folder"], "이 글은 버리고 다른 선수·테마로 새로 써 주세요."), quote=True)
