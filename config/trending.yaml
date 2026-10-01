@@ -1,6 +1,102 @@
 # 자동 생성 (content/trending.py). 손으로 고치지 않는다.
-updated: '2026-09-30'
+updated: '2026-10-02'
 players:
+- name: 김현수
+  short: 김현수
+  sport: kbo
+  team: KT 위즈
+  why: KIA전 결승포로 KT의 3연전 싹쓸이를 이끌었다
+  source: 39
+  date: '2026-10-02'
+  link: https://www.news1.kr/sports/baseball/6308287
+- name: 김혜성
+  short: 김혜성
+  sport: mlb
+  team: LA 다저스
+  why: 메이저리그 콜업 후 디비전 시리즈 PS 로스터 합류 여부에 관심 집중
+  source: 2
+  date: '2026-10-02'
+  link: https://www.spotvnews.co.kr/news/articleView.html?idxno=1010893
+- name: 힐리어드
+  short: 힐리어드
+  sport: kbo
+  team: KT 위즈
+  why: 41호 홈런을 가동하며 홈런 공동 선두에 올랐다
+  source: 4
+  date: '2026-10-02'
+  link: http://www.thesportstimes.co.kr/news/articleView.html?idxno=376146
+- name: 대니엘
+  short: 대니엘
+  sport: kbo
+  team: KT 위즈
+  why: KIA전 6이닝 13탈삼진 호투로 가을야구 1선발 후보로 떠올랐다
+  source: 5
+  date: '2026-10-02'
+  link: https://www.newspim.com/news/view/20261001000699
+- name: 최원준
+  short: 최원준
+  sport: kbo
+  team: KT 위즈
+  why: 올 시즌 프로야구 최고의 급등주로 꼽히며 트레이드 성공 사례로 화제
+  source: 10
+  date: '2026-10-02'
+  link: https://www.joongang.co.kr/article/25466505
+- name: 무라카미
+  short: 무라카미
+  sport: mlb
+  team: 시카고 화이트삭스
+  why: 메이저리그 데뷔 시즌 35홈런 77타점을 올리고 PS 승리 뒤 인터뷰로 화제
+  source: 26
+  date: '2026-10-02'
+  link: https://mhnse.com/news/articleView.html?idxno=1569065
+- name: 하피냐
+  short: 하피냐
+  sport: laliga
+  team: 바르셀로나
+  why: 시즌 초반 8경기 14골 활약에 쿠르투아가 극찬
+  source: 31
+  date: '2026-10-02'
+  link: https://sports.khan.co.kr/article/202610020500003?pt=nv
+- name: 이강인
+  short: 이강인
+  sport: laliga
+  team: 아틀레티코 마드리드
+  why: 시즌 초반 맹활약으로 아틀레티코 연계 플레이의 핵심으로 극찬
+  source: 46
+  date: '2026-10-02'
+  link: https://www.mydaily.co.kr/page/view/2026100109532757896
+- name: 리디아 고
+  short: 리디아 고
+  sport: golf
+  team: ''
+  why: 롯데 챔피언십에서 소렌스탐을 제치고 LPGA 통산 상금 1위에 도전
+  source: 37
+  date: '2026-10-02'
+  link: https://www.topstarnews.net/news/articleView.html?idxno=16233488
+- name: 김민솔
+  short: 김민솔
+  sport: golf
+  team: ''
+  why: KLPGA 하이트진로 챔피언십 1라운드 2언더파로 단독 선두
+  source: 62
+  date: '2026-10-02'
+  link: https://news.sbs.co.kr/news/endPage.do?news_id=N1008779600&plink=ORI&cooper=NAVER
+- name: 송민혁
+  short: 송민혁
+  sport: golf
+  team: ''
+  why: KPGA 최경주 인비테이셔널 첫날 65타 돌풍
+  source: 58
+  date: '2026-10-02'
+  link: https://www.g-enews.com/view.php?ud=202610011758202721daecd3dad5_1
+- name: 양의지
+  short: 양의지
+  sport: kbo
+  team: 두산 베어스
+  why: NC전 1회 선제 투런 홈런을 날렸다
+  source: 14
+  date: '2026-10-02'
+  link: https://www.starnewskorea.com/sports/2026/10/02/2026100119530919772
 - name: 김도영
   short: 김도영
   sport: kbo
@@ -30,14 +126,6 @@ players:
   sport: kbo
   team: KT 위즈
   why: KIA전 연장 10회 결승타로 KT 승리 이끎
-  source: 44
-  date: '2026-09-30'
-  link: https://www.newspim.com/news/view/20260929001196
-- name: 김현수
-  short: 김현수
-  sport: kbo
-  team: KT 위즈
-  why: KIA전에서 만루포를 터뜨림
   source: 44
   date: '2026-09-30'
   link: https://www.newspim.com/news/view/20260929001196
@@ -97,14 +185,6 @@ players:
   source: 28
   date: '2026-09-30'
   link: http://www.rookie.co.kr/news/articleView.html?idxno=127472
-- name: 김혜성
-  short: 김혜성
-  sport: mlb
-  team: LA 다저스
-  why: NLDS 앞두고 다저스 빅리그 로스터에 복귀
-  source: 10
-  date: '2026-09-30'
-  link: https://www.xportsnews.com/article/2202287
 - name: 타구치
   short: 타구치
   sport: kbo
