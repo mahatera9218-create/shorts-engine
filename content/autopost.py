@@ -978,9 +978,10 @@ TABLE_LINE = re.compile(r"^\[표 (\d+):\s*([^\]]+)\]$", re.M)
 
 
 def table_of(folder: Path) -> dict | None:
-    """블로그 본문에 넣을 표 1개 (코드가 만든 숫자, clip.json의 표와 같다): {title, header, rows}."""
-    f = folder / "clip.json"
-    t = (json.loads(f.read_text(encoding="utf-8")).get("table") if f.exists() else None)
+    """블로그 본문에 넣을 표 1개: 선수 실제 데이터 표(table.json, 2026-10-01), 없으면 클립 표. {title, header, rows}."""
+    tf, f = folder / "table.json", folder / "clip.json"
+    t = json.loads(tf.read_text(encoding="utf-8")) if tf.exists() else \
+        (json.loads(f.read_text(encoding="utf-8")).get("table") if f.exists() else None)
     return t if t and t.get("header") and t.get("rows") else None
 
 
@@ -1005,6 +1006,13 @@ def finish(llm, *, cfg: dict, pool: dict, notes: list[str], start_cost: float, t
     folder.mkdir(parents=True, exist_ok=True)
     photos.fetch_all(folder, d.get("sport", "야구"), folder.name)  # 키가 없으면 사진 없이
     n = ranking.build(folder, d) if th == "rank" else themes.build(folder, d)
+    try:  # 블로그 표 = 선수 실제 데이터 (AI 브리핑은 '이름 연봉' 검색에 답하는 표를 인용한다, 대표 결정 2026-10-01)
+        from .datatable import build as data_table
+        t = data_table(d, n, facts)
+        if t:
+            (folder / "table.json").write_text(json.dumps(t, ensure_ascii=False, indent=1), encoding="utf-8")
+    except (KeyError, TypeError, ZeroDivisionError) as ex:
+        notes.append(f"데이터 표 건너뜀 ({ex})")
     sheet = (make_sheet(n) + "\n" + "\n".join(themes.image_lines(th)) + table_lines(folder)
              + f"\n추천 제목 유형: {title_type(today, marketer or len(made_today))} (코드가 날마다 돌린다)")
     category = pool["categories"].get(d.get("sport", "야구").split()[0], "야구")  # sport = "야구 (프로야구)"
