@@ -66,8 +66,9 @@ def parse(folder: Path) -> dict | None:
     for para in [p.strip() for p in body.strip().split("\n\n") if p.strip()]:
         tm = TABLE_LINE.match(para)
         if tm:
-            cj = folder / "clip.json"
-            tb = (json.loads(cj.read_text(encoding="utf-8")).get("table") if cj.exists() else None) or {}
+            tj, cj = folder / "table.json", folder / "clip.json"  # 선수 실제 데이터 표, 없으면 클립 표
+            tb = (json.loads(tj.read_text(encoding="utf-8")) if tj.exists() else
+                  (json.loads(cj.read_text(encoding="utf-8")).get("table") if cj.exists() else None)) or {}
             if tb.get("rows"):
                 blocks.append({"table": int(tm.group(1)), "title": tb.get("title", tm.group(2)),
                                "header": [str(x) for x in tb["header"]], "rows": [[str(x) for x in r] for r in tb["rows"]]})
