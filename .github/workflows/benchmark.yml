@@ -55,7 +55,7 @@ jobs:
           else
             git commit -m "벤치마크 후보 $(date +%F)"
             for i in 1 2 3; do
-              git pull --rebase -X theirs origin "${GITHUB_REF_NAME}" && git push && exit 0
+              git pull --rebase --autostash -X theirs origin "${GITHUB_REF_NAME}" && git push && exit 0
               sleep $((i * 5))
             done
             echo "결과를 저장하지 못했습니다. Claude에게 알려주세요." >> "$GITHUB_STEP_SUMMARY"
