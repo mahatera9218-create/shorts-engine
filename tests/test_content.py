@@ -644,13 +644,18 @@ class TestLifecycle(unittest.TestCase):
             for name in ("2026-10-01-A-류현진", "2026-10-01-B-x", "2026-09-29-C-preview-y"):
                 (d / name).mkdir()
                 (d / name / "video.mp4").write_bytes(b"0")
+                (d / name / "meta.txt").write_text("t\n", encoding="utf-8")
+            (d / "2026-10-01-C-orphan").mkdir()   # 저장 실패한 실행의 영상만 캐시로 돌아온 폴더
+            (d / "2026-10-01-C-orphan" / "video.mp4").write_bytes(b"0")
             log = [{"date": "2026-10-01", "kind": "A", "key": "A-류현진", "title": "t", "video_id": "v1"},
                    {"date": "2026-10-01", "kind": "B", "key": "B-x", "title": "u"}]
             (d / "log.yaml").write_text(yaml.safe_dump(log, allow_unicode=True), encoding="utf-8")
             with mock.patch.object(shorts, "OUT", d), mock.patch.object(shorts, "LOG", d / "log.yaml"):
                 self.assertEqual(shorts.pending("A"), [])            # 올린 건 대기 아님
                 self.assertEqual(shorts.pending("B"), ["2026-10-01-B-x"])
+                self.assertEqual(shorts.pending("C"), [])            # 제목·설명 없는 영상은 대기 아님
                 gone = shorts.cleanup("2026-10-02")
+                self.assertIn("2026-10-01-C-orphan", gone)
                 self.assertIn("2026-10-01-A-류현진", gone)           # 올린 건 폐기
                 self.assertIn("2026-09-29-C-preview-y", gone)        # 지난 미리보기 폐기
                 self.assertTrue((d / "2026-10-01-B-x").exists())    # 안 올린 건 남김

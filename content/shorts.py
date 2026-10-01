@@ -445,7 +445,7 @@ def pending(kind: str) -> list[str]:
     """아직 올리지 않은 쇼츠 폴더 (대표 결정 2026-09-30: 올림 처리가 안 되면 그 형식은 새로 만들지 않는다)."""
     done = {folder_of(x) for x in used_log() if x.get("video_id") or x.get("discarded")}
     return [f.name for f in sorted(OUT.glob(f"*-{kind}-*")) if f.is_dir() and (f / "video.mp4").exists()
-            and "-preview-" not in f.name and f.name not in done]
+            and (f / "meta.txt").exists() and "-preview-" not in f.name and f.name not in done]
 
 
 def cleanup(today: str) -> list[str]:
@@ -454,7 +454,9 @@ def cleanup(today: str) -> list[str]:
     gone = []
     for f in (x for x in OUT.iterdir() if x.is_dir()) if OUT.exists() else []:
         old_preview = "-preview-" in f.name and f.name[:10] < today
-        if f.name in done or old_preview or f.name.startswith(".work"):
+        # 영상만 있고 제목·설명이 없는 폴더: 저장(커밋)에 실패한 실행의 영상이 캐시로만 돌아온 것 (2026-10-02)
+        orphan = not (f / "meta.txt").exists() and f.name[:10] < today
+        if f.name in done or old_preview or orphan or f.name.startswith(".work"):
             shutil.rmtree(f)
             gone.append(f.name)
     return gone
