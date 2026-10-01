@@ -214,6 +214,17 @@ WRITE_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"(닉네�
   숫자 문장 뒤에 그 숫자를 보고 든 생각을 붙이는 식이면 된다. 코드 검사에서 걸린다.
 - 대표 한마디 자리: 마무리 문단 바로 앞에 "[대표 한마디]" 한 줄을 넣는다 (대표가 이 선수에 대한 자기 생각·기억을 한두 문장 쓴다. 안 쓰면 지운다).
 
+대표 지시 9가지 (2026-10-02, 코드 검사에서 걸린다)
+1. 제목: 키워드 나열 말고 검색하는 사람이 물어볼 질문 그대로 (위 '제목').
+2. 첫 줄에 결론부터: 첫 문단은 제목 질문의 숫자 답 한 줄. 배경 설명(왜 이 선수인지, 시즌 이야기)은 뒤로.
+3. 같은 키워드 여러 번 박지 않기: '이름 + 연봉'은 본문에 3번까지. 나머지는 "올해 몸값", "이 금액"처럼 바꿔 말한다.
+4. 대표가 겪은 일 한 줄은 대표가 쓴다: 마무리 문단 바로 앞에 "[대표 한마디]" 한 줄만 두고 비워 둔다. 네가 경험을 지어내지 않는다.
+5. "많이·대부분·상당히·엄청" 같은 막연한 양 대신 숫자 (예: "143경기 중 140경기", "열 명 중 일곱"). 숫자표에 없는 숫자는 만들지 않는다. 숫자가 없으면 그 말을 뺀다.
+6. 표 하나는 꼭: '[표 1: …]' 자리 (항목 8~10개는 코드가 맞춘다).
+7. 표를 이미지로 대신하지 않는다: 카드 이미지는 보조이고, 표는 '[표 1]' 자리의 네이버 표다.
+8. 질문형 소제목 2~3개: 한 줄짜리 질문 문단, 바로 다음 문장이 숫자 답 (AI 브리핑이 그 답을 잘라 간다).
+9. 긴 대시(—, –) 쓰지 않는다. 쉼표나 마침표로.
+
 네이버 AI 브리핑 (검색 결과 맨 위 AI 요약이 인용하는 건 글과 네이버 표다. 카드 이미지는 인용되지 않는다, 2026-10-01)
 - 표: 숫자표의 '표 자리' 줄을 따옴표 안 모양 그대로 한 줄로 넣는다. 그 자리에 코드가 만든 표(네이버 표)가 들어간다. 표 바로 앞 문장에서 표가 무엇인지 한 줄로 말한다.
 - 검색 질문 꼴 소제목 2~3개: 사람들이 검색창에 치는 질문을 한 줄로 쓰고(예: "이정후 연봉은 1경기에 얼마일까?"), 바로 다음 문장이 숫자로 된 답이다. 소제목 줄은 기호 없이 질문 한 문장.
@@ -228,18 +239,20 @@ WRITE_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"(닉네�
 
 출력
 - gate_pass: 숫자표로 '새로 계산한 숫자'라는 정보 이득을 만들 수 있으면 true. info_gain에 한 줄.
-- titles 5개, 유형을 모두 다르게. recommended는 추천 제목 번호(1~5). 추천 제목은 숫자표의 '추천 제목 유형'으로 쓴다.
-  대표는 추천 제목 하나만 보고 발행한다. 나머지 4개는 예비다.
+- titles 5개, 모두 질문이고 묻는 각도는 다르게(얼마·몇 년치·누가 더·왜·다 받을까 등). type은 그 질문의 결(숫자형·대비형·순위형·반전형·질문형)을 모두 다르게.
+  recommended는 추천 제목 번호(1~5). 대표는 추천 제목 하나만 보고 발행한다. 나머지 4개는 예비다.
 
 제목 (홈판에서는 썸네일 + 제목만 보고 누를지 정한다. 가장 공들일 것)
 - 추천 제목은 썸네일과 한 쌍이다. 썸네일(숫자표 '썸네일' 줄)이 보여 주는 숫자·비교 대상을 그대로 이어받아, 그 숫자를 보고 생길
   다음 궁금증을 던진다. 썸네일에 물건(차·아파트·유니폼·여행)이나 세금이 있으면 제목에도 그 말을 넣는다. 썸네일과 다른 숫자·다른 비교
-  대상을 주제로 삼지 않는다. 예: 썸네일 "이정후 / 올해 연봉이면 / 테슬라 모델Y 597대" → 제목 "이정후 안타 하나 2억, 모델Y 몇 대?"
+  대상을 주제로 삼지 않는다. 예: 썸네일 "이정후 / 올해 연봉이면 / 테슬라 모델Y 597대" → 제목 "이정후 연봉이면 모델Y 몇 대 살까?"
   (단, 퀴즈 카드가 묻는 단위는 피한다). 본문 첫 문단은 이 제목의 답이다.
 - 5개 모두 숫자표의 '제목용 짧은 이름'으로 시작한다 (검색 유입 + 스타 이름으로 눈길). 성+이름 전체를 쓰지 않는다.
-- 추천 제목은 짧은 이름 + 숫자 후킹 (예: "오타니 9,496억 계약인데 올해 27억?", "이정후 298억, 시즌 끝나도 다 받을까?"). 숫자로 반전·궁금증을 만든다.
+- 제목은 검색하는 사람이 검색창에 물어볼 질문 그대로 (대표 지시 2026-10-02). 키워드 나열·괄호·가운뎃점(·)·슬래시 금지, 물음표로 끝.
+  추천 제목에는 사람들이 치는 말 '짧은 이름 + 연봉'(골프는 상금)을 자연스럽게 (예: "이정후 연봉, 1경기에 얼마일까?",
+  "오타니 연봉, 9,496억 계약인데 올해는 얼마?"). 같은 말을 두 번 넣지 않는다.
 - 썸네일 금액(숫자표 '썸네일' 줄)은 추천 제목에 되풀이하지 않는다. 썸네일은 "얼마", 제목은 "왜?".
-- 25자 이하 (띄어쓰기 포함). 발행 때 코드가 추천 제목 뒤에 검색어 괄호('(이름 연봉 2026 · 팀)')를 붙이니 제목에 그 말을 억지로 넣지 않는다. 던진 궁금증은 본문 첫 화면(첫 3문단)에서 답한다. 선수 이름은 태그에도 넣는다.
+- 25자 이하 (띄어쓰기 포함). 던진 질문은 본문 첫 줄에서 답한다. 선수 이름은 태그에도 넣는다.
 - 추천 제목은 퀴즈 카드의 정답(누가 더 비싼지, 몇 대인지, 얼마짜리인지)을 묻지 않는다. 퀴즈 정답은 퀴즈 카드 뒤에서만 공개되므로
   제목이 그걸 물으면 첫 화면에서 답할 수 없다. 제목의 궁금증은 첫 화면에서 풀고, 퀴즈는 그다음 궁금증으로 쓴다.
 - 물음표는 1개까지. "충격", "경악", "헉", "소름", "역대급" 같은 과장어 금지.
@@ -493,8 +506,8 @@ THUMB = re.compile(r"^썸네일: (.+?) / (.+?) / (.+?) \(", re.M)
 
 
 def check_titles(p: dict, sheet: str) -> list[str]:
-    """제목 규칙: 짧은 이름으로 시작, 25자 이하, 과장어 금지, 추천 제목은 숫자 후킹 + 썸네일 금액 되풀이 금지
-    + 썸네일과 짝(같은 비교 대상) + 오늘의 추천 제목 유형."""
+    """제목 규칙: 짧은 이름으로 시작, 25자 이하, 과장어 금지, 모두 질문(키워드 나열 금지, 2026-10-02),
+    추천 제목은 검색어(이름+연봉) 포함 + 썸네일 금액 되풀이 금지 + 썸네일과 짝(같은 비교 대상)."""
     m = THUMB.search(sheet)
     if not m or not p["titles"]:
         return []
@@ -519,12 +532,54 @@ def check_titles(p: dict, sheet: str) -> list[str]:
         out.append(f"추천 제목이 썸네일 숫자({money})를 되풀이함 → 반전·궁금증 한 마디로")
     if rec and subject and not any(w in rec for w in subject):
         out.append(f"추천 제목이 썸네일과 다른 이야기 → 썸네일 말('{' '.join(subject)}')을 제목에도 (짝으로)")
-    want = TYPE_LINE.search(sheet)
-    if rec and want and p["titles"][p["recommended"] - 1]["type"] != want.group(1):
-        out.append(f"추천 제목 유형이 오늘 정한 '{want.group(1)}'이 아님")
-    if not re.search(r"\d", rec):
-        out.append("추천 제목에 숫자가 없음 → 이름 + 숫자 후킹으로")
+    # 제목은 검색하는 사람이 물어볼 질문 그대로 (대표 지시 2026-10-02): 키워드 나열·괄호·가운뎃점 금지, 물음표로 끝
+    for i, t in enumerate(p["titles"], 1):
+        text = t["text"].strip()
+        if not text.endswith("?"):
+            out.append(f"제목{i}이 질문이 아님 → 검색하는 사람이 물을 질문 그대로 (예: '{core} 연봉, 1경기에 얼마일까?')")
+        if any(ch in text for ch in "·()[]|/"):
+            out.append(f"제목{i}에 키워드 나열 기호(· 괄호 / |) → 질문 한 문장으로")
+    money_word = "상금" if "상금" in sheet else "연봉"
+    if rec and not any(w in rec for w in ("연봉", "상금", "몸값", "세금", "월급")):
+        out.append(f"추천 제목에 '{core} {money_word}'처럼 사람들이 검색하는 말이 없음")
     # 태그의 선수 이름은 코드가 붙인다 (base_tags, 2026-09-30)
+    return out
+
+
+VAGUE = ["많이", "많은", "대부분", "상당히", "상당수", "엄청", "수많은", "적지 않", "꽤 많"]
+DASHES = ("—", "–", "―")
+
+
+def undash(text: str) -> str:
+    return re.sub(r"\s*[—–―]\s*", ", ", text)
+
+
+def style_rules(p: dict, sheet: str) -> list[str]:
+    """대표 지시 9가지 (2026-10-02) 중 코드로 보는 것: 첫 줄 결론, 같은 키워드 되풀이, 막연한 양 대신 숫자,
+    질문형 소제목 2~3개, 긴 대시 금지, 대표 한마디 자리."""
+    out, body = [], p["body"]
+    paras = [x.strip() for x in body.strip().split("\n\n") if x.strip()]
+    if paras and not re.search(r"\d", paras[0]):
+        out.append("첫 줄에 결론(숫자 답)이 없음 → 배경 설명은 뒤로, 첫 줄은 제목 질문의 답")
+    s = SHORT.search(sheet)
+    if s:
+        for w in ("연봉", "상금"):
+            k = f"{s.group(1)} {w}"
+            c = body.count(k) + body.count(k.replace(" ", ""))
+            if c > 3:
+                out.append(f"'{k}'를 본문에 {c}번 → 3번까지 (같은 키워드 되풀이 금지, 대명사·다른 말로)")
+    hit = [w for w in VAGUE if w in body]
+    if hit:
+        out.append(f"막연한 양 표현 {', '.join(hit)} → 숫자로 (예: '열 명 중 일곱', 숫자표에 있는 숫자만). 숫자가 없으면 그 말을 빼기")
+    qs = [x for x in paras if "\n" not in x and x.endswith("?") and len(x) <= 40 and not x.startswith("[")]
+    if len(qs) < 2:
+        out.append(f"질문형 소제목이 {len(qs)}개 → 2~3개 (검색 질문 한 줄 + 바로 다음 문장이 숫자 답)")
+    texts = [("본문", body), ("클립 설명", p.get("clip_caption", ""))] + [(f"제목{i}", t["text"]) for i, t in enumerate(p["titles"], 1)]
+    for label, text in texts:
+        if any(d in text for d in DASHES):
+            out.append(f"{label}에 긴 대시(—) → 쉼표나 마침표로 (AI 티)")
+    if "[대표 한마디]" not in body:
+        out.append("'[대표 한마디]' 자리가 없음 → 마무리 문단 바로 앞에 한 줄")
     return out
 
 
@@ -570,6 +625,7 @@ def check_post(p: dict, sheet: str) -> list[str]:
         problems.append("정답 카드가 퀴즈 카드보다 앞에 있음")
     if re.search(r"^#|\*\*", p["body"], re.M):
         problems.append("마크다운 기호(#, **)를 빼고 일반 텍스트로")
+    problems += style_rules(p, sheet)
     gaps = human_gaps(p["body"])
     if gaps:
         problems.append(f"글쓴이의 생각·느낌·의견이 안 보이는 문단 {len(gaps)}개 (문단마다 하나씩, 꾸민 경험은 금지): "
@@ -1123,9 +1179,10 @@ def finish(llm, *, cfg: dict, pool: dict, notes: list[str], start_cost: float, t
                                         cfg.get("max_revisions", 2))
     cost = llm.cost_usd() - start_cost
     post["tags"] = clean_tags(base_tags(d) + list(post.get("tags", [])), TAGS_MAX)
-    rec_t = post["titles"][post["recommended"] - 1] if 1 <= post["recommended"] <= len(post["titles"]) else None
-    if rec_t and (suf := search_suffix(d, rec_t["text"])):  # 검사는 본 제목(25자)으로 끝났다. 발행 제목에만 덧붙인다
-        rec_t["text"] = f"{rec_t['text'].strip()} {suf}"
+    # 제목 뒤 검색어 괄호('(이름 연봉 2026 · 팀)')는 붙이지 않는다: 제목은 검색하는 사람의 질문 그대로 (대표 지시 2026-10-02)
+    for t in post["titles"]:  # 긴 대시는 검사에서 걸러지지만, 남았으면 쉼표로 (가장 티 나는 AI 흔적)
+        t["text"] = undash(t["text"])
+    post["body"], post["clip_caption"] = undash(post["body"]), undash(post.get("clip_caption", ""))
     (folder / "data.yaml").write_text(yaml.safe_dump(d, allow_unicode=True, sort_keys=False), encoding="utf-8")
     (folder / "facts.json").write_text(json.dumps(facts, ensure_ascii=False, indent=1), encoding="utf-8")
     if photos.credit(folder):  # Pexels 이용 조건: 작가·Pexels 표시 (숫자 검사 뒤에 붙인다)

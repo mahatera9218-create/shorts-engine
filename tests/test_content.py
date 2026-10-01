@@ -71,9 +71,9 @@ class ContentTest(unittest.TestCase):
 
     def test_check_post(self):
         sheet = "1안타당: 2억 32만 원"
-        good = {"body": "1안타에 2억.\n[1: thumb.png]\n[2: card_quiz.png]\n[3: card_answer.png]\n[4: card_wage.png]\n"
-                        "[5: card_table.png]", "recommended": 1,
-                "titles": [{"text": "1안타에 2억", "type": "숫자형"}] * 5}
+        good = {"body": "1안타에 2억.\n\n안타 하나는 얼마일까?\n\n[1: thumb.png]\n[2: card_quiz.png]\n[3: card_answer.png]\n"
+                        "[4: card_wage.png]\n[5: card_table.png]\n\n홈런 하나는 얼마일까?\n\n[대표 한마디]", "recommended": 1,
+                "titles": [{"text": "1안타에 2억?", "type": "질문형"}] * 5}
         assert check_post(good, sheet) == []
         bad = {**good, "body": good["body"] + "\n토토 배당 3.5배", "titles": [{"text": "1안타에 5억 999만", "type": "숫자형"}] * 5}
         problems = " / ".join(check_post(bad, sheet))
@@ -104,16 +104,16 @@ class ContentTest(unittest.TestCase):
         sheet = ("제목용 짧은 이름: 오타니\n"
                  "썸네일: 오타니 쇼헤이 / 홈런 1개 / 9,045만원 (추천 제목에는 이 금액을 다시 쓰지 않는다)")
         good = {"recommended": 1, "tags": ["오타니", "MLB"],
-                "titles": [{"text": "오타니 9,496억 계약인데 올해 27억?", "type": "반전형"}]
+                "titles": [{"text": "오타니 연봉, 계약은 9,496억인데 올해는?", "type": "반전형"}]
                 + [{"text": "오타니 1경기에 얼마 받을까?", "type": "질문형"}] * 4}
         assert check_titles(good, sheet) == []
         bad = {"recommended": 1, "tags": ["MLB"],
                "titles": [{"text": "오타니 쇼헤이 홈런 9,045만원, 9,496억 계약인데 충격 연봉??", "type": "숫자형"},
                           {"text": "계약은 크지만 올해는 작다", "type": "반전형"}] * 2 + [{"text": "오타니 올해 연봉", "type": "질문형"}]}
         problems = " / ".join(check_titles(bad, sheet))
-        for word in ("긴 이름", "과장어", "되풀이", "25자", "짧은 이름(오타니)으로 시작"):
+        for word in ("긴 이름", "과장어", "되풀이", "25자", "짧은 이름(오타니)으로 시작", "질문이 아님"):
             assert word in problems, word
-        assert "숫자가 없음" in " / ".join(check_titles({**good, "titles": [{"text": "오타니 올해는 얼마?"}] * 5}, sheet))
+        assert "검색하는 말이 없음" in " / ".join(check_titles({**good, "titles": [{"text": "오타니 올해는 얼마?"}] * 5}, sheet))
 
     def test_won_only(self):
         sheet = "1안타당: 2억 32만 원"
@@ -459,13 +459,22 @@ class TestTitlePair(unittest.TestCase):
 
     def test_pair_ok(self):
         from content.autopost import check_titles
-        self.assertEqual(check_titles(self.post("이정후 안타 하나 2억, 모델Y 몇 대?"), self.SHEET), [])
+        self.assertEqual(check_titles(self.post("이정후 연봉이면 모델Y 몇 대 살까?"), self.SHEET), [])
 
     def test_off_pair_and_type(self):
         from content.autopost import check_titles
         got = check_titles(self.post("이정후 65승 97패 팀에서 받은 2억", "대비형"), self.SHEET)
         self.assertTrue(any("썸네일과 다른 이야기" in x for x in got))
-        self.assertTrue(any("유형" in x for x in got))
+        self.assertTrue(any("질문이 아님" in x for x in got))   # 제목은 질문 그대로 (2026-10-02, 유형 돌리기 대신)
+        self.assertTrue(any("키워드 나열" in x for x in check_titles(self.post("이정후 연봉 (2026 · 샌프란시스코)?"), self.SHEET)))
+
+    def test_style_rules(self):
+        from content.autopost import style_rules, undash
+        p = {"body": "올해 연봉 이야기를 해 볼게요.\n\n이정후 연봉은 많이 올랐어요 — 정말요.", "titles": [{"text": "이정후 연봉?"}]}
+        got = " / ".join(style_rules(p, self.SHEET))
+        for w in ("첫 줄에 결론", "막연한 양", "질문형 소제목", "긴 대시", "대표 한마디"):
+            self.assertIn(w, got)
+        self.assertEqual(undash("2억 — 정말요"), "2억, 정말요")
 
     def test_repeat_number(self):
         from content.autopost import check_titles
