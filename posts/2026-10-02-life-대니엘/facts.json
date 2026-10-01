@@ -1,0 +1,70 @@
+{
+ "salary": {
+  "value": 406000,
+  "label": "대니엘 연봉(총액)",
+  "unit": "USD",
+  "date": "2026-09-13",
+  "sources": [
+   "https://www.mydaily.co.kr/page/view/2026091221023972461"
+  ],
+  "rule": "모두 같음",
+  "differs": null
+ },
+ "fx_krw_per_usd": {
+  "value": 1358.4,
+  "label": "원/달러 환율(1일 마감)",
+  "unit": "KRW",
+  "date": "2026-10-02",
+  "sources": [
+   "https://www.bigtanews.co.kr/article/view/big202610020001",
+   "https://www.cbci.co.kr/news/articleView.html?idxno=611638",
+   "https://www.fntimes.com/html/view.php?ud=202610020713125603141825007d_18"
+  ],
+  "rule": "모두 같음",
+  "differs": null
+ },
+ "games": {
+  "value": 9,
+  "label": "경기",
+  "unit": "games",
+  "date": "2026-10-02",
+  "sources": [
+   "https://www.newspim.com/news/view/20261001000699"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "innings": {
+  "value": 50,
+  "label": "이닝",
+  "unit": "innings",
+  "date": "2026-10-02",
+  "sources": [
+   "https://www.newspim.com/news/view/20261001000699"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "wins": {
+  "value": 4,
+  "label": "승",
+  "unit": "wins",
+  "date": "2026-10-02",
+  "sources": [
+   "https://www.newspim.com/news/view/20261001000699"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "era": {
+  "value": 2.16,
+  "label": "평균자책점",
+  "unit": "era",
+  "date": "2026-10-02",
+  "sources": [
+   "https://www.newspim.com/news/view/20261001000699"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ }
+}

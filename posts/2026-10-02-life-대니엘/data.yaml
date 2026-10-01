@@ -1,0 +1,43 @@
+player: 대니엘
+short_name: 대니엘
+team: KT 위즈
+season: 2026
+salary_usd: 406000
+fx_krw_per_usd: 1358.4
+salary_currency: USD
+fx_label: 1달러 = 1,358.4원 (2026-10-02)
+units:
+- key: games
+  label: 1경기
+  count: 9
+- key: innings
+  label: 1이닝
+  count: 50
+- key: wins
+  label: 1승
+  count: 4
+headline_unit: innings
+salary_basis: KBO 대체 외국인 투수, 시즌 도중 합류 계약, 보도 기준 총액
+min_wage_monthly_krw: 2156880
+sport: 야구 (프로야구)
+card:
+- label: 이닝
+  value: '50'
+- label: 경기
+  value: '9'
+- label: 승
+  value: '4'
+- label: 평균자책점
+  value: '2.16'
+card_date: '2026-10-02'
+theme: life
+prices:
+- key: bmw_x5
+  group: car_import
+  label: BMW X5 (xDrive40i xLine 7인승)
+  short: BMW X5
+  unit: 대
+  price_krw: 123800000
+  as_of: 2026-09-01
+  source: 국내 가격 보도 (1억2,380만원) https://auto.danawa.com/auto/?Work=model&Model=4475&Tab=main&pcUse=y
+marketer: 1

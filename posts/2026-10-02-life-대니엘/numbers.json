@@ -1,0 +1,72 @@
+{
+ "salary_krw": 551510400.0,
+ "per": {
+  "games": 61278933.333333336,
+  "innings": 11030208.0,
+  "wins": 137877600.0
+ },
+ "min_wage_yearly_krw": 25882560,
+ "min_wage_years_per": {
+  "games": 2.3675762109054643,
+  "innings": 0.4261637179629836,
+  "wins": 5.327046474537295
+ },
+ "life_unit": "wins",
+ "life_label": "1승",
+ "life_per": 137877600.0,
+ "item": {
+  "key": "bmw_x5",
+  "group": "car_import",
+  "label": "BMW X5 (xDrive40i xLine 7인승)",
+  "short": "BMW X5",
+  "unit": "대",
+  "price_krw": 123800000,
+  "as_of": "2026-09-01",
+  "source": "국내 가격 보도 (1억2,380만원) https://auto.danawa.com/auto/?Work=model&Model=4475&Tab=main&pcUse=y",
+  "salary_count": 4.454849757673667,
+  "unit_count": 1.1137124394184168
+ },
+ "items": [
+  {
+   "key": "bmw_x5",
+   "group": "car_import",
+   "label": "BMW X5 (xDrive40i xLine 7인승)",
+   "short": "BMW X5",
+   "unit": "대",
+   "price_krw": 123800000,
+   "as_of": "2026-09-01",
+   "source": "국내 가격 보도 (1억2,380만원) https://auto.danawa.com/auto/?Work=model&Model=4475&Tab=main&pcUse=y",
+   "salary_count": 4.454849757673667,
+   "unit_count": 1.1137124394184168
+  }
+ ],
+ "rows": [
+  {
+   "key": "salary",
+   "label": "올해 연봉",
+   "value": 551510400.0,
+   "count": 4.454849757673667
+  },
+  {
+   "key": "games",
+   "label": "1경기",
+   "value": 61278933.333333336,
+   "count": 0.4949833064081853
+  },
+  {
+   "key": "innings",
+   "label": "1이닝",
+   "value": 11030208.0,
+   "count": 0.08909699515347334
+  },
+  {
+   "key": "wins",
+   "label": "1승",
+   "value": 137877600.0,
+   "count": 1.1137124394184168
+  }
+ ],
+ "inverse": false,
+ "inverse_count": 0.8978978456253953,
+ "inverse_word": "승"
+}
