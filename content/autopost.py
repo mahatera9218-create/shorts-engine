@@ -199,6 +199,12 @@ WRITE_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"(닉네�
 - 다음 글 예고 금지: "다음 글은 ○○", "다음 영수증은 ○○", "다음 편에서"처럼 다음 글이 누구·무엇인지 쓰지 않는다 (아직 정해지지 않았다). 코드 검사에서 걸린다.
 - 마지막 문단: "기준: ..."으로 연봉·성적·환율·최저임금의 기준일과 출처 종류를 한 문장으로.
 
+네이버 AI 브리핑 (검색 결과 맨 위 AI 요약이 인용하는 건 글과 네이버 표다. 카드 이미지는 인용되지 않는다, 2026-10-01)
+- 표: 숫자표의 '표 자리' 줄을 따옴표 안 모양 그대로 한 줄로 넣는다. 그 자리에 코드가 만든 표(네이버 표)가 들어간다. 표 바로 앞 문장에서 표가 무엇인지 한 줄로 말한다.
+- 검색 질문 꼴 소제목 2~3개: 사람들이 검색창에 치는 질문을 한 줄로 쓰고(예: "이정후 연봉은 1경기에 얼마일까?"), 바로 다음 문장이 숫자로 된 답이다. 소제목 줄은 기호 없이 질문 한 문장.
+- 숫자는 기준과 단위를 붙여 문장 안에 쓴다 (예: "2026시즌 연봉 약 298억원을 정규시즌 162경기로 나누면 1경기에 약 1억 8,424만원").
+- "계산 방법" 문단 하나: 무엇을 무엇으로 나눴는지 한두 문장 (이 블로그가 직접 계산한 숫자라는 것을 정직하게. 경험을 꾸미지 않는다).
+
 금지
 - 기사 문장·표현 복사, 경쟁 글 흉내. 요약된 사실만 네 말로.
 - 가짜 경험("직접 봤다", "경기장에서"), 사생활·연애·가족·논란·개인 재산, 도박(배당·토토), 투자 권유.
@@ -495,6 +501,8 @@ def check_post(p: dict, sheet: str) -> list[str]:
         bad = unknown_numbers(text, sheet)
         if bad:
             problems.append(f"{label}에 숫자표에 없는 숫자: {', '.join(bad)}")
+    if "표 자리" in sheet and not TABLE_LINE.search(p["body"]):
+        problems.append("표 자리 '[표 1: …]' 줄이 없음 (네이버 표가 들어갈 자리)")
     m_img = re.search(r"^이미지 파일: (.+)$", sheet, re.M)
     for img in ([x.strip() for x in m_img.group(1).split(",")] if m_img else IMAGES):
         if img not in p["body"]:
@@ -966,6 +974,26 @@ def search_suffix(d: dict, title: str) -> str:
 
 
 
+TABLE_LINE = re.compile(r"^\[표 (\d+):\s*([^\]]+)\]$", re.M)
+
+
+def table_of(folder: Path) -> dict | None:
+    """블로그 본문에 넣을 표 1개 (코드가 만든 숫자, clip.json의 표와 같다): {title, header, rows}."""
+    f = folder / "clip.json"
+    t = (json.loads(f.read_text(encoding="utf-8")).get("table") if f.exists() else None)
+    return t if t and t.get("header") and t.get("rows") else None
+
+
+def table_lines(folder: Path) -> str:
+    """숫자표에 붙이는 '표 자리' 안내 + 표 내용 (AI 브리핑은 글과 네이버 표를 인용한다, 2026-10-01)."""
+    t = table_of(folder)
+    if not t:
+        return ""
+    rows = "\n".join("  " + " | ".join(map(str, r)) for r in [t["header"]] + t["rows"])
+    return (f'\n표 자리 (한 줄로, 이미지 자리와 겹치지 않게 본문 중간쯤): "[표 1: {t["title"]}]"'
+            f"\n표 내용 (코드가 넣는다, 본문에 숫자를 옮길 때는 이 값만):\n{rows}")
+
+
 def finish(llm, *, cfg: dict, pool: dict, notes: list[str], start_cost: float, today: str, made_today: list[str],
            out_root: Path, th: str, d: dict, facts: dict, title: str, slug: str, make_sheet, news_count: int,
            marketer: int | None = None) -> tuple[str, Path]:
@@ -977,7 +1005,7 @@ def finish(llm, *, cfg: dict, pool: dict, notes: list[str], start_cost: float, t
     folder.mkdir(parents=True, exist_ok=True)
     photos.fetch_all(folder, d.get("sport", "야구"), folder.name)  # 키가 없으면 사진 없이
     n = ranking.build(folder, d) if th == "rank" else themes.build(folder, d)
-    sheet = (make_sheet(n) + "\n" + "\n".join(themes.image_lines(th))
+    sheet = (make_sheet(n) + "\n" + "\n".join(themes.image_lines(th)) + table_lines(folder)
              + f"\n추천 제목 유형: {title_type(today, marketer or len(made_today))} (코드가 날마다 돌린다)")
     category = pool["categories"].get(d.get("sport", "야구").split()[0], "야구")  # sport = "야구 (프로야구)"
     post, problems, rounds = write_post(llm, {"category": category, "angle": tinfo["angle"]}, sheet,
