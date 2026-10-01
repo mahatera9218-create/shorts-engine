@@ -111,9 +111,11 @@ class ContentTest(unittest.TestCase):
                "titles": [{"text": "오타니 쇼헤이 홈런 9,045만원, 9,496억 계약인데 충격 연봉??", "type": "숫자형"},
                           {"text": "계약은 크지만 올해는 작다", "type": "반전형"}] * 2 + [{"text": "오타니 올해 연봉", "type": "질문형"}]}
         problems = " / ".join(check_titles(bad, sheet))
-        for word in ("긴 이름", "과장어", "되풀이", "25자", "짧은 이름(오타니)으로 시작", "질문이 아님"):
+        for word in ("긴 이름", "과장어", "되풀이", "25자", "짧은 이름(오타니)으로 시작"):
             assert word in problems, word
-        assert "검색하는 말이 없음" in " / ".join(check_titles({**good, "titles": [{"text": "오타니 올해는 얼마?"}] * 5}, sheet))
+        from content.autopost import title_style
+        assert "질문이 아님" in " / ".join(title_style(bad, sheet))
+        assert "검색하는 말이 없음" in " / ".join(title_style({**good, "titles": [{"text": "오타니 올해는 얼마?"}] * 5}, sheet))
 
     def test_won_only(self):
         sheet = "1안타당: 2억 32만 원"
@@ -465,8 +467,17 @@ class TestTitlePair(unittest.TestCase):
         from content.autopost import check_titles
         got = check_titles(self.post("이정후 65승 97패 팀에서 받은 2억", "대비형"), self.SHEET)
         self.assertTrue(any("썸네일과 다른 이야기" in x for x in got))
-        self.assertTrue(any("질문이 아님" in x for x in got))   # 제목은 질문 그대로 (2026-10-02, 유형 돌리기 대신)
-        self.assertTrue(any("키워드 나열" in x for x in check_titles(self.post("이정후 연봉 (2026 · 샌프란시스코)?"), self.SHEET)))
+        from content.autopost import title_style
+        self.assertTrue(any("질문이 아님" in x for x in title_style(self.post("이정후 65승 97패 팀에서 받은 2억"), self.SHEET)))
+        self.assertTrue(any("키워드 나열" in x for x in title_style(self.post("이정후 연봉 (2026 · 샌프란시스코)?"), self.SHEET)))
+
+    def test_style_does_not_force_rewrite(self):
+        from content.autopost import check_post, check_style, code_fixes
+        p = {"body": "1안타에 2억 — 놀랍죠.\n\n기준: 보도", "recommended": 1, "titles": [{"text": "이정후 1안타 2억"}] * 5}
+        assert not any("대시" in x or "질문" in x for x in check_post(p, self.SHEET))   # 말투·형식은 고쳐 쓰기를 부르지 않음
+        assert any("질문이 아님" in x for x in check_style(p, self.SHEET))
+        f = code_fixes(p)
+        assert "—" not in f["body"] and f["body"].index("[대표 한마디]") < f["body"].index("기준:")
 
     def test_style_rules(self):
         from content.autopost import style_rules, undash
