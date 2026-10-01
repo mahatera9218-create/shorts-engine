@@ -15,6 +15,24 @@ GENERIC = {"contract_total": "계약 총액", "games": "출전 경기", "home_ru
            "innings": "이닝", "goals": "골", "assists": "도움", "points": "득점"}
 
 
+def _with_detail(value: str, label: str, common: str) -> str:
+    """두 선수 조건이 다를 때 값 옆에 각자 조건: 계약은 기간을 병기 ('80억원 · 4년 FA 계약, 최대'),
+    그 밖은 다른 말만 괄호로 ('135경기 (타자)')."""
+    if "계약" in common:
+        period = re.search(r"\d+(?:\+\d+)?년", label)
+        detail = " ".join(x for x in [period.group(0) if period else "", "FA" if "FA" in label else "", "계약"] if x)
+        detail += ", 최대" if "최대" in label else ""
+        main, _, rest = value.partition(" (약 ")
+        return f"{main} · {detail}" + (f" (약 {rest}" if rest else "")
+    detail = label
+    for w in common.split():
+        detail = detail.replace(w, " ")
+    detail = re.sub(r"\s+", " ", detail).strip(" ·,")
+    for w in ("의", "와", "과"):
+        detail = re.sub(rf"{w}$", "", detail).strip()
+    return f"{value} ({detail})" if detail else value
+
+
 def _base(label: str) -> str:
     return re.split(r"\s*\(", label, 1)[0].strip()
 
@@ -74,9 +92,13 @@ def build(d: dict, n: dict, facts: dict) -> dict | None:
             other = _base(fb["label"])
             for nm in (b["player"], bn):
                 other = other.removeprefix(nm).strip()
-            if other.removeprefix("올 시즌").strip() != label:  # 두 선수 기사 표현이 다르면 공통 이름으로
-                label = GENERIC.get(key, label)
-            rows.append([label, _value(fa, a.get("fx_krw_per_usd")), _value(fb, b.get("fx_krw_per_usd"))])
+            other = other.removeprefix("올 시즌").strip()
+            va, vb = _value(fa, a.get("fx_krw_per_usd")), _value(fb, b.get("fx_krw_per_usd"))
+            if other != label:  # 두 선수 기사 표현이 다르면 공통 이름 + 각자 조건(기간 등)을 값 옆에 (대표 요청 2026-10-01)
+                common = GENERIC.get(key, label)
+                va, vb = _with_detail(va, label, common), _with_detail(vb, other, common)
+                label = common
+            rows.append([label, va, vb])
         if n.get("unit_label") and n.get("va"):
             rows.append([f"{n['unit_label']}당 연봉 (계산)", won(n["va"]), won(n["vb"])])
         return {"title": f"{an} vs {bn} {season} 연봉·기록", "header": ["항목", an, bn], "rows": rows}
