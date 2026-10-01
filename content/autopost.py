@@ -161,7 +161,7 @@ REVIEW_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"의 편
 - 남는 한 줄: 읽고 나서 친구에게 말할 한 줄이 분명한가.
 - 광고주 안전: 광고 옆에 놓여도 괜찮은가 (비방·논란·도박·사생활·선정 없음).
 - 사람 말투: 블로거가 쓴 것처럼 읽히나 (AI 상투어·기계적 반복 없음). 글쓴이('저')의 생각·의외였던 점·의견이 근거와 함께 보이나.
-  숫자와 사실만 이어지면 3점 이하. 하지 않은 경험(직관·만남·구매)을 꾸몄으면 1점.
+  숫자와 사실만 이어지면 3점 이하. 하지 않은 경험(직관·만남·구매)을 꾸몄으면 1점. 글쓴이 설정의 가치관과 어긋나면 3점 이하.
 fixes에는 4점 미만 기준을 올릴 구체적인 수정 지시만 적는다 (숫자표에 없는 숫자를 새로 넣으라는 지시는 금지). 모두 4점 이상이면 빈 목록."""
 
 EXTRACT_RULES = """너는 스포츠 기사 요약문에서 숫자 사실만 뽑는 담당이다. 글은 쓰지 않는다.
@@ -562,7 +562,16 @@ def writer_system() -> list[str]:
         t = EXAMPLE_POST.read_text(encoding="utf-8")
         m = re.search(r"## 본문[^\n]*\n(.*?)\n## 출처", t, re.S)
         example = ("# 이 블로그에 이미 올린 글 (말투·길이·구조 참고용. 문장을 재사용하지 말 것)\n\n" + m.group(1)) if m else ""
-    return [t for t in docs + [example, WRITE_RULES] if t.strip()]
+    return [t for t in docs + [example, persona_text(), WRITE_RULES] if t.strip()]
+
+
+def persona_text() -> str:
+    """글쓴이 설정 (config/persona.yaml, 2026-10-02): 모든 글이 같은 한 사람의 의도·가치관·말버릇으로 읽히게."""
+    f = ROOT / "config" / "persona.yaml"
+    if not f.exists():
+        return ""
+    return ("# 글쓴이 설정 (모든 글의 '저'는 이 사람이다. 생각·의견·가치관은 이 설정과 어긋나지 않게. "
+            "never 목록과 true_actions에 없는 경험은 쓰지 않는다)\n\n" + f.read_text(encoding="utf-8"))
 
 
 def llm_cfg() -> dict:
@@ -612,7 +621,7 @@ def write_post(llm, topic: dict, sheet: str, max_revisions: int) -> tuple[dict, 
 
 
 def review_post(llm, sheet: str, post: dict) -> dict:
-    docs = [(SKILLS / "money-content-writer" / "SKILL.md").read_text(encoding="utf-8"), REVIEW_RULES]
+    docs = [t for t in [(SKILLS / "money-content-writer" / "SKILL.md").read_text(encoding="utf-8"), persona_text(), REVIEW_RULES] if t]
     draft = {k: post[k] for k in ("brief", "titles", "recommended", "body", "clip_caption", "clip_question")}
     return llm.ask_json(docs, f"숫자표\n{sheet}\n\n초안\n{json.dumps(draft, ensure_ascii=False)}", REVIEW_SCHEMA,
                         max_tokens=3000, stage="편집장", **extract_opts())
