@@ -1,0 +1,39 @@
+player: 김도영
+short_name: 김도영
+team: KIA 타이거즈
+season: 2026
+salary_label: 연봉 2억 5,000만원 · 2026시즌 연봉 재계약 (50% 삭감), KIA 발표 보도
+salary_krw: 250000000
+units:
+- key: games
+  label: 1경기
+  count: 125
+- key: hits
+  label: 안타 1개
+  count: 146
+- key: home_runs
+  label: 홈런 1개
+  count: 41
+- key: rbi
+  label: 타점 1개
+  count: 104
+headline_unit: home_runs
+salary_basis: 2026시즌 연봉 재계약 (50% 삭감), KIA 발표 보도
+min_wage_monthly_krw: 2156880
+sport: 야구 (프로야구)
+card:
+- label: 올 시즌 홈런
+  value: '41'
+- label: 올 시즌 출전 경기
+  value: '125'
+- label: 올 시즌 안타
+  value: '146'
+- label: 올 시즌 타점
+  value: '104'
+- label: 올 시즌 득점
+  value: '110'
+- label: 올 시즌 타율
+  value: '0.315'
+card_date: '2026-10-02'
+theme: receipt
+marketer: 3

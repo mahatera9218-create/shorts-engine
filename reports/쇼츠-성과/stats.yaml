@@ -3,6 +3,10 @@ channel:
     subs: 0
     views: 0
     videos: 3
+  '2026-10-02':
+    subs: 0
+    views: 3667
+    videos: 6
 videos:
   NRjz5n2aXa0:
     title: 류현진 연봉, 경기당 얼마?
@@ -12,6 +16,10 @@ videos:
         views: 462
         likes: 3
         comments: 0
+      '2026-10-02':
+        views: 1243
+        likes: 2
+        comments: 1
     kind: A
     key: A-류현진
   t69Y1YUeteQ:
@@ -22,15 +30,47 @@ videos:
         views: 497
         likes: 1
         comments: 1
+      '2026-10-02':
+        views: 1238
+        likes: 2
+        comments: 1
     kind: B
     key: B-kbo1-nba1
   ojZp3VASXSE:
-    title: 2026년 9월 30일
+    title: 2026 프로야구 연봉 순위 Top 5
     published: '2026-09-30'
     snaps:
       '2026-09-30':
         views: 771
         likes: 1
         comments: 0
+      '2026-10-02':
+        views: 1188
+        likes: 0
+        comments: 0
     kind: C
     key: C-kbo-year
+  pz7ZqDsq7Zw:
+    title: 이정후 1홈런에 버는 돈, 얼마?
+    published: '2026-09-30'
+    snaps:
+      '2026-10-02':
+        views: 26
+        likes: 0
+        comments: 0
+  hbpw84tTKAU:
+    title: KBO 연봉 1위 vs 커리
+    published: '2026-09-30'
+    snaps:
+      '2026-10-02':
+        views: 5
+        likes: 0
+        comments: 0
+  52ga_LTBhoI:
+    title: 2026 KBO 연봉 TOP 5 하루에 버는 돈
+    published: '2026-09-30'
+    snaps:
+      '2026-10-02':
+        views: 8
+        likes: 0
+        comments: 0
