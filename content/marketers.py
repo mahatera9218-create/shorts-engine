@@ -3,6 +3,7 @@
 - turn(today): 오늘 블로그 발행 차례인 마케터 (날마다 1→2→3)
 - players(pool, m): 그 마케터가 쓸 선수 (화제형 = 최근 뉴스 많은 선수, 체감형·비교형 = 나머지를 반씩 → 같은 날 선수가 겹치지 않게)
 - themes(pool, m): 그 마케터의 테마 가중치
+- baseball_marketer(today): 오늘 야구를 쓰는 마케터 (하루 야구 1편, 2026-10-02). sport_ok로 선수를 거른다.
 """
 from __future__ import annotations
 
@@ -36,6 +37,23 @@ def turn(today: str, c: dict | None = None) -> int:
     ms = ids(c)
     days = (date.fromisoformat(today) - date.fromisoformat(str(c["rotation_start"]))).days
     return ms[days % len(ms)]
+
+
+BASEBALL = {"kbo", "mlb"}  # players.yaml sport 키
+
+
+def baseball_marketer(today: str, c: dict | None = None) -> int:
+    """오늘 야구를 쓰는 마케터 (대표 결정 2026-10-02: 하루 3편 중 야구 1편). 블로그 차례(turn)와 엇갈려
+    1→3→2로 돌아서, 블로그 ⭐ 글은 사흘에 한 번 야구가 되고 마케터마다 야구를 고르게 쓴다."""
+    c = c or cfg()
+    ms = ids(c)
+    days = (date.fromisoformat(today) - date.fromisoformat(str(c["rotation_start"]))).days
+    return ms[(2 * days) % len(ms)]
+
+
+def sport_ok(sport: str, m: int, today: str, c: dict | None = None) -> bool:
+    """이 마케터가 오늘 이 종목(players.yaml sport 키)을 써도 되나: 야구 차례면 야구만, 아니면 야구 빼고."""
+    return (sport in BASEBALL) == (m == baseball_marketer(today, c))
 
 
 def _half(name: str) -> int:

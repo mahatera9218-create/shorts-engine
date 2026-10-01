@@ -672,4 +672,21 @@ class TestLifecycle(unittest.TestCase):
             with mock.patch.object(autopost, "NO_DATA", Path(d) / "s.yaml"):
                 autopost.remember_no_data({"나성범": "올해 연봉 없음"}, "2026-10-01")
                 self.assertEqual(autopost.no_data_players("2026-10-05"), ["나성범"])
-                self.assertEqual(autopost.no_data_players("2026-10-09"), [])
+                self.assertEqual(autopost.no_data_players("2026-10-30"), ["나성범"])   # 30일 (2026-10-02)
+                self.assertEqual(autopost.no_data_players("2026-11-01"), [])
+
+    def test_baseball_one_a_day(self):
+        from content import marketers
+        c = {"rotation_start": "2026-10-01", "marketers": {1: {}, 2: {}, 3: {}}}
+        for i in range(9):
+            day = f"2026-10-{i + 1:02d}"
+            base = [m for m in (1, 2, 3) if marketers.sport_ok("kbo", m, day, c)]
+            assert len(base) == 1 and all(marketers.sport_ok("nba", m, day, c) for m in (1, 2, 3) if m not in base)
+        blog = [marketers.baseball_marketer(f"2026-10-{i + 1:02d}", c) == marketers.turn(f"2026-10-{i + 1:02d}", c) for i in range(9)]
+        assert sum(blog) == 3   # 블로그 차례 글은 사흘에 한 번 야구
+
+    def test_money_in_news(self):
+        from content.autopost import money_in_news
+        t = {"player": "엘링 홀란", "short_name": "홀란"}
+        assert money_in_news(t, [{"title": "홀란 주급 50만 파운드", "description": "연봉으로 2600만 파운드"}])
+        assert not money_in_news(t, [{"title": "홀란 해트트릭", "description": "맨시티 3-0 승"}])

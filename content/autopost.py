@@ -369,6 +369,28 @@ def season_card(facts: dict, unit_keys: list[str]) -> tuple[list[dict], str]:
     return card, max(dates) if dates else ""
 
 
+ECB_URL = "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"  # 유럽중앙은행 공개 기준환율 (키 없음, 허용된 통로)
+_ECB: dict = {}
+
+
+def ecb_fx(cur: str) -> dict | None:
+    """1 외화당 원 (EUR·USD·GBP). ECB는 1유로 기준이라 원/유로 ÷ 외화/유로. 실패하면 None."""
+    if "rates" not in _ECB:
+        try:
+            import urllib.request
+            with urllib.request.urlopen(ECB_URL, timeout=15) as r:
+                x = r.read().decode("utf-8")
+            _ECB["rates"] = {m.group(1): float(m.group(2)) for m in re.finditer(r"currency=['\"](\w+)['\"]\s+rate=['\"]([\d.]+)", x)}
+            _ECB["date"] = (re.search(r"time=['\"]([\d-]+)", x) or [None, ""])[1]
+        except Exception:
+            _ECB["rates"], _ECB["date"] = {}, ""
+    rates = _ECB["rates"]
+    if "KRW" not in rates or (cur != "EUR" and cur not in rates):
+        return None
+    v = rates["KRW"] / (1.0 if cur == "EUR" else rates[cur])
+    return {"value": round(v, 1), "date": f"{_ECB['date']}, 유럽중앙은행 기준환율"}
+
+
 def build_data(topic: dict, ex: dict, facts: dict, cfg: dict) -> tuple[dict | None, str]:
     """receipt.py 입력을 만든다. 모자라거나 말이 안 되는 숫자면 (None, 이유)."""
     sal = facts.get("salary")
@@ -385,6 +407,8 @@ def build_data(topic: dict, ex: dict, facts: dict, cfg: dict) -> tuple[dict | No
     if usd:
         c = FX[cur]
         fx = facts.get(c["key"])
+        if not fx or not c["range"][0] <= fx["value"] <= c["range"][1]:
+            fx = ecb_fx(cur)  # 뉴스에 환율이 없으면 유럽중앙은행 기준환율 (2026-10-02, 야말 유로 환율 실패)
         if not fx or not c["range"][0] <= fx["value"] <= c["range"][1]:
             return None, f"{c['word']} 환율을 찾지 못함"
         d |= {"salary_usd": sal["value"], "fx_krw_per_usd": fx["value"], "salary_currency": cur,
@@ -710,11 +734,28 @@ def with_known_salary(facts: dict, ex: dict, known: dict) -> tuple[dict, dict]:
     return facts, {**ex, "salary_currency": known["currency"], "salary_basis": known["basis"], "season": known["season"]}
 
 
+MONEY = re.compile(r"\d[\d,.]*\s*(억|만\s*(달러|유로|파운드|원)|달러|유로|파운드)")
+MONEY_WORDS = ("연봉", "주급", "상금", "계약", "몸값", "salary")
+
+
+def money_in_news(topic: dict, news: list[dict]) -> bool:
+    """정보가 없는 선수는 빼고 주제를 잡는다 (대표 지시 2026-10-02): Claude에게 넘기기 전에, 이 선수 이름과
+    돈 숫자(억·만 달러·유로·파운드)와 연봉·상금·계약 같은 말이 한 기사에 같이 있는지 코드로 먼저 본다."""
+    names = {topic["player"], topic.get("short_name") or topic["player"]}
+    for it in news:
+        t = f"{it.get('title', '')} {it.get('description', '')}"
+        if any(n and n in t for n in names) and MONEY.search(t) and any(w in t for w in MONEY_WORDS):
+            return True
+    return False
+
+
 def collect(hub, llm, topic: dict, today: str, cfg: dict) -> dict | str:
     """한 선수의 뉴스 → 숫자 뽑기 → 충돌 정리 → 계산 입력. 모자라면 이유(str)를 돌려준다."""
     news = gather_news(hub, topic["queries"] + cfg.get("fx_queries", [cfg["fx_query"]]))
     hint = f"\n종목 안내: {topic['hint']}" if topic.get("hint") else ""
     known = known_salary(topic["player"], today)
+    if not known and not money_in_news(topic, news):
+        return "뉴스에 연봉·상금 숫자가 안 보임 (코드 확인, Claude 비용 없음)"
     if known:
         hint += (f"\n확인된 올해 연봉이 따로 있다 ({known['currency']}, 코드가 넣는다). 요약문에 올해 연봉이 없어도 "
                  "나눌 기록이 있으면 usable=true. " + (f"외화 연봉이니 환율({FX[known['currency']]['key']})은 꼭 뽑는다." if known["currency"] in FX else ""))
@@ -729,7 +770,28 @@ def collect(hub, llm, topic: dict, today: str, cfg: dict) -> dict | str:
     d, why = build_data(topic, ex, facts, cfg)
     if d is None:
         return why
+    remember_ready(topic, today)
     return {"d": d, "facts": facts, "ex": ex, "news": news}
+
+
+READY = ROOT / "config" / "ready_players.yaml"
+READY_DAYS = 120
+
+
+def ready_players(today: str) -> set[str]:
+    """정보가 확인된 선수: 확인 연봉표(salaries.yaml) + 최근 120일 안에 뉴스에서 연봉·기록을 뽑아 글을 만든 선수."""
+    book = (yaml.safe_load(READY.read_text(encoding="utf-8")) or {}) if READY.exists() else {}
+    cut = str(date.fromisoformat(today) - timedelta(days=READY_DAYS))
+    sal = ((load_yaml("salaries.yaml") or {}).get("players") or {}) if (ROOT / "config" / "salaries.yaml").exists() else {}
+    return set(sal) | {n for n, v in book.items() if str(v.get("date", "")) >= cut}
+
+
+def remember_ready(topic: dict, today: str) -> None:
+    book = (yaml.safe_load(READY.read_text(encoding="utf-8")) or {}) if READY.exists() else {}
+    book[topic["player"]] = {"date": today}
+    READY.write_text("# 정보(올해 연봉·기록)를 뉴스에서 찾아 글을 만든 선수 (content/autopost.py가 채움, 2026-10-02)\n"
+                     "# 주제를 잡을 때 이 선수들을 3배 먼저 뽑는다. 연봉·기록을 못 찾은 선수는 skip_players.yaml에 30일.\n"
+                     + yaml.safe_dump(book, allow_unicode=True, sort_keys=True), encoding="utf-8")
 
 
 USED_DAYS = 120  # 같은 테마·같은 선수(조합)는 이 기간 안에 다시 쓰지 않는다 (콘텐츠가 마르지 않게 고르게 쓴다)
@@ -787,11 +849,12 @@ def place_item(place: dict, theme: str) -> dict:
 
 
 NO_DATA = ROOT / "config" / "skip_players.yaml"
-NO_DATA_DAYS = 7
+NO_DATA_DAYS = 30  # 정보 없는 선수는 빼고 주제를 잡는다 (대표 지시 2026-10-02, 7일 → 30일)
+READY_BOOST = 3   # 정보가 확인된 선수는 3배 먼저
 
 
 def no_data_players(today: str) -> list[str]:
-    """최근 7일 안에 뉴스에서 올해 연봉·기록을 못 찾은 선수. 다시 모으면 숫자 뽑기 비용만 든다 (실측: 하루 약 11명, 비용의 약 30%)."""
+    """최근 30일 안에 뉴스에서 올해 연봉·기록을 못 찾은 선수. 다시 모으면 숫자 뽑기 비용만 든다 (실측: 하루 약 11명, 비용의 약 30%)."""
     book = (yaml.safe_load(NO_DATA.read_text(encoding="utf-8")) or {}) if NO_DATA.exists() else {}
     return [n for n, v in book.items() if str(v.get("until", "")) >= today]
 
@@ -933,6 +996,7 @@ def weighted_pool(hub, pool: dict, today: str) -> tuple[dict, str]:
     vf = ROOT / "config" / "search_volume.yaml"
     volume = (yaml.safe_load(vf.read_text(encoding="utf-8")) or {}).get("volume", {}) if vf.exists() else {}
     from .trending import volume_factor
+    ready = ready_players(today)
     for p in pool["players"] + extra:
         try:
             n = sum(1 for it in hub.news(p["name"], display=100)
@@ -942,6 +1006,7 @@ def weighted_pool(hub, pool: dict, today: str) -> tuple[dict, str]:
         hot_now = p["name"] in trend or p.get("short") in trend
         f = ((1 + min(2.0, n / NEWS_PER_BOOST)) * (req.get("boost", 3) if p["name"] in asked else 1)
              * (ev.get("boost", 3) if hot_now else 1) * volume_factor(volume.get(p["name"], 0)))
+        f *= READY_BOOST if p["name"] in ready else 1
         out.append({**p, "weight": p.get("weight", 1) * f, "news": n})  # news: 마케터 화제형이 선수를 가를 때 씀
         if n or p["name"] in asked or hot_now:
             hot.append((f, f"{short_name(p)} 기사 {n}건" + (" · 댓글 요청" if p["name"] in asked else "")
@@ -1121,6 +1186,8 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
         # 순위·총정리형 (대표 결정 2026-09-30): 정한 요일의 첫 후보. 못 쓰면 평소 글로 넘어간다
         from .shorts import latest_fx
         for lst in ranking.pick(today, rc):
+            if marketer and not marketers.sport_ok(lst.get("league", ""), marketer, today):
+                continue  # 하루 야구 1편 (2026-10-02): 오늘 이 마케터 종목이 아닌 순위 목록은 건너뜀
             got = ranking.data(lst, today, latest_fx(today))
             if isinstance(got, str):
                 notes.append(f"순위 글 건너뜀 — {got}")
@@ -1133,7 +1200,10 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
             return "\n".join(notes + ["순위 글: 오늘 쓸 수 있는 목록이 없음 (config/rankings.yaml, 21일 안에 다 씀)"]), None
     pool, why = weighted_pool(hub, pool, today)
     if marketer and not topic_override:  # 마케터의 선수·테마만 (같은 날 다른 마케터와 선수가 겹치지 않게)
-        pool = {**pool, "players": marketers.players(pool["players"], marketer)}
+        # 하루 야구 1편 (2026-10-02): 종목으로 먼저 거르고 나서 화제형·반씩 나누기 (같은 종목 묶음 안에서 겹치지 않게)
+        mine = [p for p in pool["players"] if marketers.sport_ok(p.get("sport", ""), marketer, today)]
+        pool = {**pool, "players": marketers.players(mine, marketer)}
+        notes.append("종목: " + ("야구 차례" if marketers.baseball_marketer(today) == marketer else "야구 말고 (축구·농구·골프)"))
         if not theme:
             pool = {**pool, "themes": {**marketers.themes(pool["themes"], marketer),
                                        **({"rank": pool["themes"]["rank"]} if "rank" in pool["themes"] else {})}}
@@ -1180,6 +1250,9 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
                 me = next(p for p in pool["players"] if p["name"] == d["player"])
                 cands = [x for x in places_for(pool, me) if th == "trip" or x["domestic"]]
                 fresh = [x for x in cands if place_item(x, th)["key"] not in used_items.get(d["player"], set())] or cands
+                if not fresh:  # 해외 선수는 국내 연고지가 없을 수 있다 (종목 돌리기, 2026-10-02)
+                    notes.append(f"건너뜀 — {d['player']}: {th} 테마에 쓸 장소 없음")
+                    continue
                 place = random.Random(f"{seed}-{d['player']}-{th}").choice(fresh)
                 d["place"] = place
                 d["prices"], pn = fill_prices(hub, llm, [place_item(place, th)], today, None)
