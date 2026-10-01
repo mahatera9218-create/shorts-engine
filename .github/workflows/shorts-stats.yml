@@ -54,7 +54,7 @@ jobs:
           else
             git commit -m "쇼츠 성과 $(date +%F)"
             for i in 1 2 3; do
-              git pull --rebase -X theirs origin "${GITHUB_REF_NAME}" && git push && exit 0
+              git pull --rebase --autostash -X theirs origin "${GITHUB_REF_NAME}" && git push && exit 0
               sleep $((i * 5))
             done
             exit 1

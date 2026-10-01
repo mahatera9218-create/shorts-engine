@@ -64,6 +64,9 @@ def parse(folder: Path) -> dict | None:
         t.split("## 본문", 1)[1].split("\n", 1)[1].split("\n## 출처", 1)[0] if "## 본문" in t else ""
     blocks, images = [], []
     for para in [p.strip() for p in body.strip().split("\n\n") if p.strip()]:
+        if para == "[대표 한마디]":  # 대표가 직접 쓰는 생각·기억 한두 문장 (사람 냄새, 2026-10-01)
+            blocks.append({"text": "", "mine": True})
+            continue
         if para == "[상품 자리]":  # 쇼핑커넥트 상품 카드 자리 (2026-10-01)
             blocks.append({"shop": True})
             continue
@@ -168,8 +171,8 @@ document.addEventListener('DOMContentLoaded',()=>document.querySelectorAll('text
 function tableText(x){return [x.header].concat(x.rows).map(r=>r.join(' | ')).join('\\n')}
 function esc(t){return String(t).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
 function tableHtml(x){return '<table border="1" style="border-collapse:collapse"><tr>'+x.header.map(h=>'<th>'+esc(h)+'</th>').join('')+'</tr>'+x.rows.map(r=>'<tr>'+r.map(c=>'<td>'+esc(c)+'</td>').join('')+'</tr>').join('')+'</table>'}
-function bodyText(){return POST.blocks.map((x,i)=>x.text!==undefined?(val('b'+i)||x.text):x.table?tableText(x):x.shop?'🛒 상품 자리 (상품 카드를 넣고 이 줄은 지우기)':'📷 사진 '+x.n+' ('+x.label+')').join('\\n\\n')}
-function bodyHtml(){return POST.blocks.map((x,i)=>x.text!==undefined?'<p>'+esc(val('b'+i)||x.text).replace(/\\n/g,'<br>')+'</p>':x.table?tableHtml(x):x.shop?'<p>🛒 상품 자리 (상품 카드를 넣고 이 줄은 지우기)</p>':'<p>📷 사진 '+x.n+' ('+esc(x.label)+')</p>').join('')}
+function bodyText(){return POST.blocks.map((x,i)=>x.mine&&!val('b'+i).trim()?null:x.text!==undefined?(val('b'+i)||x.text):x.table?tableText(x):x.shop?'🛒 상품 자리 (상품 카드를 넣고 이 줄은 지우기)':'📷 사진 '+x.n+' ('+x.label+')').filter(s=>s!==null).join('\\n\\n')}
+function bodyHtml(){return POST.blocks.map((x,i)=>x.mine&&!val('b'+i).trim()?'':x.text!==undefined?'<p>'+esc(val('b'+i)||x.text).replace(/\\n/g,'<br>')+'</p>':x.table?tableHtml(x):x.shop?'<p>🛒 상품 자리 (상품 카드를 넣고 이 줄은 지우기)</p>':'<p>📷 사진 '+x.n+' ('+esc(x.label)+')</p>').join('')}
 async function copyRich(b,html,text){  // 표가 표로 붙게 HTML과 글자를 같이 넣는다 (안 되는 브라우저는 글자만)
   try{await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([text],{type:'text/plain'})})]);flash(b,'복사됨 ✓')}
   catch(e){copyText(b,text)}}
@@ -264,6 +267,9 @@ def page(p: dict) -> str:
                 '<small>네이버 앱에 붙여넣으면 표로 들어가요. 글자로만 들어가면 앱의 <b>표</b> 버튼으로 표를 넣고 칸에 옮겨 주세요 (AI 브리핑은 이미지가 아니라 표를 인용해요).</small></div>')
 
     body = "".join(
+        (f'<div class="ph" style="border:2px dashed var(--accent);border-radius:10px;padding:10px"><b>✍️ 대표 한마디 (선택)</b>'
+         f'<small>이 선수에 대한 대표님 생각이나 기억을 한두 문장. 예: 직접 본 경기, 응원하는 이유, 이 연봉을 보고 든 생각. 비워 두면 복사에서 빠져요.</small>'
+         f'<textarea class="ed" data-k="b{i}" rows="2"></textarea></div>') if b.get("mine") else
         f'<textarea class="ed" data-k="b{i}" rows="3">{e(b["text"])}</textarea>' if "text" in b else tbl(b) if "table" in b else
         '<div class="ph" style="border:2px dashed var(--warn);border-radius:10px;padding:10px"><b>🛒 상품 자리</b><small>쇼핑커넥트 상품 카드를 여기에 1개 넣으세요 (없으면 이 줄 지우기)</small></div>' if "shop" in b else
         f'<div class="ph"><img src="{e(b["img"])}" alt="사진 {b["n"]}" loading="lazy"><small>📷 사진 {b["n"]} · {e(b["label"])}</small></div>'
