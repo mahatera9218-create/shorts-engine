@@ -55,7 +55,7 @@ def apply(folder: Path, title: str | None, blocks: dict[int, str]) -> list[str]:
     if blocks and bf.exists():
         paras = [p.strip() for p in bf.read_text(encoding="utf-8").strip().split("\n\n") if p.strip()]
         for i, text in sorted(blocks.items()):
-            if not 0 <= i < len(paras) or paras[i].startswith("[이미지 ") or paras[i] == text:
+            if not 0 <= i < len(paras) or paras[i].startswith(("[이미지 ", "[표 ")) or paras[i] == text:
                 continue
             log += [f"- 문단 {i}: {paras[i]}", f"  → {text}"]
             paras[i] = text

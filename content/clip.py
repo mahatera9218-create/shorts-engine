@@ -256,6 +256,132 @@ class Reveal(Scene):
                 c.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, int(110 * (1 - (t - 1.0) / 0.15)))))
 
 
+class BarChart(Scene):
+    """가로 막대그래프 (2026-10-01 정보성 강화): 막대가 차례로 자라고 끝에 금액. hot = 금색 강조."""
+
+    def __init__(self, title: str, items: list[tuple[str, float, str]], hot: int | None = 0, note: str = ""):
+        self.title, self.items, self.hot, self.note = title, items[:7], hot, note
+        self.dur = 1.0 + 0.35 * len(self.items) + 1.8
+        self.say = title
+
+    def draw(self, c, t):
+        put(c, label(self.title, "display", 80, WHITE, 6), W / 2, 380, 1, ease_out(t / 0.25))
+        mx = max(v for _, v, _ in self.items) or 1
+        step = min(190, 900 // max(1, len(self.items)))
+        for i, (lab, v, txt) in enumerate(self.items):
+            y = 540 + i * step
+            k = ease_out((t - 0.5 - i * 0.35) / 0.6)
+            if k <= 0:
+                continue
+            col = GOLD if i == self.hot else (95, 140, 230)
+            put(c, label(lab, "b", 46, WHITE, max_w=W - 160), 80, y, 1, k, anchor="l")
+            bw = max(14, int((W - 160) * v / mx * k))
+            put(c, pill(bw, 54, col + (255,)), 80, y + 62, anchor="l")
+            tl = label(txt, "display", 50, GOLD if i == self.hot else WHITE, 4, max_w=420)
+            inside = 80 + bw + 16 + tl.width > W - 50  # 긴 막대는 금액을 막대 안쪽 끝에
+            if inside:
+                tl = label(txt, "display", 50, BG, 0, max_w=420)
+            put(c, tl, (80 + bw - tl.width - 24) if inside else (80 + bw + 16), y + 62, 1,
+                clamp((t - 0.9 - i * 0.35) / 0.3), anchor="l")
+        if self.note:
+            put(c, label(self.note, "r", 32, GRAY), W / 2, min(SAFE_BOTTOM - 40, 540 + len(self.items) * step + 40), 1,
+                clamp((t - 1.2) / 0.4))
+
+
+class IconGrid(Scene):
+    """그림 단위 (아이콘 하나 = N개): 숫자를 '몇 대·몇 년'으로 채워 보이게. 마지막 칸은 남는 만큼만 칠한다."""
+    dur = 3.8
+
+    def __init__(self, title: str, count: float, unit: str, big: str, icon_label: str = "", top: int = 380):
+        self.title, self.count, self.unit, self.big, self.top = title, max(0.0, count), unit, big, top  # top: 쇼츠는 제목 띠 아래로
+        self.per = next(x for x in (1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 10 ** 9) if self.count / x <= 60)
+        self.n = self.count / self.per
+        self.icon_label = icon_label or f"■ 1칸 = {self.per:,}{unit}"
+        self.say = f"{title} {big}"
+
+    def draw(self, c, t):
+        put(c, label(self.title, "display", 76, WHITE, 6), W / 2, self.top, 1, ease_out(t / 0.25))
+        cols, size, gap = 10, 74, 16
+        cells = max(1, math.ceil(self.n - 1e-9))
+        rows = -(-cells // cols)
+        x0 = (W - (cols * size + (cols - 1) * gap)) / 2
+        y0 = self.top + 120
+        shown = self.n * ease_out((t - 0.4) / 1.8)
+        d = ImageDraw.Draw(c)
+        for i in range(rows * cols):
+            if i >= cells:
+                break
+            x, y = x0 + (i % cols) * (size + gap), y0 + (i // cols) * (size + gap)
+            d.rounded_rectangle((x, y, x + size, y + size), radius=16, fill=PANEL)
+            f = clamp(shown - i)
+            if f > 0:
+                d.rounded_rectangle((x, y + size * (1 - f), x + size, y + size), radius=16, fill=GOLD)
+        yb = min(SAFE_BOTTOM - 120, y0 + rows * (size + gap) + 60)
+        put(c, label(self.big, "display", 120, GOLD, 8), W / 2, yb, 1, clamp((t - 1.8) / 0.3))
+        put(c, label(self.icon_label, "b", 38, GRAY), W / 2, yb + 110, 1, clamp((t - 2.0) / 0.3))
+
+
+class Donut(Scene):
+    """도넛 그래프: 전체 중 몫 (예: 연봉 중 세금 최대치 vs 남는 돈)."""
+    dur = 3.6
+
+    def __init__(self, title: str, parts: list[tuple[str, float, str]]):
+        self.title, self.parts = title, parts[:3]
+        self.say = title
+
+    def draw(self, c, t):
+        put(c, label(self.title, "display", 76, WHITE, 6), W / 2, 380, 1, ease_out(t / 0.25))
+        total = sum(v for _, v, _ in self.parts) or 1
+        k = ease_out((t - 0.3) / 1.4)
+        box = (W / 2 - 280, 520, W / 2 + 280, 1080)
+        d = ImageDraw.Draw(c)
+        d.ellipse(box, fill=PANEL)
+        a, cols = -90.0, [GOLD, (95, 140, 230), GREEN]
+        for (lab, v, txt), col in zip(self.parts, cols):
+            sweep = 360 * v / total * k
+            if sweep > 0.5:
+                d.pieslice(box, a, a + sweep, fill=col)
+            a += 360 * v / total
+        d.ellipse((W / 2 - 160, 640, W / 2 + 160, 960), fill=BG)
+        put(c, label(f"{self.parts[0][1] / total * 100:.0f}%", "display", 110, GOLD, 6), W / 2, 800, 1, clamp((t - 1.2) / 0.3))
+        for i, ((lab, v, txt), col) in enumerate(zip(self.parts, cols)):
+            y = 1170 + i * 110
+            al = clamp((t - 1.4 - i * 0.2) / 0.3)
+            d.rounded_rectangle((110, y - 22, 154, y + 22), radius=10, fill=col if al > 0.5 else PANEL)
+            put(c, label(f"{lab}  {txt}", "b", 48, WHITE, max_w=W - 260), 180, y, 1, al, anchor="l")
+
+
+def chart_spec(d: dict, n: dict) -> Scene | None:
+    """글 숫자(numbers.json, 코드 계산) → 클립에 넣을 그래프 한 장 (2026-10-01 정보성 강화). 없으면 None."""
+    from .receipt import short_won, won
+    th = d.get("theme", "receipt")
+    name = d.get("short_name") or d.get("player", "")
+    try:
+        if th == "tax":
+            return Donut(f"{name} 연봉, 세금 최대로 떼면", [("세금 최대", n["tax_max"], won(n["tax_max"])),
+                                                         ("남는 돈", n["after_max"], won(n["after_max"]))])
+        if th in ("life", "place", "trip", "jersey"):
+            q = n["item"]
+            cnt = q.get("salary_count", 0)
+            from .themes import count
+            return IconGrid(f"올해 연봉으로 {q['short']}", cnt, q["unit"], f"{count(cnt)}{q['unit']}")
+        if th in ("same", "cross"):
+            a = d["a"].get("short_name") or d["a"]["player"]
+            b = d["b"].get("short_name") or d["b"]["player"]
+            va, vb = n["a"]["salary_krw"], n["b"]["salary_krw"]
+            return BarChart("올해 연봉 비교", [(a, va, short_won(va)), (b, vb, short_won(vb))], 0 if va >= vb else 1)
+        if th == "rank":
+            rows = d["rows"]
+            return BarChart(d["title"], [(r["short"], r["krw"], short_won(r["krw"])) for r in rows], 0)
+        from . import receipt
+        us = receipt.units(d)
+        items = [(u["label"], n["per"][u["key"]], won(n["per"][u["key"]])) for u in us if u["key"] in n.get("per", {})]
+        items.sort(key=lambda x: -x[1])
+        return BarChart(f"{name} 1번에 받는 돈", items, 0, "연봉 ÷ 올 시즌 기록 수") if len(items) >= 2 else None
+    except (KeyError, TypeError, ZeroDivisionError):
+        return None
+
+
 class Table(Scene):
     """제목 → 한 줄씩 미끄러져 들어온다. 강조 줄은 금색으로 깜빡."""
 
@@ -342,10 +468,10 @@ class LoopBack(Scene):
 
 
 def scenes(st: dict, photo: Image.Image | None, question: str = "", youtube: bool = False,
-           pics: list[Image.Image] = (), credit: str = "") -> list[Scene]:
+           pics: list[Image.Image] = (), credit: str = "", chart: Scene | None = None) -> list[Scene]:
     # 표지 질문(???) → 퀴즈 → 정답 → 표지 답 공개 → 표 → 최저임금 → 질문 (답은 가운데 이후에, 대표 지적 2026-09-30)
     out: list[Scene] = [Hook(st["hook"], photo, pics, credit), Quiz(st["quiz"]), Answer(st["quiz"], st["answer"]),
-                        Reveal(st["hook"]), Table(st["table"])]
+                        Reveal(st["hook"])] + ([chart] if chart else []) + [Table(st["table"])]
     if st.get("wage"):
         out.append(Wage(st["wage"]))
     out.append(Outro(question, youtube))
@@ -456,7 +582,9 @@ def make(folder: Path) -> str:
                         (json.loads(f.read_text(encoding="utf-8")) for f in sorted(folder.glob("player*.json"))))
     qf = folder / "clip_question.txt"
     q = qf.read_text(encoding="utf-8").strip() if qf.exists() else ""
-    sc = scenes(st, photo, q, pics=pics, credit=credit)
+    nf = folder / "numbers.json"
+    chart = chart_spec(d, json.loads(nf.read_text(encoding="utf-8"))) if nf.exists() else None  # 그래프 한 장 (정보성)
+    sc = scenes(st, photo, q, pics=pics, credit=credit, chart=chart)
     err, info = produce.produce(exe, sc, folder / "clip.mp4", bg)  # B·D. 효과음·목소리
     if err:
         return f"클립: 영상 만들기 실패 ({err})"
