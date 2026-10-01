@@ -1,7 +1,7 @@
-key: C-kbo-day
-title: 2026 KBO 연봉 TOP 5 하루에 버는 돈
-unit: 하루에 버는 돈
-div: 365
+key: C-kbo-game
+title: 2026 KBO 연봉 TOP 5 1경기에 버는 돈
+unit: 1경기에 버는 돈
+div: 144
 league: kbo
 kind: C
 q: 1위 예상했나요?
