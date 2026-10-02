@@ -212,13 +212,12 @@ WRITE_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"(닉네�
 - 문단마다 하나: 첫 문단(검색 답 한 줄)·사진/표 자리·질문 한 줄 소제목·"기준:" 줄을 뺀 모든 문단에 글쓴이의 의도·감정·생각·의견이 드러나는 말을 하나 이상
   (예: 저는, 제가 계산해 보니, 솔직히, 의외였던 건, 궁금했던 건, 아쉬운 건, ~것 같아요, ~네요, 제 눈엔, 우리). 같은 말을 돌려 쓰지 말고 문단마다 다르게.
   숫자 문장 뒤에 그 숫자를 보고 든 생각을 붙이는 식이면 된다. 코드 검사에서 걸린다.
-- 대표 한마디 자리: 마무리 문단 바로 앞에 "[대표 한마디]" 한 줄을 넣는다 (대표가 이 선수에 대한 자기 생각·기억을 한두 문장 쓴다. 안 쓰면 지운다).
 
 대표 지시 9가지 (2026-10-02, 코드 검사에서 걸린다)
 1. 제목: 키워드 나열 말고 검색하는 사람이 물어볼 질문 그대로 (위 '제목').
 2. 첫 줄에 결론부터: 첫 문단은 제목 질문의 숫자 답 한 줄. 배경 설명(왜 이 선수인지, 시즌 이야기)은 뒤로.
 3. 같은 키워드 여러 번 박지 않기: '이름 + 연봉'은 본문에 3번까지. 나머지는 "올해 몸값", "이 금액"처럼 바꿔 말한다.
-4. 대표가 겪은 일 한 줄은 대표가 쓴다: 마무리 문단 바로 앞에 "[대표 한마디]" 한 줄만 두고 비워 둔다. 네가 경험을 지어내지 않는다.
+4. 글쓴이의 생각·의견·반응은 네가 직접 쓴다 (대표가 쓸 칸 없음, 2026-10-03: 바로 발행). 단, 하지 않은 경험(직접 봤다·갔다·만났다·샀다·먹었다)은 지어내지 않는다 — 광고가 붙는 글이라 공정위 기만광고·네이버 저품질 위험. 생각·의견·가치관은 마음껏, 경험은 금지.
 5. "많이·대부분·상당히·엄청" 같은 막연한 양 대신 숫자 (예: "143경기 중 140경기", "열 명 중 일곱"). 숫자표에 없는 숫자는 만들지 않는다. 숫자가 없으면 그 말을 뺀다.
 6. 표 하나는 꼭: '[표 1: …]' 자리 (항목 8~10개는 코드가 맞춘다).
 7. 표를 이미지로 대신하지 않는다: 카드 이미지는 보조이고, 표는 '[표 1]' 자리의 네이버 표다.
@@ -582,14 +581,10 @@ def check_style(p: dict, sheet: str) -> list[str]:
 
 
 def code_fixes(p: dict) -> dict:
-    """코드로 고칠 수 있는 형식은 Claude 없이 고친다: 긴 대시 → 쉼표, [대표 한마디] 자리 없으면 '기준:' 앞에."""
-    p = {**p, "titles": [{**t, "text": undash(t["text"])} for t in p["titles"]],
-         "body": undash(p["body"]), "clip_caption": undash(p.get("clip_caption", ""))}
-    if "[대표 한마디]" not in p["body"]:
-        paras = [x for x in p["body"].strip().split("\n\n")]
-        at = next((i for i, x in enumerate(paras) if x.strip().startswith("기준")), len(paras))
-        p["body"] = "\n\n".join(paras[:at] + ["[대표 한마디]"] + paras[at:])
-    return p
+    """코드로 고칠 수 있는 형식은 Claude 없이 고친다: 긴 대시 → 쉼표. (옛 [대표 한마디] 줄이 있으면 뺀다)"""
+    body = "\n\n".join(x for x in undash(p["body"]).split("\n\n") if x.strip() != "[대표 한마디]")
+    return {**p, "titles": [{**t, "text": undash(t["text"])} for t in p["titles"]],
+            "body": body, "clip_caption": undash(p.get("clip_caption", ""))}
 
 
 def undash(text: str) -> str:
@@ -598,7 +593,7 @@ def undash(text: str) -> str:
 
 def style_rules(p: dict, sheet: str) -> list[str]:
     """대표 지시 9가지 (2026-10-02) 중 코드로 보는 것: 첫 줄 결론, 같은 키워드 되풀이, 막연한 양 대신 숫자,
-    질문형 소제목 2~3개, 긴 대시 금지, 대표 한마디 자리."""
+    질문형 소제목 2~3개, 긴 대시 금지."""
     out, body = [], p["body"]
     paras = [x.strip() for x in body.strip().split("\n\n") if x.strip()]
     if paras and not re.search(r"\d", paras[0]):
@@ -620,8 +615,6 @@ def style_rules(p: dict, sheet: str) -> list[str]:
     for label, text in texts:
         if any(d in text for d in DASHES):
             out.append(f"{label}에 긴 대시(—) → 쉼표나 마침표로 (AI 티)")
-    if "[대표 한마디]" not in body:
-        out.append("'[대표 한마디]' 자리가 없음 → 마무리 문단 바로 앞에 한 줄")
     return out
 
 

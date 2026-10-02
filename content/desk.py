@@ -64,8 +64,7 @@ def parse(folder: Path) -> dict | None:
         t.split("## 본문", 1)[1].split("\n", 1)[1].split("\n## 출처", 1)[0] if "## 본문" in t else ""
     blocks, images = [], []
     for para in [p.strip() for p in body.strip().split("\n\n") if p.strip()]:
-        if para == "[대표 한마디]":  # 대표가 직접 쓰는 생각·기억 한두 문장 (사람 냄새, 2026-10-01)
-            blocks.append({"text": "", "mine": True})
+        if para == "[대표 한마디]":  # 옛 자리 — 지어낸 경험 금지로 폐지 (2026-10-03). 남아 있으면 버린다
             continue
         if para == "[상품 자리]":  # 쇼핑커넥트 상품 카드 자리 (2026-10-01)
             blocks.append({"shop": True})
@@ -198,8 +197,8 @@ document.addEventListener('DOMContentLoaded',()=>document.querySelectorAll('text
 function tableText(x){return [x.header].concat(x.rows).map(r=>r.join(' | ')).join('\\n')}
 function esc(t){return String(t).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
 function tableHtml(x){const t=document.getElementById('nt'+x.table);return t?t.outerHTML:''}  // 화면에 보이는 표 그대로 복사 (2026-10-03)
-function bodyText(){return POST.blocks.map((x,i)=>x.mine&&!val('b'+i).trim()?null:x.text!==undefined?(val('b'+i)||x.text):x.table?tableText(x):x.shop?'🛒 상품 자리 (상품 카드를 넣고 이 줄은 지우기)':'📷 사진 '+x.n+' ('+x.label+')').filter(s=>s!==null).join('\\n\\n')}
-function bodyHtml(){return POST.blocks.map((x,i)=>x.mine&&!val('b'+i).trim()?'':x.text!==undefined?'<p>'+esc(val('b'+i)||x.text).replace(/\\n/g,'<br>')+'</p>':x.table?tableHtml(x):x.shop?'<p>🛒 상품 자리 (상품 카드를 넣고 이 줄은 지우기)</p>':'<p>📷 사진 '+x.n+' ('+esc(x.label)+')</p>').join('')}
+function bodyText(){return POST.blocks.map((x,i)=>x.text!==undefined?(val('b'+i)||x.text):x.table?tableText(x):x.shop?'🛒 상품 자리 (상품 카드를 넣고 이 줄은 지우기)':'📷 사진 '+x.n+' ('+x.label+')').join('\\n\\n')}
+function bodyHtml(){return POST.blocks.map((x,i)=>x.text!==undefined?'<p>'+esc(val('b'+i)||x.text).replace(/\\n/g,'<br>')+'</p>':x.table?tableHtml(x):x.shop?'<p>🛒 상품 자리 (상품 카드를 넣고 이 줄은 지우기)</p>':'<p>📷 사진 '+x.n+' ('+esc(x.label)+')</p>').join('')}
 async function copyRich(b,html,text){  // 표가 표로 붙게 HTML과 글자를 같이 넣는다 (안 되는 브라우저는 글자만)
   try{await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([text],{type:'text/plain'})})]);flash(b,'복사됨 ✓')}
   catch(e){copyText(b,text)}}
@@ -213,11 +212,7 @@ async function saveEdits(b){
   if(url.length>7000){try{await navigator.clipboard.writeText(body)}catch(e){prompt('길게 눌러 복사하세요',body)}
     alert('고친 내용이 길어서 복사해 뒀어요. 열리는 화면의 본문 칸을 길게 눌러 붙여넣은 뒤 Create를 누르세요.');url=base}
   location.href=url}
-async function copyBody(b){  // 대표가 겪은 일 한 줄은 꼭 (대표 지시 2026-10-02): 비었으면 첫 번째 누름은 그 칸으로 안내, 한 번 더 누르면 그냥 복사
-  const i=POST.blocks.findIndex(x=>x.mine);
-  if(i>=0&&!val('b'+i).trim()&&!b.dataset.warned){b.dataset.warned='1';const t=ed('b'+i);if(t){t.scrollIntoView({block:'center'});t.focus()}
-    flash(b,'✍️ 대표 한마디 먼저 (한 번 더 누르면 그냥 복사)');return}
-  copyRich(b,bodyHtml(),bodyText())}
+async function copyBody(b){copyRich(b,bodyHtml(),bodyText())}
 async function saveClip(b,name){
   name=name||'clip.mp4';
   try{
@@ -296,9 +291,6 @@ def page(p: dict) -> str:
                 '<small>네이버 앱에 붙여넣으면 표로 들어가요. 글자로만 들어가면 앱의 <b>표</b> 버튼으로 표를 넣고 칸에 옮겨 주세요 (AI 브리핑은 이미지가 아니라 표를 인용해요).</small></div>')
 
     body = "".join(
-        (f'<div class="ph" style="border:2px dashed var(--accent);border-radius:10px;padding:10px"><b>✍️ 대표 한마디 (꼭 한 줄)</b>'
-         f'<small>대표님이 실제로 겪은 일 한 줄. AI가 쓸 수 없는 부분이라 글 신뢰도에 가장 커요. 예: 직접 본 경기, 응원하게 된 계기, 이 연봉을 보고 떠오른 내 월급날. 비워 두면 복사에서 빠져요.</small>'
-         f'<textarea class="ed" data-k="b{i}" rows="2"></textarea></div>') if b.get("mine") else
         f'<textarea class="ed" data-k="b{i}" rows="3">{e(b["text"])}</textarea>' if "text" in b else tbl(b) if "table" in b else
         '<div class="ph" style="border:2px dashed var(--warn);border-radius:10px;padding:10px"><b>🛒 상품 자리</b><small>쇼핑커넥트 상품 카드를 여기에 1개 넣으세요 (없으면 이 줄 지우기)</small></div>' if "shop" in b else
         f'<div class="ph"><img src="{e(b["img"])}" alt="사진 {b["n"]}" loading="lazy"><small>📷 사진 {b["n"]} · {e(b["label"])}</small></div>'
@@ -398,6 +390,36 @@ def clip_cards(posts: list[dict]) -> str:
     return "".join(out)
 
 
+def inline_article(p: dict) -> str:
+    """도우미 첫 화면 '지금 쓰기' 버튼 바로 밑에 완성된 글을 읽기 전용으로 보여 준다 (대표 지시 2026-10-03).
+    본문·표·사진 + 본문 복사·발행 완료·자세히 버튼. 복사·표는 index의 POST(= 이 글)로 동작한다."""
+    e = html.escape
+    from .marketers import label
+    best = next((t for t in p["titles"] if t["best"]), (p["titles"][0] if p["titles"] else {"text": p["folder"]}))
+    badge = ('<span class="badge ok">✅ 발행 가능</span>' if p["ok"]
+             else '<span class="badge warn">⚠️ 확인 필요 — 발행하지 말고 Claude에게</span>')
+    parts = []
+    for b in p["blocks"]:
+        if "text" in b:
+            parts.append(f'<p>{e(b["text"]).replace(chr(10), "<br>")}</p>')
+        elif "table" in b:
+            parts.append(f'<div style="margin:12px 0"><b class="muted">📊 {e(b["title"])}</b>{naver_table(b)}</div>')
+        elif "shop" in b:
+            parts.append('<div class="ph" style="border:2px dashed var(--warn);border-radius:10px;padding:10px"><b>🛒 상품 자리</b>'
+                         '<small>쇼핑커넥트 상품 카드 1개 (없으면 지우기)</small></div>')
+        else:
+            parts.append(f'<div class="ph"><img src="{e(b["img"])}" alt="사진 {b["n"]}" loading="lazy">'
+                         f'<small>📷 사진 {b["n"]} · {e(b["label"])} (길게 눌러 저장)</small></div>')
+    done_btn = e(issue_link("발행완료", p["folder"], "블로그·클립 발행을 마쳤어요."), quote=True)
+    return (f'<div class="card" style="margin-top:14px"><h2>{e(best["text"])}</h2>{badge} '
+            f'<span class="muted">{e(label(p.get("marketer")))}</span>'
+            f'<button onclick="copyBody(this)">📋 본문 전체 복사 (표·사진 자리 포함)</button>'
+            f'<div class="body" style="margin-top:8px">{"".join(parts)}</div>'
+            f'<a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="p/{slug(p["folder"])}/">✏️ 제목 고르기·칸별 고치기·클립</a>'
+            f'<a class="btn" href="{done_btn}">✅ 발행 완료 표시</a>'
+            '<div class="muted">누르면 GitHub 화면이 열려요. 초록색 Create만 누르면 끝.</div></div>')
+
+
 def index(posts: list[dict], n_shorts: int = 0, shorts_html: str = "") -> str:
     e = html.escape
 
@@ -420,10 +442,14 @@ def index(posts: list[dict], n_shorts: int = 0, shorts_html: str = "") -> str:
                  ) if todo_picks else ("<p class=\"muted\">오늘 올릴 글 2편을 다 올렸어요 👍</p>" if picks else "")
     todo = "".join(row(p) for p in sorted(live, key=lambda p: p["folder"])[-14:])
     done = "".join(row(p, True) for p in sorted(used, key=lambda p: p["status"].get("at", ""), reverse=True)[:10])
+    top = todo_picks[0] if todo_picks else None   # '지금 쓰기' 버튼 바로 밑에 완성된 글 1편 (대표 지시 2026-10-03)
+    top_article = inline_article(top) if top else ""
+    post_data = json.dumps({"blocks": top["blocks"], "images": top["images"]}, ensure_ascii=False) if top else '{"blocks":[],"images":[]}'  # index copyBody가 이 글로 동작
     tabs = """<nav class="tabs"><a href="#blog" data-t="blog">📝 블로그</a><a href="#clip" data-t="clip">🎬 클립</a>
 <a href="#shorts" data-t="shorts">▶️ 쇼츠</a></nav>"""
-    tab_js = """function writeNow(){const n=document.getElementById('who').value.trim();if(!n){alert('선수 이름을 입력하세요');return}
-  const ev=document.getElementById('ev').value.trim();
+    tab_js = """function writeNow(){const raw=document.getElementById('who').value.trim();if(!raw){alert('선수 이름을 적어 주세요 (예: 김도영 / 어제 끝내기 홈런)');return}
+  const parts=raw.split('/');const n=parts[0].trim();const ev=parts.slice(1).join('/').trim();
+  if(!n){alert('선수 이름을 적어 주세요');return}
   const nl=String.fromCharCode(10);
   const body=['이 선수로 지금 글을 써 주세요. 아래 초록색 Create 버튼만 누르면 됩니다.'].concat(ev?['','사건: '+ev]:[]).join(nl);
   location.href='https://github.com/REPO_SLUG/issues/new?title='+encodeURIComponent('[선수] '+n)+'&body='+encodeURIComponent(body)}
@@ -441,18 +467,16 @@ nav.tabs a.on{{background:var(--btn);color:var(--btnink)}}</style></head><body><
 <p class="muted">마지막 업데이트: {datetime.now(ZoneInfo("Asia/Seoul")).strftime("%m월 %d일 %H:%M")}</p>
 {tabs}
 <section class="tab" id="blog">
-<p class="muted">매일 아침 마케터 3명이 1편씩 써요. 그중 잘 써진 <b>⭐ 2편</b>을 올리고(하루 2개), 글 화면 맨 아래 <b>✅ 발행 완료 표시</b>. 두 편은 시간 차를 두고 올려도 돼요. 나머지 1편은 예비, 다음 날 아침 지워져요.</p>
+<div class="card" style="border:2px solid var(--accent)"><h2>⚡ 이 선수로 지금 쓰기</h2>
+<input id="who" placeholder="선수명 / 이슈 (예: 김도영 / 어제 끝내기 홈런)" style="width:100%;min-height:50px;margin:8px 0;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font-size:16px">
+<button onclick="writeNow()">⚡ 지금 쓰기</button>
+<div class="muted">선수명만 적어도 돼요. 뒤에 <b>/</b> 사건을 적으면 그걸 제목·첫 문단 훅으로 걸어요. 15~20분 뒤 바로 아래에 본문·사진이 떠요 (Claude 약 $0.3, 연봉 못 찾는 선수는 안 나올 수 있어요).</div></div>
+{top_article}
 {turn_note}
 <h2>{'다른 글 (예비)' if picks else '오늘의 후보'}</h2>
 {todo or '<p>후보가 아직 없어요. 매일 아침 5시쯤 올라와요.</p>'}
 {f'<h2 style="margin-top:28px">발행한 글</h2>{done}' if done else ''}
-<div class="card" style="margin-top:28px;border:2px solid var(--accent)"><h2>⚡ 이 선수로 지금 쓰기</h2>
-<div class="muted">오늘 경기에서 뜬 선수나, 쓰고 싶은 선수를 직접 찍어 주세요. 바로 한 편 써서 15~20분 뒤 위 목록에 올라와요 (Claude 약 $0.3).</div>
-<input id="who" placeholder="선수 이름 (예: 김도영)" style="width:100%;min-height:48px;margin:8px 0;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font-size:16px">
-<input id="ev" placeholder="오늘 사건 한 줄 (선택, 예: 어제 끝내기 홈런)" style="width:100%;min-height:48px;margin:0 0 8px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font-size:16px">
-<button onclick="writeNow()">⚡ 지금 쓰기</button>
-<div class="muted">사건을 적으면 그걸 제목·첫 문단 훅으로 걸고 바로 연봉 계산으로 가요. 연봉을 못 찾는 선수는 글이 안 나올 수 있어요.</div></div>
-<div class="card" style="margin-top:14px"><h2>필요할 때만 누르는 버튼</h2>
+<div class="card" style="margin-top:28px"><h2>필요할 때만 누르는 버튼</h2>
 <a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(issue_link("다시그리기", "오늘후보", "글은 그대로 두고 사진·썸네일·클립만 새로 그려 주세요."), quote=True)}">🎨 사진·클립 다시 그리기</a>
 <div class="muted">무료 · 5~10분. 썸네일·클립 디자인을 고친 뒤 지금 있는 후보에 바로 반영할 때.</div>
 <a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(issue_link("새후보", "3편", "마케터 3명이 1편씩 새로 써 주세요."), quote=True)}">✍️ 마케터 3명 새로 쓰기</a>
@@ -466,7 +490,7 @@ nav.tabs a.on{{background:var(--btn);color:var(--btnink)}}</style></head><body><
 <section class="tab" id="shorts" hidden>
 {shorts_html}
 </section>
-</main><script>const POST={{"blocks":[],"images":[]}};{JS}{tab_js}</script></body></html>"""
+</main><script>const POST={post_data};{JS}{tab_js}</script></body></html>"""
 
 
 SHORTS = ROOT / "shorts"
