@@ -13,7 +13,7 @@ sports:
   epl:    {name: 프리미어리그, sport: 축구, hint: "경기·골·도움. 연봉 1년치로 보도된 숫자만(주급만 있으면 usable=false). 파운드면 원파운드 환율도"}
   laliga: {name: 라리가, sport: 축구, hint: "경기·골·도움. 연봉 1년치로 보도된 숫자만(주급만 있으면 usable=false). 유로면 원유로 환율도"}
   nba:    {name: NBA, sport: 농구, hint: "경기·득점·리바운드·어시스트. 올 시즌(2026-27) 연봉, 달러면 원달러 환율도"}
-  golf:   {name: 골프, sport: 골프, hint: "연봉 대신 올해 시즌 누적 상금 총액을 key salary로. 나눌 기록은 대회(events)·라운드(rounds)·우승(wins)"}
+  golf:   {name: 골프, sport: 골프, hint: "연봉 대신 올해 시즌 누적 상금 총액을 key salary로. 나눌 기록은 대회(events)·라운드(rounds)·우승(wins). events·rounds는 이 선수가 올 시즌 실제로 출전한 대회 수·라운드 수 누적 (투어 대회 순번, 한 대회 안의 라운드는 안 됨, 없으면 빼기)"}
 
 players:
   # 프로야구
