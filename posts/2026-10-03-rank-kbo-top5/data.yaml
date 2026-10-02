@@ -1,0 +1,68 @@
+theme: rank
+key: kbo-top5
+title: 2026 KBO 연봉 순위 TOP 5
+short_name: KBO
+tag: 2026 연봉 순위
+sport: 야구 (프로야구)
+league: kbo
+games: 144
+complete: true
+basis: KBO 발표 2026 연봉 순위 (외국인·신인 제외), 보도
+season: '2026'
+rows:
+- name: 양의지
+  short: 양의지
+  team: 두산 베어스
+  amount: 4200000000
+  currency: KRW
+  krw: 4200000000
+  basis: KBO 발표 2026 연봉 1위, 보도
+  as_of: '2026-03-18'
+  source: https://v.daum.net/v/20260318142802406
+  rank: 1
+  tie: false
+- name: 고영표
+  short: 고영표
+  team: KT 위즈
+  amount: 2600000000
+  currency: KRW
+  krw: 2600000000
+  basis: KBO 발표 2026 연봉 2위, 보도
+  as_of: '2026-03-18'
+  source: https://v.daum.net/v/20260318142802406
+  rank: 2
+  tie: false
+- name: 최정
+  short: 최정
+  team: SSG 랜더스
+  amount: 2200000000
+  currency: KRW
+  krw: 2200000000
+  basis: KBO 발표 2026 연봉 3위, 보도
+  as_of: '2026-03-18'
+  source: https://v.daum.net/v/20260318142802406
+  rank: 3
+  tie: false
+- name: 류현진
+  short: 류현진
+  team: 한화 이글스
+  amount: 2100000000
+  currency: KRW
+  krw: 2100000000
+  basis: KBO 발표 2026 연봉 순위 (8년 170억 계약 중 2026년), 보도
+  as_of: '2026-03-18'
+  source: https://v.daum.net/v/20260318142802406
+  rank: 4
+  tie: true
+- name: 박세웅
+  short: 박세웅
+  team: 롯데 자이언츠
+  amount: 2100000000
+  currency: KRW
+  krw: 2100000000
+  basis: KBO 발표 2026 연봉 공동 4위, 보도
+  as_of: '2026-03-18'
+  source: https://v.daum.net/v/20260318142802406
+  rank: 4
+  tie: true
+marketer: 2

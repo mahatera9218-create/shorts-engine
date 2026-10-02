@@ -1,0 +1,36 @@
+player: 김민솔
+short_name: 김민솔
+team: ''
+season: 2026
+salary_label: 연봉 13억 8,747만원 · 골프는 연봉 대신 2026시즌 KLPGA 투어 누적 상금, 하이트진로 챔피언십 개막 전 기준
+salary_krw: 1387470000
+units:
+- key: events
+  label: 1개 대회
+  count: 25
+- key: rounds
+  label: 1라운드
+  count: 2
+- key: wins
+  label: 1승
+  count: 3
+headline_unit: wins
+salary_basis: 골프는 연봉 대신 2026시즌 KLPGA 투어 누적 상금, 하이트진로 챔피언십 개막 전 기준
+min_wage_monthly_krw: 2156880
+sport: 골프 (골프)
+card:
+- label: 올 시즌 우승
+  value: '3'
+- label: 올 시즌 KLPGA 투어 대회 순번(하이트진로 챔피언십)
+  value: '25'
+- label: 하이트진로 챔피언십 2라운드까지 소화
+  value: '2'
+- label: 하이트진로 챔피언십 우승상금
+  value: 270,000,000
+- label: 하이트진로 챔피언십 총상금
+  value: 1,500,000,000
+- label: 우승 시 시즌 상금 예상
+  value: 1,657,470,000
+card_date: '2026-10-03'
+theme: receipt
+marketer: 3
