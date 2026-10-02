@@ -708,6 +708,19 @@ class TestLifecycle(unittest.TestCase):
         blog = [marketers.baseball_marketer(f"2026-10-{i + 1:02d}", c) == marketers.turn(f"2026-10-{i + 1:02d}", c) for i in range(9)]
         assert sum(blog) == 3   # 블로그 차례 글은 사흘에 한 번 야구
 
+    def test_event_hook(self):
+        from content import themes
+        from content.autopost import build_data
+        pool = {"sports": {"mlb": {"name": "메이저리그", "sport": "야구", "hint": ""}}}
+        t = themes.topic(pool, {"name": "김혜성", "sport": "mlb", "team": "LA", "event": "어제 끝내기"})
+        assert t["event"] == "어제 끝내기"
+        ex = {"season": 2026, "salary_currency": "KRW", "salary_basis": "보도", "headline_unit": "games",
+              "units": [{"key": "games", "label": "1경기"}, {"key": "hits", "label": "1안타"}]}
+        facts = {"salary": {"value": 5e8, "unit": "KRW"}, "games": {"value": 100, "unit": "games"}, "hits": {"value": 120, "unit": "개"}}
+        cfg = {"constants": {"min_wage_monthly_krw": 2156880, "min_wage_label": "x", "min_wage_source": "x"}}
+        d, _ = build_data(t, ex, facts, cfg)
+        assert d["event"] == "어제 끝내기"
+
     def test_money_in_news(self):
         from content.autopost import money_in_news
         t = {"player": "엘링 홀란", "short_name": "홀란"}
