@@ -37,8 +37,8 @@ players:
   short: 최원준
   sport: kbo
   team: KT 위즈
-  why: 올 시즌 최고의 급등주로 꼽히며 KT의 트레이드 성공 사례로 조명
-  source: 12
+  why: 올 시즌 프로야구 최고의 급등주로 꼽히며 활약
+  source: 13
   date: '2026-10-02'
   link: https://www.joongang.co.kr/article/25466505
 - name: 무라카미
@@ -53,40 +53,40 @@ players:
   short: 하피냐
   sport: laliga
   team: 바르셀로나
-  why: 시즌 초반 8경기 14골, 쿠르투아가 극찬
-  source: 37
+  why: 시즌 초반 8경기 14골, 쿠르투아도 극찬
+  source: 40
   date: '2026-10-02'
   link: https://sports.khan.co.kr/article/202610020500003?pt=nv
 - name: 이강인
   short: 이강인
   sport: laliga
   team: 아틀레티코 마드리드
-  why: 맹활약으로 마르카 등 현지 매체의 연이은 극찬
-  source: 36
+  why: 맹활약으로 마르카 등 현지 매체의 찬사를 받음
+  source: 39
   date: '2026-10-02'
   link: https://www.fourfourtwo.co.kr/news/articleView.html?idxno=98660
 - name: 리디아 고
   short: 리디아 고
   sport: golf
   team: ''
-  why: 롯데 챔피언십에서 소렌스탐의 통산 상금 1위 기록 추격
-  source: 44
+  why: 롯데 챔피언십에서 소렌스탐을 넘어 LPGA 통산 상금 1위 도전
+  source: 47
   date: '2026-10-02'
-  link: https://www.topstarnews.net/news/articleView.html?idxno=16233488
+  link: https://www.maniareport.com/view.php?ud=2026100209551521756cf2d78c68_19
 - name: 김민솔
   short: 김민솔
   sport: golf
   team: ''
-  why: KLPGA 하이트진로 챔피언십 1라운드 단독 선두
-  source: 63
+  why: KLPGA 하이트진로 챔피언십 첫날 단독 선두
+  source: 66
   date: '2026-10-02'
   link: https://news.sbs.co.kr/news/endPage.do?news_id=N1008779600&plink=ORI&cooper=NAVER
 - name: 송민혁
   short: 송민혁
   sport: golf
   team: ''
-  why: KPGA 최경주 인비테이셔널 첫날 65타 돌풍
-  source: 58
+  why: KPGA 현대해상 최경주 인비테이셔널 첫날 65타 돌풍
+  source: 62
   date: '2026-10-02'
   link: https://www.g-enews.com/view.php?ud=202610011758202721daecd3dad5_1
 - name: 양의지
@@ -140,11 +140,51 @@ players:
 - name: 김도영
   short: 김도영
   sport: kbo
-  team: KIA 타이거즈
-  why: 시즌 41호 홈런으로 KIA 구단 한 시즌 최다 홈런 신기록 경신
-  source: 47
-  date: '2026-09-30'
-  link: https://news.jtbc.co.kr/article/NB12320587?influxDiv=NAVER
+  team: KIA
+  why: 힐리어드와 홈런 공동 선두를 이루며 MVP 경쟁
+  source: 3
+  date: '2026-10-02'
+  link: https://www.bntnews.co.kr/article/view/bnt202610020173
+- name: 샘 힐리어드
+  short: 힐리어드
+  sport: kbo
+  team: kt
+  why: 시즌 41호 솔로포로 김도영과 홈런 공동 선두, kt 한국시리즈 직행 이끌며 MVP 후보로 부상
+  source: 2
+  date: '2026-10-02'
+  link: https://www.nocutnews.co.kr/news/6586319?utm_source=naver&utm_medium=article&utm_campaign=20261002101121
+- name: 허인서
+  short: 허인서
+  sport: kbo
+  team: 한화
+  why: 타격 성적 압도적, 골든글러브 포수 유력
+  source: 1
+  date: '2026-10-02'
+  link: https://www.segye.com/newsView/20261002505544?OutUrl=naver
+- name: 에릭 페디
+  short: 페디
+  sport: mlb
+  team: 화이트삭스
+  why: 포스트시즌 2이닝 무실점 호투로 팀의 21년 만의 시리즈 승리를 이끎
+  source: 30
+  date: '2026-10-02'
+  link: http://www.osen.co.kr/article/G1112886133
+- name: 미저라우스키
+  short: 미저라우스키
+  sport: mlb
+  team: 컵스
+  why: 데뷔 2년 차에 사실상 만장일치 사이영상 수상 유력
+  source: 34
+  date: '2026-10-02'
+  link: https://sports.donga.com/sports/article/all/20261002/134773864/1
+- name: 데폴라
+  short: 데폴라
+  sport: mlb
+  team: LA 다저스
+  why: 오타니 공백을 메우며 놀라운 활약, NLDS에서도 기대
+  source: 37
+  date: '2026-10-02'
+  link: https://sports.donga.com/sports/article/all/20261002/134773490/1
 - name: 야말
   short: 야말
   sport: laliga
