@@ -422,9 +422,15 @@ def index(posts: list[dict], n_shorts: int = 0, shorts_html: str = "") -> str:
     done = "".join(row(p, True) for p in sorted(used, key=lambda p: p["status"].get("at", ""), reverse=True)[:10])
     tabs = """<nav class="tabs"><a href="#blog" data-t="blog">📝 블로그</a><a href="#clip" data-t="clip">🎬 클립</a>
 <a href="#shorts" data-t="shorts">▶️ 쇼츠</a></nav>"""
-    tab_js = """function tab(){const h=(location.hash||'#blog').slice(1);document.querySelectorAll('section.tab').forEach(s=>s.hidden=s.id!==h);
+    tab_js = """function writeNow(){const n=document.getElementById('who').value.trim();if(!n){alert('선수 이름을 입력하세요');return}
+  const ev=document.getElementById('ev').value.trim();
+  const nl=String.fromCharCode(10);
+  const body=['이 선수로 지금 글을 써 주세요. 아래 초록색 Create 버튼만 누르면 됩니다.'].concat(ev?['','사건: '+ev]:[]).join(nl);
+  location.href='https://github.com/REPO_SLUG/issues/new?title='+encodeURIComponent('[선수] '+n)+'&body='+encodeURIComponent(body)}
+function tab(){const h=(location.hash||'#blog').slice(1);document.querySelectorAll('section.tab').forEach(s=>s.hidden=s.id!==h);
 document.querySelectorAll('nav.tabs a').forEach(a=>a.classList.toggle('on',a.dataset.t===h));
 document.querySelectorAll('section.tab:not([hidden]) textarea.ed').forEach(grow)}addEventListener('hashchange',tab);addEventListener('DOMContentLoaded',tab);tab();"""
+    tab_js = tab_js.replace("REPO_SLUG", REPO)
     return f"""<!doctype html><html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive">
 <title>발행 도우미</title><style>{CSS}
@@ -440,7 +446,13 @@ nav.tabs a.on{{background:var(--btn);color:var(--btnink)}}</style></head><body><
 <h2>{'다른 글 (예비)' if picks else '오늘의 후보'}</h2>
 {todo or '<p>후보가 아직 없어요. 매일 아침 5시쯤 올라와요.</p>'}
 {f'<h2 style="margin-top:28px">발행한 글</h2>{done}' if done else ''}
-<div class="card" style="margin-top:28px"><h2>필요할 때만 누르는 버튼</h2>
+<div class="card" style="margin-top:28px;border:2px solid var(--accent)"><h2>⚡ 이 선수로 지금 쓰기</h2>
+<div class="muted">오늘 경기에서 뜬 선수나, 쓰고 싶은 선수를 직접 찍어 주세요. 바로 한 편 써서 15~20분 뒤 위 목록에 올라와요 (Claude 약 $0.3).</div>
+<input id="who" placeholder="선수 이름 (예: 김도영)" style="width:100%;min-height:48px;margin:8px 0;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font-size:16px">
+<input id="ev" placeholder="오늘 사건 한 줄 (선택, 예: 어제 끝내기 홈런)" style="width:100%;min-height:48px;margin:0 0 8px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font-size:16px">
+<button onclick="writeNow()">⚡ 지금 쓰기</button>
+<div class="muted">사건을 적으면 그걸 제목·첫 문단 훅으로 걸고 바로 연봉 계산으로 가요. 연봉을 못 찾는 선수는 글이 안 나올 수 있어요.</div></div>
+<div class="card" style="margin-top:14px"><h2>필요할 때만 누르는 버튼</h2>
 <a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(issue_link("다시그리기", "오늘후보", "글은 그대로 두고 사진·썸네일·클립만 새로 그려 주세요."), quote=True)}">🎨 사진·클립 다시 그리기</a>
 <div class="muted">무료 · 5~10분. 썸네일·클립 디자인을 고친 뒤 지금 있는 후보에 바로 반영할 때.</div>
 <a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(issue_link("새후보", "3편", "마케터 3명이 1편씩 새로 써 주세요."), quote=True)}">✍️ 마케터 3명 새로 쓰기</a>
