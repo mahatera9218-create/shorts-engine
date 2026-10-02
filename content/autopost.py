@@ -1264,7 +1264,7 @@ def marketer_of(folder: str) -> int | None:
     return ((yaml.safe_load(f.read_text(encoding="utf-8")) or {}).get("marketer") if f.exists() else None)
 
 
-def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str | None = None,
+def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str | None = None, event_hook: str = "",
         out_root: Path = POSTS, again: bool = False, marketer: int | None = None) -> tuple[str, Path | None]:
     """again: 발행 도우미 '다시 뽑기' — 하루 한도를 건너뛰고 다른 조합으로 쓴다 (버린 글의 선수는 최근 목록에 있어 제외된다).
     marketer: 마케터 번호 (config/marketers.yaml, 2026-10-01). 그 마케터의 선수·테마로만, 하루 1편."""
@@ -1343,6 +1343,8 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
                      for k, x in zip("ab", got) for key, f in x["facts"].items()}
         else:
             d = {**got[0]["d"], "theme": th}
+            if topic_override and event_hook:  # 대표가 지정한 선수 + 사건 한 줄 (2026-10-03): 그 사건을 첫 문단 훅으로
+                d["event"] = event_hook
             facts = got[0]["facts"]
             if th == "life":
                 prices = load_yaml("prices.yaml")
@@ -1396,6 +1398,7 @@ def main() -> None:
     ap.add_argument("--target", type=int, default=1, help="발행 가능한(✅) 글을 몇 편 만들지")
     ap.add_argument("--tries", type=int, default=1, help="최대 몇 번 쓸지 (⚠️ 글은 목록에서 빼고 다시 쓴다)")
     ap.add_argument("--marketer", type=int, default=None, help="마케터 번호 (config/marketers.yaml). 동시에 여러 마케터가 쓸 때")
+    ap.add_argument("--event", default=None, help="대표가 지정한 선수의 오늘 사건 한 줄 (첫 문단 훅). --topic과 함께")
     a = ap.parse_args()
     today = date.today().isoformat()
     out_root = Path(a.out) if a.out else POSTS
@@ -1420,7 +1423,7 @@ def main() -> None:
     made, lines, folder = 0, [], None
     for attempt in range(max(a.tries, a.target)):
         try:
-            msg, folder = run(hub, llm, today=today, topic_override=a.topic, theme=a.theme, out_root=out_root,
+            msg, folder = run(hub, llm, today=today, topic_override=a.topic, theme=a.theme, event_hook=a.event or "", out_root=out_root,
                               again=a.again or made > 0, marketer=a.marketer)
         except Exception as e:  # 키·요금·API 오류: 메시지만 남기고 실패로 끝낸다 (키 값은 메시지에 없음)
             _summary(f"❌ 글쓰기 실패: {type(e).__name__}: {str(e)[:300]}\n\nClaude에게 이 화면을 알려주세요.")

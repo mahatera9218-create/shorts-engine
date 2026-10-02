@@ -708,6 +708,14 @@ class TestLifecycle(unittest.TestCase):
         blog = [marketers.baseball_marketer(f"2026-10-{i + 1:02d}", c) == marketers.turn(f"2026-10-{i + 1:02d}", c) for i in range(9)]
         assert sum(blog) == 3   # 블로그 차례 글은 사흘에 한 번 야구
 
+    def test_designate_parse(self):
+        from content.designate import parse
+        assert parse("[선수] 김도영", "x\n\n사건: 어제 끝내기 홈런") == ("김도영", "어제 끝내기 홈런")
+        assert parse("[선수] 김도영", "") == ("김도영", "")
+        assert parse("[발행완료] 김도영", "") == ("", "")        # 다른 버튼
+        assert parse("[선수] ", "") == ("", "")                 # 이름 없음
+        assert parse("[선수] a; rm -rf /", "") == ("", "")      # 셸 안전
+
     def test_event_hook(self):
         from content import themes
         from content.autopost import build_data
