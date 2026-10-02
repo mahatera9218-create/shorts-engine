@@ -263,16 +263,19 @@ class ContentTest(unittest.TestCase):
 
     def test_marketers(self):
         from content import marketers as M
-        from content.desk import today_pick
+        from content.desk import today_picks
         assert [M.turn(d) for d in ("2026-10-01", "2026-10-02", "2026-10-03", "2026-10-04")] == [1, 2, 3, 1]
         ps = [{"name": f"선수{i}", "news": (30 - i if i < 12 else 0)} for i in range(40)]
         sets = [{p["name"] for p in M.players(ps, m)} for m in (1, 2, 3)]
         assert not (sets[0] & sets[1] or sets[0] & sets[2] or sets[1] & sets[2])  # 같은 날 선수가 겹치지 않게
         assert {"선수0", "선수1"} <= sets[2]  # 화제형 = 뉴스 많은 선수
-        posts = [{"date": "2026-10-02", "ok": True, "marketer": m, "folder": f"f{m}", "status": {}} for m in (1, 2, 3)]
-        assert today_pick(posts, "2026-10-02")["marketer"] == 2
-        posts[1]["ok"] = False  # 차례 마케터 글이 기준 미달이면 다음 마케터
-        assert today_pick(posts, "2026-10-02")["marketer"] == 3
+        posts = [{"date": "2026-10-02", "ok": True, "marketer": m, "folder": f"f{m}", "status": {},
+                  "review": r, "notes": 0} for m, r in ((1, "신뢰 3 · 말투 3"), (2, "신뢰 4 · 말투 4"), (3, "신뢰 5 · 말투 4"))]
+        assert [p["marketer"] for p in today_picks(posts, "2026-10-02")] == [3, 2]   # 1일 2포, 잘 써진 순 (2026-10-02)
+        posts[2]["ok"] = False  # 기준 미달은 빼고
+        assert [p["marketer"] for p in today_picks(posts, "2026-10-02")] == [2, 1]
+        posts[0]["review"] = posts[1]["review"]; posts[0]["notes"] = 0; posts[1]["notes"] = 3   # 점수 같으면 '참고' 적은 글
+        assert [p["marketer"] for p in today_picks(posts, "2026-10-02")] == [1, 2]
 
     def test_review_gate(self):
         from content.autopost import review_ok
