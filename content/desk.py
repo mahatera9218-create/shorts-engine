@@ -137,6 +137,23 @@ def _shop(folder: Path) -> dict | None:
     return info(yaml.safe_load(f.read_text(encoding="utf-8")) or {}, folder.name)
 
 
+def naver_table(b: dict) -> str:
+    """네이버 에디터에 붙여도 모양이 같은 표 (대표 지적 2026-10-03: 도우미와 블로그 모양이 다름).
+    에디터는 CSS 클래스·<th>·표 바깥 스타일을 버리므로, 칸마다 글자에 직접 스타일을 넣고 너비를 정해 둔다.
+    도우미 화면과 복사가 이 HTML 하나를 같이 쓴다 (화면 = 붙여 넣은 모양)."""
+    e = html.escape
+    n = len(b["header"])
+    widths = ["34%", "66%"] if n == 2 else [f"{100 // n}%"] * n
+    cell = "border:1px solid #c8c8c8;padding:8px 10px;font-size:15px;line-height:1.5;vertical-align:middle;word-break:keep-all"
+    head = "".join(f'<td style="{cell};width:{w};background:#f2f2f2;font-weight:bold;text-align:center">{e(str(x))}</td>'
+                   for x, w in zip(b["header"], widths))
+    rows = "".join("<tr>" + "".join(
+        f'<td style="{cell};width:{w}' + (';background:#fafafa;font-weight:bold' if j == 0 else '') + f'">{e(str(x))}</td>'
+        for j, (x, w) in enumerate(zip(r, widths))) + "</tr>" for r in b["rows"])
+    return (f'<table id="nt{b["table"]}" style="width:100%;border-collapse:collapse;border:1px solid #c8c8c8;table-layout:fixed;'
+            f'color:#222;background:#fff"><tbody><tr>{head}</tr>{rows}</tbody></table>')
+
+
 def slug(name: str) -> str:
     """주소에 한글을 넣지 않는다 (복사·공유가 깨지지 않게)."""
     return name[:10] + "-" + hashlib.sha1(name.encode()).hexdigest()[:6]
@@ -180,7 +197,7 @@ document.addEventListener('DOMContentLoaded',()=>document.querySelectorAll('text
   t.addEventListener('input',()=>{if(t.classList.contains('one'))t.value=t.value.replace(/\\n/g,' ');ls(t.dataset.k,t.value===t.defaultValue?null:t.value);paint(t);grow(t)})}))
 function tableText(x){return [x.header].concat(x.rows).map(r=>r.join(' | ')).join('\\n')}
 function esc(t){return String(t).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
-function tableHtml(x){return '<table border="1" style="border-collapse:collapse"><tr>'+x.header.map(h=>'<th>'+esc(h)+'</th>').join('')+'</tr>'+x.rows.map(r=>'<tr>'+r.map(c=>'<td>'+esc(c)+'</td>').join('')+'</tr>').join('')+'</table>'}
+function tableHtml(x){const t=document.getElementById('nt'+x.table);return t?t.outerHTML:''}  // 화면에 보이는 표 그대로 복사 (2026-10-03)
 function bodyText(){return POST.blocks.map((x,i)=>x.mine&&!val('b'+i).trim()?null:x.text!==undefined?(val('b'+i)||x.text):x.table?tableText(x):x.shop?'🛒 상품 자리 (상품 카드를 넣고 이 줄은 지우기)':'📷 사진 '+x.n+' ('+x.label+')').filter(s=>s!==null).join('\\n\\n')}
 function bodyHtml(){return POST.blocks.map((x,i)=>x.mine&&!val('b'+i).trim()?'':x.text!==undefined?'<p>'+esc(val('b'+i)||x.text).replace(/\\n/g,'<br>')+'</p>':x.table?tableHtml(x):x.shop?'<p>🛒 상품 자리 (상품 카드를 넣고 이 줄은 지우기)</p>':'<p>📷 사진 '+x.n+' ('+esc(x.label)+')</p>').join('')}
 async function copyRich(b,html,text){  // 표가 표로 붙게 HTML과 글자를 같이 넣는다 (안 되는 브라우저는 글자만)
@@ -274,9 +291,7 @@ def page(p: dict) -> str:
         f'<details><summary class="muted">다른 제목 {len(p["titles"]) - 1}개 (썸네일과 짝이 아니라 예비)</summary>{rest}</details>'
         if rest else "")
     def tbl(b):
-        head = "".join(f"<th>{e(x)}</th>" for x in b["header"])
-        rows = "".join("<tr>" + "".join(f"<td>{e(x)}</td>" for x in r) + "</tr>" for r in b["rows"])
-        return (f'<div class="ph"><b>📊 표 {b["table"]} · {e(b["title"])}</b><table class="nt"><tr>{head}</tr>{rows}</table>'
+        return (f'<div class="ph"><b>📊 표 {b["table"]} · {e(b["title"])}</b>{naver_table(b)}'
                 f'<button class="ghost small" onclick="copyTable(this,{b["table"]})">📋 이 표만 복사</button>'
                 '<small>네이버 앱에 붙여넣으면 표로 들어가요. 글자로만 들어가면 앱의 <b>표</b> 버튼으로 표를 넣고 칸에 옮겨 주세요 (AI 브리핑은 이미지가 아니라 표를 인용해요).</small></div>')
 
