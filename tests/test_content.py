@@ -72,7 +72,7 @@ class ContentTest(unittest.TestCase):
     def test_check_post(self):
         sheet = "1안타당: 2억 32만 원"
         good = {"body": "1안타에 2억.\n\n안타 하나는 얼마일까?\n\n[1: thumb.png]\n[2: card_quiz.png]\n[3: card_answer.png]\n"
-                        "[4: card_wage.png]\n[5: card_table.png]\n\n홈런 하나는 얼마일까?\n\n[대표 한마디]", "recommended": 1,
+                        "[4: card_wage.png]\n[5: card_table.png]\n\n홈런 하나는 얼마일까?", "recommended": 1,
                 "titles": [{"text": "1안타에 2억?", "type": "질문형"}] * 5}
         assert check_post(good, sheet) == []
         bad = {**good, "body": good["body"] + "\n토토 배당 3.5배", "titles": [{"text": "1안타에 5억 999만", "type": "숫자형"}] * 5}
@@ -82,7 +82,7 @@ class ContentTest(unittest.TestCase):
     def test_human_gaps(self):
         from content.voice import human_gaps
         body = ("1경기에 489만원이 남아요.\n\n[이미지 1: thumb.png]\n\n세금은 4억원이에요. 연봉의 42%죠.\n\n"
-                "세금은 얼마일까요?\n\n솔직히 이렇게 많이 뗄 줄은 몰랐어요.\n\n[대표 한마디]\n\n기준: 국세청 세율표")
+                "세금은 얼마일까요?\n\n솔직히 이렇게 많이 뗄 줄은 몰랐어요.\n\n기준: 국세청 세율표")
         assert human_gaps(body) == ["세금은 4억원이에요. 연봉의 42%죠."]
 
     def test_quiz_answer_not_before_quiz(self):
@@ -480,13 +480,13 @@ class TestTitlePair(unittest.TestCase):
         assert not any("대시" in x or "질문" in x for x in check_post(p, self.SHEET))   # 말투·형식은 고쳐 쓰기를 부르지 않음
         assert any("질문이 아님" in x for x in check_style(p, self.SHEET))
         f = code_fixes(p)
-        assert "—" not in f["body"] and f["body"].index("[대표 한마디]") < f["body"].index("기준:")
+        assert "—" not in f["body"] and "[대표 한마디]" not in f["body"]   # 지어낸 경험 칸 제거 (2026-10-03)
 
     def test_style_rules(self):
         from content.autopost import style_rules, undash
         p = {"body": "올해 연봉 이야기를 해 볼게요.\n\n이정후 연봉은 많이 올랐어요 — 정말요.", "titles": [{"text": "이정후 연봉?"}]}
         got = " / ".join(style_rules(p, self.SHEET))
-        for w in ("첫 줄에 결론", "막연한 양", "질문형 소제목", "긴 대시", "대표 한마디"):
+        for w in ("첫 줄에 결론", "막연한 양", "질문형 소제목", "긴 대시"):
             self.assertIn(w, got)
         self.assertEqual(undash("2억 — 정말요"), "2억, 정말요")
 
