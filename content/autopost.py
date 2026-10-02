@@ -225,6 +225,12 @@ WRITE_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"(닉네�
 8. 질문형 소제목 2~3개: 한 줄짜리 질문 문단, 바로 다음 문장이 숫자 답 (AI 브리핑이 그 답을 잘라 간다).
 9. 긴 대시(—, –) 쓰지 않는다. 쉼표나 마침표로.
 
+오늘의 사건 훅 (대표 결정 2026-10-03: 경기 직후 검색을 잡되 우리 각도로)
+- 숫자표에 '오늘의 사건'이 있으면: 제목과 첫 문단을 그 사건에 건다. 그다음 바로 우리 계산(연봉 쪼개기)으로 넘어간다.
+  예: 사건 "어제 끝내기 홈런" → 제목 "OO 어제 끝내기 홈런, 그 한 방 연봉으로 얼마일까?", 첫 문단 "어제 끝낸 그 손끝 한 방이 연봉으로 치면 1,458만원이에요." (사건 + 계산 결론 숫자를 첫 문단에 같이).
+- 사건은 사실만 한 줄로 (점수·기록·이적설 등 뉴스에 나온 것). 기사 문장을 복제하지 않고, 사건을 길게 설명하지 않는다 (우리 글은 결과 중계가 아니라 계산이다).
+- 사건으로 끌고 왔으니 본문은 평소처럼 연봉 쪼개기·표·계산 방법으로 채운다 (정보 이득은 계산에서 나온다).
+
 네이버 AI 브리핑 (검색 결과 맨 위 AI 요약이 인용하는 건 글과 네이버 표다. 카드 이미지는 인용되지 않는다, 2026-10-01)
 - 표: 숫자표의 '표 자리' 줄을 따옴표 안 모양 그대로 한 줄로 넣는다. 그 자리에 코드가 만든 표(네이버 표)가 들어간다. 표 바로 앞 문장에서 표가 무엇인지 한 줄로 말한다.
 - 검색 질문 꼴 소제목 2~3개: 사람들이 검색창에 치는 질문을 한 줄로 쓰고(예: "이정후 연봉은 1경기에 얼마일까?"), 바로 다음 문장이 숫자로 된 답이다. 소제목 줄은 기호 없이 질문 한 문장.
@@ -415,7 +421,7 @@ def build_data(topic: dict, ex: dict, facts: dict, cfg: dict) -> tuple[dict | No
     if not lo <= sal["value"] <= hi:
         return None, f"연봉 숫자가 이상함 ({sal['value']:,} {cur})"
     d = {"player": topic["player"], "short_name": topic.get("short_name") or topic["player"].split(" ")[0],
-         "team": topic.get("team", ""), "season": ex["season"],
+         "team": topic.get("team", ""), "season": ex["season"], "event": topic.get("event", ""),
          "salary_label": f"연봉 {won(sal['value'])} · {ex['salary_basis']}" if not usd else None}
     if usd:
         c = FX[cur]
@@ -1102,7 +1108,9 @@ def weighted_pool(hub, pool: dict, today: str) -> tuple[dict, str]:
         f = ((1 + min(2.0, n / NEWS_PER_BOOST)) * (req.get("boost", 3) if p["name"] in asked else 1)
              * (ev.get("boost", 3) if hot_now else 1) * volume_factor(volume.get(p["name"], 0)))
         f *= READY_BOOST if p["name"] in ready else 1
-        out.append({**p, "weight": p.get("weight", 1) * f, "news": n})  # news: 마케터 화제형이 선수를 가를 때 씀
+        # 오늘의 사건 훅 (대표 결정 2026-10-03): 화제 선수가 왜 떴는지(trending의 why)를 글 첫 문단 훅으로 넘긴다
+        event = (trend.get(p["name"]) or trend.get(p.get("short")) or {}).get("why", "")
+        out.append({**p, "weight": p.get("weight", 1) * f, "news": n, "event": event})  # news: 화제형이 선수를 가를 때
         if n or p["name"] in asked or hot_now:
             hot.append((f, f"{short_name(p)} 기사 {n}건" + (" · 댓글 요청" if p["name"] in asked else "")
                         + (" · 화제" if hot_now else "")))
@@ -1212,6 +1220,7 @@ def finish(llm, *, cfg: dict, pool: dict, notes: list[str], start_cost: float, t
     except (KeyError, TypeError, ZeroDivisionError) as ex:
         notes.append(f"데이터 표 건너뜀 ({ex})")
     sheet = (make_sheet(n) + "\n" + "\n".join(themes.image_lines(th)) + table_lines(folder) + shop_line(d)
+             + (f"\n오늘의 사건: {d['event']} (뉴스에서 확인된 오늘 화제. 제목·첫 문단을 여기에 걸고 바로 계산으로. 기사 문장 복제 금지)" if d.get("event") else "")
              + f"\n추천 제목 유형: {title_type(today, marketer or len(made_today))} (코드가 날마다 돌린다)")
     category = pool["categories"].get(d.get("sport", "야구").split()[0], "야구")  # sport = "야구 (프로야구)"
     post, problems, rounds = write_post(llm, {"category": category, "angle": tinfo["angle"]}, sheet,
