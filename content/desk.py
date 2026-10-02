@@ -92,7 +92,9 @@ def parse(folder: Path) -> dict | None:
             "clip": (folder / "clip.mp4").exists(), "status": read_status(folder),
             "review": (re.search(r"## 편집장 검토[^\n]*\n\n(.+)", t) or [None, ""])[1].strip(),
             "clip_text": (folder / "clip.txt").read_text(encoding="utf-8") if (folder / "clip.txt").exists() else "",
-            "shop": _shop(folder), "marketer": _marketer(folder)}
+            "shop": _shop(folder), "marketer": _marketer(folder),
+            "notes": len(re.findall(r"^- ", t.split("**참고 (말투·형식", 1)[1].split("\n\n", 2)[1], re.M))
+                     if "**참고 (말투·형식" in t else 0}
 
 
 def _marketer(folder: Path) -> int | None:
@@ -105,17 +107,25 @@ def _label(m) -> str:
     return label(m)
 
 
-def today_pick(posts: list[dict], today: str) -> dict | None:
-    """오늘 블로그에 올릴 글 (대표 결정 2026-10-01): 오늘 차례 마케터의 ✅ 글, 없으면 다음 차례 마케터 순서로."""
-    from .marketers import ids, turn
+def review_mean(p: dict) -> float:
+    """'약속 회수 4 · 신뢰 5 · …' → 평균 (없으면 0)."""
+    xs = [int(x) for x in re.findall(r"\s(\d)(?:\s|$)", " " + p.get("review", "") + " ")]
+    return sum(xs) / len(xs) if xs else 0.0
+
+
+def today_picks(posts: list[dict], today: str) -> list[dict]:
+    """오늘 블로그에 올릴 글 (대표 결정 2026-10-02: 1일 2포, 제대로 써진 2편만). 오늘 ✅ 글 중
+    편집장 평균 점수 높은 순 → '참고'(말투·형식) 적은 순 → 마케터 차례 순으로 2편. 이미 올린 글도 2편에 센다."""
+    from .marketers import cfg, ids, turn
+    n = cfg().get("blog_per_day", 2)
     cands = [p for p in posts if p["date"] == today and p["ok"] and p.get("marketer")
-             and p.get("status", {}).get("status") not in ("used", "rejected")]
-    if not cands:
-        return None
+             and p.get("status", {}).get("status") != "rejected"]
     ms = ids()
     t = ms.index(turn(today)) if turn(today) in ms else 0
     order = ms[t:] + ms[:t]
-    return min(cands, key=lambda p: (order.index(p["marketer"]) if p["marketer"] in order else 99, p["folder"]))
+    cands.sort(key=lambda p: (-review_mean(p), p.get("notes", 0),
+                              order.index(p["marketer"]) if p["marketer"] in order else 99, p["folder"]))
+    return cands[:n]
 
 
 def _shop(folder: Path) -> dict | None:
@@ -378,7 +388,8 @@ def index(posts: list[dict], n_shorts: int = 0, shorts_html: str = "") -> str:
 
     from .marketers import label, turn
     today = datetime.now(ZoneInfo("Asia/Seoul")).strftime("%Y-%m-%d")
-    pick = today_pick(posts, today)
+    picks = today_picks(posts, today)
+    todo_picks = [p for p in picks if p.get("status", {}).get("status") != "used"]
 
     def row(p, muted=False, star=False):
         title = next((t["text"] for t in p["titles"] if t["best"]), p["folder"])
@@ -388,11 +399,10 @@ def index(posts: list[dict], n_shorts: int = 0, shorts_html: str = "") -> str:
         who = f'<br><span class="muted">{e(label(p.get("marketer")))}</span>' if p.get("marketer") else ""
         return f'<a class="btn" style="{style}" href="p/{slug(p["folder"])}/">{mark} {e(p["date"])} · {e(title)}{who}</a>'
 
-    live = [p for p in posts if p.get("status", {}).get("status") not in ("used", "rejected") and p is not pick]
+    live = [p for p in posts if p.get("status", {}).get("status") not in ("used", "rejected") and p not in picks]
     used = [p for p in posts if p.get("status", {}).get("status") == "used"]
-    turn_note = (f'<h2>⭐ 오늘 올릴 글 · {e(label(pick["marketer"]))}</h2>{row(pick, star=True)}'
-                 + ('' if pick["marketer"] == turn(today) else f'<div class="muted">오늘은 {e(label(turn(today)))} 차례인데 발행할 만한 글이 없어 다음 마케터 글이에요.</div>')
-                 ) if pick else ""
+    turn_note = (f'<h2>⭐ 오늘 올릴 글 {len(todo_picks)}편 (잘 써진 순)</h2>' + "".join(row(p, star=True) for p in todo_picks)
+                 ) if todo_picks else ("<p class=\"muted\">오늘 올릴 글 2편을 다 올렸어요 👍</p>" if picks else "")
     todo = "".join(row(p) for p in sorted(live, key=lambda p: p["folder"])[-14:])
     done = "".join(row(p, True) for p in sorted(used, key=lambda p: p["status"].get("at", ""), reverse=True)[:10])
     tabs = """<nav class="tabs"><a href="#blog" data-t="blog">📝 블로그</a><a href="#clip" data-t="clip">🎬 클립</a>
@@ -410,9 +420,9 @@ nav.tabs a.on{{background:var(--btn);color:var(--btnink)}}</style></head><body><
 <p class="muted">마지막 업데이트: {datetime.now(ZoneInfo("Asia/Seoul")).strftime("%m월 %d일 %H:%M")}</p>
 {tabs}
 <section class="tab" id="blog">
-<p class="muted">매일 아침 마케터 3명이 1편씩 써요. <b>⭐ 오늘 올릴 글</b>(마케터 차례대로)을 올리고, 글 화면 맨 아래 <b>✅ 발행 완료 표시</b>. 마음에 안 들면 아래 다른 마케터 글을 올려도 돼요. 나머지는 다음 날 아침 지워져요.</p>
+<p class="muted">매일 아침 마케터 3명이 1편씩 써요. 그중 잘 써진 <b>⭐ 2편</b>을 올리고(하루 2개), 글 화면 맨 아래 <b>✅ 발행 완료 표시</b>. 두 편은 시간 차를 두고 올려도 돼요. 나머지 1편은 예비, 다음 날 아침 지워져요.</p>
 {turn_note}
-<h2>{'다른 마케터 글 (예비)' if pick else '오늘의 후보'}</h2>
+<h2>{'다른 글 (예비)' if picks else '오늘의 후보'}</h2>
 {todo or '<p>후보가 아직 없어요. 매일 아침 5시쯤 올라와요.</p>'}
 {f'<h2 style="margin-top:28px">발행한 글</h2>{done}' if done else ''}
 <div class="card" style="margin-top:28px"><h2>필요할 때만 누르는 버튼</h2>
