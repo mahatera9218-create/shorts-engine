@@ -90,7 +90,7 @@ def topic(pool: dict, p: dict) -> dict:
     s = pool["sports"].get(p["sport"], {"name": "", "sport": "야구", "hint": ""})
     money = "상금" if s["sport"] == "골프" else "연봉"
     return {"id": p["name"].replace(" ", ""), "player": p["name"], "short_name": short(p), "team": p.get("team", ""),
-            "sport": f"{s['sport']} ({s['name']})", "hint": s.get("hint", ""),
+            "sport": f"{s['sport']} ({s['name']})", "hint": s.get("hint", ""), "event": p.get("event", ""),
             "queries": [f"{p['name']} {money}", f"{p['name']} 시즌 성적", f"{p['name']} 계약" if money == "연봉" else f"{p['name']} 우승"]}
 
 
