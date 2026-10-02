@@ -428,6 +428,13 @@ def build_data(topic: dict, ex: dict, facts: dict, cfg: dict) -> tuple[dict | No
               "fx_label": f"1{c['word']} = {fx['value']:,}원 ({fx['date']})"}
     else:
         d["salary_krw"] = sal["value"]
+    # 나눌 기록 점검 (2026-10-03, 김민솔 글: '대회 순번 25'·'한 대회 2라운드까지'를 시즌 기록으로 뽑음)
+    for k in [k for k in ("events", "rounds") if k in facts]:
+        lab = str(facts[k].get("label", ""))
+        if any(w in lab for w in ("순번", "까지 소화", "번째 대회")) or re.search(r"(챔피언십|오픈|대회)\s*\d+라운드", lab):
+            facts.pop(k)  # 표·숫자표에서도 빠지게 그 자리에서 뺀다
+    if "events" in facts and "rounds" in facts and facts["rounds"]["value"] < 2 * facts["events"]["value"]:
+        facts.pop("rounds")  # 시즌 라운드는 대회 수의 2배 이상 (컷 탈락도 2라운드)
     units = [{"key": u["key"], "label": u["label"], "count": facts[u["key"]]["value"]}
              for u in ex["units"] if u["key"] in facts and facts[u["key"]]["value"] > 0]
     if len(units) < 2:
