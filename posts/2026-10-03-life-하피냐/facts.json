@@ -1,0 +1,35 @@
+{
+ "salary": {
+  "value": 20840000,
+  "label": "하피냐 연봉",
+  "unit": "EUR",
+  "date": "2026-09-13",
+  "sources": [
+   "https://www.sportschosun.com/football/2026-09-12/202609130100085010005556"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "games": {
+  "value": 7,
+  "label": "라리가 출전 경기",
+  "unit": "경기",
+  "date": "2026-09-20",
+  "sources": [
+   "https://www.mydaily.co.kr/page/view/2026092015071637398"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "goals": {
+  "value": 12,
+  "label": "라리가 득점",
+  "unit": "골",
+  "date": "2026-09-20",
+  "sources": [
+   "https://www.mydaily.co.kr/page/view/2026092015071637398"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ }
+}

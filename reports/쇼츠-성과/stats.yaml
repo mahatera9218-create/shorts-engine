@@ -10,7 +10,7 @@ channel:
   '2026-10-03':
     subs: 0
     views: 3696
-    videos: 6
+    videos: 7
 videos:
   NRjz5n2aXa0:
     title: 류현진 연봉, 경기당 얼마?
@@ -25,7 +25,7 @@ videos:
         likes: 2
         comments: 1
       '2026-10-03':
-        views: 1243
+        views: 1245
         likes: 2
         comments: 1
     kind: A
@@ -43,7 +43,7 @@ videos:
         likes: 2
         comments: 1
       '2026-10-03':
-        views: 1238
+        views: 1239
         likes: 2
         comments: 1
     kind: B
@@ -106,3 +106,13 @@ videos:
         comments: 0
     kind: C
     key: C-kbo-day
+  tx0Q5T4F14E:
+    title: 고영표 1승에 버는 돈, 얼마?
+    published: '2026-10-03'
+    snaps:
+      '2026-10-03':
+        views: 184
+        likes: 3
+        comments: 0
+    kind: A
+    key: A-고영표
