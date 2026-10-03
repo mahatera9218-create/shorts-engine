@@ -17,6 +17,8 @@ name: 발행 도우미 버튼
 on:
   issues:
     types: [opened]
+  issue_comment:   # 대표가 '[선수]' 이슈에 연봉을 댓글로 달면 연봉표에 넣고 다시 쓴다 (2026-10-03)
+    types: [created]
 
 permissions:
   contents: write
@@ -30,6 +32,7 @@ concurrency:
 jobs:
   mark:
     if: >-
+      github.event_name == 'issues' &&
       github.event.issue.user.login == github.repository_owner &&
       (startsWith(github.event.issue.title, '[발행완료]') || startsWith(github.event.issue.title, '[다시뽑기]'))
     runs-on: ubuntu-latest
@@ -100,6 +103,7 @@ jobs:
 
   designate:   # ⚡ 이 선수로 지금 쓰기 (대표 결정 2026-10-03): 대표가 찍은 선수를 바로 한 편
     if: >-
+      github.event_name == 'issues' &&
       github.event.issue.user.login == github.repository_owner &&
       startsWith(github.event.issue.title, '[선수]')
     runs-on: ubuntu-latest
@@ -174,8 +178,108 @@ jobs:
           fi
           gh issue comment "$NUM" --repo "$GITHUB_REPOSITORY" --body "$msg"
 
+  salary:   # 대표가 '[선수]' 이슈에 연봉을 댓글로 달면 연봉표에 넣고 다시 쓴다 (대표 결정 2026-10-03)
+    if: >-
+      github.event_name == 'issue_comment' &&
+      github.event.comment.user.login == github.repository_owner &&
+      startsWith(github.event.issue.title, '[선수]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      name: ${{ steps.s.outputs.name }}
+      event: ${{ steps.s.outputs.event }}
+      team: ${{ steps.s.outputs.team }}
+      added: ${{ steps.s.outputs.added }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: 댓글에서 연봉 읽기
+        id: s
+        env:
+          TITLE: ${{ github.event.issue.title }}     # 셸에 직접 넣지 않고 환경 변수로만
+          BODY: ${{ github.event.issue.body }}
+          COMMENT: ${{ github.event.comment.body }}
+        run: |
+          printf '%s' "$BODY" > "$RUNNER_TEMP/body.txt"
+          printf '%s' "$COMMENT" > "$RUNNER_TEMP/comment.txt"
+          python -m content.salarycomment --title "$TITLE" --body-file "$RUNNER_TEMP/body.txt" --comment-file "$RUNNER_TEMP/comment.txt" | tee "$RUNNER_TEMP/salary.txt" || true
+      - name: 연봉표 저장 (salaries.yaml 커밋)
+        if: steps.s.outputs.added == '1'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add config/salaries.yaml
+          git diff --cached --quiet && exit 0
+          git commit -m "확인 연봉표에 ${{ steps.s.outputs.name }} 추가 (대표 제공, 추정)"
+          for i in 1 2 3; do
+            git pull --rebase --autostash -X theirs origin main && git push origin HEAD:main && exit 0
+            sleep $((i * 5))
+          done
+          exit 1
+      - name: 알림 (쓰는 중 / 금액 못 읽음)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUM: ${{ github.event.issue.number }}
+          NAME: ${{ steps.s.outputs.name }}
+          ADDED: ${{ steps.s.outputs.added }}
+        run: |
+          if [ "$ADDED" = "1" ]; then
+            msg="$NAME 연봉을 받았어요(추정치로 표시). 지금 글·클립·쇼츠를 쓰는 중이에요 (15~20분). 다 되면 이 이슈에 알려드려요."
+          else
+            msg="$(cat "$RUNNER_TEMP/salary.txt" 2>/dev/null || echo '금액을 못 읽었어요. 예: 연봉 5억 또는 주급 2천만원')"
+          fi
+          gh issue comment "$NUM" --repo "$GITHUB_REPOSITORY" --body "$msg"
+
+  salary-write:
+    needs: salary
+    if: needs.salary.outputs.added == '1'
+    uses: ./.github/workflows/daily-post.yml
+    with:
+      mode: 실제
+      again: true
+      topic: ${{ needs.salary.outputs.name }}
+      theme: life
+      event: ${{ needs.salary.outputs.event }}
+      team: ${{ needs.salary.outputs.team }}
+      trend: true
+    secrets: inherit
+
+  salary-report:   # 다시 쓰기 결과 알림 (성공/실패)
+    needs: [salary, salary-write]
+    if: always() && needs.salary.outputs.added == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main   # salary-write가 올린 글까지
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: 결과 확인·알림
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUM: ${{ github.event.issue.number }}
+          NAME: ${{ needs.salary.outputs.name }}
+        run: |
+          made=$(python -m content.designate --check "$NAME")
+          if [ "$made" = "made" ]; then
+            msg="✅ $NAME 글이 올라왔어요(연봉은 추정치·공식 발표 아님으로 표시). 발행 도우미 위쪽에서 블로그·클립·쇼츠를 확인하세요."
+          else
+            msg="⚠️ 연봉은 넣었는데 글이 안 나왔어요. 올 시즌 기록(경기·골 등)을 뉴스에서 못 찾았을 수 있어요. 소속팀을 댓글에 '소속: 팀이름'으로 적어 주시면 다시 해볼게요."
+          fi
+          gh issue comment "$NUM" --repo "$GITHUB_REPOSITORY" --body "$msg"
+
   edit:   # 글 화면 '고친 내용 저장': 대표가 고친 제목·문단을 글에 반영
     if: >-
+      github.event_name == 'issues' &&
       github.event.issue.user.login == github.repository_owner &&
       startsWith(github.event.issue.title, '[수정]')
     runs-on: ubuntu-latest
@@ -226,6 +330,7 @@ jobs:
 
   tool:   # 도우미 첫 화면 버튼: 이슈를 닫고 알맞은 워크플로를 부른다
     if: >-
+      github.event_name == 'issues' &&
       github.event.issue.user.login == github.repository_owner &&
       (startsWith(github.event.issue.title, '[다시그리기]') || startsWith(github.event.issue.title, '[새후보]'))
     runs-on: ubuntu-latest
@@ -261,6 +366,7 @@ jobs:
 
   discard:   # 쇼츠 모음 '이 쇼츠는 안 올리고 버리기'
     if: >-
+      github.event_name == 'issues' &&
       github.event.issue.user.login == github.repository_owner &&
       startsWith(github.event.issue.title, '[쇼츠버림]')
     runs-on: ubuntu-latest

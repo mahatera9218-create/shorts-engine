@@ -29,6 +29,18 @@ on:
         description: "마케터 번호만 (비우면 3명 모두)"
         type: string
         required: false
+      event:
+        description: "오늘의 사건 한 줄 (첫 문단 훅, 선택)"
+        type: string
+        required: false
+      team:
+        description: "소속 (종목·동명이인 판별, 선택)"
+        type: string
+        required: false
+      trend:
+        description: "생활 물가 비교를 당일 검색량 상위 상품으로"
+        type: boolean
+        default: false
   workflow_call:   # 발행 도우미 버튼 (desk-button.yml)
     inputs:
       mode: {type: string, default: 실제}
