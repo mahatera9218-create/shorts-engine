@@ -37,11 +37,29 @@ def parse(title: str, body: str) -> tuple[str, str, str]:
     return name, event, team
 
 
+def made_today(name: str) -> bool:
+    """오늘 posts/에 이 선수(또는 소속 글)가 만들어졌나 (지정 글 성공 여부 확인, 2026-10-03)."""
+    import yaml
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+    from market.common import ROOT
+    today = datetime.now(ZoneInfo("Asia/Seoul")).strftime("%Y-%m-%d")
+    for f in (ROOT / "posts").glob(f"{today}-*/data.yaml"):
+        d = yaml.safe_load(f.read_text(encoding="utf-8")) or {}
+        if name in (d.get("player", ""), d.get("short_name", "")) or name in [d.get(k, {}).get("player", "") for k in ("a", "b")]:
+            return True
+    return False
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--title", required=True)
+    ap.add_argument("--title")
     ap.add_argument("--body-file", default=None)
+    ap.add_argument("--check", help="이 선수 글이 오늘 만들어졌는지 확인 (made/none)")
     a = ap.parse_args()
+    if a.check:
+        print("made" if made_today(a.check) else "none")
+        sys.exit(0)
     body = ""
     if a.body_file and os.path.exists(a.body_file):
         with open(a.body_file, encoding="utf-8") as f:
