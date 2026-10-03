@@ -1,22 +1,94 @@
 # 자동 생성 (content/trending.py). 손으로 고치지 않는다.
-updated: '2026-10-03'
+updated: '2026-10-04'
 players:
 - name: 김혜성
   short: 김혜성
   sport: mlb
   team: LA 다저스
-  why: NLDS에서 김하성과의 코리안 더비 기대, 작년 NLDS 끝내기 결승 주루로 화제
-  source: 10
-  date: '2026-10-03'
-  link: https://www.sportschosun.com/baseball/2026-10-02/202610020100016400000811
+  why: 마이너리그 강등 후 4개월 만에 다저스 NLDS 로스터에 극적으로 합류
+  source: 7
+  date: '2026-10-04'
+  link: https://www.spotvnews.co.kr/news/articleView.html?idxno=1011251
 - name: 김민솔
   short: 김민솔
   sport: golf
   team: ''
-  why: KLPGA 하이트진로 챔피언십 이틀 연속 선두, 신인 시즌 3승
-  source: 68
-  date: '2026-10-03'
-  link: https://news.sbs.co.kr/news/endPage.do?news_id=N1008781350&plink=ORI&cooper=NAVER
+  why: 시즌 마지막 메이저 대회 이틀 연속 선두
+  source: 60
+  date: '2026-10-04'
+  link: http://www.newsroad.co.kr/news/articleView.html?idxno=65242
+- name: 듀렌
+  short: 듀렌
+  sport: nba
+  team: 디트로이트 피스톤스
+  why: 5년 2억 달러 계약으로 디트로이트 잔류
+  source: 73
+  date: '2026-10-04'
+  link: https://m.sports.naver.com/basketball/article/065/0000302208
+- name: 이강인
+  short: 이강인
+  sport: laliga
+  team: 아틀레티코 마드리드
+  why: 이적 후 처음으로 9월 이달의 선수에 선정
+  source: 43
+  date: '2026-10-04'
+  link: https://swtvnews.com/news/newsview.php?ncode=1065587250715139
+- name: 김하성
+  short: 김하성
+  sport: mlb
+  team: 애틀랜타 브레이브스
+  why: NLDS 1차전 유격수 9번 타자로 선발 출전, 김혜성과 코리안 더비
+  source: 17
+  date: '2026-10-04'
+  link: https://mhnse.com/news/articleView.html?idxno=1573524
+- name: 유해란
+  short: 유해란
+  sport: golf
+  team: ''
+  why: KLPGA 하이트진로 챔피언십 3라운드 단독 선두, 4년 6개월 만의 KLPGA 우승 눈앞
+  source: 57
+  date: '2026-10-04'
+  link: https://news.sbs.co.kr/news/endPage.do?news_id=N1008782001&plink=ORI&cooper=NAVER
+- name: 무라카미
+  short: 무라카미
+  sport: mlb
+  team: 시카고 화이트삭스
+  why: 결승포로 ALDS 1차전 승리를 이끌며 포스트시즌 활약
+  source: 15
+  date: '2026-10-04'
+  link: https://mhnse.com/news/articleView.html?idxno=1573528
+- name: 고영표
+  short: 고영표
+  sport: kbo
+  team: kt 위즈
+  why: 롯데전 9이닝 4안타 삼진 8개 완봉승, 개인 통산 6번째 완봉으로 kt 매직넘버 4
+  source: 2
+  date: '2026-10-04'
+  link: https://www.nocutnews.co.kr/news/6586908?utm_source=naver&utm_medium=article&utm_campaign=20261004060044
+- name: 구창모
+  short: 구창모
+  sport: kbo
+  team: NC 다이노스
+  why: SSG전 6이닝 소화로 개인 한 시즌 최다승 신기록, NC 토종 투수 한 시즌 최다승 타이
+  source: 8
+  date: '2026-10-04'
+  link: http://www.osen.co.kr/article/G1112887043
+- name: 켈리
+  short: 켈리
+  sport: kbo
+  team: LG 트윈스
+  why: 한국을 떠난 뒤 LG 잠실로 돌아온다는 소식에 화제
+  source: 1
+  date: '2026-10-04'
+  link: https://www.starnewskorea.com/sports/2026/10/04/2026100312094991144
+- name: 애런 저지
+  short: 저지
+  sport: mlb
+  team: 뉴욕 양키스
+  why: 종아리 부상으로 ALDS 로스터에서 제외
+  source: 12
+  date: '2026-10-04'
+  link: http://www.osen.co.kr/article/G1112887165
 - name: 레이 커
   short: 레이 커
   sport: mlb
@@ -41,14 +113,6 @@ players:
   source: 55
   date: '2026-10-03'
   link: https://www.ohmynews.com/NWS_Web/View/at_pg.aspx?CNTN_CD=A0003272266&CMPT_CD=P0010&utm_source=naver&utm_medium=newsearch&utm_campaign=naver_news
-- name: 듀렌
-  short: 듀렌
-  sport: nba
-  team: 디트로이트
-  why: 5년 2억 달러에 디트로이트 잔류 재계약
-  source: 60
-  date: '2026-10-03'
-  link: https://m.sports.naver.com/basketball/article/065/0000302208
 - name: 김민성
   short: 김민성
   sport: kbo
@@ -97,14 +161,6 @@ players:
   source: 12
   date: '2026-10-03'
   link: https://www.spotvnews.co.kr/news/articleView.html?idxno=1011109
-- name: 이강인
-  short: 이강인
-  sport: laliga
-  team: 아틀레티코 마드리드
-  why: 입단 두 달 만에 팬투표로 9월 '이달의 선수'에 선정
-  source: 29
-  date: '2026-10-03'
-  link: https://www.slist.kr/news/articleView.html?idxno=770784
 - name: 송민혁
   short: 송민혁
   sport: golf
@@ -113,22 +169,6 @@ players:
   source: 76
   date: '2026-10-03'
   link: https://www.g-enews.com/view.php?ud=202610011758202721daecd3dad5_1
-- name: 김하성
-  short: 김하성
-  sport: mlb
-  team: 애틀랜타 브레이브스
-  why: 애틀랜타의 NLDS 진출 속에 코리안 더비 관심
-  source: 15
-  date: '2026-10-03'
-  link: https://www.sportschosun.com/baseball/2026-10-02/202610020100016400000811
-- name: 유해란
-  short: 유해란
-  sport: golf
-  team: ''
-  why: KLPGA 하이트진로 챔피언십에서 김민솔에 2타 차 2위
-  source: 71
-  date: '2026-10-03'
-  link: http://www.stoo.com/article.php?aid=109211467199
 - name: 샘 힐리어드
   short: 샘
   sport: kbo
@@ -185,14 +225,6 @@ players:
   source: 13
   date: '2026-10-02'
   link: https://www.joongang.co.kr/article/25466505
-- name: 무라카미
-  short: 무라카미
-  sport: mlb
-  team: 시카고 화이트삭스
-  why: MLB 데뷔 시즌 35홈런, 와일드카드 시리즈 승리 후 인터뷰 화제
-  source: 31
-  date: '2026-10-02'
-  link: https://mhnse.com/news/articleView.html?idxno=1569065
 - name: 하피냐
   short: 하피냐
   sport: laliga
