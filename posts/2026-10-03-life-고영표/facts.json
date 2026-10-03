@@ -1,0 +1,80 @@
+{
+ "games": {
+  "value": 27,
+  "label": "등판 경기",
+  "unit": "경기",
+  "date": "2026-10-03",
+  "sources": [
+   "https://www.mydaily.co.kr/page/view/2026100219570245594"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "wins": {
+  "value": 13,
+  "label": "승리",
+  "unit": "승",
+  "date": "2026-10-03",
+  "sources": [
+   "https://www.mydaily.co.kr/page/view/2026100219570245594"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "losses": {
+  "value": 7,
+  "label": "패전",
+  "unit": "패",
+  "date": "2026-10-03",
+  "sources": [
+   "https://www.mydaily.co.kr/page/view/2026100219570245594"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "era": {
+  "value": 3.57,
+  "label": "평균자책점",
+  "unit": "점",
+  "date": "2026-10-03",
+  "sources": [
+   "https://www.mydaily.co.kr/page/view/2026100219570245594"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "contract_total": {
+  "value": 10700000000,
+  "label": "5년 다년계약 총액",
+  "unit": "KRW",
+  "date": "2026-10-01",
+  "sources": [
+   "https://www.sportschosun.com/baseball/2026-10-01/202610010100009350000324",
+   "https://www.sportsworldi.com/newsView/20261001519849"
+  ],
+  "rule": "모두 같음",
+  "differs": null
+ },
+ "era_vs_lotte": {
+  "value": 2.61,
+  "label": "롯데전 평균자책점",
+  "unit": "점",
+  "date": "2026-10-03",
+  "sources": [
+   "http://www.osen.co.kr/article/G1112886620"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "salary": {
+  "value": 2600000000,
+  "label": "올해 연봉",
+  "unit": "KRW",
+  "date": "2026-03-18",
+  "sources": [
+   "https://v.daum.net/v/20260318142802406"
+  ],
+  "rule": "확인 연봉표",
+  "differs": null
+ }
+}
