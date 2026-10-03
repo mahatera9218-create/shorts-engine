@@ -1,4 +1,12 @@
 # 선수 사진 장부 (content/playerphoto.py가 채움, 틀린 사진은 none: true로 바꾸면 다시 안 씀)
+고영표:
+  artist: OSEN SPORTS
+  checked: '2026-10-03'
+  file: 고영표 야구 선수.jpg
+  license: CC BY 3.0
+  page: https://commons.wikimedia.org/wiki/File:%EA%B3%A0%EC%98%81%ED%91%9C_%EC%95%BC%EA%B5%AC_%EC%84%A0%EC%88%98.jpg
+  qid: Q16219743
+  thumb: https://upload.wikimedia.org/wikipedia/commons/6/6f/%EA%B3%A0%EC%98%81%ED%91%9C_%EC%95%BC%EA%B5%AC_%EC%84%A0%EC%88%98.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled
 김도영:
   checked: '2026-09-30'
   none: true
