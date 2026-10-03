@@ -734,11 +734,21 @@ class TestLifecycle(unittest.TestCase):
 
     def test_designate_parse(self):
         from content.designate import parse
-        assert parse("[선수] 김도영", "x\n\n사건: 어제 끝내기 홈런") == ("김도영", "어제 끝내기 홈런")
-        assert parse("[선수] 김도영", "") == ("김도영", "")
-        assert parse("[발행완료] 김도영", "") == ("", "")        # 다른 버튼
-        assert parse("[선수] ", "") == ("", "")                 # 이름 없음
-        assert parse("[선수] a; rm -rf /", "") == ("", "")      # 셸 안전
+        assert parse("[선수] 김도영", "x\n\n사건: 어제 끝내기 홈런\n\n소속: KIA") == ("김도영", "어제 끝내기 홈런", "KIA")
+        assert parse("[선수] 김도영", "") == ("김도영", "", "")
+        assert parse("[발행완료] 김도영", "") == ("", "", "")     # 다른 버튼
+        assert parse("[선수] ", "") == ("", "", "")              # 이름 없음
+        assert parse("[선수] a; rm -rf /", "") == ("", "", "")   # 셸 안전
+
+    def test_resolve_player(self):
+        from content.autopost import resolve_player, sport_from_hint
+        from market.common import load_yaml
+        pool = load_yaml("players.yaml")
+        assert sport_from_hint("PGA", pool) == "golf" and sport_from_hint("프리미어", pool) == "epl"
+        p, note = resolve_player(pool, "홍길동", "")      # 목록에 없고 힌트 없음 → 야구 가정 + 경고
+        assert p["sport"] == "kbo" and "가정" in note
+        p2, _ = resolve_player(pool, "홍길동", "PGA")      # 힌트로 종목 판별
+        assert p2["sport"] == "golf"
 
     def test_event_hook(self):
         from content import themes
