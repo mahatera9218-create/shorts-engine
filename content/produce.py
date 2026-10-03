@@ -24,7 +24,7 @@ TTS_URL = "https://texttospeech.googleapis.com/v1/text:synthesize"
 PEXELS_VIDEO = "https://api.pexels.com/videos/search"
 CACHE = ROOT / ".cache" / "media"  # 효과음·목소리 캐시 (저장소에 올리지 않음)
 VIDEO_QUERIES = {"야구": ["baseball stadium", "baseball stadium lights", "baseball field aerial"],
-                 "축구": ["soccer stadium", "football stadium lights", "stadium crowd"],
+                 "축구": ["soccer stadium", "soccer match", "soccer field aerial"],  # football은 미식축구가 섞여 뺀다 (2026-10-03)
                  "농구": ["basketball court", "basketball arena"], "골프": ["golf course", "golf course aerial"]}
 
 

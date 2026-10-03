@@ -17,14 +17,14 @@ from PIL import Image, ImageStat
 from market.common import ROOT, secret
 
 SEARCH = "https://api.pexels.com/v1/search"
-MUST = {"야구": "baseball", "축구": ("soccer", "football"), "농구": "basketball", "골프": "golf"}  # 사진 설명에 있어야 할 말
+MUST = {"야구": "baseball", "축구": "soccer", "농구": "basketball", "골프": "golf"}  # 사진 설명에 있어야 할 말 (축구는 soccer만: football은 Pexels에서 미식축구가 섞인다, 2026-10-03)
 GRAYISH = ("black and white", "black-and-white", "monochrome", "grayscale")
 # 사람이 알아볼 수 있게 나온 사진은 뺀다 (2026-09-30): 모르는 사람이 그 선수처럼 보이면 오해·초상권 문제. 관중석처럼 작게 보이는 건 괜찮다
 PEOPLE = ("man", "men", "woman", "women", "boy", "girl", "child", "kid", "person", "people", "player", "batter",
           "pitcher", "catcher", "coach", "umpire", "athlete", "portrait", "face", "father", "son", "team", "golfer")
 QUERIES = {  # photo = 썸네일 배경 (본문은 카드뉴스라 사진을 쓰지 않는다)
     "photo": {"야구": ["baseball stadium", "baseball field", "baseball stadium night lights"],
-              "축구": ["soccer stadium", "football stadium lights"],
+              "축구": ["soccer stadium", "soccer field", "soccer pitch"],
               "농구": ["basketball court"], "골프": ["golf course"]},
 }
 
