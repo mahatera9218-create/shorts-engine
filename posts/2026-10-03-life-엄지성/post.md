@@ -98,7 +98,7 @@
 
 기준: 연봉은 capology 추정치(공식 발표 아님, 26만 파운드, 1파운드 1,779.8원, 2026년 10월 2일 유럽중앙은행 기준환율), 기록은 2026년 9월 16일 보도, 최저임금은 시급 10,320원·월 209시간, 테슬라 모델Y 프리미엄 RWD 가격은 2026년 8월 1일 기준이에요.
 
-대표 사진: Kuiyibo Campos / Pexels (https://www.pexels.com/photo/women-playing-american-football-12496055/)
+대표 사진: Chris wade NTEZICIMPA / Pexels (https://www.pexels.com/photo/dynamic-soccer-match-on-green-field-31105971/)
 
 ## 출처
 
