@@ -1,0 +1,52 @@
+player: 애런 저지
+short_name: 저지
+team: 뉴욕 양키스
+season: 2026
+event: 종아리 부상으로 ALDS 로스터에서 제외
+salary_usd: 40000000
+fx_krw_per_usd: 1350.6
+salary_currency: USD
+fx_label: 1달러 = 1,350.6원 (2026-10-03)
+units:
+- key: games
+  label: 1경기
+  count: 66
+- key: home_runs
+  label: 홈런 1개
+  count: 18
+- key: rbi
+  label: 1타점
+  count: 41
+headline_unit: home_runs
+salary_basis: 9년 계약 중 2026년 연봉
+min_wage_monthly_krw: 2156880
+sport: 야구 (메이저리그)
+card:
+- label: 홈런
+  value: '18'
+- label: 경기
+  value: '66'
+- label: 타점
+  value: '41'
+- label: 타율
+  value: '0.241'
+- label: OPS
+  value: '0.871'
+- label: 계약 총액
+  value: 360,000,000
+card_date: '2026-10-04'
+theme: life
+prices:
+- key: acro
+  group: home
+  label: 반포 아크로리버파크 전용 84㎡
+  short: 아크로리버파크
+  unit: 채
+  fetch: news
+  query: 아크로리버파크 84㎡ 실거래
+  min_krw: 1000000000
+  max_krw: 15000000000
+  price_krw: 5000000000
+  as_of: '2026-09-10'
+  source: 실거래가 보도 (2026-09-25, 50억원) https://biz.heraldcorp.com/article/10884387?ref=naver
+marketer: 1
