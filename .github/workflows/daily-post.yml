@@ -39,6 +39,7 @@ on:
       theme: {type: string, default: ""}       # 테마 고정 (지정 글은 receipt)
       event: {type: string, default: ""}       # 지정 선수의 오늘 사건 한 줄 (첫 문단 훅)
       trend: {type: boolean, default: false}   # 생활 물가 비교를 당일 검색량 상위 상품으로
+      team: {type: string, default: ""}        # 지정 선수 소속 (종목·동명이인 판별)
   push:       # 지금 쓰기 (2026-10-02): GitHub 예약이 안 돌면 config/write_now.yaml을 바꿔 올려 3명 모두 쓰게 한다
     branches: [main]
     paths: ["config/write_now.yaml"]
@@ -164,12 +165,14 @@ jobs:
           TOPIC: ${{ inputs.topic }}
           THEME: ${{ inputs.theme }}
           EVENT: ${{ inputs.event }}
+          PTEAM: ${{ inputs.team }}
           AUTOPOST_SKIP: ${{ runner.temp }}/skip.json   # 여러 번 시도할 때 이미 실패한 선수는 다시 모으지 않음
         run: |
           args=(--marketer "${{ matrix.marketer }}" --target 1 --tries 2)   # 2번 안에 못 쓰면 그 마케터는 오늘 쉰다 (비용 효율)
           [ -n "$TOPIC" ] && args+=(--topic "$TOPIC")
           [ -n "$THEME" ] && args+=(--theme "$THEME")
           [ -n "$EVENT" ] && args+=(--event "$EVENT")
+          [ -n "$PTEAM" ] && args+=(--team "$PTEAM")
           [ "${{ inputs.trend }}" = "true" ] && args+=(--trend)
           [ "${{ inputs.again }}" = "true" ] && args+=(--again)
           python -m content.autopost "${args[@]}"

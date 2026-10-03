@@ -1266,7 +1266,49 @@ def marketer_of(folder: str) -> int | None:
     return ((yaml.safe_load(f.read_text(encoding="utf-8")) or {}).get("marketer") if f.exists() else None)
 
 
-def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str | None = None, event_hook: str = "", trend: bool = False,
+SPORT_WORDS = {  # 소속·종목 힌트 → 종목 (대표가 지정 글에서 적은 소속, 2026-10-03)
+    "mlb": ["mlb", "메이저리그", "빅리그", "마이너리그"], "kbo": ["kbo", "프로야구", "국내야구", "케이비오"],
+    "epl": ["epl", "프리미어", "잉글랜드"], "laliga": ["라리가", "스페인"],
+    "soccer": ["축구", "분데스", "세리에", "리그앙", "해외축구", "k리그", "케이리그"],
+    "nba": ["nba", "농구", "엔비에이"], "golf": ["골프", "pga", "lpga", "상금"]}
+
+
+def sport_from_hint(hint: str, pool: dict) -> str | None:
+    """소속·종목 힌트에서 종목 키를 찾는다. 종목어 → 그 종목, 아니면 풀에 있는 팀 이름과 맞춰 본다."""
+    h = hint.replace(" ", "").lower()
+    for sp, ws in SPORT_WORDS.items():
+        if any(w in h for w in ws):
+            return sp
+    for p in pool["players"]:   # 팀 이름(토트넘·다저스 등)으로 종목 추정
+        team = (p.get("team") or "").replace(" ", "").lower()
+        if team and (team in h or h in team):
+            return p["sport"]
+    return None
+
+
+def resolve_player(pool: dict, name: str, hint: str) -> tuple[dict, str]:
+    """지정 선수 이름(+소속 힌트) → (선수 dict, 안내 메모). 목록에 있으면 종목·팀 자동, 동명이인은 소속으로 가린다."""
+    everyone = pool["players"]
+    matches = [p for p in everyone if name in (p["name"], p.get("short"))]
+    if hint and len(matches) > 1:
+        h = hint.replace(" ", "")
+        narrowed = [p for p in matches if h in (p.get("team", "") + p["sport"]).replace(" ", "")
+                    or sport_from_hint(hint, pool) == p["sport"]]
+        matches = narrowed or matches
+    if len(matches) == 1:
+        return matches[0], ""
+    if len(matches) > 1:
+        return matches[0], f"동명이인일 수 있어요: '{name}'이 목록에 여럿 — 소속팀을 적어 주시면 정확해져요 (지금은 {matches[0].get('team', '')}로 썼어요)"
+    sp = sport_from_hint(hint, pool) if hint else None
+    # 소속 힌트가 종목어(축구·NBA 등)면 팀은 비우고, 팀 이름이면 뉴스 검색에 쓰게 남긴다
+    is_word = any(w in hint.replace(" ", "").lower() for ws in SPORT_WORDS.values() for w in ws) if hint else False
+    if sp:
+        return {"name": name, "short": name, "team": "" if is_word else hint, "sport": sp, "weight": 1}, ""
+    return ({"name": name, "short": name, "team": hint, "sport": "kbo", "weight": 1},
+            f"'{name}'은 목록에 없고 종목을 몰라 야구로 가정했어요 — 축구·농구·골프면 소속/종목을 적어 주세요 (예: {name} / 토트넘)")
+
+
+def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str | None = None, event_hook: str = "", trend: bool = False, team_hint: str = "",
         out_root: Path = POSTS, again: bool = False, marketer: int | None = None) -> tuple[str, Path | None]:
     """again: 발행 도우미 '다시 뽑기' — 하루 한도를 건너뛰고 다른 조합으로 쓴다 (버린 글의 선수는 최근 목록에 있어 제외된다).
     marketer: 마케터 번호 (config/marketers.yaml, 2026-10-01). 그 마케터의 선수·테마로만, 하루 1편."""
@@ -1321,8 +1363,13 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
         notes.append("가중치: " + why)
     used, used_items = used_combos(today)
     pool = {**pool, "_eligible": eligible(pool)}
+    override_player = None
+    if topic_override:   # 지정 선수: 소속으로 종목·동명이인을 가린다 (2026-10-03)
+        override_player, note = resolve_player(pool, topic_override, team_hint)
+        if note:
+            notes.append(note)
     for plan in themes.plans(pool, recent_players(pool.get("recent_posts", 5)) | skipped, seed, n=10,
-                             override=topic_override, theme=theme, used=used):
+                             override=topic_override, theme=theme, used=used, override_player=override_player):
         got = []
         for p in plan["players"]:
             if p["name"] not in cache:
@@ -1404,6 +1451,7 @@ def main() -> None:
     ap.add_argument("--marketer", type=int, default=None, help="마케터 번호 (config/marketers.yaml). 동시에 여러 마케터가 쓸 때")
     ap.add_argument("--event", default=None, help="대표가 지정한 선수의 오늘 사건 한 줄 (첫 문단 훅). --topic과 함께")
     ap.add_argument("--trend", action="store_true", help="생활 물가 비교를 당일 검색량 상위 상품으로 (지정 글)")
+    ap.add_argument("--team", default=None, help="지정 선수 소속·종목 (동명이인·목록에 없는 선수 종목 판별). --topic과 함께")
     a = ap.parse_args()
     today = date.today().isoformat()
     out_root = Path(a.out) if a.out else POSTS
@@ -1428,7 +1476,7 @@ def main() -> None:
     made, lines, folder = 0, [], None
     for attempt in range(max(a.tries, a.target)):
         try:
-            msg, folder = run(hub, llm, today=today, topic_override=a.topic, theme=a.theme, event_hook=a.event or "", trend=a.trend, out_root=out_root,
+            msg, folder = run(hub, llm, today=today, topic_override=a.topic, theme=a.theme, event_hook=a.event or "", trend=a.trend, team_hint=a.team or "", out_root=out_root,
                               again=a.again or made > 0, marketer=a.marketer)
         except Exception as e:  # 키·요금·API 오류: 메시지만 남기고 실패로 끝낸다 (키 값은 메시지에 없음)
             _summary(f"❌ 글쓰기 실패: {type(e).__name__}: {str(e)[:300]}\n\nClaude에게 이 화면을 알려주세요.")

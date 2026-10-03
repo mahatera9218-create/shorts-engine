@@ -107,6 +107,7 @@ jobs:
     outputs:
       name: ${{ steps.p.outputs.name }}
       event: ${{ steps.p.outputs.event }}
+      team: ${{ steps.p.outputs.team }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -142,6 +143,7 @@ jobs:
       topic: ${{ needs.designate.outputs.name }}
       theme: life           # 지정 글은 생활 물가 비교 (연봉 vs 당일 검색량 상위 상품)
       event: ${{ needs.designate.outputs.event }}
+      team: ${{ needs.designate.outputs.team }}
       trend: true           # 비교대상 = 당일 검색량 상위 소비재 (대표 지시 2026-10-03)
     secrets: inherit
 
