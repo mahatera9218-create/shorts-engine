@@ -97,7 +97,7 @@
 
 기준: 연봉은 바르셀로나 연봉 순위 보도 기준 1년치(2,084만 유로를 2026년 10월 2일 유럽중앙은행 기준환율 1유로 1,513.4원으로 환산), 기록은 2026년 9월 20일까지의 보도, 서울 아파트 평균 매매가는 2026년 8월 10일, 최저임금은 2026년 고시(시급 10,320원, 월 209시간) 기준이에요.
 
-대표 사진: Chris wade NTEZICIMPA / Pexels (https://www.pexels.com/photo/dynamic-soccer-match-on-green-field-31105971/)
+대표 사진: Roy Malahlela / Pexels (https://www.pexels.com/photo/youth-soccer-match-action-scene-outdoors-38761255/)
 
 ## 출처
 
