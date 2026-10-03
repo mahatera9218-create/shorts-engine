@@ -5,10 +5,10 @@ players:
   short: 김혜성
   sport: mlb
   team: LA 다저스
-  why: 마이너리그 강등 후 4개월 만에 다저스 NLDS 로스터에 극적으로 합류
-  source: 7
+  why: 마이너 강등 4개월 만에 다저스 NLDS 로스터에 전격 합류
+  source: 15
   date: '2026-10-04'
-  link: https://www.spotvnews.co.kr/news/articleView.html?idxno=1011251
+  link: http://www.osen.co.kr/article/G1112887167
 - name: 김민솔
   short: 김민솔
   sport: golf
@@ -30,9 +30,9 @@ players:
   sport: laliga
   team: 아틀레티코 마드리드
   why: 이적 후 처음으로 9월 이달의 선수에 선정
-  source: 43
+  source: 51
   date: '2026-10-04'
-  link: https://swtvnews.com/news/newsview.php?ncode=1065587250715139
+  link: http://www.stoo.com/article.php?aid=109215916338
 - name: 김하성
   short: 김하성
   sport: mlb
@@ -46,9 +46,9 @@ players:
   sport: golf
   team: ''
   why: KLPGA 하이트진로 챔피언십 3라운드 단독 선두, 4년 6개월 만의 KLPGA 우승 눈앞
-  source: 57
+  source: 63
   date: '2026-10-04'
-  link: https://news.sbs.co.kr/news/endPage.do?news_id=N1008782001&plink=ORI&cooper=NAVER
+  link: https://www.g-enews.com/view.php?ud=202610031611472950daecd3dad5_1
 - name: 무라카미
   short: 무라카미
   sport: mlb
@@ -61,24 +61,24 @@ players:
   short: 고영표
   sport: kbo
   team: kt 위즈
-  why: 롯데전 9이닝 4안타 삼진 8개 완봉승, 개인 통산 6번째 완봉으로 kt 매직넘버 4
-  source: 2
+  why: 롯데전 9이닝 8탈삼진 완봉승으로 kt 정규시즌 우승 매직넘버 4
+  source: 1
   date: '2026-10-04'
-  link: https://www.nocutnews.co.kr/news/6586908?utm_source=naver&utm_medium=article&utm_campaign=20261004060044
+  link: http://www.thesportstimes.co.kr/news/articleView.html?idxno=376194
 - name: 구창모
   short: 구창모
   sport: kbo
   team: NC 다이노스
-  why: SSG전 6이닝 소화로 개인 한 시즌 최다승 신기록, NC 토종 투수 한 시즌 최다승 타이
-  source: 8
+  why: SSG전 6이닝 소화로 개인 한 시즌 최다승 신기록, NC 토종 투수 최다승 타이
+  source: 11
   date: '2026-10-04'
   link: http://www.osen.co.kr/article/G1112887043
 - name: 켈리
   short: 켈리
   sport: kbo
-  team: LG 트윈스
-  why: 한국을 떠난 뒤 LG 잠실로 돌아온다는 소식에 화제
-  source: 1
+  team: ''
+  why: LG를 떠난 에이스가 잠실로 돌아온다는 소식
+  source: 4
   date: '2026-10-04'
   link: https://www.starnewskorea.com/sports/2026/10/04/2026100312094991144
 - name: 애런 저지
@@ -89,6 +89,54 @@ players:
   source: 12
   date: '2026-10-04'
   link: http://www.osen.co.kr/article/G1112887165
+- name: 오현규
+  short: 오현규
+  sport: epl
+  team: 베식타스
+  why: 토트넘이 내년 겨울 영입을 검토한다는 보도
+  source: 80
+  date: '2026-10-04'
+  link: https://www.goal.com/kr/뉴스/a/bltd769d1ab91a2f21c
+- name: 무라카미 무네타카
+  short: 무라카미
+  sport: mlb
+  team: 시카고 화이트삭스
+  why: ALDS 1차전에서 포스트시즌 첫 홈런이 결승 투런포, 팀의 3-0 승리 견인
+  source: 21
+  date: '2026-10-04'
+  link: https://www.dailysportshankook.co.kr/news/articleView.html?idxno=434115
+- name: 전상현
+  short: 전상현
+  sport: kbo
+  team: KIA 타이거즈
+  why: 8·9회 2이닝을 막아 팀의 5-4 승리를 지켜냄
+  source: 2
+  date: '2026-10-04'
+  link: https://www.xportsnews.com/article/2203870
+- name: 스쿠벌
+  short: 스쿠벌
+  sport: mlb
+  team: LA 다저스
+  why: 다저스 NLDS 1차전 선발로 낙점
+  source: 38
+  date: '2026-10-04'
+  link: https://www.jnilbo.com/news/articleView.html?idxno=90000070656
+- name: 사토 테루아키
+  short: 사토
+  sport: kbo
+  team: ''
+  why: 타격 10관왕이 유력해 시즌 후 빅리그 포스팅 도전 기대
+  source: 12
+  date: '2026-10-04'
+  link: https://www.spotvnews.co.kr/news/articleView.html?idxno=1011237
+- name: 조던 호킨스
+  short: 호킨스
+  sport: nba
+  team: 멤피스 그리즐리스
+  why: 트레이드 영입 직후 멤피스에서 방출 예정
+  source: 26
+  date: '2026-10-04'
+  link: http://www.rookie.co.kr/news/articleView.html?idxno=127672
 - name: 레이 커
   short: 레이 커
   sport: mlb
@@ -129,14 +177,6 @@ players:
   source: 16
   date: '2026-10-03'
   link: http://www.osen.co.kr/article/G1112886518
-- name: 오현규
-  short: 오현규
-  sport: epl
-  team: 베식타스
-  why: 토트넘이 내년 겨울 영입을 검토한다는 보도
-  source: 73
-  date: '2026-10-03'
-  link: https://www.goal.com/kr/뉴스/a/bltd769d1ab91a2f21c
 - name: 스즈키
   short: 스즈키
   sport: mlb
