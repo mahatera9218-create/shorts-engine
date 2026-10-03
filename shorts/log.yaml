@@ -60,3 +60,13 @@
   key: C-kbo-game
   title: 2026 KBO 연봉 TOP 5 1경기에 버는 돈
   folder: 2026-10-02-C-kbo-game
+- date: '2026-10-03'
+  kind: C
+  key: C-kbo-top5
+  title: 2026 KBO 연봉 순위 TOP 5
+  folder: 2026-10-03-C-kbo-top5
+- date: '2026-10-03'
+  kind: A
+  key: A-야말
+  title: 야말 1골에 버는 돈, 얼마?
+  folder: 2026-10-03-A-야말
