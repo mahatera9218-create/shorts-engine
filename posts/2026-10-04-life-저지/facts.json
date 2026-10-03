@@ -1,0 +1,94 @@
+{
+ "games": {
+  "value": 66,
+  "label": "경기",
+  "unit": "games",
+  "date": "2026-10-04",
+  "sources": [
+   "https://sports.donga.com/sports/article/all/20261004/134780869/1",
+   "https://www.sportalkorea.com/news/articleView.html?idxno=2025052909553588384"
+  ],
+  "rule": "모두 같음",
+  "differs": null
+ },
+ "home_runs": {
+  "value": 18,
+  "label": "홈런",
+  "unit": "home_runs",
+  "date": "2026-10-04",
+  "sources": [
+   "https://sports.donga.com/sports/article/all/20261004/134780869/1",
+   "https://www.sportalkorea.com/news/articleView.html?idxno=2025052909553588384"
+  ],
+  "rule": "모두 같음",
+  "differs": null
+ },
+ "rbi": {
+  "value": 41,
+  "label": "타점",
+  "unit": "rbi",
+  "date": "2026-10-04",
+  "sources": [
+   "https://www.sportalkorea.com/news/articleView.html?idxno=2025052909553588384"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "batting_avg": {
+  "value": 0.241,
+  "label": "타율",
+  "unit": "avg",
+  "date": "2026-10-04",
+  "sources": [
+   "https://www.sportalkorea.com/news/articleView.html?idxno=2025052909553588384"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "ops": {
+  "value": 0.871,
+  "label": "OPS",
+  "unit": "ops",
+  "date": "2026-10-04",
+  "sources": [
+   "https://www.sportalkorea.com/news/articleView.html?idxno=2025052909553588384"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "contract_total": {
+  "value": 360000000,
+  "label": "계약 총액",
+  "unit": "USD",
+  "date": "2026-09-22",
+  "sources": [
+   "https://www.sportschosun.com/baseball/2026-09-22/202609220100151230009848"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "fx_krw_per_usd": {
+  "value": 1350.6,
+  "label": "원/달러 환율",
+  "unit": "KRW",
+  "date": "2026-10-03",
+  "sources": [
+   "https://www.bigtanews.co.kr/article/view/big202610030001",
+   "https://www.cbci.co.kr/news/articleView.html?idxno=612200",
+   "https://www.goodkyung.com/news/articleView.html?idxno=292002"
+  ],
+  "rule": "모두 같음",
+  "differs": null
+ },
+ "salary": {
+  "value": 40000000,
+  "label": "올해 연봉",
+  "unit": "USD",
+  "date": "2026-04-01",
+  "sources": [
+   "https://www.sportico.com/personalities/athletes/2026/mlb-highest-paid-players-2026-shohei-ohtani-1234887383/"
+  ],
+  "rule": "확인 연봉표",
+  "differs": null
+ }
+}

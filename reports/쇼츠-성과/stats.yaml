@@ -11,6 +11,10 @@ channel:
     subs: 0
     views: 3696
     videos: 7
+  '2026-10-04':
+    subs: 1
+    views: 3731
+    videos: 8
 videos:
   NRjz5n2aXa0:
     title: 류현진 연봉, 경기당 얼마?
@@ -26,6 +30,10 @@ videos:
         comments: 1
       '2026-10-03':
         views: 1245
+        likes: 2
+        comments: 1
+      '2026-10-04':
+        views: 1249
         likes: 2
         comments: 1
     kind: A
@@ -46,6 +54,10 @@ videos:
         views: 1239
         likes: 2
         comments: 1
+      '2026-10-04':
+        views: 1243
+        likes: 2
+        comments: 1
     kind: B
     key: B-kbo1-nba1
   ojZp3VASXSE:
@@ -64,6 +76,10 @@ videos:
         views: 1177
         likes: 0
         comments: 0
+      '2026-10-04':
+        views: 1200
+        likes: 0
+        comments: 0
     kind: C
     key: C-kbo-year
   pz7ZqDsq7Zw:
@@ -78,6 +94,10 @@ videos:
         views: 28
         likes: 0
         comments: 0
+      '2026-10-04':
+        views: 37
+        likes: 0
+        comments: 0
   hbpw84tTKAU:
     title: KBO 연봉 1위 vs 커리
     published: '2026-09-30'
@@ -88,6 +108,10 @@ videos:
         comments: 0
       '2026-10-03':
         views: 5
+        likes: 0
+        comments: 0
+      '2026-10-04':
+        views: 10
         likes: 0
         comments: 0
     kind: B
@@ -104,6 +128,10 @@ videos:
         views: 9
         likes: 0
         comments: 0
+      '2026-10-04':
+        views: 13
+        likes: 0
+        comments: 0
     kind: C
     key: C-kbo-day
   tx0Q5T4F14E:
@@ -114,5 +142,19 @@ videos:
         views: 184
         likes: 3
         comments: 0
+      '2026-10-04':
+        views: 1333
+        likes: 5
+        comments: 0
     kind: A
     key: A-고영표
+  XMX5w3-fZb4:
+    title: 스완지시티 엄지성 1골에 버는 돈, 얼마?
+    published: '2026-10-03'
+    snaps:
+      '2026-10-04':
+        views: 1609
+        likes: 4
+        comments: 1
+    kind: A
+    key: A-엄지성

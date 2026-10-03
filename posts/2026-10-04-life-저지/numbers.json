@@ -1,0 +1,80 @@
+{
+ "salary_krw": 54024000000.0,
+ "per": {
+  "games": 818545454.5454545,
+  "home_runs": 3001333333.3333335,
+  "rbi": 1317658536.5853658
+ },
+ "min_wage_yearly_krw": 25882560,
+ "min_wage_years_per": {
+  "games": 31.625366831776088,
+  "home_runs": 115.959678383179,
+  "rbi": 50.90912709505419
+ },
+ "life_unit": "games",
+ "life_label": "1경기",
+ "life_per": 818545454.5454545,
+ "item": {
+  "key": "acro",
+  "group": "home",
+  "label": "반포 아크로리버파크 전용 84㎡",
+  "short": "아크로리버파크",
+  "unit": "채",
+  "fetch": "news",
+  "query": "아크로리버파크 84㎡ 실거래",
+  "min_krw": 1000000000,
+  "max_krw": 15000000000,
+  "price_krw": 5000000000,
+  "as_of": "2026-09-10",
+  "source": "실거래가 보도 (2026-09-25, 50억원) https://biz.heraldcorp.com/article/10884387?ref=naver",
+  "salary_count": 10.8048,
+  "unit_count": 0.1637090909090909
+ },
+ "items": [
+  {
+   "key": "acro",
+   "group": "home",
+   "label": "반포 아크로리버파크 전용 84㎡",
+   "short": "아크로리버파크",
+   "unit": "채",
+   "fetch": "news",
+   "query": "아크로리버파크 84㎡ 실거래",
+   "min_krw": 1000000000,
+   "max_krw": 15000000000,
+   "price_krw": 5000000000,
+   "as_of": "2026-09-10",
+   "source": "실거래가 보도 (2026-09-25, 50억원) https://biz.heraldcorp.com/article/10884387?ref=naver",
+   "salary_count": 10.8048,
+   "unit_count": 0.1637090909090909
+  }
+ ],
+ "rows": [
+  {
+   "key": "salary",
+   "label": "올해 연봉",
+   "value": 54024000000.0,
+   "count": 10.8048
+  },
+  {
+   "key": "games",
+   "label": "1경기",
+   "value": 818545454.5454545,
+   "count": 0.1637090909090909
+  },
+  {
+   "key": "home_runs",
+   "label": "홈런 1개",
+   "value": 3001333333.3333335,
+   "count": 0.6002666666666667
+  },
+  {
+   "key": "rbi",
+   "label": "1타점",
+   "value": 1317658536.5853658,
+   "count": 0.26353170731707315
+  }
+ ],
+ "inverse": true,
+ "inverse_count": 6.10839626832519,
+ "inverse_word": "경기"
+}
