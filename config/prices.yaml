@@ -7,7 +7,7 @@
 # 1선수 1물건 (대표 결정 2026-09-30): 글마다 그룹을 group_weight대로 하나 고르고, 그 안에서 weight대로 물건 하나.
 #   (차 검색량이 집보다 훨씬 커서, 물건 weight로만 뽑으면 차만 나온다 → 그룹을 먼저 같은 확률로 고른다)
 
-group_weight: {home: 1, car_kr: 1, car_import: 1}
+group_weight: {home: 1, car_kr: 1, car_import: 1, appliance: 1, it: 1, travel: 1}
 
 items:
   # ---- 집값 (weight = 월 검색량, reports/검색량/가격후보-2026-09-30.md)
@@ -108,6 +108,34 @@ items:
     as_of: 2026-04-01
     source: "포르쉐코리아 출시 보도 (3억4,270만원) https://hypebeast.kr/2026/4/porsche-korea-officially-launches-new-911-turbo-s"
 
+  # ---- 가전 (당일 검색량 상위 소비재, 2026-10-03). fetch: news → 글 쓰는 날 뉴스에서 출고가·최저가를 뽑는다(kind: product). weight = 월 검색량(초기 추정, market/volume.py로 갱신)
+  - {key: oled_tv, group: appliance, weight: 90000, label: "LG 올레드 TV 65인치 (올해 신형)", short: 올레드 TV, unit: 대,
+     fetch: news, kind: product, query: "LG 올레드 TV 65인치 출고가", min_krw: 1500000, max_krw: 8000000}
+  - {key: bespoke_fridge, group: appliance, weight: 74000, label: "삼성 비스포크 냉장고 4도어", short: 비스포크 냉장고, unit: 대,
+     fetch: news, kind: product, query: "삼성 비스포크 냉장고 4도어 출고가", min_krw: 1500000, max_krw: 7000000}
+  - {key: styler, group: appliance, weight: 40000, label: "LG 트롬 스타일러 오브제컬렉션", short: 스타일러, unit: 대,
+     fetch: news, kind: product, query: "LG 스타일러 가격", min_krw: 1000000, max_krw: 4000000}
+  - {key: dyson_vac, group: appliance, weight: 55000, label: "다이슨 무선청소기 최신형", short: 다이슨 청소기, unit: 대,
+     fetch: news, kind: product, query: "다이슨 무선청소기 가격", min_krw: 500000, max_krw: 1500000}
+
+  # ---- IT (당일 검색량 상위 소비재)
+  - {key: iphone_pro, group: it, weight: 300000, label: "아이폰 프로 최신형 (256GB)", short: 아이폰 프로, unit: 대,
+     fetch: news, kind: product, query: "아이폰 프로 출고가 256GB", min_krw: 1200000, max_krw: 3000000}
+  - {key: galaxy_ultra, group: it, weight: 200000, label: "갤럭시 S 울트라 최신형 (256GB)", short: 갤럭시 울트라, unit: 대,
+     fetch: news, kind: product, query: "갤럭시 S 울트라 출고가", min_krw: 1200000, max_krw: 3000000}
+  - {key: macbook_pro, group: it, weight: 80000, label: "맥북 프로 14인치 (기본형)", short: 맥북 프로, unit: 대,
+     fetch: news, kind: product, query: "맥북 프로 14 가격", min_krw: 2000000, max_krw: 5000000}
+  - {key: ipad_pro, group: it, weight: 50000, label: "아이패드 프로 11인치 (기본형)", short: 아이패드 프로, unit: 대,
+     fetch: news, kind: product, query: "아이패드 프로 11 가격", min_krw: 1000000, max_krw: 3000000}
+
+  # ---- 여행 (당일 검색량 상위). 1회 경비를 뉴스에서(패키지가·항공+숙박). 못 찾으면 그 글은 다른 물건으로 넘어감
+  - {key: jeju_trip, group: travel, weight: 110000, label: "제주 2박3일 여행 1인 경비", short: 제주 여행, unit: 번,
+     fetch: news, kind: product, query: "제주 2박3일 여행 경비", min_krw: 300000, max_krw: 2000000}
+  - {key: osaka_trip, group: travel, weight: 90000, label: "오사카 3박4일 여행 1인 경비", short: 오사카 여행, unit: 번,
+     fetch: news, kind: product, query: "오사카 3박4일 패키지 가격", min_krw: 400000, max_krw: 3000000}
+  - {key: europe_trip, group: travel, weight: 40000, label: "유럽 패키지 여행 1인 경비", short: 유럽 여행, unit: 번,
+     fetch: news, kind: product, query: "유럽 패키지 여행 가격", min_krw: 1500000, max_krw: 8000000}
+
 # 검색량을 잴 후보 (띄어쓰기는 무시됨). 많이 검색하는 순으로 가격을 확인해 items에 넣는다.
 candidates:
   home: [서울 아파트, 강남 아파트, 서초 아파트, 송파 아파트, 잠실 아파트, 용산 아파트, 성수 아파트, 마포 아파트,
@@ -116,3 +144,6 @@ candidates:
   car_kr: [그랜저, 쏘렌토, 카니발, 아반떼, 싼타페, 스포티지, 투싼, 쏘나타, 팰리세이드, 캐스퍼, 제네시스 G80, 제네시스 GV80]
   car_import: [벤츠 E클래스, 벤츠 S클래스, BMW 5시리즈, BMW X5, 테슬라 모델Y, 포르쉐 911, 포르쉐 카이엔,
                람보르기니 우루스, 페라리, 롤스로이스 컬리넌]
+  appliance: [LG 올레드 TV, 삼성 비스포크 냉장고, 삼성 TV, LG TV, 스타일러, 다이슨 청소기, 삼성 에어컨, LG 에어컨, 로봇청소기, 비스포크]
+  it: [아이폰, 아이폰 프로, 갤럭시 S, 갤럭시 울트라, 갤럭시 폴드, 맥북, 맥북 프로, 아이패드, 아이패드 프로, 갤럭시 버즈, 에어팟]
+  travel: [제주 여행, 오사카 여행, 다낭 여행, 방콕 여행, 도쿄 여행, 유럽 여행, 괌 여행, 발리 여행, 하와이 여행, 베트남 여행]

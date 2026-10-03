@@ -94,6 +94,14 @@ BRIEF_KEYS = {"reader": "독자", "reader_question": "독자의 질문", "promis
               "why_naver": "네이버·광고주 기대에 맞는 이유",
               "ad_fit": "기대하는 광고 묶음과 그걸 부르는 문맥"}
 
+PRODUCT_RULES = """너는 상품 기사 요약문에서 이 제품의 현재 판매가 하나를 뽑는 도우미다 (당일 검색량 상위 소비재, 2026-10-03).
+- 요청한 제품(모델·용량이 맞는 것)의 **출고가·시작가·공식가·최저가** 중 하나를 원화 정수로.
+- 중고가·할부 월 납입금·보상/카드 할인가·해외가는 쓰지 않는다. 모델이 다르면 found=false.
+- price_krw는 원 단위 정수 (예: 150만원 → 1500000). 기사에 적힌 숫자만, 계산·추측 금지.
+- deal_date는 기사 날짜(YYYY-MM 또는 YYYY-MM-DD, 없으면 빈 문자열). source는 기사 번호 [n].
+"""
+
+
 REGION_RULES = """너는 부동산 기사 요약문에서 지역 아파트 평균 매매가격 하나를 뽑는 도우미다.
 - 요청한 지역(시·광역시) 전체의 아파트 평균 매매가격(한국부동산원·KB부동산 통계를 인용한 보도)만 쓴다.
 - 중위가격·전세·월세·분양가·특정 단지·구 단위·㎡당(평당) 가격·다른 지역은 쓰지 않는다. 확실하지 않으면 found=false.
@@ -322,14 +330,15 @@ def fill_prices(hub, llm, items: list[dict], today: str, fallback: dict | None) 
         news = [n for n in gather_news(hub, [it["query"]], per_query=15)
                 if (date.fromisoformat(today) - date.fromisoformat(n["date"])).days <= 180]
         if news:
-            region = it.get("kind") == "region_avg"
-            r = llm.ask_json([REGION_RULES if region else PRICE_RULES],
-                             f"{'지역' if region else '단지'}: {it['label']}\n오늘: {today}\n\n기사\n{news_prompt(news)}",
+            kind = it.get("kind")
+            rule, word = ((PRODUCT_RULES, "제품") if kind == "product" else
+                          (REGION_RULES, "지역") if kind == "region_avg" else (PRICE_RULES, "단지"))
+            r = llm.ask_json([rule], f"{word}: {it['label']}\n오늘: {today}\n\n기사\n{news_prompt(news)}",
                              PRICE_SCHEMA, max_tokens=1000, stage="가격 기사", **extract_opts())
             src = news[r["source"] - 1] if 1 <= r["source"] <= len(news) else None
             text = (src["title"] + " " + src["description"]).replace(" ", "") if src else ""
             if not r["found"] or not src:
-                why = "기사에서 84㎡ 매매 실거래가를 찾지 못함"
+                why = f"기사에서 {it['short']} 가격을 찾지 못함"
             elif not it.get("min_krw", 0) <= r["price_krw"] <= it.get("max_krw", 10**13):
                 why = f"범위 밖 가격 ({won(r['price_krw'])})"
             elif not any(x.replace(",", "") in text.replace(",", "") for x in eok_text(r["price_krw"])):
@@ -1257,7 +1266,7 @@ def marketer_of(folder: str) -> int | None:
     return ((yaml.safe_load(f.read_text(encoding="utf-8")) or {}).get("marketer") if f.exists() else None)
 
 
-def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str | None = None, event_hook: str = "",
+def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str | None = None, event_hook: str = "", trend: bool = False,
         out_root: Path = POSTS, again: bool = False, marketer: int | None = None) -> tuple[str, Path | None]:
     """again: 발행 도우미 '다시 뽑기' — 하루 한도를 건너뛰고 다른 조합으로 쓴다 (버린 글의 선수는 최근 목록에 있어 제외된다).
     marketer: 마케터 번호 (config/marketers.yaml, 2026-10-01). 그 마케터의 선수·테마로만, 하루 1편."""
@@ -1342,9 +1351,11 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
             if th == "life":
                 prices = load_yaml("prices.yaml")
                 fallback = next((i for i in prices["items"] if i["key"] == "seoul_apt"), None)
-                d["prices"], pn = fill_prices(hub, llm, themes.pick_prices(prices, f"{today}-{d['player']}",
-                                                                           used_items.get(d["player"], set())),
-                                              today, fallback)
+                used_it = used_items.get(d["player"], set())
+                # 당일 검색량 상위 트렌드 상품 (대표 지시 2026-10-03): 지정 글/트렌드면 검색량 1위 물건부터
+                picks = themes.top_trend(prices, used_it) if trend else themes.pick_prices(prices, f"{today}-{d['player']}", used_it)
+                d["prices"], pn = fill_prices(hub, llm, picks, today, fallback)
+                d["prices"] = d["prices"][:1]
                 notes += pn
             if th in ("place", "trip"):  # 연고지·출신지·예전 소속팀 도시 (이 선수와 아직 안 쓴 장소부터)
                 me = next(p for p in pool["players"] if p["name"] == d["player"])
@@ -1392,6 +1403,7 @@ def main() -> None:
     ap.add_argument("--tries", type=int, default=1, help="최대 몇 번 쓸지 (⚠️ 글은 목록에서 빼고 다시 쓴다)")
     ap.add_argument("--marketer", type=int, default=None, help="마케터 번호 (config/marketers.yaml). 동시에 여러 마케터가 쓸 때")
     ap.add_argument("--event", default=None, help="대표가 지정한 선수의 오늘 사건 한 줄 (첫 문단 훅). --topic과 함께")
+    ap.add_argument("--trend", action="store_true", help="생활 물가 비교를 당일 검색량 상위 상품으로 (지정 글)")
     a = ap.parse_args()
     today = date.today().isoformat()
     out_root = Path(a.out) if a.out else POSTS
@@ -1416,7 +1428,7 @@ def main() -> None:
     made, lines, folder = 0, [], None
     for attempt in range(max(a.tries, a.target)):
         try:
-            msg, folder = run(hub, llm, today=today, topic_override=a.topic, theme=a.theme, event_hook=a.event or "", out_root=out_root,
+            msg, folder = run(hub, llm, today=today, topic_override=a.topic, theme=a.theme, event_hook=a.event or "", trend=a.trend, out_root=out_root,
                               again=a.again or made > 0, marketer=a.marketer)
         except Exception as e:  # 키·요금·API 오류: 메시지만 남기고 실패로 끝낸다 (키 값은 메시지에 없음)
             _summary(f"❌ 글쓰기 실패: {type(e).__name__}: {str(e)[:300]}\n\nClaude에게 이 화면을 알려주세요.")

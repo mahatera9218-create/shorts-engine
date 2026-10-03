@@ -38,6 +38,7 @@ on:
       topic: {type: string, default: ""}       # 대표 지정 선수 (도우미 '이 선수로 지금 쓰기', 2026-10-03)
       theme: {type: string, default: ""}       # 테마 고정 (지정 글은 receipt)
       event: {type: string, default: ""}       # 지정 선수의 오늘 사건 한 줄 (첫 문단 훅)
+      trend: {type: boolean, default: false}   # 생활 물가 비교를 당일 검색량 상위 상품으로
   push:       # 지금 쓰기 (2026-10-02): GitHub 예약이 안 돌면 config/write_now.yaml을 바꿔 올려 3명 모두 쓰게 한다
     branches: [main]
     paths: ["config/write_now.yaml"]
@@ -169,6 +170,7 @@ jobs:
           [ -n "$TOPIC" ] && args+=(--topic "$TOPIC")
           [ -n "$THEME" ] && args+=(--theme "$THEME")
           [ -n "$EVENT" ] && args+=(--event "$EVENT")
+          [ "${{ inputs.trend }}" = "true" ] && args+=(--trend)
           [ "${{ inputs.again }}" = "true" ] && args+=(--again)
           python -m content.autopost "${args[@]}"
       - name: 결과 넘기기 준비 (오늘 글 폴더와 같이 고치는 장부만)
@@ -234,8 +236,7 @@ jobs:
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: python -m content.shorts_stats | tee -a "$GITHUB_STEP_SUMMARY"
-      - name: 유튜브 쇼츠 A·B·C (코드 계산만, Claude 비용 없음. 실패해도 글은 저장)
-        if: ${{ !inputs.again }}
+      - name: 유튜브 쇼츠 (글마다 그 주제로, 코드 계산만. 지금 쓰기에서도 돈다, 2026-10-03)
         continue-on-error: true
         env:
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
