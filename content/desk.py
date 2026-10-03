@@ -470,7 +470,7 @@ nav.tabs a.on{{background:var(--btn);color:var(--btnink)}}</style></head><body><
 <div class="card" style="border:2px solid var(--accent)"><h2>⚡ 이 선수로 지금 쓰기</h2>
 <input id="who" placeholder="선수명 / 이슈 (예: 김도영 / 어제 끝내기 홈런)" style="width:100%;min-height:50px;margin:8px 0;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font-size:16px">
 <button onclick="writeNow()">⚡ 지금 쓰기</button>
-<div class="muted">선수명만 적어도 돼요. 뒤에 <b>/</b> 사건을 적으면 그걸 제목·첫 문단 훅으로 걸어요. 15~20분 뒤 바로 아래에 본문·사진이 떠요 (Claude 약 $0.3, 연봉 못 찾는 선수는 안 나올 수 있어요).</div></div>
+<div class="muted">선수명만 적어도 돼요. 뒤에 <b>/</b> 사건을 적으면 그걸 제목·첫 문단 훅으로 걸어요. 비교 상품은 <b>그날 검색량 상위(가전·차·IT·여행)로 자동</b>이에요. 15~20분 뒤 바로 아래에 <b>블로그·클립·쇼츠</b>가 떠요 (Claude 약 $0.3, 연봉 못 찾는 선수는 안 나올 수 있어요).</div></div>
 {top_article}
 {turn_note}
 <h2>{'다른 글 (예비)' if picks else '오늘의 후보'}</h2>

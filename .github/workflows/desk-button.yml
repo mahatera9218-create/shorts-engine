@@ -140,8 +140,9 @@ jobs:
       mode: 실제
       again: true          # 하루 한도 건너뛰고 바로 쓴다
       topic: ${{ needs.designate.outputs.name }}
-      theme: receipt        # 지정 글은 연봉 쪼개기 (경기 직후 빠른 글)
+      theme: life           # 지정 글은 생활 물가 비교 (연봉 vs 당일 검색량 상위 상품)
       event: ${{ needs.designate.outputs.event }}
+      trend: true           # 비교대상 = 당일 검색량 상위 소비재 (대표 지시 2026-10-03)
     secrets: inherit
 
   edit:   # 글 화면 '고친 내용 저장': 대표가 고친 제목·문단을 글에 반영
