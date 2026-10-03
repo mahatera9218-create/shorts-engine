@@ -575,9 +575,9 @@ def make(folder: Path) -> str:
     photo = None if bg else (Image.open(folder / "photo.jpg") if (folder / "photo.jpg").exists() else None)
     from .commerce import info as shop_info
     shop = shop_info(d, folder.name)
-    if shop:  # 쇼핑 태그를 다는 클립 (대표 결정 2026-09-30): 선수 사진·등판 없이 (선수가 광고하는 것처럼 보이지 않게)
-        st["hook"] = {**st["hook"], "players": []}
-    pics = [] if shop else playerphoto.fetch(folder, st["hook"].get("players", []))  # C. 선수 사진 (없으면 등판)
+    # 선수 사진은 모든 클립에 넣는다 (대표 지적 2026-10-03: 빈 배경이라 자동재생에서 볼 이유가 없음).
+    # 상품은 영상 안에 안 나오고 네이버 상품 태그로만 붙으니 선수 얼굴과 상품이 같은 화면에 겹치지 않는다(광고 오인 아님).
+    pics = playerphoto.fetch(folder, st["hook"].get("players", []))  # C. 선수 사진 (없으면 등판)
     credit = " · ".join(f"사진 {i['artist'][:20]} ({i['license']})" for i in
                         (json.loads(f.read_text(encoding="utf-8")) for f in sorted(folder.glob("player*.json"))))
     qf = folder / "clip_question.txt"
@@ -595,7 +595,7 @@ def make(folder: Path) -> str:
     (folder / "bg.mp4").unlink(missing_ok=True)  # 배경 원본은 저장소에 두지 않는다 (출처는 bg.json)
     return (f"클립: 세로 영상 {info['seconds']:.0f}초 완성" + (" · 목소리" if info["voice"] else "")
             + (" · 실사 배경" if info["video_bg"] else "") + (f" · 선수 사진 {len(pics)}" if pics else "")
-            + (f" · 쇼핑 클립({shop['name']}, 선수 사진 없음)" if shop else ""))
+            + (f" · 쇼핑 클립({shop['name']})" if shop else ""))
 
 
 def main() -> None:
