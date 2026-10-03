@@ -194,7 +194,7 @@ function resetEd(k){const t=ed(k);if(t)setEd(k,t.defaultValue)}
 function copyEd(b,k){copyText(b,val(k))}
 document.addEventListener('DOMContentLoaded',()=>document.querySelectorAll('textarea.ed').forEach(t=>{const v=ls(t.dataset.k);if(v!=null)t.value=v;paint(t);grow(t);
   t.addEventListener('input',()=>{if(t.classList.contains('one'))t.value=t.value.replace(/\\n/g,' ');ls(t.dataset.k,t.value===t.defaultValue?null:t.value);paint(t);grow(t)})}))
-function tableText(x){return [x.header].concat(x.rows).map(r=>r.join(' | ')).join('\\n')}
+function tableText(x){return x.header.length===2?x.rows.map(r=>r[0]+': '+r[1]).join('\\n'):[x.header.join(' · ')].concat(x.rows.map(r=>r.join(' · '))).join('\\n')}
 function esc(t){return String(t).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
 function tableHtml(x){const t=document.getElementById('nt'+x.table);return t?t.outerHTML:''}  // 화면에 보이는 표 그대로 복사 (2026-10-03)
 function bodyText(){return POST.blocks.map((x,i)=>x.text!==undefined?(val('b'+i)||x.text):x.table?tableText(x):x.shop?'🛒 상품 자리 (상품 카드를 넣고 이 줄은 지우기)':'📷 사진 '+x.n+' ('+x.label+')').join('\\n\\n')}
@@ -288,7 +288,8 @@ def page(p: dict) -> str:
     def tbl(b):
         return (f'<div class="ph"><b>📊 표 {b["table"]} · {e(b["title"])}</b>{naver_table(b)}'
                 f'<button class="ghost small" onclick="copyTable(this,{b["table"]})">📋 이 표만 복사</button>'
-                '<small>네이버 앱에 붙여넣으면 표로 들어가요. 글자로만 들어가면 앱의 <b>표</b> 버튼으로 표를 넣고 칸에 옮겨 주세요 (AI 브리핑은 이미지가 아니라 표를 인용해요).</small></div>')
+                '<small>네이버 앱은 붙여넣기로 표가 안 들어가요. 대신 <b>항목: 값</b> 줄글로 깔끔하게 들어가고, <b>AI 브리핑은 이 글도 읽어요</b>(표만 보는 게 아님). '
+                '표 모양을 꼭 원하시면 앱의 <b>표</b> 버튼으로 넣고 칸을 채우세요(선택).</small></div>')
 
     body = "".join(
         f'<textarea class="ed" data-k="b{i}" rows="3">{e(b["text"])}</textarea>' if "text" in b else tbl(b) if "table" in b else
