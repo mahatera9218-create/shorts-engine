@@ -11,7 +11,7 @@ from datetime import date
 
 from .common import ROOT, load_yaml, missing_secrets
 
-GROUPS = {"home": "집값 (지역·단지)", "car_kr": "국산차", "car_import": "수입차"}
+GROUPS = {"home": "집값 (지역·단지)", "car_kr": "국산차", "car_import": "수입차", "appliance": "가전", "it": "IT", "travel": "여행"}
 
 
 def measure(tool, keywords: list[str]) -> dict[str, dict]:

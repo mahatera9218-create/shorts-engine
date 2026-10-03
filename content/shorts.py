@@ -283,16 +283,71 @@ def plan_a(today: str) -> dict | None:
         key = f"A-{name}"
         if any(x["key"] == key and x["date"] >= str(date.fromisoformat(today) - timedelta(days=30)) for x in used_log()):
             continue
-        head = d.get("headline_unit")
-        pick_u = [u for u in units if u["key"] == "games"][:1] + [u for u in units if u["key"] == head and u["key"] != "games"]
-        pick_u += [u for u in units if u not in pick_u][:3 - len(pick_u)]
-        per = [(u["label"], sal / u["count"]) for u in pick_u]
-        wage_year = d.get("min_wage_monthly_krw", 0) * 12
-        head_lab = per[1][0] if len(per) > 1 else per[0][0]  # 질문 = 대표 기록 1번에 얼마 (끝에서 공개)
-        return {"kind": "A", "key": key, "name": name, "player": d["player"], "salary": sal, "per": per,
-                "head": head_lab, "wage_year": wage_year, "source": f.parent.name, "fx_label": d.get("fx_label", ""),
-                "title": f"{name} {head_lab}에 버는 돈, 얼마?"}
+        p = _a_plan(d, f.parent.name)
+        if p:
+            return p
     return None
+
+
+def _a_plan(d: dict, source: str) -> dict | None:
+    """한 글의 data.yaml → A(통장형) plan. 국내/해외 가리지 않는다 (글마다 쇼츠, 2026-10-03)."""
+    sal = d.get("salary_krw") or (d.get("salary_usd", 0) * d.get("fx_krw_per_usd", 0))
+    units = [u for u in d.get("units", []) if u.get("count")]
+    if not sal or len(units) < 2 or " vs " in str(d.get("player", "")):
+        return None
+    name = d.get("short_name") or d["player"]
+    head = d.get("headline_unit")
+    pick_u = [u for u in units if u["key"] == "games"][:1] + [u for u in units if u["key"] == head and u["key"] != "games"]
+    pick_u += [u for u in units if u not in pick_u][:3 - len(pick_u)]
+    per = [(u["label"], sal / u["count"]) for u in pick_u]
+    wage_year = d.get("min_wage_monthly_krw", 0) * 12
+    head_lab = per[1][0] if len(per) > 1 else per[0][0]
+    return {"kind": "A", "key": f"A-{name}", "name": name, "player": d["player"], "salary": sal, "per": per,
+            "head": head_lab, "wage_year": wage_year, "source": source, "fx_label": d.get("fx_label", ""),
+            "title": f"{name} {head_lab}에 버는 돈, 얼마?"}
+
+
+def _b_plan(d: dict, n: dict, source: str) -> dict | None:
+    """비교 글(same/cross) → B(대결) plan."""
+    a, b = d.get("a"), d.get("b")
+    if not a or not b or not n.get("a") or not n.get("b"):
+        return None
+    an, bn = a.get("short_name") or a["player"], b.get("short_name") or b["player"]
+    left = [{"name": a["player"], "short": an, "krw": n["a"]["salary_krw"]}]
+    right = [{"name": b["player"], "short": bn, "krw": n["b"]["salary_krw"]}]
+    return {"kind": "B", "key": f"B-{an}-{bn}", "left": left, "right": right,
+            "title": f"{an} vs {bn}", "q": "누가 더 받을까요?", "source": source}
+
+
+def _c_plan(d: dict, source: str) -> dict | None:
+    """순위 글(rank) → C(순위표) plan."""
+    rows = [r for r in d.get("rows", []) if r.get("krw")]
+    if len(rows) < 3:
+        return None
+    league = d.get("league") or ("kbo" if "프로야구" in str(d.get("sport", "")) else "etc")
+    return {"kind": "C", "key": f"C-{d.get('key', 'rank')}", "div": d.get("games") or 1, "league": league,
+            "title": d.get("title", "연봉 순위"), "rows": [{"short": r.get("short") or r["name"], "name": r["name"], "krw": r["krw"]} for r in rows],
+            "source": source}
+
+
+def plan_for_post(folder: Path, today: str) -> tuple[str, dict] | None:
+    """한 글 폴더 → (kind, plan). 글 종류에 쇼츠 형식을 짝짓는다 (영수증·생활 = A, 비교 = B, 순위 = C)."""
+    import json as _json
+    df = folder / "data.yaml"
+    if not df.exists():
+        return None
+    d = yaml.safe_load(df.read_text(encoding="utf-8")) or {}
+    th = d.get("theme", "receipt")
+    if th == "rank":
+        p = _c_plan(d, folder.name)
+        return ("C", p) if p else None
+    if th in ("same", "cross"):
+        nf = folder / "numbers.json"
+        n = _json.loads(nf.read_text(encoding="utf-8")) if nf.exists() else {}
+        p = _b_plan(d, n, folder.name)
+        return ("B", p) if p else None
+    p = _a_plan(d, folder.name)
+    return ("A", p) if p else None
 
 
 def _josa(name: str, a: str, b: str) -> str:
@@ -365,13 +420,9 @@ def pics_for(folder: Path | None, names: list[str]) -> tuple[list[Image.Image], 
     return pics, credit
 
 
-def build(kind: str, today: str, folder: Path | None = None) -> tuple[dict, list[Scene]] | None:
-    fx, fx_label = latest_fx(today)
-    table = salary_table(fx)
+def _scenes(kind: str, p: dict, folder: Path | None, fx_label: str) -> tuple[dict, list[Scene]]:
+    """plan 딕셔너리 → 장면 목록. build(풀에서 뽑기)와 for_post(한 글에서)가 같이 쓴다 (2026-10-03)."""
     if kind == "A":
-        p = plan_a(today)
-        if not p:
-            return None
         pics, cr = pics_for(folder, [p["player"]])
         # 도입부에서 답을 주지 않는다 (대표 지적 2026-09-30): 질문(대표 기록 1번에 얼마?) → 작은 돈부터 쌓아 올리고 → 답은 맨 끝
         steps = [("하루에", p["salary"] / 365, "쉬는 날까지 365일로 나눈 값"), ("월급으로 치면", p["salary"] / 12, "12로 나눈 값"),
@@ -390,9 +441,7 @@ def build(kind: str, today: str, folder: Path | None = None) -> tuple[dict, list
         sc = with_banner(sc, p["title"])
         return p, sc + [clip.LoopBack(sc[-1], sc[0])]
     if kind == "B":
-        o = pick(options_b(table), "B")
-        if not o:
-            return None
+        o = p
         lv, rv = sum(x["krw"] for x in o["left"]), sum(x["krw"] for x in o["right"])
         ln = o.get("ln") or o["left"][0]["short"]
         rn = o.get("rn") or o["right"][0]["short"]
@@ -414,17 +463,29 @@ def build(kind: str, today: str, folder: Path | None = None) -> tuple[dict, list
         sc = with_banner(sc, meta_text(o | {"kind": "B"}).split("\n")[0])
         return o, sc + [clip.LoopBack(sc[-1], sc[0])]
     if kind == "C":
-        opts = [o for o in options_c(table)]
-        o = pick(opts, "C")
-        if not o:
-            return None
+        o = p
         rows = [(x["short"], won(x["krw"] / o["div"])) for x in o["rows"]]
         sub = "2026 연봉 기준" + (" · 달러는 " + fx_label if o["league"] != "kbo" and fx_label else "")
         board = Board(o["title"], sub, rows, ratios=[x["krw"] / o["rows"][0]["krw"] for x in o["rows"]])
         o |= {"kind": "C", "q": "1위 예상했나요?", "basis": "확인 연봉표(config/salaries.yaml, 발표·보도)" + (f", 환율 {fx_label}" if fx_label else ""),
               "names": [x["name"] for x in o["rows"]]}
         return o, [board, clip.LoopBack(board, board)]
-    return None
+    raise ValueError(kind)
+
+
+def build(kind: str, today: str, folder: Path | None = None) -> tuple[dict, list[Scene]] | None:
+    """풀에서 뽑아 쇼츠 하나 (예전 방식: 지금은 for_post가 기본, build는 미리보기·수동용)."""
+    fx, fx_label = latest_fx(today)
+    table = salary_table(fx)
+    if kind == "A":
+        p = plan_a(today)
+    elif kind == "B":
+        p = pick(options_b(table), "B")
+    elif kind == "C":
+        p = pick([o for o in options_c(table)], "C")
+    else:
+        return None
+    return _scenes(kind, p, folder, fx_label) if p else None
 
 
 def meta_text(p: dict) -> str:
@@ -477,7 +538,8 @@ def discard(name: str) -> str:
 SPORT_OF = {"kbo": "야구", "mlb": "야구", "nba": "농구", "golf": "골프", "epl": "축구", "laliga": "축구", "soccer": "축구"}
 
 
-def make(kind: str, today: str, preview: bool = False) -> str:
+def make(kind: str, today: str, preview: bool = False, plan: dict | None = None) -> str:
+    """plan을 주면 그 plan으로(글마다 쇼츠), 안 주면 풀에서 뽑아(예전 방식)."""
     from . import produce
     exe = clip.ffmpeg()
     if not exe:
@@ -485,7 +547,8 @@ def make(kind: str, today: str, preview: bool = False) -> str:
     work = OUT / f".work-{kind}"
     shutil.rmtree(work, ignore_errors=True)
     work.mkdir(parents=True)
-    got = build(kind, today, work)
+    fx, fx_label = latest_fx(today)
+    got = _scenes(kind, plan, work, fx_label) if plan else build(kind, today, work)
     if not got:
         shutil.rmtree(work, ignore_errors=True)
         return f"{kind}: 만들 재료 없음 (건너뜀)"
@@ -516,7 +579,30 @@ def make(kind: str, today: str, preview: bool = False) -> str:
             + (", 실사 배경" if info["video_bg"] else "") + ")")
 
 
+def make_posts(today: str, preview: bool = False) -> list[str]:
+    """오늘 ✅ 글마다 그 주제로 쇼츠 하나 (글마다 쇼츠, 대표 지시 2026-10-03).
+    이미 만든 글은 건너뛴다(재실행에 안전). 영수증·생활 = A, 비교 = B, 순위 = C."""
+    out = []
+    for f in sorted(POSTS.glob(f"{today}-*")) if POSTS.exists() else []:
+        if not (f / "post.md").exists():
+            continue
+        txt = (f / "post.md").read_text(encoding="utf-8")
+        if "✅ 자동 검사 통과" not in txt or mark.status(f).get("status") == "rejected":
+            continue
+        got = plan_for_post(f, today)
+        if not got:
+            continue
+        kind, plan = got
+        slug = plan["key"].split("-", 1)[1].replace(" ", "")
+        if (OUT / f"{today}-{kind}-{slug}").exists():   # 이미 만든 글은 다시 안 만든다
+            continue
+        out.append(make(kind, today, preview, plan=plan))
+    return out
+
+
 def main() -> None:
+
+
     ap = argparse.ArgumentParser()
     ap.add_argument("--date", default=str(date.today()))
     ap.add_argument("--only")
@@ -528,10 +614,10 @@ def main() -> None:
         print(discard(a.discard))
         return
     gone = cleanup(a.date)
-    lines = []
-    for k in (a.only or "ABC"):
-        wait = [] if a.preview else pending(k)
-        lines.append(f"{k}: 아직 안 올린 쇼츠가 있어 새로 만들지 않음 ({', '.join(wait)})" if wait else make(k, a.date, a.preview))
+    if a.only:   # 수동/미리보기: 풀에서 뽑는 예전 방식
+        lines = [make(k, a.date, a.preview) for k in a.only]
+    else:        # 기본: 오늘 글마다 그 주제로 쇼츠
+        lines = make_posts(a.date, a.preview) or ["오늘 쇼츠로 만들 ✅ 글이 없음"]
     print("쇼츠: " + " / ".join(lines) + (f" (지난 쇼츠 {len(gone)}개 정리)" if gone else ""))
 
 

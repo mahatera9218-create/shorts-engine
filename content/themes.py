@@ -164,6 +164,16 @@ def pick_prices(prices: dict, seed: str, exclude: set[str] = frozenset()) -> lis
                                 "fetch", "query", "min_krw", "max_krw") if x in it}]
 
 
+def top_trend(prices: dict, exclude: set[str] = frozenset()) -> list[dict]:
+    """당일 검색량 상위 소비재 (대표 지시 2026-10-03): 모든 그룹을 통틀어 weight(월 검색량)가 가장 큰 물건 하나.
+    가격이 있거나(price_krw) 뉴스에서 뽑을 수 있는(fetch) 물건만. 지정 글/트렌드 글이 쓴다."""
+    cand = [i for i in prices["items"]
+            if (i.get("price_krw") or i.get("fetch")) and i["key"] not in exclude]
+    cand.sort(key=lambda i: -max(1, i.get("weight", 1)))
+    keys = ("key", "group", "label", "short", "unit", "price_krw", "as_of", "source", "fetch", "kind", "query", "min_krw", "max_krw")
+    return [{x: i[x] for x in keys if x in i} for i in cand[:3]]   # 상위 3개 (앞의 것이 실패하면 다음)
+
+
 def income_tax(x: float, brackets: list) -> float:
     for cap, rate, ded in brackets:
         if cap is None or x <= cap:

@@ -708,6 +708,30 @@ class TestLifecycle(unittest.TestCase):
         blog = [marketers.baseball_marketer(f"2026-10-{i + 1:02d}", c) == marketers.turn(f"2026-10-{i + 1:02d}", c) for i in range(9)]
         assert sum(blog) == 3   # 블로그 차례 글은 사흘에 한 번 야구
 
+    def test_top_trend(self):
+        from content import themes
+        pr = {"items": [{"key": "a", "short": "A", "weight": 100, "price_krw": 1},
+                        {"key": "b", "short": "B", "weight": 300, "fetch": "news"},
+                        {"key": "c", "short": "C", "weight": 50}]}  # c는 가격 출처 없음 → 제외
+        t = themes.top_trend(pr)
+        assert [i["short"] for i in t] == ["B", "A"]               # 검색량 높은 순, 가격 있는 것만
+        assert themes.top_trend(pr, {"b"})[0]["short"] == "A"      # 이미 쓴 물건 제외
+
+    def test_shorts_per_post(self):
+        from content import shorts
+        # A: 한 선수 영수증 → 통장형
+        d = {"theme": "receipt", "player": "김도영", "short_name": "김도영", "salary_krw": 250000000,
+             "headline_unit": "games", "min_wage_monthly_krw": 2156880,
+             "units": [{"key": "games", "label": "1경기", "count": 125}, {"key": "home_runs", "label": "1홈런", "count": 41}]}
+        p = shorts._a_plan(d, "2026-10-03-receipt-김도영")
+        assert p and p["kind"] == "A" and p["per"]
+        # C: 순위 글 → 순위표
+        rk = {"theme": "rank", "key": "kbo-top5", "title": "TOP5", "games": 144, "league": "kbo",
+              "rows": [{"short": "양의지", "name": "양의지", "krw": 42e8}, {"short": "고영표", "name": "고영표", "krw": 26e8},
+                       {"short": "최정", "name": "최정", "krw": 22e8}]}
+        c = shorts._c_plan(rk, "2026-10-03-rank-kbo-top5")
+        assert c and c["kind"] == "C" and len(c["rows"]) == 3
+
     def test_designate_parse(self):
         from content.designate import parse
         assert parse("[선수] 김도영", "x\n\n사건: 어제 끝내기 홈런") == ("김도영", "어제 끝내기 홈런")
