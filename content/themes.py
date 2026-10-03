@@ -43,7 +43,7 @@ def ratio(x: float) -> str:
 # ---------------------------------------------------------------- 뽑기
 
 def plans(pool: dict, recent: set[str], seed: str, n: int = 6, override: str | None = None,
-          theme: str | None = None, used: set = frozenset()) -> list[dict]:
+          theme: str | None = None, used: set = frozenset(), override_player: dict | None = None) -> list[dict]:
     """오늘 시도할 (테마, 선수) 조합 후보 n개. 연봉 보도가 없는 선수가 있으면 다음 후보로 넘어간다."""
     rng = random.Random(seed)
     everyone = pool["players"]
@@ -62,7 +62,9 @@ def plans(pool: dict, recent: set[str], seed: str, n: int = 6, override: str | N
     out, seen = [], set()
     for _ in range(n * 5):
         th = theme or rng.choices(list(themes), weights=[t["weight"] for t in themes.values()])[0]
-        if override:
+        if override_player is not None:   # run()이 소속으로 종목·동명이인을 가려 넘긴 선수 (2026-10-03)
+            a = override_player
+        elif override:
             a = next((p for p in everyone if override in (p["name"], p.get("short"))),
                      {"name": override, "sport": "kbo", "weight": 1})
         else:
@@ -91,7 +93,8 @@ def topic(pool: dict, p: dict) -> dict:
     money = "상금" if s["sport"] == "골프" else "연봉"
     return {"id": p["name"].replace(" ", ""), "player": p["name"], "short_name": short(p), "team": p.get("team", ""),
             "sport": f"{s['sport']} ({s['name']})", "hint": s.get("hint", ""), "event": p.get("event", ""),
-            "queries": [f"{p['name']} {money}", f"{p['name']} 시즌 성적", f"{p['name']} 계약" if money == "연봉" else f"{p['name']} 우승"]}
+            "queries": [f"{p['name']} {t} {money}".replace("  ", " ").strip() if (t := p.get("team", "")) else f"{p['name']} {money}",
+                        f"{p['name']} 시즌 성적", f"{p['name']} 계약" if money == "연봉" else f"{p['name']} 우승"]}
 
 
 def names_in(d: dict) -> list[str]:

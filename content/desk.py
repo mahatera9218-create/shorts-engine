@@ -447,12 +447,13 @@ def index(posts: list[dict], n_shorts: int = 0, shorts_html: str = "") -> str:
     post_data = json.dumps({"blocks": top["blocks"], "images": top["images"]}, ensure_ascii=False) if top else '{"blocks":[],"images":[]}'  # index copyBody가 이 글로 동작
     tabs = """<nav class="tabs"><a href="#blog" data-t="blog">📝 블로그</a><a href="#clip" data-t="clip">🎬 클립</a>
 <a href="#shorts" data-t="shorts">▶️ 쇼츠</a></nav>"""
-    tab_js = """function writeNow(){const raw=document.getElementById('who').value.trim();if(!raw){alert('선수 이름을 적어 주세요 (예: 김도영 / 어제 끝내기 홈런)');return}
-  const parts=raw.split('/');const n=parts[0].trim();const ev=parts.slice(1).join('/').trim();
+    tab_js = """function writeNow(){const raw=document.getElementById('who').value.trim();if(!raw){alert('선수 이름을 적어 주세요 (예: 김도영 / 어제 끝내기 홈런 / KIA)');return}
+  const parts=raw.split('/');const n=parts[0].trim();const ev=(parts[1]||'').trim();const tm=(parts[2]||'').trim();
   if(!n){alert('선수 이름을 적어 주세요');return}
   const nl=String.fromCharCode(10);
-  const body=['이 선수로 지금 글을 써 주세요. 아래 초록색 Create 버튼만 누르면 됩니다.'].concat(ev?['','사건: '+ev]:[]).join(nl);
-  location.href='https://github.com/REPO_SLUG/issues/new?title='+encodeURIComponent('[선수] '+n)+'&body='+encodeURIComponent(body)}
+  let body=['이 선수로 지금 글을 써 주세요. 아래 초록색 Create 버튼만 누르면 됩니다.'];
+  if(ev)body=body.concat(['','사건: '+ev]);if(tm)body=body.concat(['','소속: '+tm]);
+  location.href='https://github.com/REPO_SLUG/issues/new?title='+encodeURIComponent('[선수] '+n)+'&body='+encodeURIComponent(body.join(nl))}
 function tab(){const h=(location.hash||'#blog').slice(1);document.querySelectorAll('section.tab').forEach(s=>s.hidden=s.id!==h);
 document.querySelectorAll('nav.tabs a').forEach(a=>a.classList.toggle('on',a.dataset.t===h));
 document.querySelectorAll('section.tab:not([hidden]) textarea.ed').forEach(grow)}addEventListener('hashchange',tab);addEventListener('DOMContentLoaded',tab);tab();"""
@@ -468,9 +469,9 @@ nav.tabs a.on{{background:var(--btn);color:var(--btnink)}}</style></head><body><
 {tabs}
 <section class="tab" id="blog">
 <div class="card" style="border:2px solid var(--accent)"><h2>⚡ 이 선수로 지금 쓰기</h2>
-<input id="who" placeholder="선수명 / 이슈 (예: 김도영 / 어제 끝내기 홈런)" style="width:100%;min-height:50px;margin:8px 0;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font-size:16px">
+<input id="who" placeholder="선수명 / 이슈 / 소속 (예: 김도영 / 어제 홈런 / KIA)" style="width:100%;min-height:50px;margin:8px 0;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font-size:16px">
 <button onclick="writeNow()">⚡ 지금 쓰기</button>
-<div class="muted">선수명만 적어도 돼요. 뒤에 <b>/</b> 사건을 적으면 그걸 제목·첫 문단 훅으로 걸어요. 비교 상품은 <b>그날 검색량 상위(가전·차·IT·여행)로 자동</b>이에요. 15~20분 뒤 바로 아래에 <b>블로그·클립·쇼츠</b>가 떠요 (Claude 약 $0.3, 연봉 못 찾는 선수는 안 나올 수 있어요).</div></div>
+<div class="muted">선수명만 적어도 돼요. 우리 목록 선수면 종목이 자동이에요. <b>동명이인이거나 목록에 없는 선수</b>면 뒤에 <b>/ 소속</b>(예: 토트넘·PGA)을 적어 주세요. 사건을 적으면 제목·첫 문단 훅으로 걸어요. 비교 상품은 <b>그날 검색량 상위(가전·차·IT·여행)로 자동</b>이에요. 15~20분 뒤 바로 아래에 <b>블로그·클립·쇼츠</b>가 떠요 (Claude 약 $0.3, 연봉 못 찾는 선수는 안 나올 수 있어요).</div></div>
 {top_article}
 {turn_note}
 <h2>{'다른 글 (예비)' if picks else '오늘의 후보'}</h2>
