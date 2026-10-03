@@ -13,18 +13,18 @@ players:
   short: 김민솔
   sport: golf
   team: ''
-  why: KLPGA 하이트진로 챔피언십 이틀 연속 선두, 메이저 우승과 신인 시즌 신기록 눈앞
-  source: 70
+  why: KLPGA 하이트진로 챔피언십 이틀 연속 선두, 신인 시즌 3승
+  source: 68
   date: '2026-10-03'
-  link: http://www.stoo.com/article.php?aid=109211467199
+  link: https://news.sbs.co.kr/news/endPage.do?news_id=N1008781350&plink=ORI&cooper=NAVER
 - name: 레이 커
-  short: 커
+  short: 레이 커
   sport: mlb
   team: 애틀랜타 브레이브스
-  why: 편의점 알바 출신 무명 투수가 포스트시즌 오프너로 무실점 호투
-  source: 52
+  why: 편의점 알바 출신 32세 좌완, 포스트시즌 호투로 화제
+  source: 23
   date: '2026-10-03'
-  link: https://www.sportschosun.com/baseball/2026-10-02/202610020100015400000736
+  link: https://www.starnewskorea.com/sports/2026/10/03/2026100309341882072
 - name: 마이클 해리스 2세
   short: 해리스
   sport: mlb
@@ -37,24 +37,24 @@ players:
   short: 곽빈
   sport: kbo
   team: 두산 베어스
-  why: 투수 2관왕 유력, 김도영과 MVP 경쟁
-  source: 29
+  why: 투수 2관왕 유력, MVP 경쟁에 가세
+  source: 55
   date: '2026-10-03'
   link: https://www.ohmynews.com/NWS_Web/View/at_pg.aspx?CNTN_CD=A0003272266&CMPT_CD=P0010&utm_source=naver&utm_medium=newsearch&utm_campaign=naver_news
 - name: 듀렌
   short: 듀렌
   sport: nba
   team: 디트로이트
-  why: 5년 2억 달러에 디트로이트 잔류 계약
-  source: 56
+  why: 5년 2억 달러에 디트로이트 잔류 재계약
+  source: 60
   date: '2026-10-03'
   link: https://m.sports.naver.com/basketball/article/065/0000302208
 - name: 김민성
   short: 김민성
   sport: kbo
   team: 롯데 자이언츠
-  why: 20년 프로 생활을 마치고 9일 은퇴식을 진행
-  source: 27
+  why: 20년 만에 현역 은퇴, 9일 사직에서 은퇴식
+  source: 40
   date: '2026-10-03'
   link: https://www.joongangenews.com/news/articleView.html?idxno=552494
 - name: 타릭 스쿠발
@@ -67,10 +67,10 @@ players:
   link: http://www.osen.co.kr/article/G1112886518
 - name: 오현규
   short: 오현규
-  sport: soccer
+  sport: epl
   team: 베식타스
-  why: 토트넘이 내년 겨울 영입 검토, 21호 프리미어리거 가능성
-  source: 72
+  why: 토트넘이 내년 겨울 영입을 검토한다는 보도
+  source: 73
   date: '2026-10-03'
   link: https://www.goal.com/kr/뉴스/a/bltd769d1ab91a2f21c
 - name: 스즈키
@@ -101,32 +101,32 @@ players:
   short: 이강인
   sport: laliga
   team: 아틀레티코 마드리드
-  why: 아틀레티코 이달의 선수 선정
-  source: 22
+  why: 입단 두 달 만에 팬투표로 9월 '이달의 선수'에 선정
+  source: 29
   date: '2026-10-03'
-  link: https://www.besteleven.com/news/articleView.html?idxno=312755
+  link: https://www.slist.kr/news/articleView.html?idxno=770784
 - name: 송민혁
   short: 송민혁
   sport: golf
   team: ''
-  why: KPGA 현대해상 최경주 인비테이셔널 첫날 65타로 돌풍을 일으키고 챔피언조에 합류
-  source: 72
+  why: KPGA 현대해상 최경주 인비테이셔널 첫날 65타 돌풍, 챔피언조 진출
+  source: 76
   date: '2026-10-03'
   link: https://www.g-enews.com/view.php?ud=202610011758202721daecd3dad5_1
 - name: 김하성
   short: 김하성
   sport: mlb
   team: 애틀랜타 브레이브스
-  why: 애틀랜타 NLDS 진출, 다저스 김혜성과 코리안 더비 가능성
-  source: 10
+  why: 애틀랜타의 NLDS 진출 속에 코리안 더비 관심
+  source: 15
   date: '2026-10-03'
   link: https://www.sportschosun.com/baseball/2026-10-02/202610020100016400000811
 - name: 유해란
   short: 유해란
   sport: golf
   team: ''
-  why: LPGA 메이저 2승 후 KLPGA 하이트진로 챔피언십에서 선두에 2타 차 2위
-  source: 70
+  why: KLPGA 하이트진로 챔피언십에서 김민솔에 2타 차 2위
+  source: 71
   date: '2026-10-03'
   link: http://www.stoo.com/article.php?aid=109211467199
 - name: 샘 힐리어드
@@ -149,10 +149,10 @@ players:
   short: 배상문
   sport: golf
   team: ''
-  why: 17년 만에 KPGA투어 우승 도전, 챔피언조에서 송민혁과 샷 대결
-  source: 64
+  why: 17년 만의 KPGA투어 우승 도전, 챔피언조 편성
+  source: 77
   date: '2026-10-03'
-  link: https://www.g-enews.com/view.php?ud=202610021535136123daecd3dad5_1
+  link: https://www.g-enews.com/view.php?ud=202610011424358957daecd3dad5_1
 - name: 김현수
   short: 김현수
   sport: kbo
