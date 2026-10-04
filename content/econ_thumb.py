@@ -310,8 +310,9 @@ def gather(out: Path, per: int = 4) -> None:
 
 # ---------------------------------------------------------------- 옛 그림 후보 (김홍도·민화, 2026-10-04 대표 제안)
 ART_SEARCH = {  # 이름: 위키미디어 공용 검색어
-    "danwon": ["Kim Hong-do genre painting", "Danwon pungsokdo", "김홍도 풍속도"],
-    "minhwa": ["Hojakdo tiger magpie", "Chaekgeori", "Korean folk painting minhwa"],
+    "danwon": ["Danwon Ssireum", "Danwon Tajak", "Danwon Jumak", "Danwon Seodang", "Danwon Jangteogil",
+               "Danwon Mudong", "Danwon Giwaigi", "Danwon"],
+    "minhwa": ["Hojakdo tiger magpie", "Chaekgeori"],
 }
 PD_OK = ("public domain", "pd", "cc0", "cc-zero")
 
