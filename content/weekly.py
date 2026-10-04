@@ -12,7 +12,8 @@ import csv
 import re
 import statistics
 import sys
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
+from zoneinfo import ZoneInfo
 
 import yaml
 
@@ -146,7 +147,8 @@ def report(week_start: date) -> str:
 
 
 def main() -> None:
-    day = date.fromisoformat(sys.argv[1]) if len(sys.argv) > 1 else date.today() - timedelta(days=7)
+    today = datetime.now(ZoneInfo("Asia/Seoul")).date()  # 서버는 UTC라 월요일 아침(한국)이 일요일로 잡힌다 (2026-10-05 수정)
+    day = date.fromisoformat(sys.argv[1]) if len(sys.argv) > 1 else today - timedelta(days=7)
     start = day - timedelta(days=day.weekday())
     out = ROOT / "reports" / "주간" / f"{start}.md"
     out.parent.mkdir(parents=True, exist_ok=True)
