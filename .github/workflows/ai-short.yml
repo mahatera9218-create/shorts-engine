@@ -46,6 +46,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add reports/
+          git add -f reports/쇼츠-시안/ 2>/dev/null || true  # mp4는 .gitignore라 시안만 강제로 올린다
           git diff --cached --quiet && exit 0
           git commit -m "AI 쇼츠 시험 $(date +%F)"
           for i in 1 2 3; do
