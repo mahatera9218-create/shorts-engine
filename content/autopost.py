@@ -258,7 +258,7 @@ WRITE_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"(닉네�
 제목 (홈판에서는 썸네일 + 제목만 보고 누를지 정한다. 가장 공들일 것)
 - 추천 제목은 썸네일과 한 쌍이다. 썸네일(숫자표 '썸네일' 줄)이 보여 주는 숫자·비교 대상을 그대로 이어받아, 그 숫자를 보고 생길
   다음 궁금증을 던진다. 썸네일에 물건(차·아파트·유니폼·여행)이나 세금이 있으면 제목에도 그 말을 넣는다. 썸네일과 다른 숫자·다른 비교
-  대상을 주제로 삼지 않는다. 예: 썸네일 "이정후 / 올해 연봉이면 / 테슬라 모델Y 597대" → 제목 "이정후 연봉이면 모델Y 몇 대 살까?"
+  대상을 주제로 삼지 않는다. 예: 썸네일 "<선수> / 올해 연봉이면 / <숫자표의 비교 물건> N개" → 제목 "<선수> 연봉이면 <비교 물건> 몇 개 살까?" (물건은 숫자표에 있는 것만)
   (단, 퀴즈 카드가 묻는 단위는 피한다). 본문 첫 문단은 이 제목의 답이다.
 - 5개 모두 숫자표의 '제목용 짧은 이름'으로 시작한다 (검색 유입 + 스타 이름으로 눈길). 성+이름 전체를 쓰지 않는다.
 - 제목은 검색하는 사람이 검색창에 물어볼 질문 그대로 (대표 지시 2026-10-02). 키워드 나열·괄호·가운뎃점(·)·슬래시 금지, 물음표로 끝.
@@ -897,6 +897,24 @@ def remember_ready(topic: dict, today: str) -> None:
                      + yaml.safe_dump(book, allow_unicode=True, sort_keys=True), encoding="utf-8")
 
 
+RECENT_ITEM_DAYS = 14  # 비교 물건은 이 기간 안에 다른 글에서 쓴 것을 피한다 (모델Y만 반복되던 문제, 대표 지적 2026-10-04)
+
+
+def recent_items(today: str, days: int = RECENT_ITEM_DAYS) -> set[str]:
+    """최근 N일 안에 어느 글에서든 쓴 비교 물건 key (버린 글 제외)."""
+    out: set[str] = set()
+    day = date.fromisoformat(today)
+    for f in (x for x in POSTS.iterdir() if (x / "data.yaml").exists()) if POSTS.exists() else []:
+        try:
+            if (day - date.fromisoformat(f.name[:10])).days > days or mark.status(f).get("status") == "rejected":
+                continue
+            d = yaml.safe_load((f / "data.yaml").read_text(encoding="utf-8")) or {}
+        except (ValueError, yaml.YAMLError):
+            continue
+        out |= {p.get("key") for p in d.get("prices") or [] if p.get("key")}
+    return out
+
+
 USED_DAYS = 120  # 같은 테마·같은 선수(조합)는 이 기간 안에 다시 쓰지 않는다 (콘텐츠가 마르지 않게 고르게 쓴다)
 
 
@@ -1400,7 +1418,9 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
                 fallback = next((i for i in prices["items"] if i["key"] == "seoul_apt"), None)
                 used_it = used_items.get(d["player"], set())
                 # 당일 검색량 상위 트렌드 상품 (대표 지시 2026-10-03): 지정 글/트렌드면 검색량 1위 물건부터
-                picks = themes.top_trend(prices, used_it) if trend else themes.pick_prices(prices, f"{today}-{d['player']}", used_it)
+                recent_it = recent_items(today)  # 최근 14일 어느 글에서든 쓴 비교 물건 (같은 물건 반복 방지, 2026-10-04)
+                picks = (themes.top_trend(prices, used_it, recent_it, f"{today}-{d['player']}") if trend
+                         else themes.pick_prices(prices, f"{today}-{d['player']}", used_it, recent_it))
                 d["prices"], pn = fill_prices(hub, llm, picks, today, fallback)
                 d["prices"] = d["prices"][:1]
                 notes += pn
