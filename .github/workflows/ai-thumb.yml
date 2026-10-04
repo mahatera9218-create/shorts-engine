@@ -1,0 +1,46 @@
+# 조선 화풍 AI 썸네일 시험: GPT Image 2 vs Nano Banana Pro → reports/썸네일-시안/ai/
+# 자동: content/ai_thumb.py를 고쳐 main에 올리면. 수동: Actions → AI 썸네일 시험
+name: AI 썸네일 시험
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["content/ai_thumb.py"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: repo-reports
+  cancel-in-progress: false
+
+jobs:
+  thumb:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: 준비
+        run: pip install -r requirements.txt
+      - name: 그림 그리기
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python -m content.ai_thumb
+      - name: 결과 저장 (reports/ 커밋)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/
+          git diff --cached --quiet && exit 0
+          git commit -m "AI 썸네일 시험 $(date +%F)"
+          for i in 1 2 3; do
+            git pull --rebase --autostash -X theirs origin "${GITHUB_REF_NAME}" && git push && exit 0
+            sleep $((i * 5))
+          done
+          exit 1
