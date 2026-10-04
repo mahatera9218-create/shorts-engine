@@ -308,10 +308,60 @@ def gather(out: Path, per: int = 4) -> None:
     (out / "credits.json").write_text(json.dumps(credits, ensure_ascii=False, indent=1), encoding="utf-8")
 
 
+# ---------------------------------------------------------------- 옛 그림 후보 (김홍도·민화, 2026-10-04 대표 제안)
+ART_SEARCH = {  # 이름: 위키미디어 공용 검색어
+    "danwon": ["Kim Hong-do genre painting", "Danwon pungsokdo", "김홍도 풍속도"],
+    "minhwa": ["Hojakdo tiger magpie", "Chaekgeori", "Korean folk painting minhwa"],
+}
+PD_OK = ("public domain", "pd", "cc0", "cc-zero")
+
+
+def gather_art(out: Path, per: int = 12) -> None:
+    """위키미디어 공용에서 '퍼블릭 도메인/CC0' 표시가 있는 옛 그림만 받는다. 라이선스·출처는 credits.json."""
+    import json
+    api = "https://commons.wikimedia.org/w/api.php"
+    ua = {"User-Agent": "eoksori-thumb/1.0 (blog thumbnail research)"}
+    out.mkdir(parents=True, exist_ok=True)
+    credits, seen = {}, set()
+    for name, queries in ART_SEARCH.items():
+        got = 0
+        for q in queries:
+            if got >= per:
+                break
+            r = requests.get(api, headers=ua, timeout=30, params={
+                "action": "query", "format": "json", "generator": "search", "gsrsearch": q, "gsrnamespace": 6,
+                "gsrlimit": 30, "prop": "imageinfo", "iiprop": "url|extmetadata|size", "iiurlwidth": 1600})
+            pages = (r.json().get("query") or {}).get("pages", {})
+            for pg in sorted(pages.values(), key=lambda x: x.get("index", 0)):
+                title = pg.get("title", "")
+                if title in seen or not title.lower().endswith((".jpg", ".jpeg", ".png")):
+                    continue
+                ii = (pg.get("imageinfo") or [{}])[0]
+                meta = ii.get("extmetadata") or {}
+                lic = (meta.get("LicenseShortName") or {}).get("value", "")
+                if not any(k in lic.lower() for k in PD_OK) or (ii.get("width") or 0) < 700:
+                    continue
+                try:
+                    img = Image.open(io.BytesIO(requests.get(ii["thumburl"], headers=ua, timeout=60).content)).convert("RGB")
+                except Exception:  # noqa: BLE001
+                    continue
+                img.thumbnail((1600, 1600))
+                got += 1
+                seen.add(title)
+                fn = f"{name}-{got:02d}.jpg"
+                img.save(out / fn, quality=86)
+                credits[fn] = {"title": title, "license": lic, "page": ii.get("descriptionurl", ""),
+                               "artist": (meta.get("Artist") or {}).get("value", "")[:200]}
+                if got >= per:
+                    break
+    (out / "credits.json").write_text(json.dumps(credits, ensure_ascii=False, indent=1), encoding="utf-8")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--demo", action="store_true")
     ap.add_argument("--photos", action="store_true", help="디자인 시안용 사진 후보 모으기")
+    ap.add_argument("--art", action="store_true", help="김홍도·민화 퍼블릭 도메인 그림 후보 모으기")
     ap.add_argument("--out", default=str(ROOT / "reports" / "썸네일-시안"))
     a = ap.parse_args()
     if a.demo:
@@ -319,6 +369,8 @@ def main() -> None:
             print(p)
     if a.photos:
         gather(Path(a.out) / "photos")
+    if a.art:
+        gather_art(Path(a.out) / "art")
 
 
 if __name__ == "__main__":
