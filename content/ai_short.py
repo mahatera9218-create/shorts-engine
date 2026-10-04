@@ -88,6 +88,33 @@ def key(name: str) -> str:
     return os.environ.get(name, "").strip()
 
 
+def voice(text: str) -> Path | None:
+    """목소리: 구글 TTS 키가 있으면 그것, 없으면 OpenAI TTS(같은 OpenAI 키, 30초에 10원 안팎)."""
+    if key("GOOGLE_TTS_API_KEY"):
+        return tts(text)
+    if not key("OPENAI_API_KEY"):
+        return None
+    import hashlib
+    out = OUT / "voice" / (hashlib.sha1(text.encode()).hexdigest()[:12] + ".wav")
+    if out.exists():
+        return out
+    out.parent.mkdir(parents=True, exist_ok=True)
+    r = requests.post("https://api.openai.com/v1/audio/speech",
+                      headers={"Authorization": f"Bearer {key('OPENAI_API_KEY')}"},
+                      json={"model": "gpt-4o-mini-tts", "voice": "ash", "input": text, "response_format": "mp3",
+                            "instructions": "Speak natural, warm Korean like a friendly storyteller explaining "
+                                            "market news. Clear, slightly brisk pace, no exaggeration."},
+                      timeout=120)
+    if r.status_code != 200:
+        print(f"OpenAI 목소리 실패 HTTP {r.status_code}: {r.text[:200]}")
+        return None
+    mp3 = out.with_suffix(".mp3")
+    mp3.write_bytes(r.content)
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(mp3), "-ar", "44100", str(out)], check=True)
+    mp3.unlink()
+    return out
+
+
 # ---------------------------------------------------------------- 그림 (GPT Image 2)
 
 def gpt_generate(prompt: str, size: str) -> bytes:
@@ -306,14 +333,15 @@ def main() -> None:
             log.append(f"- 그림 실패: {str(e)[:300]}")
     ready = all((OUT / f"scene-{i}.png").exists() for i in range(1, len(SCENES) + 1))
     if ready and shutil.which("ffmpeg"):
-        voices = [tts(s["say"]) for s in SCENES]
+        voices = [voice(s["say"]) for s in SCENES]
         durs = [max(4.0, wav_seconds(v) + 0.5) if v else 5.0 for v in voices]
         cues, t = [], 0.0
         for v, d in zip(voices, durs):
             if v:
                 cues.append((v, t + 0.15, 1.0))
             t += d
-        log.append(f"- 목소리: {'구글 TTS' if any(voices) else '없음(키 없음 또는 실패) → 무음'}")
+        who = "구글 TTS" if key("GOOGLE_TTS_API_KEY") else "OpenAI TTS (gpt-4o-mini-tts)"
+        log.append(f"- 목소리: {who if any(voices) else '없음(키 없음 또는 실패) → 무음'}")
         audio = mix("ffmpeg", cues, sum(durs), OUT / "voice.wav") if cues else None
         log.append(build("A", durs, audio))
         if kling_clips(durs, log) and all((OUT / f"kling-{i}.mp4").exists() for i in range(1, len(SCENES) + 1)):
