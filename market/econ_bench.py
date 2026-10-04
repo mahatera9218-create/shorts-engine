@@ -111,12 +111,13 @@ def main() -> None:
     hub = ApiHub(load_yaml("global.yaml")["endpoints"]["naver_hub"])
     nq = sum(len(v) for v in cfg["queries"].values())
     r = rank_blogs(hub, cfg["queries"], cfg.get("depth", 30))
-    top = [l for l, _ in r["score"].most_common(cfg.get("top_blogs", 15))]
+    # 여러 검색어에 나온 블로그가 먼저 (한 검색어에서만 높은 블로그는 우연일 수 있음, 1차 실행 2026-10-04)
+    top = sorted(r["score"], key=lambda l: (-r["hits"][l], -r["score"][l]))[:cfg.get("top_blogs", 15)]
     L = [f"# 경제 상위 블로그 벤치마크 ({kst:%Y-%m-%d})", "",
          f"네이버 공식 블로그 검색 API로 경제 검색어 {nq}개의 정확도순 상위 {cfg.get('depth', 30)}개를 보고, 여러 검색어에 자주·높게 나오는 블로그를 골랐어요.",
          "그 블로그들의 공개 RSS(최근 글 약 50개)로 발행 습관·제목 모양·주제를 숫자로 쟀어요. 남의 제목·문장은 옮기지 않았어요.",
          "⚠️ 방문자·이웃 수는 공식 통로가 없어 못 쟀어요. API 순서는 실제 검색 화면과 다를 수 있어요.", "",
-         "## 1. 상위 노출 블로그", "", "| 순위 | 블로그 | 나온 검색어 수 | 주로 나온 분야 |", "| --- | --- | --- | --- |"]
+         "## 1. 상위 노출 블로그 (여러 검색어에 나온 순)", "", f"검색어 2개 이상에 나온 블로그: {sum(1 for v in r['hits'].values() if v >= 2)}곳 / 전체 {len(r['hits'])}곳", "", "| 순위 | 블로그 | 나온 검색어 수 | 주로 나온 분야 |", "| --- | --- | --- | --- |"]
     for i, l in enumerate(top, 1):
         L.append(f"| {i} | [{r['names'][l]}]({l}) | {r['hits'][l]}/{nq} | {', '.join(sorted(r['groups'][l]))} |")
     prof = {}
