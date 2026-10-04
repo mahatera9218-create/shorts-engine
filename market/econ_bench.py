@@ -134,7 +134,7 @@ def main() -> None:
     for l, p in ok.items():
         L.append(f"| {r['names'][l]} | " + " | ".join(f"{round(100 * p['topics'][k] / p['n'])}" for k in TOPIC) + f" | {', '.join(p['words'][:6])} |")
     if ok:
-        med = lambda k: statistics.median(p[k] for p in ok.values())  # noqa: E731
+        med = lambda k: round(statistics.median(p[k] for p in ok.values()), 1)  # noqa: E731
         tot = Counter()
         for p in ok.values():
             for k in TOPIC:
