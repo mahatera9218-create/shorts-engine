@@ -269,14 +269,56 @@ def demo(out: Path) -> list[Path]:
     return files
 
 
+# ---------------------------------------------------------------- 사진 후보 모으기 (디자인 시안용, 2026-10-04)
+CANDIDATES = {  # 이름: (검색어, 설명에 있어야 할 말)
+    "gold": [("gold bars", "gold"), ("gold bullion", "gold")],
+    "stock": [("stock market screen", "stock"), ("trading chart monitor", "chart")],
+    "bitcoin": [("bitcoin coin", "bitcoin"), ("cryptocurrency", "crypto")],
+    "seoul": [("seoul skyline night", "seoul")],
+    "wallstreet": [("wall street new york", "street"), ("stock exchange building", "exchange")],
+    "savings": [("coins jar savings", "coin"), ("piggy bank", "piggy")],
+}
+
+
+def gather(out: Path, per: int = 4) -> None:
+    """검색어별 무료 사진 후보를 받아 둔다 (사람 얼굴 빼고). 출처는 credits.json."""
+    import json
+    key = secret("PEXELS_API_KEY")
+    out.mkdir(parents=True, exist_ok=True)
+    credits = {}
+    for name, qs in CANDIDATES.items():
+        got = 0
+        for q, must in qs:
+            if got >= per:
+                break
+            r = requests.get("https://api.pexels.com/v1/search", headers={"Authorization": key},
+                             params={"query": q, "per_page": 40}, timeout=20)
+            for ph in r.json().get("photos", []):
+                alt = (ph.get("alt") or "").lower()
+                if must not in alt or any(w in alt.replace(",", " ").split() for w in PEOPLE):
+                    continue
+                img = Image.open(io.BytesIO(requests.get(ph["src"]["large2x"], timeout=30).content)).convert("RGB")
+                img.thumbnail((1600, 1600))
+                fn = f"{name}-{got + 1}.jpg"
+                img.save(out / fn, quality=86)
+                credits[fn] = {"id": ph["id"], "by": ph.get("photographer", ""), "page": ph.get("url", ""), "alt": ph.get("alt", "")}
+                got += 1
+                if got >= per:
+                    break
+    (out / "credits.json").write_text(json.dumps(credits, ensure_ascii=False, indent=1), encoding="utf-8")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--demo", action="store_true")
+    ap.add_argument("--photos", action="store_true", help="디자인 시안용 사진 후보 모으기")
     ap.add_argument("--out", default=str(ROOT / "reports" / "썸네일-시안"))
     a = ap.parse_args()
     if a.demo:
         for p in demo(Path(a.out)):
             print(p)
+    if a.photos:
+        gather(Path(a.out) / "photos")
 
 
 if __name__ == "__main__":
