@@ -153,28 +153,35 @@ def compute_life(d: dict) -> dict:
             "inverse_count": item["price_krw"] / pick["value"], "inverse_word": cards.word(pick["label"])}
 
 
-def pick_prices(prices: dict, seed: str, exclude: set[str] = frozenset()) -> list[dict]:
+def pick_prices(prices: dict, seed: str, exclude: set[str] = frozenset(), recent: set[str] = frozenset()) -> list[dict]:
     """1선수 1물건 (대표 결정): 먼저 그룹(집·국산차·수입차)을 group_weight대로 고르고,
     그 안에서 검색량(weight)이 큰 것일수록 자주 뽑는다 (많이 검색하는 단지·차종 위주)."""
     rng = random.Random(seed)
     gw = prices.get("group_weight") or {"home": 1, "car_kr": 1, "car_import": 1}
     groups = [g for g in gw if any(i.get("group") == g for i in prices["items"])]
     group = rng.choices(groups, weights=[gw[g] for g in groups])[0]
-    pool = [i for i in prices["items"] if i.get("group") == group and i["key"] not in exclude] or \
+    pool = [i for i in prices["items"] if i.get("group") == group and i["key"] not in exclude | recent] or \
+        [i for i in prices["items"] if i.get("group") == group and i["key"] not in exclude] or \
         [i for i in prices["items"] if i.get("group") == group]  # 이 선수와 이미 쓴 물건은 빼고 (다 썼으면 다시)
     it = rng.choices(pool, weights=[max(1, i.get("weight", 1)) for i in pool])[0]
     return [{x: it[x] for x in ("key", "group", "label", "short", "unit", "price_krw", "as_of", "source",
                                 "fetch", "query", "min_krw", "max_krw") if x in it}]
 
 
-def top_trend(prices: dict, exclude: set[str] = frozenset()) -> list[dict]:
-    """당일 검색량 상위 소비재 (대표 지시 2026-10-03): 모든 그룹을 통틀어 weight(월 검색량)가 가장 큰 물건 하나.
-    가격이 있거나(price_krw) 뉴스에서 뽑을 수 있는(fetch) 물건만. 지정 글/트렌드 글이 쓴다."""
-    cand = [i for i in prices["items"]
-            if (i.get("price_krw") or i.get("fetch")) and i["key"] not in exclude]
+def top_trend(prices: dict, exclude: set[str] = frozenset(), recent: set[str] = frozenset(), seed: str = "") -> list[dict]:
+    """검색량 상위 소비재 (대표 지시 2026-10-03). 매번 1위(모델Y)만 나오던 문제 수정 (대표 지적 2026-10-04):
+    - 최근 며칠 안에 어느 글에서든 쓴 물건(recent)은 빼고, 이 선수와 쓴 물건(exclude)도 뺀다
+    - 검색량 상위 8개 안에서 검색량이 클수록 자주 뽑히게 '날마다 다르게' 고른다 (1위 고정 아님)
+    다 빠지면 recent 제한을 풀어 다시 고른다. 앞의 것이 실패하면 다음 것을 쓰도록 3개를 돌려준다."""
+    base = [i for i in prices["items"] if (i.get("price_krw") or i.get("fetch")) and i["key"] not in exclude]
+    cand = [i for i in base if i["key"] not in recent] or base
     cand.sort(key=lambda i: -max(1, i.get("weight", 1)))
+    top = cand[:8]
+    rng = random.Random(seed)
+    # 가중치 비례 무작위 순서 (검색량 큰 물건이 앞에 올 확률이 높지만 고정은 아님)
+    top.sort(key=lambda i: -(rng.random() ** (1.0 / max(1, i.get("weight", 1)))))
     keys = ("key", "group", "label", "short", "unit", "price_krw", "as_of", "source", "fetch", "kind", "query", "min_krw", "max_krw")
-    return [{x: i[x] for x in keys if x in i} for i in cand[:3]]   # 상위 3개 (앞의 것이 실패하면 다음)
+    return [{x: i[x] for x in keys if x in i} for i in top[:3]]
 
 
 def income_tax(x: float, brackets: list) -> float:
