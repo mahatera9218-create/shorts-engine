@@ -55,9 +55,10 @@ on:
   push:       # 지금 쓰기 (2026-10-02): GitHub 예약이 안 돌면 config/write_now.yaml을 바꿔 올려 3명 모두 쓰게 한다
     branches: [main]
     paths: ["config/write_now.yaml"]
-  schedule:   # GitHub 예약 실행은 몇 시간씩 늦게 시작할 때가 있다 (9/30은 06:47 예약이 09:45에 시작, 10/1은 07시까지 시작 안 함)
-    - cron: "13 20 * * *"   # UTC 20:13 = 한국 05:13 (일찍 걸어 둔다)
-    - cron: "37 22 * * *"   # UTC 22:37 = 한국 07:37 예비
+  # 예약 실행 멈춤 (2026-10-04, 경제 블로그 전환): 스포츠 글을 더 쓰지 않는다. 경제 자동 글쓰기가 준비되면 새 워크플로로 건다.
+  # schedule:
+  #   - cron: "13 20 * * *"   # UTC 20:13 = 한국 05:13
+  #   - cron: "37 22 * * *"   # UTC 22:37 = 한국 07:37 예비
 
 permissions:
   contents: write
