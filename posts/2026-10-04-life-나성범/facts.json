@@ -1,0 +1,47 @@
+{
+ "home_runs": {
+  "value": 30,
+  "label": "올 시즌 홈런",
+  "unit": "개",
+  "date": "2026-09-30",
+  "sources": [
+   "http://www.osen.co.kr/article/G1112884850"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "games": {
+  "value": 96,
+  "label": "7일 현재 출전 경기(8월 7일 기준)",
+  "unit": "경기",
+  "date": "2026-08-07",
+  "sources": [
+   "https://www.xportsnews.com/article/2181159"
+  ],
+  "rule": "출처 1개",
+  "differs": null
+ },
+ "contract_total": {
+  "value": 15000000000,
+  "label": "FA 계약 총액(6년)",
+  "unit": "KRW",
+  "date": "2026-09-30",
+  "sources": [
+   "http://www.osen.co.kr/article/G1112884850",
+   "https://sports.donga.com/sports/article/all/20260930/134761617/1"
+  ],
+  "rule": "모두 같음",
+  "differs": null
+ },
+ "salary": {
+  "value": 800000000,
+  "label": "올해 연봉",
+  "unit": "KRW",
+  "date": "2026-10-04",
+  "sources": [
+   "대표 제공"
+  ],
+  "rule": "확인 연봉표",
+  "differs": null
+ }
+}
