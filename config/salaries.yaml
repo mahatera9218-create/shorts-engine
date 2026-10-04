@@ -47,6 +47,13 @@ players:
     basis: 다저스 3년 1250만 달러 계약 중 2026년 연봉, 보도
     currency: USD
     source: https://www.hankyung.com/article/2025010453707
+  나성범:
+    amount: 800000000
+    as_of: '2026-10-04'
+    basis: 추정치(공식 발표 아님), 대표 제공
+    currency: KRW
+    estimate: true
+    source: 대표 제공
   노시환:
     amount: 1000000000
     as_of: 2026-01-21
