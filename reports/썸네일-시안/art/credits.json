@@ -1,44 +1,74 @@
 {
  "danwon-01.jpg": {
-  "title": "File:Landscape LACMA M.2004.256 (5 of 6).jpg",
+  "title": "File:Danwon-Ssireum.jpg",
   "license": "Public domain",
-  "page": "https://commons.wikimedia.org/wiki/File:Landscape_LACMA_M.2004.256_(5_of_6).jpg",
-  "artist": "<div class=\"fn value\">\nKim Hong-do (Korea, 1745-after 1814)</div>"
+  "page": "https://commons.wikimedia.org/wiki/File:Danwon-Ssireum.jpg",
+  "artist": "단원 김홍도 (檀園 金弘道, 1745 - 1816 이후)"
  },
  "danwon-02.jpg": {
-  "title": "File:Landscape LACMA M.2004.256 (1 of 6).jpg",
+  "title": "File:Danwon Ssireum.jpg",
   "license": "Public domain",
-  "page": "https://commons.wikimedia.org/wiki/File:Landscape_LACMA_M.2004.256_(1_of_6).jpg",
-  "artist": "<div class=\"fn value\">\nKim Hong-do (Korea, 1745-after 1814)</div>"
- },
- "danwon-03.jpg": {
-  "title": "File:Landscape LACMA M.2004.256 (2 of 6).jpg",
-  "license": "Public domain",
-  "page": "https://commons.wikimedia.org/wiki/File:Landscape_LACMA_M.2004.256_(2_of_6).jpg",
-  "artist": "<div class=\"fn value\">\nKim Hong-do (Korea, 1745-after 1814)</div>"
- },
- "danwon-04.jpg": {
-  "title": "File:Danwon Jangteogil.jpg",
-  "license": "Public domain",
-  "page": "https://commons.wikimedia.org/wiki/File:Danwon_Jangteogil.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Danwon_Ssireum.jpg",
   "artist": "<bdi><a href=\"https://en.wikipedia.org/wiki/en:Kim_Hongdo\" class=\"extiw\" title=\"w:en:Kim Hongdo\"><span title=\"Korean painter (1745-1806)\">Kim Hong-do</span></a></bdi>"
  },
- "danwon-05.jpg": {
+ "danwon-03.jpg": {
+  "title": "File:Danwon Jumak.jpg",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Danwon_Jumak.jpg",
+  "artist": "<bdi><a href=\"https://en.wikipedia.org/wiki/en:Kim_Hongdo\" class=\"extiw\" title=\"w:en:Kim Hongdo\"><span title=\"Korean painter (1745-1806)\">Kim Hong-do</span></a></bdi>"
+ },
+ "danwon-04.jpg": {
   "title": "File:Danwon Seodang.jpg",
   "license": "Public domain",
   "page": "https://commons.wikimedia.org/wiki/File:Danwon_Seodang.jpg",
   "artist": "<bdi><a href=\"https://en.wikipedia.org/wiki/en:Kim_Hongdo\" class=\"extiw\" title=\"w:en:Kim Hongdo\"><span title=\"Korean painter (1745-1806)\">Kim Hong-do</span></a></bdi>"
  },
+ "danwon-05.jpg": {
+  "title": "File:Danwon Jangteogil.jpg",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Danwon_Jangteogil.jpg",
+  "artist": "<bdi><a href=\"https://en.wikipedia.org/wiki/en:Kim_Hongdo\" class=\"extiw\" title=\"w:en:Kim Hongdo\"><span title=\"Korean painter (1745-1806)\">Kim Hong-do</span></a></bdi>"
+ },
  "danwon-06.jpg": {
+  "title": "File:Danwon Mudong.jpg",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Danwon_Mudong.jpg",
+  "artist": "<bdi><a href=\"https://en.wikipedia.org/wiki/en:Kim_Hongdo\" class=\"extiw\" title=\"w:en:Kim Hongdo\"><span title=\"Korean painter (1745-1806)\">Kim Hong-do</span></a></bdi>"
+ },
+ "danwon-07.jpg": {
   "title": "File:Danwon Giwaigi.jpg",
   "license": "Public domain",
   "page": "https://commons.wikimedia.org/wiki/File:Danwon_Giwaigi.jpg",
   "artist": "<bdi><a href=\"https://en.wikipedia.org/wiki/en:Kim_Hongdo\" class=\"extiw\" title=\"w:en:Kim Hongdo\"><span title=\"Korean painter (1745-1806)\">Kim Hong-do</span></a></bdi>"
  },
- "danwon-07.jpg": {
-  "title": "File:Danwon Mudong.jpg",
+ "danwon-08.jpg": {
+  "title": "File:Kim Hong-do, Chuseongbu-large.jpg",
   "license": "Public domain",
-  "page": "https://commons.wikimedia.org/wiki/File:Danwon_Mudong.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Kim_Hong-do,_Chuseongbu-large.jpg",
+  "artist": "Kim Hong-do"
+ },
+ "danwon-09.jpg": {
+  "title": "File:Kim Hong-do, Hwaseongpalgyeong.jpg",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Kim_Hong-do,_Hwaseongpalgyeong.jpg",
+  "artist": "<bdi><a href=\"https://en.wikipedia.org/wiki/en:Kim_Hongdo\" class=\"extiw\" title=\"w:en:Kim Hongdo\"><span title=\"Korean painter (1745-1806)\">Kim Hong-do</span></a></bdi>"
+ },
+ "danwon-10.jpg": {
+  "title": "File:Kim Hong-do, Feast for the Pyongyang Governor (1, Dinner).jpg",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Kim_Hong-do,_Feast_for_the_Pyongyang_Governor_(1,_Dinner).jpg",
+  "artist": "Kim Hong-do"
+ },
+ "danwon-11.jpg": {
+  "title": "File:Kim Hong-do, Indian Prophet.jpg",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Kim_Hong-do,_Indian_Prophet.jpg",
+  "artist": "Kim Hong-do"
+ },
+ "danwon-12.jpg": {
+  "title": "File:Kim Hong-do, Samgongbulhwando.jpg",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Kim_Hong-do,_Samgongbulhwando.jpg",
   "artist": "<bdi><a href=\"https://en.wikipedia.org/wiki/en:Kim_Hongdo\" class=\"extiw\" title=\"w:en:Kim Hongdo\"><span title=\"Korean painter (1745-1806)\">Kim Hong-do</span></a></bdi>"
  },
  "minhwa-01.jpg": {
@@ -88,29 +118,5 @@
   "license": "Public domain",
   "page": "https://commons.wikimedia.org/wiki/File:BN-UV163_KOREAN_750RV_20170825120825.jpg",
   "artist": "Unknown author<span style=\"display: none;\">Unknown author</span>"
- },
- "minhwa-09.jpg": {
-  "title": "File:Korean.Folk.Village-Minsokchon-04-alt.jpg",
-  "license": "Public domain",
-  "page": "https://commons.wikimedia.org/wiki/File:Korean.Folk.Village-Minsokchon-04-alt.jpg",
-  "artist": "unknown painter, Joseon Period, Korea"
- },
- "minhwa-10.jpg": {
-  "title": "File:2025 USFK Cultural Experiance Tour (9444748).jpg",
-  "license": "Public domain",
-  "page": "https://commons.wikimedia.org/wiki/File:2025_USFK_Cultural_Experiance_Tour_(9444748).jpg",
-  "artist": "U.S. Army USAG-CASEY by Pfc. <a rel=\"nofollow\" class=\"external text\" href=\"https://www.dvidshub.net/portfolio/1914065\">Draven Garcia</a>"
- },
- "minhwa-11.jpg": {
-  "title": "File:2025 USFK Cultural Experiance Tour (9444747).jpg",
-  "license": "Public domain",
-  "page": "https://commons.wikimedia.org/wiki/File:2025_USFK_Cultural_Experiance_Tour_(9444747).jpg",
-  "artist": "U.S. Army photo by Pfc. <a rel=\"nofollow\" class=\"external text\" href=\"https://www.dvidshub.net/portfolio/1914065\">Draven Garcia</a>"
- },
- "minhwa-12.jpg": {
-  "title": "File:2025 USFK Cultural Experiance Tour (9444749).jpg",
-  "license": "Public domain",
-  "page": "https://commons.wikimedia.org/wiki/File:2025_USFK_Cultural_Experiance_Tour_(9444749).jpg",
-  "artist": "U.S. Army photo by Pfc. <a rel=\"nofollow\" class=\"external text\" href=\"https://www.dvidshub.net/portfolio/1864041\">Draven Garcia</a>"
  }
 }
