@@ -5,10 +5,10 @@ players:
   short: 김혜성
   sport: mlb
   team: LA 다저스
-  why: 마이너 강등 4개월 만에 다저스 NLDS 로스터에 전격 합류
-  source: 15
+  why: 마이너리거에서 다저스 NLDS 로스터에 전격 합류
+  source: 14
   date: '2026-10-04'
-  link: http://www.osen.co.kr/article/G1112887167
+  link: https://www.spotvnews.co.kr/news/articleView.html?idxno=1011251
 - name: 김민솔
   short: 김민솔
   sport: golf
@@ -29,48 +29,48 @@ players:
   short: 이강인
   sport: laliga
   team: 아틀레티코 마드리드
-  why: 이적 후 처음으로 9월 이달의 선수에 선정
-  source: 51
+  why: 이적 후 처음으로 9월 이달의 선수 선정
+  source: 57
   date: '2026-10-04'
   link: http://www.stoo.com/article.php?aid=109215916338
 - name: 김하성
   short: 김하성
   sport: mlb
   team: 애틀랜타 브레이브스
-  why: NLDS 1차전 유격수 9번 타자로 선발 출전, 김혜성과 코리안 더비
-  source: 17
+  why: NLDS 1차전 선발 출전, 호수비 선보이며 코리안더비 성사
+  source: 24
   date: '2026-10-04'
-  link: https://mhnse.com/news/articleView.html?idxno=1573524
+  link: https://www.mydaily.co.kr/page/view/2026100409033092591
 - name: 유해란
   short: 유해란
   sport: golf
   team: ''
-  why: KLPGA 하이트진로 챔피언십 3라운드 단독 선두, 4년 6개월 만의 KLPGA 우승 눈앞
-  source: 63
+  why: KLPGA 하이트진로 챔피언십 3라운드 단독 선두, 4년 6개월 만의 KLPGA 우승 도전
+  source: 68
   date: '2026-10-04'
   link: https://www.g-enews.com/view.php?ud=202610031611472950daecd3dad5_1
 - name: 무라카미
   short: 무라카미
   sport: mlb
   team: 시카고 화이트삭스
-  why: 결승포로 ALDS 1차전 승리를 이끌며 포스트시즌 활약
-  source: 15
+  why: ALDS 1차전 결승 투런포로 팀 승리 이끎
+  source: 26
   date: '2026-10-04'
-  link: https://mhnse.com/news/articleView.html?idxno=1573528
+  link: https://www.newsis.com/view/NISX20261004_0003813798
 - name: 고영표
   short: 고영표
   sport: kbo
-  team: kt 위즈
-  why: 롯데전 9이닝 8탈삼진 완봉승으로 kt 정규시즌 우승 매직넘버 4
-  source: 1
+  team: KT 위즈
+  why: 롯데전 9이닝 완봉승으로 개인 한 시즌 최다승, KT 매직넘버 4
+  source: 3
   date: '2026-10-04'
   link: http://www.thesportstimes.co.kr/news/articleView.html?idxno=376194
 - name: 구창모
   short: 구창모
   sport: kbo
   team: NC 다이노스
-  why: SSG전 6이닝 소화로 개인 한 시즌 최다승 신기록, NC 토종 투수 최다승 타이
-  source: 11
+  why: SSG전 6이닝 호투로 개인 한 시즌 최다승 신기록, NC 토종 최다승 타이
+  source: 16
   date: '2026-10-04'
   link: http://www.osen.co.kr/article/G1112887043
 - name: 켈리
@@ -109,18 +109,18 @@ players:
   short: 전상현
   sport: kbo
   team: KIA 타이거즈
-  why: 8·9회 2이닝을 막아 팀의 5-4 승리를 지켜냄
-  source: 2
+  why: 8·9회 2이닝 무실점으로 5-4 승리를 지켜냄
+  source: 4
   date: '2026-10-04'
   link: https://www.xportsnews.com/article/2203870
 - name: 스쿠벌
   short: 스쿠벌
   sport: mlb
   team: LA 다저스
-  why: 다저스 NLDS 1차전 선발로 낙점
-  source: 38
+  why: NLDS 1차전 6이닝 7K 1실점 호투로 다저스의 5-3 승리 견인
+  source: 9
   date: '2026-10-04'
-  link: https://www.jnilbo.com/news/articleView.html?idxno=90000070656
+  link: https://sports.khan.co.kr/article/202610040807003?pt=nv
 - name: 사토 테루아키
   short: 사토
   sport: kbo
@@ -137,6 +137,30 @@ players:
   source: 26
   date: '2026-10-04'
   link: http://www.rookie.co.kr/news/articleView.html?idxno=127672
+- name: 곽빈
+  short: 곽빈
+  sport: kbo
+  team: 두산 베어스
+  why: 투수 2관왕 유력, MVP 후보로 거론
+  source: 75
+  date: '2026-10-04'
+  link: https://www.ohmynews.com/NWS_Web/View/at_pg.aspx?CNTN_CD=A0003272266&CMPT_CD=P0010&utm_source=naver&utm_medium=newsearch&utm_campaign=naver_news
+- name: 김태훈
+  short: 김태훈
+  sport: kbo
+  team: 삼성 라이온즈
+  why: 개인 통산 100홀드 달성, KBO 역대 23번째
+  source: 8
+  date: '2026-10-04'
+  link: http://www.osen.co.kr/article/G1112887172
+- name: 드루 라스무센
+  short: 라스무센
+  sport: mlb
+  team: 탬파베이
+  why: ALDS 1차전 8이닝 10K 역투로 승리 이끎
+  source: 25
+  date: '2026-10-04'
+  link: https://www.newsis.com/view/NISX20261004_0003813812
 - name: 레이 커
   short: 레이 커
   sport: mlb
@@ -153,14 +177,6 @@ players:
   source: 51
   date: '2026-10-03'
   link: http://www.stoo.com/article.php?aid=109202030443
-- name: 곽빈
-  short: 곽빈
-  sport: kbo
-  team: 두산 베어스
-  why: 투수 2관왕 유력, MVP 경쟁에 가세
-  source: 55
-  date: '2026-10-03'
-  link: https://www.ohmynews.com/NWS_Web/View/at_pg.aspx?CNTN_CD=A0003272266&CMPT_CD=P0010&utm_source=naver&utm_medium=newsearch&utm_campaign=naver_news
 - name: 김민성
   short: 김민성
   sport: kbo
