@@ -1,0 +1,15 @@
+# 경제 인플루언서·상위 블로그 글 구조 분석 (대표 지시 2026-10-04): 우리 글 양식을 만들기 위한 재료.
+# 공개 RSS(rss.blog.naver.com/<아이디>.xml)로 최근 글을 받아 구조를 숫자로만 잰다 (남의 문장은 옮기지 않음).
+# 이 파일을 고쳐 main에 올리면 다시 돈다.
+run: 2026-10-04a
+targets:
+  - {id: ranto28,   name: 메르,                         group: 인플루언서}
+  - {id: ssibar1188, name: 킴찹,                        group: 인플루언서}
+  - {id: press02,   name: 재미진 저널리스트의 금융탐구생활, group: 정보정리형}
+  - {id: dysaghwls, name: 경제토대왕 부의 전술,           group: 정보정리형}
+  - {id: soap77777, name: 비누의 경제 공방,               group: 정보정리형}
+  - {id: leeahn01,  name: 이안의 경제노트,                group: 검색상위}
+  - {id: lancelot85, name: 재클쌤의 경제7스푼,            group: 검색상위}
+  - {id: by-habit,  name: 이우유의 머니 패스포트,         group: 검색상위}
+  - {id: ekdud0706, name: 찐주부J의 생활금융,             group: 검색상위}
+  - {id: cyh5584,   name: 제이커브 흔들려도 우상향,        group: 검색상위}
