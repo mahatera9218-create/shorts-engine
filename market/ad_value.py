@@ -4,7 +4,7 @@
 - 월간 검색량·경쟁도·노출 광고 수: 검색광고 키워드 도구 (공식 API)
 - 중간 입찰가(모바일, 최근 한 달): 검색광고 estimate API (공식 API) = 클릭 단가의 대략값
 결과: reports/광고/광고단가-<날짜>.md. 애드포스트 단가 그 자체는 아니다 (가정 검증은 실제 수익과 비교, 설계서 0.6).
-사용법: python -m market.ad_value [--sample]
+사용법: python -m market.ad_value [--sample] [--config econ_ad_keywords.yaml --tag 경제]
 """
 from __future__ import annotations
 
@@ -60,7 +60,9 @@ def report(res: list[dict], sample: bool) -> str:
 
 def main() -> None:
     sample = "--sample" in sys.argv
-    groups = load_yaml("ad_keywords.yaml")["groups"]
+    cfg = sys.argv[sys.argv.index("--config") + 1] if "--config" in sys.argv else "ad_keywords.yaml"
+    tag = sys.argv[sys.argv.index("--tag") + 1] + "-" if "--tag" in sys.argv else ""  # 경제 등 (2026-10-04)
+    groups = load_yaml(cfg)["groups"]
     if sample:
         from .sample import FakeKeywordTool
         tool = FakeKeywordTool()
@@ -72,7 +74,7 @@ def main() -> None:
         from .naver_ad import KeywordTool
         tool = KeywordTool(load_yaml("global.yaml")["endpoints"]["naver_ad_base"])
     text = report(measure(tool, groups), sample)
-    out = ROOT / "reports" / "광고" / f"광고단가-{date.today().isoformat()}{'-예시' if sample else ''}.md"
+    out = ROOT / "reports" / "광고" / f"광고단가-{tag}{date.today().isoformat()}{'-예시' if sample else ''}.md"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(text, encoding="utf-8")
     print(text)
