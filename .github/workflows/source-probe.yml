@@ -1,0 +1,50 @@
+# 경제 글감 소스 점검: 후보 RSS·API가 자동으로 받아지는지 GitHub에서 열어 본다 → reports/경제-소스/
+# 자동: config/econ_sources.yaml을 고쳐 main에 올리면. 수동: Actions → 경제 소스 점검
+name: 경제 소스 점검
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["config/econ_sources.yaml"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: repo-reports
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      TZ: Asia/Seoul
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: 소스 점검
+        env:
+          NCP_APIGW_API_KEY_ID: ${{ secrets.NCP_APIGW_API_KEY_ID }}
+          NCP_APIGW_API_KEY: ${{ secrets.NCP_APIGW_API_KEY }}
+        run: python -m market.source_probe | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: 결과 저장 (reports/ 커밋)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/
+          if git diff --cached --quiet; then
+            echo "바뀐 결과 없음"
+          else
+            git commit -m "경제 소스 점검 $(date +%F)"
+            for i in 1 2 3; do
+              git pull --rebase --autostash -X theirs origin "${GITHUB_REF_NAME}" && git push && exit 0
+              sleep $((i * 5))
+            done
+            exit 1
+          fi
