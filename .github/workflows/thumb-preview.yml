@@ -1,0 +1,47 @@
+# 경제 썸네일 시안: 실제 무료 사진(Pexels)으로 시안 4종 + 홈판 미리보기를 그린다 → reports/썸네일-시안/
+# 자동: content/econ_thumb.py를 고쳐 main에 올리면. 수동: Actions → 썸네일 시안
+name: 썸네일 시안
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["content/econ_thumb.py"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: repo-reports
+  cancel-in-progress: false
+
+jobs:
+  thumb:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: 준비
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq fonts-nanum fonts-nanum-extra > /dev/null
+          pip install -r requirements.txt
+      - name: 시안 그리기
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: python -m content.econ_thumb --demo
+      - name: 결과 저장 (reports/ 커밋)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/
+          git diff --cached --quiet && exit 0
+          git commit -m "썸네일 시안 $(date +%F)"
+          for i in 1 2 3; do
+            git pull --rebase --autostash -X theirs origin "${GITHUB_REF_NAME}" && git push && exit 0
+            sleep $((i * 5))
+          done
+          exit 1
