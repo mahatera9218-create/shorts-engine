@@ -5,7 +5,8 @@
   - 제목은 어떻게 썼나 (길이·숫자·물음표·괄호 같은 모양)
   - 썸네일은 어떻게 구성됐나 (RSS에 실린 대표 그림을 Claude가 보고 구성만 글로 적음, 그림 파일은 저장하지 않음)
   - 글 구성은 RSS에 보이는 만큼만 (요약 글자 수·그림 수). 표·글꼴·정렬·인용·구분선은 RSS에 없어 Aside 몫
-을 정리해 econ/ref/rss/<날짜>.md 로 남기고, 어제·오늘 주제는 오늘 키워드 후보(src '참고 블로거')에 넣는다.
+을 정리해 econ/ref/rss/<날짜>.md(읽기용)·.yaml(키워드 점수 content/econ_score.py가 읽음)로 남긴다.
+최우선 블로거(config main, zkfldb888)는 썸네일 최근 8장을 따로 보고 '썸네일·이미지 방식'을 규칙으로 정리한다.
 남의 제목·문장은 참고 자료로만 두고 글에는 옮기지 않는다(글쓰기 규칙). 글 본문 페이지는 긁지 않는다.
 
 사용법: python -m content.econ_refs
@@ -32,8 +33,11 @@ IMG = re.compile(r'<img[^>]+src="([^"]+)"', re.I)
 UA = {"User-Agent": "Mozilla/5.0 (eok-econ ref reader; RSS)", "Referer": "https://blog.naver.com/"}
 
 SUMMARY = {"type": "object", "additionalProperties": False,
-           "required": ["bloggers", "common", "hot_topics"],
+           "required": ["bloggers", "common", "hot_topics", "main_profile"],
            "properties": {
+               "main_profile": {"type": "string", "description": (
+                   "최우선 블로거의 썸네일·이미지 방식을 우리가 따라 할 수 있게 규칙으로 (5~8줄): 무엇을 주인공으로 고르나"
+                   "(인물·건물·제품·차트·현장), 실사/AI/캡처, 구도·클로즈업, 글자 유무·위치, 색감, 주제와 그림을 잇는 방식")},
                "bloggers": {"type": "array", "items": {
                    "type": "object", "additionalProperties": False,
                    "required": ["id", "recent_topics", "title_style", "thumbnail_style", "structure"],
@@ -84,8 +88,9 @@ def collect() -> Path:
     cfg = F.load(CFG, {})
     ids = cfg.get("bloggers", [])
     since = (datetime.now(F.KST) - timedelta(days=1)).strftime("%Y-%m-%d")  # 어제 0시부터
+    main = cfg.get("main", "")
     rows, content, missing = [], [], []
-    for bid in ids:
+    for bid in sorted(ids, key=lambda b: b != main):  # 최우선 블로거 먼저
         try:
             items = feed(bid)
         except Exception as e:  # noqa: BLE001
@@ -99,7 +104,7 @@ def collect() -> Path:
             lines.append(f"- {mark} {i['at']:%m-%d %H:%M} [{i['category']}] {i['title']} · 요약 {i['text_len']}자 · "
                          f"그림 {len(i['imgs'])} · 태그 {', '.join(i['tags'][:5])} · html {','.join(i['html_tags'])}")
         content.append({"type": "text", "text": "\n".join(lines)})
-        for i in recent[:2]:  # 어제·오늘 글 대표 그림(썸네일)만 보여 줌
+        for i in (items[:8] if bid == main else recent[:2]):  # 썸네일만 (최우선 블로거는 최근 8편)
             if i["imgs"]:
                 img = _image(i["imgs"][0])
                 if img:
@@ -112,6 +117,8 @@ def collect() -> Path:
         f"오늘은 {F.today()}(한국 시간). 위는 경제 블로거 {len(rows)}명의 공개 RSS 최근 글과 어제·오늘 글 썸네일입니다. "
         "우리 경제 블로그(억선생의 경제판)가 참고할 수 있게 블로거마다 ① 어제·오늘 주제 ② 제목 쓰는 방식 ③ 썸네일 구성 "
         "④ 보이는 글 구성을 정리하고, 공통 패턴과 여러 명이 겹쳐 쓴 주제를 뽑아 주세요. 보이는 것만 쓰고 추측하지 마세요. "
+        f"특히 {main}은 대표가 강의를 듣는 최우선 블로거입니다. 그의 썸네일 최근 8장을 보고 우리가 화풍만 바꿔 따라 할 수 있게 "
+        "썸네일·이미지 방식을 규칙으로 정리해 주세요(main_profile). "
         "남의 제목 문장은 길게 옮기지 말고 모양만 설명하세요.")})
     with c.messages.stream(model="claude-sonnet-5-5", max_tokens=16000, messages=[{"role": "user", "content": content}],
                            output_config={"format": {"type": "json_schema", "schema": SUMMARY}}) as st:
@@ -126,6 +133,7 @@ def collect() -> Path:
     out = OUT / f"{F.today()}.md"
     md = [f"# 참고 블로거 아침 조사 ({F.today()}, 공개 RSS)", "",
           "표·글꼴·정렬·인용·구분선은 RSS에 없어서 Aside 조사(📄 붙여넣기)로 채워요.", "",
+          f"## ⭐ {main} 썸네일·이미지 방식 (최우선)", "", res["main_profile"], "",
           "## 공통 패턴", "", res["common"], "", "## 여러 명이 겹쳐 쓴 주제", ""]
     md += [f"- **{t['kw']}** — {t['why']}" for t in res["hot_topics"]] or ["- 없음"]
     for b in res["bloggers"]:
@@ -134,13 +142,10 @@ def collect() -> Path:
     if missing:
         md += ["", f"⚠️ RSS를 못 읽은 블로거: {', '.join(missing)}"]
     out.write_text("\n".join(md) + "\n", encoding="utf-8")
-    # 겹친 주제 → 오늘 키워드 후보
-    kwf = F.FLOW / F.today() / "keywords.yaml"
-    K = F.load(kwf, {"date": F.today(), "items": []})
-    have = {x["kw"] for x in K["items"]}
-    K["items"] += [{"kw": t["kw"], "src": "참고 블로거", "why": t["why"]} for t in res["hot_topics"][:5] if t["kw"] not in have]
-    K["updated"] = datetime.now(F.KST).strftime("%H:%M")
-    F.save(kwf, K)
+    # 키워드 점수용: 어제·오늘 제목 목록 (content/econ_score.py가 읽음) + 최우선 블로거 방식 (썸네일 규칙에 씀)
+    F.save(OUT / f"{F.today()}.yaml", {"main": main, "main_profile": res["main_profile"],
+                                       "hot_topics": res["hot_topics"],
+                                       "bloggers": [{"id": r["id"], "recent": [i["title"] for i in r["recent"]]} for r in rows]})
     F.log_cost("refs", f"{len(rows)}명")
     print(f"참고 블로거 {len(rows)}명 정리 → {out} (못 읽음 {len(missing)})")
     return out
