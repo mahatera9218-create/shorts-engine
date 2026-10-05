@@ -56,7 +56,7 @@ def _seal(c: Image.Image, x: int, y: int, s: int, bg, fg) -> None:
     d.text((x + (s - d.textlength("억", font=f)) / 2, y + s * 0.12), "억", font=f, fill=fg)
 
 
-def make(art: Path, lines: list[str], accent: str, out: Path, seed: str = "", panel: str | None = None,
+def make(art: Path, lines: list[str], accent: str | list[str], out: Path, seed: str = "", panel: str | None = None,
          side: str | None = None, focus: float = 0.5, prev: tuple[str, str] | None = None) -> tuple[str, str]:
     """썸네일 1장. 돌려주는 값 = 쓴 (판 색, 위치) — 다음 글이 겹치지 않게 넘겨 주면 된다."""
     p, s = style_for(seed or out.stem, prev)
@@ -68,22 +68,23 @@ def make(art: Path, lines: list[str], accent: str, out: Path, seed: str = "", pa
     px, tx = (0, W - pw) if side == "right" else (pw, 0)
     c.paste(pic, (px, 0))
     d = ImageDraw.Draw(c)
-    # 글자 크기: 줄마다 판 폭(여백 빼고)에 꽉 차게, 최대 170. 짧은 줄이 튀지 않게 가장 작은 줄의 1.35배까지
+    # 글자 크기: 줄마다 판 폭(여백 빼고)에 꽉 차게, 최대 170. 짧은 줄이 너무 튀지 않게 가장 작은 줄의 1.7배까지
     def fit(l: str) -> int:
         size = 170
         while size > 60 and d.textlength(l, font=ImageFont.truetype(str(FONT), size)) > pw - 64:
             size -= 2
         return size
     sizes = [fit(l) for l in lines]
-    sizes = [min(z, int(min(sizes) * 1.35)) for z in sizes]
+    sizes = [min(z, int(min(sizes) * 1.7)) for z in sizes]
     gap = 14
     y = (W - sum(int(z * 1.08) for z in sizes) - gap * (len(lines) - 1)) // 2 - 40
     for l, z in zip(lines, sizes):
         f = ImageFont.truetype(str(FONT), z)
         x = tx + 32
-        if accent and accent in l:
-            a, b = l.split(accent, 1)
-            for part, col in ((a, fg), (accent, ac), (b, fg)):
+        acc = next((a for a in ([accent] if isinstance(accent, str) else accent) if a and a in l), "")
+        if acc:
+            a, b = l.split(acc, 1)
+            for part, col in ((a, fg), (acc, ac), (b, fg)):
                 d.text((x, y), part, font=f, fill=col)
                 x += d.textlength(part, font=f)
         else:
