@@ -1,0 +1,49 @@
+# 경제 글 그림을 고화질로 그린다 (econ/posts/<글>/art.yaml → 썸네일·본문 그림 PNG) → 도우미 다시 올림
+# 자동: art.yaml이나 content/post_art.py를 고쳐 main에 올리면. 이미 있는 그림은 다시 그리지 않는다.
+name: 경제 글 그림
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["econ/posts/**/art.yaml", "content/post_art.py"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: repo-reports
+  cancel-in-progress: false
+
+jobs:
+  art:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: 그리기 (고화질)
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python -m content.post_art | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: 저장 (econ/ 커밋)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add econ/
+          git diff --cached --quiet && exit 0
+          git commit -m "경제 글 그림 $(date +%F)"
+          for i in 1 2 3; do
+            git pull --rebase --autostash -X theirs origin "${GITHUB_REF_NAME}" && git push && exit 0
+            sleep $((i * 5))
+          done
+          exit 1
+
+  desk:
+    needs: art
+    uses: ./.github/workflows/econ-desk.yml
+    secrets: inherit
