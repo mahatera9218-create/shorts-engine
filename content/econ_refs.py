@@ -113,10 +113,14 @@ def collect() -> Path:
         "우리 경제 블로그(억선생의 경제판)가 참고할 수 있게 블로거마다 ① 어제·오늘 주제 ② 제목 쓰는 방식 ③ 썸네일 구성 "
         "④ 보이는 글 구성을 정리하고, 공통 패턴과 여러 명이 겹쳐 쓴 주제를 뽑아 주세요. 보이는 것만 쓰고 추측하지 마세요. "
         "남의 제목 문장은 길게 옮기지 말고 모양만 설명하세요.")})
-    msg = c.messages.create(model="claude-sonnet-5-5", max_tokens=6000, messages=[{"role": "user", "content": content}],
-                            output_config={"format": {"type": "json_schema", "schema": SUMMARY}})
+    with c.messages.stream(model="claude-sonnet-5-5", max_tokens=16000, messages=[{"role": "user", "content": content}],
+                           output_config={"format": {"type": "json_schema", "schema": SUMMARY}}) as st:
+        msg = st.get_final_message()
     u = msg.usage
     F.SPENT["claude"] += (u.input_tokens * 2.0 + u.output_tokens * 10.0) / 1_000_000
+    if msg.stop_reason != "end_turn":
+        F.log_cost("refs", "실패")
+        raise SystemExit(f"정리가 끝까지 안 됨 (stop_reason={msg.stop_reason}, 출력 {u.output_tokens}토큰)")
     res = json.loads("".join(b.text for b in msg.content if getattr(b, "type", "") == "text"))
     OUT.mkdir(parents=True, exist_ok=True)
     out = OUT / f"{F.today()}.md"
