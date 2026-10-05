@@ -692,7 +692,17 @@ def _run(cmd: str) -> None:
         add(sys.argv[2])
     elif cmd == "titles":  # 경제 = 쿠니네 방식, 연예·패션 = 강사 연예·패션 프롬프트 (대표 결정 2026-10-05)
         mod = __import__("content.kunine" if BLOG["id"] == "econ" else "content.celeb", fromlist=["titles"])
-        mod.titles(sys.argv[2])
+        kws = [k.strip() for k in re.split(r"\s+/\s+|\n", sys.argv[2]) if k.strip()][:5]  # 여러 개는 ' / '로 (대표 지시 2026-10-06)
+        bad = []
+        for kw in kws:
+            try:
+                guard()
+                mod.titles(kw)
+            except Exception as ex:  # 하나가 실패해도 나머지는 계속
+                print(f"제목 실패: {kw}: {ex}")
+                bad.append(kw)
+        if bad and len(bad) == len(kws):
+            raise SystemExit("제목 만들기가 모두 실패했어요: " + ", ".join(bad))
     elif cmd == "produce":
         mod = __import__("content.kunine" if BLOG["id"] == "econ" else "content.celeb", fromlist=["produce"])
         mod.produce(sys.argv[2], int(sys.argv[3]))
