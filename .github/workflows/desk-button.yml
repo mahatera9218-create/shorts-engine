@@ -151,6 +151,67 @@ jobs:
     uses: ./.github/workflows/econ-desk.yml
     secrets: inherit
 
+  econ-inbox:   # 경제판 받은 편지함 (2026-10-05): [경제캡처] 어드바이저 캡처 · [경제참고] Aside 조사 · [경제수정] 고친 글
+    if: >-
+      github.event_name == 'issues' &&
+      github.event.issue.user.login == github.repository_owner &&
+      (startsWith(github.event.issue.title, '[경제캡처]') || startsWith(github.event.issue.title, '[경제참고]') ||
+       startsWith(github.event.issue.title, '[경제수정]'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: 처리
+        id: r
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ github.token }}
+          TITLE: ${{ github.event.issue.title }}   # 제목·본문은 셸에 직접 넣지 않고 환경 변수로만
+          BODY: ${{ github.event.issue.body }}
+          NUM: ${{ github.event.issue.number }}
+        run: |
+          printf '%s' "$BODY" > "$RUNNER_TEMP/body.txt"
+          case "$TITLE" in
+            "[경제캡처]"*) python -m content.econ_inbox capture "$NUM" ;;
+            "[경제참고]"*) python -m content.econ_inbox ref "$RUNNER_TEMP/body.txt" ;;
+            *) python -m content.econ_inbox edit "$TITLE" "$RUNNER_TEMP/body.txt" ;;
+          esac
+      - name: 저장 (econ/ 커밋)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add econ/
+          git diff --cached --quiet && exit 0
+          git commit -m "경제 받은 편지함: 이슈 #${{ github.event.issue.number }}"
+          for i in 1 2 3; do
+            git pull --rebase --autostash -X theirs origin main && git push origin HEAD:main && exit 0
+            sleep $((i * 5))
+          done
+          exit 1
+      - name: 이슈 닫기
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUM: ${{ github.event.issue.number }}
+          MSG: ${{ steps.r.outputs.msg }}
+          OK: ${{ job.status }}
+        run: |
+          if [ "$OK" = "success" ]; then msg="$MSG 2~3분 뒤 도우미에 보여요."
+          else msg="처리하지 못했어요. 이 화면을 Claude에게 알려 주세요."; fi
+          gh issue close "$NUM" --repo "$GITHUB_REPOSITORY" --comment "$msg"
+
+  econ-inbox-desk:
+    needs: econ-inbox
+    uses: ./.github/workflows/econ-desk.yml
+    secrets: inherit
+
   econ-parse:   # 억선생의 경제판 흐름 버튼 (2026-10-05): [경제키워드] · [경제키워드추가] · [경제키워드새로] · [경제제목]
     if: >-
       github.event_name == 'issues' &&

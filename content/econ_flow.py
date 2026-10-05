@@ -40,6 +40,45 @@ SKILLS = ROOT / ".claude" / "skills"
 AREAS = ["국내주식", "미국주식", "금", "비트코인", "돈굴리기", "거시·환율"]
 
 
+# ---------------------------------------------------------------- 비용 (대표 결정 2026-10-05: 기록해서 성과 분석에 쓰고, 월 5만원 상한)
+COSTS = ROOT / "econ" / "costs.csv"
+KRW = 1400            # 1달러 어림 환율 (보고용)
+MONTH_CAP_KRW = 50000  # 월 상한: 넘으면 새 작업을 멈춘다
+SPENT = {"claude": 0.0, "gpt": 0.0, "grok": 0.0, "image": 0.0}  # 이번 실행에서 쓴 달러 (추정 포함)
+
+
+def month_spent_krw(month: str | None = None) -> int:
+    import csv
+    month = month or today()[:7]
+    if not COSTS.exists():
+        return 0
+    with COSTS.open(encoding="utf-8") as f:
+        return int(sum(float(r["total_usd"]) for r in csv.DictReader(f) if r["date"].startswith(month)) * KRW)
+
+
+def guard() -> None:
+    used = month_spent_krw()
+    if used >= MONTH_CAP_KRW:
+        raise SystemExit(f"이번 달 AI 비용이 {used:,}원으로 상한 {MONTH_CAP_KRW:,}원에 닿아 멈춥니다. 대표에게 알려 주세요.")
+
+
+def log_cost(cmd: str, item: str) -> None:
+    import csv
+    new = not COSTS.exists()
+    COSTS.parent.mkdir(parents=True, exist_ok=True)
+    with COSTS.open("a", encoding="utf-8", newline="") as f:
+        w = csv.writer(f)
+        if new:
+            w.writerow(["date", "time", "cmd", "item", "claude_usd", "gpt_usd", "grok_usd", "image_usd", "total_usd"])
+        w.writerow([today(), datetime.now(KST).strftime("%H:%M"), cmd, item[:40]]
+                   + [f"{SPENT[k]:.4f}" for k in ("claude", "gpt", "grok", "image")] + [f"{sum(SPENT.values()):.4f}"])
+
+
+def _usage_cost(u: dict, inp: float, out: float) -> float:
+    """토큰 사용량(달러/100만 토큰 어림값)으로 비용 추정."""
+    return ((u.get("input_tokens") or 0) * inp + (u.get("output_tokens") or 0) * out) / 1_000_000
+
+
 def key(n: str) -> str:
     return os.environ.get(n, "").strip()
 
@@ -100,7 +139,10 @@ def grok(prompt: str) -> str:
         r = requests.post("https://api.x.ai/v1/responses", headers=h, timeout=300, json={
             "model": model, "input": prompt, "tools": [{"type": "x_search"}, {"type": "web_search"}]})
         r.raise_for_status()
-        return _resp_text(r.json())
+        data = r.json()
+        calls = sum(1 for it in data.get("output", []) if str(it.get("type", "")).endswith("_call"))
+        SPENT["grok"] += _usage_cost(data.get("usage") or {}, 2.0, 6.0) + calls * 0.005  # 어림: 토큰 + 검색 1번 $0.005
+        return _resp_text(data)
     except Exception as e:  # Grok이 안 되면 그 몫만 빼고 계속
         print(f"Grok 실패: {type(e).__name__} {str(e)[:150]}")
         return ""
@@ -119,7 +161,10 @@ def gpt(prompt: str, search: bool = False) -> str:
             body["tools"] = [{"type": "web_search"}]
         r = requests.post("https://api.openai.com/v1/responses", headers=h, json=body, timeout=300)
         r.raise_for_status()
-        return _resp_text(r.json())
+        data = r.json()
+        calls = sum(1 for it in data.get("output", []) if it.get("type") == "web_search_call")
+        SPENT["gpt"] += _usage_cost(data.get("usage") or {}, 2.5, 10.0) + calls * 0.01  # 어림: 토큰 + 검색 1번 $0.01
+        return _resp_text(data)
     except Exception as e:
         print(f"GPT 실패: {type(e).__name__} {str(e)[:150]}")
         return ""
@@ -138,12 +183,18 @@ def claude_research(topic: str) -> str:
             "1) 지금 무슨 일이 있었나 (사실, 날짜·시각 포함) 2) 핵심 숫자 (기준 시각과 출처) 3) 왜 그런가 (배경)\n"
             "4) 기관·증권사 전망 (누가 무엇을, 출처) 5) 앞으로 일정 6) 관련 인물(회사 + 이름, 직책)\n"
             "맨 끝에 '출처:' 아래 기사 제목과 URL 목록. 모르는 건 모른다고 쓰고 지어내지 마세요.")}])
+    u = msg.usage
+    searches = getattr(getattr(u, "server_tool_use", None), "web_search_requests", 0) or 0
+    SPENT["claude"] += (u.input_tokens * 2.0 + u.output_tokens * 10.0) / 1_000_000 + searches * 0.01
     return "".join(b.text for b in msg.content if getattr(b, "type", "") == "text").strip()
 
 
 def claude_json(system: list[str], prompt: str, schema: dict, stage: str) -> dict:
     from .llm import Claude
-    return Claude().ask_json(system, prompt, schema, stage=stage, max_tokens=12000)
+    c = Claude()
+    out = c.ask_json(system, prompt, schema, stage=stage, max_tokens=12000)
+    SPENT["claude"] += c.cost_usd()
+    return out
 
 
 # ---------------------------------------------------------------- 1단계: 키워드
@@ -250,7 +301,7 @@ WRITE_RULES = """억선생의 경제판 글 규칙 (DECISIONS 2026-10-04~05). bl
 - 제목의 질문에 본문 첫 2~3줄에서 바로 답한다.
 - 순서: 답 → 오늘 숫자(기준 시각·출처) → 왜(배경) → 기관·증권사 전망(누가, 출처) → 앞으로 일정 → 글쓴이 생각(권유 없음) → 면책 한 줄.
 - 기사는 소스로만 참고하고 새로 쓴다. 남의 문장 옮기지 않는다. 숫자는 취재 메모에 있는 것만.
-- 가짜 경험('제가 투자해 보니') 금지, 투자 권유 금지, 단정 전망 금지, 도박 말 금지.
+- 관찰 표현('지수를 보며 ~했어요', '차트를 들여다보니')은 권장. 매매·보유·현장 경험('제가 사 보니', '제 계좌') 같은 가짜 경험 금지, 투자 권유 금지, 단정 전망 금지, 도박 말 금지.
 - 말투: 상위 경제 블로거처럼 쉽고 담백하게. 문단은 2~4문장. 소제목은 질문형.
 - 그림 자리는 코드가 넣으니 '[그림 1]' 같은 자리표를 쓰지 않는다.
 - 분량 1,500~2,500자. 끝에 '※ 이 글은 경제 공부를 위한 정보이며 투자 권유가 아닙니다. 본문 그림은 AI로 만들었습니다.'"""
@@ -278,13 +329,14 @@ def produce(slug: str, n: int) -> Path:
     pick = T["items"][n - 1]
     memo = (tdir / "research.md").read_text(encoding="utf-8")
     lib_tags = sorted({t for s in load(ROOT / "config" / "art_library.yaml")["scenes"] for t in s["tags"]})
-    sys_prompt = [skill("money-content-writer"), skill("blog-voice"), WRITE_RULES]
+    sys_prompt = [skill("money-content-writer"), skill("blog-voice"), WRITE_RULES] + learned()
     art = claude_json(sys_prompt, (
         f"제목: {pick['title']}\n본문 첫 2~3줄에서 회수할 답: {pick['promise']}\n주인공 인물: {T.get('person') or '없음'}\n\n"
         f"[취재 메모]\n{memo[:9000]}\n\n창고 그림 태그 목록: {', '.join(lib_tags)}\n위 규칙으로 글을 써 주세요."),
         ARTICLE, stage="글쓰기")
     body = "\n\n".join(art["paragraphs"])
     art, body, voice_note = humanize(sys_prompt, art, body, memo)
+    art, body, gain_note, gain_ok = info_gain(T["keyword"], pick["title"], sys_prompt, art, body, memo)
     check = gpt("아래 경제 블로그 초안의 숫자·날짜·기관 전망·인물 직책이 사실인지 웹 검색으로 확인하세요. "
                 "주요 언론사·공식 기관 출처만 인정합니다. 틀리거나 확인 안 되는 것만 JSON으로: "
                 '{"issues": [{"claim": "초안 문장", "problem": "무엇이 틀렸나", "fix": "고칠 내용(출처)"}]}. 문제가 없으면 '
@@ -322,7 +374,9 @@ def produce(slug: str, n: int) -> Path:
     tags = ",".join(art["tags"][:12] + ["억선생", "억선생의경제판"])
     (post / "post.md").write_text("\n".join([
         f"# 발행 패키지 · {T['keyword']}", "",
-        f"**상태:** {'✅ 사실 대조 통과' if not issues else '✅ 사실 대조 후 고침(' + str(len(issues)) + '곳)'}",
+        f"**상태:** {'✅ 사실 대조 통과' if not issues else '✅ 사실 대조 후 고침(' + str(len(issues)) + '곳)'}"
+        + ("" if gain_ok else " · ⚠️ 정보 이득 부족 — 발행 보류, Claude에게 알려 주세요"),
+        f"**정보 이득:** {gain_note}",
         f"**썸네일:** {thumb_note}", f"**사람 냄새 검사:** {voice_note}", "", f"- 카테고리: **{art['area']}**", f"- 태그: {tags}", "",
         "## 제목 (추천 ★)", "", f"1. ★ {pick['title']} — {pick['type']}",
         *[f"{i + 2}. {t['title']} — {t['type']}" for i, t in enumerate(alts)], "",
@@ -337,6 +391,71 @@ def produce(slug: str, n: int) -> Path:
     save(tdir / "chosen.yaml", {"title": pick["title"], "post": slug, "at": datetime.now(KST).strftime("%H:%M")})
     print(f"제작 완료 → {post}")
     return post
+
+
+def learned() -> list[str]:
+    """대표가 고친 곳(최근) + Aside가 조사한 참고 블로거 구조(최신) → 글쓰기 참고 (대표 결정 2026-10-05: 학습 필수)."""
+    out = []
+    edits = sorted(POSTS.glob("*/edits.md"), reverse=True)[:6]
+    if edits:
+        out.append("[대표가 최근 고친 곳: 원래 → 고친 글. 같은 방향으로 처음부터 쓴다]\n"
+                   + "\n".join(f.read_text(encoding="utf-8")[-1500:] for f in edits)[:6000])
+    ref = sorted((ROOT / "econ" / "ref").glob("*.md"), reverse=True)[:1]
+    if ref:
+        out.append("[참고 블로거 조사(Aside). 구조·흐름·제목 모양만 참고하고 문장·표현은 절대 옮기지 않는다]\n"
+                   + ref[0].read_text(encoding="utf-8")[:5000])
+    return out
+
+
+GAIN = {"type": "object", "additionalProperties": False, "required": ["gain", "missing", "pass"],
+        "properties": {"gain": {"type": "array", "items": {"type": "string"},
+                                "description": "상위 글들에 없고 우리 초안에만 있는 것 (구체적으로)"},
+                       "missing": {"type": "string", "description": "통과 못 하면, 취재 메모에서 더할 수 있는 새 정보"},
+                       "pass": {"type": "boolean"}}}
+
+
+def top10(keyword: str) -> list[dict]:
+    """네이버 공식 블로그 검색 API 정확도순 상위 10개 제목·요약 (검색 화면 크롤링 아님)."""
+    from market.common import load_yaml, request_json
+    from market.naver_hub import ApiHub, clean
+    if not (key("NCP_APIGW_API_KEY_ID") and key("NCP_APIGW_API_KEY")):
+        return []
+    hub = ApiHub(load_yaml("global.yaml")["endpoints"]["naver_hub"])
+    try:
+        data = request_json("GET", hub.base + hub.paths["blog_search"], headers=hub._headers(),
+                            params={"query": keyword, "display": 10, "sort": "sim"})
+    except Exception as e:  # noqa: BLE001
+        print(f"네이버 검색 실패: {str(e)[:120]}")
+        return []
+    return [{"title": clean(it.get("title")), "desc": clean(it.get("description")), "date": it.get("postdate", "")}
+            for it in data.get("items", [])]
+
+
+def info_gain(keyword: str, title: str, sys_prompt: list[str], art: dict, body: str, memo: str
+              ) -> tuple[dict, str, str, bool]:
+    """정보 이득 게이트 (CLAUDE.md, 설계서 12.2): 상위 10개 글에 없는 것이 우리 글에 하나도 없으면 발행하지 않는다.
+    한 번은 취재 메모에서 새 정보를 더해 고쳐 쓰고, 그래도 없으면 '발행 보류'로 표시한다."""
+    rows = top10(keyword)
+    if not rows:
+        return art, body, "⚠️ 네이버 검색이 안 돼 검사를 못 함 (발행 전 Claude 확인)", False
+    comp = "\n".join(f"{i}. {r['title']} ({r['date']}) — {r['desc']}" for i, r in enumerate(rows, 1))
+    ask = ("아래 [상위 10개 글](네이버 검색 상위 제목·요약)과 [우리 초안]을 비교하세요. 상위 글들에 없고 우리 초안에만 있는 "
+           "독자에게 쓸모 있는 것(새 숫자·비교·일정·관점·설명 방식)을 구체적으로 적으세요. 하나라도 분명하면 pass=true.\n\n"
+           f"[검색어] {keyword}\n[상위 10개 글]\n{comp}\n\n[우리 초안]\n{body}")
+    g = claude_json(["너는 깐깐한 편집장이다. 남의 글을 옮기지 않고, 상위 글과 겹치는 내용은 이득으로 치지 않는다."], ask, GAIN,
+                    stage="정보 이득")
+    if g["pass"] and g["gain"]:
+        return art, body, "✅ 통과 — " + " / ".join(g["gain"][:3]), True
+    fix = claude_json(sys_prompt, (
+        f"이 초안은 네이버 상위 10개 글과 내용이 겹쳐 새로 얻을 정보가 없습니다. 취재 메모에 있는 사실만으로 아래를 더해 "
+        f"다시 써 주세요(지어내기 금지, 상위 글 문장 옮기기 금지, 사람 냄새 유지).\n더할 것: {g['missing']}\n\n"
+        f"[상위 10개 글 요약]\n{comp}\n\n[초안]\n{body}\n\n[취재 메모]\n{memo[:6000]}"), ARTICLE, stage="고쳐쓰기(정보 이득)")
+    nbody = "\n\n".join(fix["paragraphs"])
+    g2 = claude_json(["너는 깐깐한 편집장이다. 남의 글을 옮기지 않고, 상위 글과 겹치는 내용은 이득으로 치지 않는다."],
+                     ask.replace(body, nbody), GAIN, stage="정보 이득(재검사)")
+    if g2["pass"] and g2["gain"]:
+        return fix, nbody, "✅ 고쳐 써서 통과 — " + " / ".join(g2["gain"][:3]), True
+    return fix, nbody, "⛔ 상위 10개 글에 없는 정보를 못 찾음 — " + g2["missing"][:120], False
 
 
 def humanize(sys_prompt: list[str], art: dict, body: str, memo: str) -> tuple[dict, str, str]:
@@ -416,6 +535,7 @@ def gemini_bust(en: str) -> Image.Image | None:
               "friendly confident smile, looking at the viewer. Clearly an illustration with visible brush lines, "
               "not a photo. Flat pure green background (#00FF00). No text, no logos.")
     data, who = gemini_edit(ref, prompt)
+    SPENT["image"] += 0.134  # 어림: Gemini 3 Pro 이미지 유료 단가 1장 (무료 한도 안이면 실제 0원)
     if not data:
         print(f"상반신 실패: {who}")
         return None
@@ -429,6 +549,16 @@ def gemini_bust(en: str) -> Image.Image | None:
 
 def main() -> None:
     cmd = sys.argv[1] if len(sys.argv) > 1 else "keywords"
+    if cmd != "add":
+        guard()
+    try:
+        _run(cmd)
+    finally:
+        if any(SPENT.values()):
+            log_cost(cmd, " ".join(sys.argv[2:4]))
+
+
+def _run(cmd: str) -> None:
     if cmd == "keywords":
         keywords()
     elif cmd == "add":
