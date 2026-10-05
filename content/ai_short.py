@@ -28,7 +28,7 @@ W, H, FPS = 1080, 1920, 30
 OUT = Path("reports/쇼츠-시안/금값-출렁")
 MODEL = "gpt-image-2"
 QUALITY = "medium"
-VOICE, TEMPO = "nova", 1.2  # 대표 피드백 2026-10-05: 여자 목소리, 더 빠르게
+VOICE, TEMPO = "onyx", 1.15  # 대표 결정 2026-10-05: 장사꾼 캐릭터에 맞춰 중년 남자 목소리, 빠르게
 KLING = "kling-video/v3.0-turbo/image-to-video"  # 힉스필드 모델 경로 (docs.higgsfield.ai, 2026-10 확인)
 
 STYLE = (
@@ -103,9 +103,9 @@ def voice(text: str) -> Path | None:
     r = requests.post("https://api.openai.com/v1/audio/speech",
                       headers={"Authorization": f"Bearer {key('OPENAI_API_KEY')}"},
                       json={"model": "gpt-4o-mini-tts", "voice": VOICE, "input": text, "response_format": "mp3",
-                            "instructions": "Young Korean female presenter of a popular economy short. Bright, "
-                                            "confident and fast-paced, punchy delivery like a YouTube shorts host, "
-                                            "natural Korean intonation, no exaggeration."},
+                            "instructions": "Middle-aged Korean man, a warm and witty market merchant telling "
+                                            "today's money story to the village, like a seasoned storyteller. Lively, "
+                                            "confident, brisk pace, natural Korean intonation, no exaggeration."},
                       timeout=120)
     if r.status_code != 200:
         print(f"OpenAI 목소리 실패 HTTP {r.status_code}: {r.text[:200]}")
