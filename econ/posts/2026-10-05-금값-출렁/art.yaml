@@ -1,0 +1,36 @@
+# 이 글의 그림 (content/post_art.py가 고화질로 그림). ref = 억선생 얼굴·옷 맞추기용 참고 그림
+- file: thumb.png
+  size: 1024x1024
+  prompt: >-
+    Square 1:1 blog thumbnail in the bold flat style of a Korean hwatu card. Upper 62%: a hwatu-card-like panel with
+    rounded corners — bold red sky, a black stylized hill with pine trees, the full moon drawn as a huge shiny gold
+    yeopjeon-style coin, three black geese flying. Lower area: plain cream hanji with the title text, exactly as
+    written, in bold black Korean brush lettering, two lines, centered: "금값은 왜 하루에도 출렁일까?". Every Hangul
+    character must be correct. A small red square seal with the single Hangul character "억" in the bottom-right
+    corner. No other text.
+- file: dollar.png
+  ref: reports/쇼츠-시안/금값-출렁/scene-1.png
+  prompt: >-
+    Wide 3:2 blog illustration, no text. Use the attached image only as the character reference (same merchant
+    'Mr. Eok': round face, mustache, black gat, indigo jeogori). At his Joseon market stall he weighs a small Korean
+    gold bar on a traditional balance scale against a heavy pile of foreign silver coins; the scale tips down on the
+    silver side and he looks surprised. Busy market street with thatched stalls behind.
+- file: rate.png
+  ref: reports/쇼츠-시안/금값-출렁/scene-1.png
+  prompt: >-
+    Wide 3:2 blog illustration, no text. Use the attached image only as the character reference (same merchant
+    'Mr. Eok'). Villagers in hanbok carry wooden coin chests away from his gold stall toward a large tiled-roof
+    merchant house across the street; he watches with a wry, puzzled face, one hand on his gat.
+- file: mood.png
+  ref: reports/쇼츠-시안/금값-출렁/scene-1.png
+  prompt: >-
+    Wide 3:2 blog illustration, no text. Use the attached image only as the character reference (same merchant
+    'Mr. Eok'). Dark swirling minhwa-style storm clouds and a lightning bolt over the Joseon market; a worried crowd
+    in hanbok rushes to his stall to buy small gold bars, he holds an armful of gold bars, overwhelmed but smiling.
+- file: summary.png
+  prompt: >-
+    Wide 3:2 blog illustration, no text, no numbers. Three Korean hwatu-style flower cards with rounded corners,
+    slightly fanned, on a cream hanji background: card 1 = a string of brass yeopjeon coins hanging from a black pine
+    branch with a red sun; card 2 = a wooden Joseon coin chest with a red tassel under red maple leaves and a small
+    deer; card 3 = black willow branches in slanted rain with a red lightning bolt and a small frog. Bold flat colors,
+    thick black outlines.
