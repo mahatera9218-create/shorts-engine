@@ -57,10 +57,37 @@ def draw(folder: Path) -> list[str]:
 
 
 def main() -> None:
-    folders = [Path(x) for x in sys.argv[1:]] or sorted(p.parent for p in (ROOT / "econ" / "posts").glob("*/art.yaml"))
+    folders = [Path(x) for x in sys.argv[1:]] or (
+        sorted(p.parent for p in (ROOT / "econ" / "posts").glob("*/art.yaml"))
+        + sorted(p.parent for p in (ROOT / "assets" / "brand").glob("*/art.yaml")))
     for f in folders:
         for line in draw(f):
             print(f"{f.name}: {line}")
+        if f.name == "cover":
+            cover_preview(f)
+
+
+def cover_preview(folder: Path) -> None:
+    """블로그 상단 커버 미리보기: PC는 3:2 그대로, 모바일은 가운데 정사각형만 보인다(2026-10-05 조사).
+    → 0-미리보기.jpg (후보마다 왼쪽 PC, 오른쪽 모바일 가운데 자르기)."""
+    from PIL import Image, ImageDraw
+    files = sorted(x for x in folder.glob("*.png") if not x.name.startswith("0-"))
+    if not files:
+        return
+    W, H = 1200, 400
+    sheet = Image.new("RGB", (W, H * len(files)), (255, 255, 255))
+    for i, f in enumerate(files):
+        im = Image.open(f).convert("RGB")
+        pc = im.resize((570, 380), Image.LANCZOS)
+        s = min(im.size)
+        sq = im.crop(((im.width - s) // 2, (im.height - s) // 2, (im.width + s) // 2, (im.height + s) // 2)).resize((380, 380))
+        sheet.paste(pc, (10, i * H + 10))
+        d = ImageDraw.Draw(sheet)
+        x0 = 10 + (570 - 380) // 2
+        d.rectangle((x0, i * H + 10, x0 + 380, i * H + 390), outline=(200, 30, 40), width=3)
+        sheet.paste(sq, (W - 400, i * H + 10))
+        d.text((600, i * H + 180), f.stem, fill=(0, 0, 0))
+    sheet.save(folder / "0-미리보기.jpg", quality=92)
 
 
 if __name__ == "__main__":
