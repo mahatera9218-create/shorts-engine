@@ -4,6 +4,7 @@
 - 담당: Gemini 이미지 모델(나노바나나) → 안 되면 GPT Image 2 편집. 결과는 초록을 지워 투명 PNG.
 - 규칙(DECISIONS 2026-10-05): 조선 화풍 캐리커처만, 사실에 맞는 중립·긍정 표정, 가짜 말·보증·비하 금지, 'AI 일러스트' 표시,
   로고 금지. 금·코인은 마스코트.
+- 이름표·썸네일은 "회사 + 이름"을 바로 (config/people.yaml, 대표 지시 2026-10-05: 삼성 이재용, SK 최태원, 엔비디아 젠슨황).
 결과: reports/쇼츠-시안/머리바꾸기/<id>.png + 0-한눈에.png + 썸네일 시안
 """
 from __future__ import annotations
@@ -29,10 +30,10 @@ COMMON = ("Edit this image: keep the exact same Joseon ink-and-wash painting sty
 RULES = (" It must look like a hand-painted Joseon-era caricature illustration, clearly not a photo. Friendly, "
          "respectful, not mocking. No text, no logos, no speech bubbles.")
 HEADS = [
-    {"id": "lee-jaeyong", "base": "hero_happy", "label": "이재용 회장 (삼성전자)",
+    {"id": "lee-jaeyong", "base": "hero_happy", "label": "삼성 이재용",
      "prompt": "New head: a recognizable but gently stylized caricature of Lee Jae-yong, chairman of Samsung "
                "Electronics, smiling warmly, short neat hair under the gat."},
-    {"id": "kevin-warsh", "base": "hero_point", "label": "케빈 워시 (연준)",
+    {"id": "kevin-warsh", "base": "hero_point", "label": "연준 워시",
      "prompt": "New head: a recognizable but gently stylized caricature of Kevin Warsh, the American economist and "
                "central banker, calm and thoughtful expression, slight smile."},
     {"id": "gold-toad", "base": "hero_happy", "label": "금 (금두꺼비)",
@@ -136,7 +137,7 @@ def sheet(log: list[str]) -> None:
         bg.alpha_composite(fig, (int(bg.width * 0.45), bg.height - fig.height))
         tmp = OUT / "_lee-bg.png"
         bg.convert("RGB").save(tmp)
-        thumb(tmp, ["삼성전자", "회장님이", "웃은", "이유는?"], "", OUT / "썸네일-이재용.png", panel="먹", side="left",
+        thumb(tmp, ["삼성", "이재용", "웃은 이유는?"], ["삼성", "이재용"], OUT / "썸네일-이재용.png", panel="먹", side="left",
               focus=0.8)
         tmp.unlink()
         t = Image.open(OUT / "썸네일-이재용.png").convert("RGB")  # 'AI 일러스트' 표시: 그림 쪽 오른쪽 아래(잘리지 않게)
