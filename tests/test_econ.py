@@ -43,6 +43,15 @@ class EconTest(unittest.TestCase):
         self.assertEqual(out[0]["parts"]["출처"], 40)  # 그날 1등 = 40
         self.assertEqual(out[1]["parts"]["출처"], round(40 * 6 / 22))
 
+    def test_kunine_check(self):
+        from content import kunine
+        a = {"intro": ["삼성전자 이야기"], "sections": [{"heading": "왜", "images": [], "paragraphs": ["연합뉴스에 따르면 올랐다"]}],
+             "closing": ["끝"], "qa": [{"q": "q", "a": "a"}] * 3, "tags": ["t"] * 20}
+        bad = kunine.check(a, "삼성전자 주가")
+        self.assertTrue(any("언론사명" in b for b in bad))
+        a["sections"][0]["paragraphs"] = ["회사 공식 발표에 따르면 올랐다"]
+        self.assertEqual(kunine.check(a, "삼성전자 주가"), [])
+
 
 if __name__ == "__main__":
     unittest.main()
