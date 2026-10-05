@@ -214,21 +214,20 @@ def price_moves() -> list[dict]:
 
 
 def keywords() -> Path:
+    """여러 출처에서 모아 묶고 점수를 매긴다 (대표 지시 2026-10-05: Grok만 믿지 말고 겹치면 우선). content/econ_score.py"""
+    from .econ_score import run
     day = FLOW / today()
-    items = price_moves()
     g = grok(f"오늘은 {today()}(한국 시간)입니다. 지금 X(트위터)와 웹에서 한국 개인 투자자들이 가장 많이 이야기하는 "
              "경제·투자 화제 8개를 찾아 주세요. 분야는 국내주식·미국주식·금·비트코인·돈굴리기(예적금·ISA 등)·거시·환율. "
              "한 종목에 몰리지 않게, 실제로 오늘 화제인 것만. 작전주·테마주 추천·리딩방은 빼세요. "
              'JSON 배열만 답하세요: [{"kw": "짧은 키워드", "area": "분야", "why": "왜 화제인지 한 줄", '
              '"person": "관련 인물이 있으면 회사+이름(예: 삼성 이재용), 없으면 빈칸"}]')
-    for it in parse_json(g) or []:
-        if isinstance(it, dict) and it.get("kw"):
-            items.append({"kw": it["kw"], "area": it.get("area", ""), "src": "Grok(X·웹)", "why": it.get("why", ""),
-                          "person": it.get("person", "")})
+    grok_items = [it for it in (parse_json(g) or []) if isinstance(it, dict) and it.get("kw")]
     old = load(day / "keywords.yaml", {"items": []})
-    mine = [x for x in old.get("items", []) if x.get("src") in ("대표", "참고 블로거")]  # 대표·참고 블로거 몫은 남김
-    save(day / "keywords.yaml", {"date": today(), "updated": datetime.now(KST).strftime("%H:%M"), "items": mine + items})
-    print(f"키워드 {len(mine) + len(items)}개 (대표·참고 블로거 {len(mine)} · Grok/코드 {len(items)})")
+    mine = [x for x in old.get("items", []) if x.get("src") in ("대표", "캡처")]
+    items = run(grok_items, mine)
+    save(day / "keywords.yaml", {"date": today(), "updated": datetime.now(KST).strftime("%H:%M"), "items": items})
+    print(f"키워드 {len(items)}개, 1위 {items[0]['kw']} {items[0]['score']}점" if items else "키워드 없음")
     return day / "keywords.yaml"
 
 
@@ -237,9 +236,13 @@ def add(text: str) -> None:
     day = FLOW / today()
     data = load(day / "keywords.yaml", {"date": today(), "items": []})
     have = {x["kw"] for x in data["items"]}
+    new = []
     for kw in [k.strip(" -•\t") for k in re.split(r"[\n,]", text) if k.strip(" -•\t")]:
         if kw not in have and len(kw) <= 40:
-            data["items"].insert(0, {"kw": kw, "area": "", "src": "대표", "why": "대표가 조사해 넣음"})
+            new.append({"kw": kw, "area": "", "src": "대표", "why": "대표가 조사해 넣음", "rows": ["D1"]})
+    if new:  # 검색량·뉴스량 점수는 바로 매긴다 (AI 비용 없음). 다음 '다시 모으기' 때 다른 출처와 겹치면 더 오름
+        from .econ_score import score
+        data["items"] = sorted(score(new, {"D1": "대표"}) + data["items"], key=lambda x: -x.get("score", 0))
     save(day / "keywords.yaml", data)
 
 

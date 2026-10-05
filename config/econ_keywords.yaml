@@ -1,0 +1,30 @@
+# 키워드 점수 (대표 지시 2026-10-05: Grok만 믿지 말고 여러 소스, 겹치면 우선순위). content/econ_score.py
+# 점수 100점 = 출처 겹침 40 + 네이버 뉴스량 20 + 검색 수요 25 + 오늘 블로그 빈자리 15
+
+# 출처별 점수 (한 키워드에 여러 출처가 겹칠수록 높아짐, 최대 40)
+source_points:
+  대표: 15            # 대표가 넣은 키워드 (어드바이저·뉴스 랭킹·트렌드 등)
+  캡처: 15            # 어드바이저 캡처에서 읽은 키워드
+  zkfldb888: 10       # 최우선 참고 블로거 (대표가 강의 듣는 중)
+  블로거: 4           # 그 밖의 참고 블로거 한 명마다
+  Grok: 6             # X·웹 화제
+  국내뉴스: 2         # 국내 경제 RSS 기사 한 건마다 (최대 10)
+  해외뉴스: 2         # 야후 파이낸스·CNBC 등 한 건마다 (최대 8)
+  시세: 8             # 코드가 잡은 시세 급변
+caps: {국내뉴스: 10, 해외뉴스: 8}
+
+# 기사 제목을 모으는 RSS (언론사가 구독용으로 공개한 통로, 2026-10-04 점검에서 되는 것만)
+feeds:
+  국내뉴스:
+    - https://www.yna.co.kr/rss/market.xml
+    - https://www.yna.co.kr/rss/economy.xml
+    - https://www.hankyung.com/feed/finance
+    - https://www.mk.co.kr/rss/50200011/
+    - https://www.blockmedia.co.kr/feed
+  해외뉴스:
+    - https://feeds.finance.yahoo.com/rss/2.0/headline?s=%5EGSPC,%5EIXIC&region=US&lang=en-US
+    - https://feeds.finance.yahoo.com/rss/2.0/headline?s=NVDA,AAPL,TSLA&region=US&lang=en-US
+    - https://feeds.finance.yahoo.com/rss/2.0/headline?s=GC%3DF&region=US&lang=en-US
+    - https://feeds.finance.yahoo.com/rss/2.0/headline?s=BTC-USD&region=US&lang=en-US
+    - https://feeds.finance.yahoo.com/rss/2.0/headline?s=%5EKS11,005930.KS&region=US&lang=en-US
+    - https://www.cnbc.com/id/100003114/device/rss/rss.html

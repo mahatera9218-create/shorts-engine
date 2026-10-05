@@ -182,16 +182,22 @@ def flow_html() -> str:
     rows = []
     for it in kw.get("items", [])[:20]:
         link = desk.issue_link("경제키워드", it["kw"], "이 키워드로 제목 후보를 만들어 주세요.")
-        who = {"대표": "👤 대표", "Grok(X·웹)": "𝕏 Grok", "참고 블로거": "📚 참고 블로거"}.get(it.get("src", ""), it.get("src", ""))
+        src = it.get("sources") or {}
+        who = " · ".join(f"{k}{'×' + str(v) if v > 1 else ''}" for k, v in src.items()) or it.get("src", "")
+        pt = it.get("parts") or {}
+        sc = f' <span class="seal">{it["score"]}점</span>' if "score" in it else ""
+        bar = (f'<span class="muted">출처 {pt.get("출처", 0)} · 뉴스 {pt.get("뉴스", 0)} · 검색 {pt.get("검색", 0)} · '
+               f'빈자리 {pt.get("빈자리", 0)}</span><br>') if pt else ""
         rows.append(f'<a class="btn" style="text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
-                    f'href="{e(link, quote=True)}"><b>{e(it["kw"])}</b> <span class="muted">· {e(who)}</span>'
-                    f'<br><span class="muted">{e(it.get("why", ""))}</span></a>')
+                    f'href="{e(link, quote=True)}"><b>{e(it["kw"])}</b>'
+                    f'{sc}'
+                    f'<br><span class="muted">📌 {e(who)}</span><br>{bar}<span class="muted">{e(it.get("why", ""))}</span></a>')
     add_js = ("function addKw(){const v=document.getElementById('kwin').value.trim();if(!v){alert('키워드를 적어 주세요');return}"
               f"location.href='https://github.com/{desk.REPO}/issues/new?title='+encodeURIComponent('[경제키워드추가] {today}')"
               "+'&body='+encodeURIComponent(v+String.fromCharCode(10,10)+'아래 초록색 Create만 누르면 됩니다.')}")
     refresh = desk.issue_link("경제키워드새로", today, "Grok과 코드로 키워드를 다시 모아 주세요.")
     kw_html = f"""<div class="card" style="border:2px solid var(--accent)"><h2><span class="step">1</span>오늘의 키워드 고르기</h2>
-<div class="muted">누르면 그 키워드로 <b>제목 후보</b>를 만들어요 (약 3~5분). {e(kw.get("updated", ""))} 기준</div>
+<div class="muted">점수순이에요(100점 = 출처 겹침 40 + 네이버 뉴스량 20 + 검색 수요 25 + 오늘 블로그 빈자리 15). 누르면 그 키워드로 <b>제목 후보</b>를 만들어요 (약 3~5분). {e(kw.get("updated", ""))} 기준</div>
 {''.join(rows) or '<p class="muted">아직 없어요. 매일 아침 6시쯤 Grok·코드가 모아요.</p>'}
 <textarea id="kwin" class="ed" rows="3" placeholder="어드바이저·뉴스 랭킹·트렌드에서 찾은 키워드 (한 줄에 하나)"></textarea>
 <button onclick="addKw()">➕ 내 키워드 넣기</button>

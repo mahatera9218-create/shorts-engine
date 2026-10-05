@@ -50,6 +50,9 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           NCP_APIGW_API_KEY_ID: ${{ secrets.NCP_APIGW_API_KEY_ID }}   # 정보 이득 게이트: 네이버 블로그 검색 API
           NCP_APIGW_API_KEY: ${{ secrets.NCP_APIGW_API_KEY }}
+          NAVER_AD_API_KEY: ${{ secrets.NAVER_AD_API_KEY }}       # 키워드 점수: 월간 검색량 (검색광고 API)
+          NAVER_AD_SECRET_KEY: ${{ secrets.NAVER_AD_SECRET_KEY }}
+          NAVER_AD_CUSTOMER_ID: ${{ secrets.NAVER_AD_CUSTOMER_ID }}
           CMD: ${{ inputs.cmd || (github.event.schedule == '30 22 * * 0' && 'learn') || ((github.event.schedule == '40 20 * * *' || github.event_name == 'push') && 'refs') || 'keywords' }}
           ARG1: ${{ inputs.arg1 }}
           ARG2: ${{ inputs.arg2 }}

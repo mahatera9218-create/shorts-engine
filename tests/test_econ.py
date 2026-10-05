@@ -34,6 +34,15 @@ class EconTest(unittest.TestCase):
                 F.guard()
         F.COSTS = old
 
+    def test_score_counts_overlap(self):
+        from content import econ_score
+        items = [{"kw": "청년미래적금", "rows": ["B1", "B2", "G1", "N1"]}, {"kw": "금값", "rows": ["G2"]}]
+        src = {"B1": "zkfldb888", "B2": "블로거", "G1": "Grok", "N1": "국내뉴스", "G2": "Grok"}
+        out = econ_score.score(items, src)
+        self.assertEqual(out[0]["kw"], "청년미래적금")
+        self.assertEqual(out[0]["parts"]["출처"], 10 + 4 + 6 + 2)
+        self.assertEqual(out[1]["parts"]["출처"], 6)
+
 
 if __name__ == "__main__":
     unittest.main()
