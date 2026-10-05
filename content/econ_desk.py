@@ -31,6 +31,7 @@ BRAND = ROOT / "assets" / "brand"
 NAME = "경제 블로그"  # 블로그 이름은 대표가 정함 (2026-10-05)
 KST = ZoneInfo("Asia/Seoul")
 MARK = re.compile(r"^\[(경제|연예|패션)발행완료\]\s*(\d{4}-\d{2}-\d{2}-[\w가-힣-]+)\s*$")
+from .econ_flow import MONTH_CAP_KRW as F_CAP  # 월 상한 (econ_flow와 같게)
 BID, LABEL = "econ", "경제"  # 지금 그리는 블로그 (use()로 바꿈, 2026-10-05 경제·연예·패션 3개)
 
 
@@ -359,9 +360,9 @@ def stats_html(posts: list[dict]) -> str:
         by_cmd[r["cmd"]] += float(r["total_usd"])
         by_day[r["date"]] += float(r["total_usd"])
     made = sum(1 for r in mrows if r["cmd"] == "produce")
-    pct = min(100, total * 100 // 50000)
+    pct = min(100, total * 100 // F_CAP)
     cost = (f'<div class="card"><h2>💰 이번 달 AI 비용</h2><p style="font-size:26px;margin:4px 0"><b>{total:,}원</b> '
-            f'<span class="muted">/ 상한 50,000원</span></p>'
+            f'<span class="muted">/ 상한 {F_CAP:,}원</span></p>'
             f'<div style="background:var(--line);border-radius:8px;height:12px"><div style="width:{pct}%;height:12px;border-radius:8px;'
             f'background:{"var(--accent)" if pct >= 80 else "var(--pine)"}"></div></div>'
             f'<div class="muted">상한에 닿으면 새 작업이 멈추고 알려 드려요. 글 1편 평균 '
@@ -419,9 +420,9 @@ def compare_html(blogs: dict, by_blog: dict[str, list[dict]]) -> str:
             if r["date"].startswith(month) and r["date"] >= COST_FROM]
     krw = lambda usd: int(round(usd * 1400))  # noqa: E731  (econ_flow.KRW와 같게)
     total = krw(sum(float(r["total_usd"]) for r in rows))
-    pct = min(100, total * 100 // 50000)
+    pct = min(100, total * 100 // F_CAP)
     head_ = (f'<div class="card"><h2>이번 달 AI 비용 (모든 블로그 합계, {int(COST_FROM[5:7])}월 {int(COST_FROM[8:])}일부터)</h2><p style="font-size:26px;margin:4px 0"><b>{total:,}원</b> '
-             f'<span class="muted">/ 상한 50,000원</span></p><div style="background:var(--line);border-radius:8px;height:12px">'
+             f'<span class="muted">/ 상한 {F_CAP:,}원</span></p><div style="background:var(--line);border-radius:8px;height:12px">'
              f'<div style="width:{pct}%;height:12px;border-radius:8px;background:var(--accent)"></div></div>'
              '<div class="muted">토큰으로 어림한 값이라 AI 회사 청구액과 조금 다를 수 있어요.</div></div>')
     cols, lines = [], {"오늘 발행 / 3": [], "이번 달 발행": [], "만든 글": [], "이번 달 비용": [],
