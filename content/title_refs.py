@@ -98,12 +98,32 @@ def analyze(got: dict[str, list[dict]]) -> None:
     print(GUIDE.read_text(encoding="utf-8"))
 
 
-def guide_text() -> str:
-    """제목 만들 때 Claude에 붙이는 참고 (없으면 빈칸)."""
+def for_blog(bid: str | None = None) -> dict[str, str]:
+    """이 블로그가 참고할 제목 고수 (config/blogs.yaml의 title_masters, 없으면 전부). 경제 = 경제토르, 패션 = 유미 (2026-10-05)."""
+    from .blogs import get
+    allm = masters()
+    pick = get(bid).get("title_masters") or list(allm)
+    return {k: allm[k] for k in pick if k in allm}
+
+
+def guide_text(bid: str | None = None) -> str:
+    """제목 만들 때 Claude에 붙이는 참고 (없으면 빈칸). 이 블로그의 고수 부분만 남긴다."""
     if not GUIDE.exists():
         return ""
+    names = set(for_blog(bid).values())
+    keep, on = [], True
+    for line in GUIDE.read_text(encoding="utf-8").splitlines():
+        if line.startswith("## "):
+            head = line[3:].split(" (")[0].strip()
+            on = head in names or head not in set(masters().values())  # 다른 블로그 고수 칸만 뺌
+        elif on and line.startswith("- ") and line.rstrip().endswith(")"):  # 틀 줄 끝 "(누구)"가 다른 블로그 고수면 뺌
+            who = line.rstrip()[:-1].rsplit("(", 1)[-1].strip()
+            if who in set(masters().values()) and who not in names:
+                continue
+        if on:
+            keep.append(line)
     return ("[참고: 제목 고수 공식 — 구조만 참고하고 문장은 베끼지 말 것. 위 원문 규칙과 부딪히면 원문 규칙이 우선]\n"
-            + GUIDE.read_text(encoding="utf-8")[:5000])
+            + "\n".join(keep)[:5000])
 
 
 def main() -> None:
