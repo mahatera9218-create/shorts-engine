@@ -46,6 +46,7 @@ AREAS = ["국내주식", "미국주식", "금", "비트코인", "돈굴리기", 
 COSTS = ROOT / "econ" / "costs.csv"
 KRW = 1400            # 1달러 어림 환율 (보고용)
 MONTH_CAP_KRW = 50000  # 월 상한: 넘으면 새 작업을 멈춘다
+COST_FROM = "2026-10-06"  # 비용 다시 세기 시작한 날 (대표 지시 2026-10-06 "오늘 기점으로 다시 카운트"). 그 전 줄은 기록으로만 남김
 SPENT = {"claude": 0.0, "gpt": 0.0, "grok": 0.0, "image": 0.0}  # 이번 실행에서 쓴 달러 (추정 포함)
 
 
@@ -55,7 +56,7 @@ def month_spent_krw(month: str | None = None) -> int:
     if not COSTS.exists():
         return 0
     with COSTS.open(encoding="utf-8") as f:
-        return int(sum(float(r["total_usd"]) for r in csv.DictReader(f) if r["date"].startswith(month)) * KRW)
+        return int(sum(float(r["total_usd"]) for r in csv.DictReader(f) if r["date"].startswith(month) and r["date"] >= COST_FROM) * KRW)
 
 
 def guard() -> None:
