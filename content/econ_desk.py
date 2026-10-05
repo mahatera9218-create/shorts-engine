@@ -233,15 +233,24 @@ def flow_html() -> str:
             c = yaml.safe_load(chosen.read_text(encoding="utf-8")) or {}
             topics.append(f'<div class="card"><b>{e(T.get("keyword", ""))}</b> → ✅ 「{e(c.get("title", ""))}」 제작 완료 ({e(c.get("at", ""))}). 아래 목록에서 올리세요.</div>')
             continue
-        btns = []
-        for i, it in enumerate(T.get("items", []), 1):
+        def btn(i: int, it: dict, label: str) -> str:
             flags = " · ⚠️ " + ", ".join(it["flags"]) if it.get("flags") else ""
-            link = desk.issue_link("경제제목", f"{t.parent.name} {i}", "이 제목으로 글·그림·쇼츠를 전부 만들어 주세요.")
-            btns.append(f'<a class="btn" style="text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
-                        f'href="{e(link, quote=True)}">{i}. {e(it["title"])}<br><span class="muted">{e(it.get("type", ""))} · '
-                        f'{it.get("chars", "")}자 · 핵심 "{e(it.get("badge", ""))}"{e(flags)}</span></a>')
+            link = desk.issue_link("경제제목", f"{t.parent.name} {i}", "이 제목으로 글·사진을 만들어 주세요.")
+            return (f'<a class="btn" style="text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
+                    f'href="{e(link, quote=True)}">{label}{e(it["title"])}<br><span class="muted">{e(it.get("type", ""))} · '
+                    f'{it.get("chars", "")}자{" · 유형 BEST" if it.get("best") else ""}{e(flags)}</span></a>')
+
+        items = T.get("items", [])
+        if T.get("mode") == "쿠니네":  # 최종 BEST 5를 위에, 6유형 × 5개는 접어서 (대표 결정 2026-10-05)
+            btns = [btn(i, it, f"{'⭐ ' if it.get('rank') == 1 else ''}{it.get('rank')}. ")
+                    for i, it in enumerate(items, 1) if it.get("rank")]
+            for g in T.get("groups", []):
+                inner = "".join(btn(j + 1, items[j], "★ " if j == g.get("best") else "· ") for j in g["idx"] if j < len(items))
+                btns.append(f'<details><summary class="muted">{e(g["type"])} 5개 보기</summary>{inner}</details>')
+        else:
+            btns = [btn(i, it, f"{i}. ") for i, it in enumerate(items, 1)]
         topics.append(f'<details class="card fold" data-k="f2-{e(t.parent.name)}" open style="border:2px solid var(--accent)"><summary><h2><span><span class="step">2</span>제목 고르기 · {e(T.get("keyword", ""))}</span></h2></summary>'
-                      f'<div class="muted">마음에 드는 제목을 누르면 그 제목으로 <b>글·썸네일·본문 그림·쇼츠 대본</b>을 만들어요 (약 5~10분). {e(T.get("made", ""))} 기준'
+                      f'<div class="muted">마음에 드는 제목을 누르면 그 제목으로 <b>글·썸네일·본문 사진</b>을 만들어요 (약 5~10분). {e(T.get("made", ""))} 기준'
                       f'{" · " + e(T.get("person")) if T.get("person") else ""}{" · 🔥 강하게 차례(3편에 1편)" if T.get("strong") else ""}</div>{"".join(btns)}'
                       f'<a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(desk.issue_link("경제제목새로", T.get("keyword", ""), "마음에 드는 제목이 없어요. 다시 취재해서 새로 뽑아 주세요."), quote=True)}">🔄 마음에 드는 게 없어요 · 다시 조사해서 새로 뽑기</a>'
                       f'<details><summary class="muted">취재 메모 보기</summary><pre style="white-space:pre-wrap;font-size:13px">'
