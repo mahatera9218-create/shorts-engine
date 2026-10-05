@@ -209,16 +209,16 @@ class Scenes:
         r = max((W + 80) / bg.width, H / bg.height)
         self.bg = bg.resize((int(bg.width * r), int(bg.height * r)), Image.LANCZOS)
         self.paper = Image.new("RGBA", (W, H), PAPER + (255,))
-        self.hero = {k: sprite(f"hero_{k}", 900) for k in ("surprised", "point", "happy", "bow")}
-        self.tiger = sprite("tiger", 520)
-        self.gold = sprite("gold", 120)
+        self.hero = {k: sprite(f"hero_{k}", 1060) for k in ("surprised", "point", "happy", "bow")}
+        self.tiger = sprite("tiger", 600)
+        self.gold = sprite("gold", 170)
         self.coins = sprite("coins", 260)
-        self.chest = sprite("chest", 230)
+        self.chest = sprite("chest", 300)
         self.cloud = sprite("cloud", 520)
-        self.icons = {"coins": sprite("coins", 230), "chest": sprite("chest", 200), "cloud": sprite("cloud", 230)}
+        self.icons = {"coins": sprite("coins", 300), "chest": sprite("chest", 250), "cloud": sprite("cloud", 280)}
         self.title = text_block("금값은 왜 하루에도 출렁일까?", 104, INK, stroke=2, sfill=INK)
         self.badge = text_block("AI 그림, AI 음성", 46, (90, 80, 66))
-        self.seal = seal()
+        self.seal = seal(230)
         self.caps = [caption(c) for c in ("금, 왜 출렁일까?", "① 달러 세지면 금은 눌림", "② 금리 오르면 돈이 빠짐",
                                           "③ 불안하면 금으로 우르르", "달러, 금리, 분위기", "자세한 건 블로그에서!")]
         rnd = random.Random(7)
@@ -256,16 +256,16 @@ class Scenes:
                     s.put(self.gold, x, y, rot=vr * u)
         k = ease_out(t / hit)
         sq = 1.0 if t < hit else 1 + 0.25 * math.exp(-8 * (t - hit)) * math.cos(30 * (t - hit))
-        s.put(self.tiger, -400 + 760 * k, 1250, sx=sq, sy=2 - sq)
+        s.put(self.tiger, -420 + 760 * k, 1330, sx=sq, sy=2 - sq)
         jump = 0 if t < hit else 180 * max(0, math.sin(min(math.pi, (t - hit) * 6)))
-        s.put(self.hero["surprised"], 790, 1420 - jump, rot=6 * math.sin(t * 18) if t > hit else 0)
+        s.put(self.hero["surprised"], 760, 1500 - jump, rot=6 * math.sin(t * 18) if t > hit else 0)
         return s
 
     def s1(self, t):  # 달러 저울: 달러 쪽이 내려가고 금은 들림
         s = Stage(self.backdrop(t, 1))
-        s.put(self.hero["point"], 300, 1430, sy=1 + 0.02 * math.sin(t * 7))
-        ang = -16 * ease_back(min(1, max(0, (t - 0.3) / 0.6)))  # 기울기
-        cx, cy, L = 780, 820, 260
+        s.put(self.hero["point"], 270, 1500, sy=1 + 0.02 * math.sin(t * 7))
+        ang = 16 * ease_back(min(1, max(0, (t - 0.3) / 0.6)))  # 기울기: 달러 쪽(왼쪽)이 내려간다
+        cx, cy, L = 730, 760, 210
         d = ImageDraw.Draw(s.c)
         d.line((cx, cy, cx, 1150), fill=INK, width=14)
         d.polygon([(cx - 70, 1160), (cx + 70, 1160), (cx, 1100)], fill=INK)
@@ -277,65 +277,65 @@ class Scenes:
             d.line((x, y, x - 60, y + 120), fill=INK, width=4)
             d.line((x, y, x + 60, y + 120), fill=INK, width=4)
             d.arc((x - 90, y + 80, x + 90, y + 160), 0, 180, fill=INK, width=8)
-        s.put(self.coins, lx, ly + 140, sx=0.75, sy=0.75)  # 달러(무거운 쪽): 엽전 꾸러미로
-        s.put(self.gold, rx, ry + 140)
-        lab = text_block("달러", 70, RED)
-        s.put(lab, lx, ly - 10)
-        lab2 = text_block("금", 70, INK)
-        s.put(lab2, rx, ry - 10)
+        s.put(self.coins, lx, ly + 300, sx=0.8, sy=0.8)  # 달러(무거운 쪽): 엽전 꾸러미로
+        s.put(self.gold, rx, ry + 150)
+        lab = text_block("달러", 96, RED, stroke=2, sfill=RED)
+        s.put(lab, lx, ly - 20)
+        lab2 = text_block("금", 96, INK, stroke=2, sfill=INK)
+        s.put(lab2, rx, ry - 20)
         return s
 
     def s2(self, t):  # 금리: 궤짝이 줄줄이 빠져나감
         s = Stage(self.backdrop(t, 2))
-        s.put(self.hero["surprised"], 300, 1430, rot=8 * math.sin(t * 10))
+        s.put(self.hero["surprised"], 290, 1500, rot=8 * math.sin(t * 10))
         for j in range(4):
             u = t - 0.25 - j * 0.35
             if u > 0:
-                x = 420 + 900 * ease_out(u / 0.9)
-                y = 1200 - 260 * math.sin(min(math.pi, u / 0.9 * math.pi))
+                x = 420 + 800 * ease_out(u / 1.3)
+                y = 1250 - 380 * math.sin(min(math.pi, u / 1.3 * math.pi))
                 s.put(self.chest, x, y, rot=-20 * u)
         arrow = text_block("이자 주는 곳으로!", 80, RED, stroke=2, sfill=RED)
         k = pop(t, 0.5)
         if k:
-            s.put(arrow, 760, 760, sx=k, sy=k)
+            s.put(arrow, 760, 640, sx=k, sy=k)
         return s
 
     def s3(self, t):  # 불안: 먹구름·번개, 금이 우르르 몰림
         flash = any(abs(t - f) < 0.06 for f in (0.35, 1.25))
         s = Stage(self.backdrop(t, 3, dark=0.45), shake=10 if flash else 0)
-        s.put(self.cloud, 540 + 30 * math.sin(t * 9), 820)
+        s.put(self.cloud, 540 + 30 * math.sin(t * 9), 640)
         for x0, delay, vr in self.rain:
             u = t - delay * 0.8
             if u > 0:
-                y = 700 + 1400 * u * u
+                y = 560 + 1400 * u * u
                 x = x0 + (540 - x0) * min(1, u * 1.5)
                 if y < 1400:
                     s.put(self.gold, x, y, rot=vr * u)
         bounce = abs(math.sin(t * 7)) * 70
-        s.put(self.hero["happy"], 540, 1440 - bounce, sx=1 + 0.04 * math.sin(t * 14), sy=1 - 0.04 * math.sin(t * 14))
+        s.put(self.hero["happy"], 540, 1560 - bounce, sx=1 + 0.04 * math.sin(t * 14), sy=1 - 0.04 * math.sin(t * 14))
         if flash:
             s.c.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, 170)))
         return s
 
     def s4(self, t):  # 정리: 아이콘 셋이 차례로 쾅
         s = Stage(self.backdrop(t, 4))
-        s.put(self.hero["point"], 280, 1440, sy=1 + 0.02 * math.sin(t * 7))
+        s.put(self.hero["point"], 270, 1500, sy=1 + 0.02 * math.sin(t * 7))
         for j, (ic, lab) in enumerate((("coins", "달러"), ("chest", "금리"), ("cloud", "분위기"))):
             k = pop(t, 0.2 + j * 0.45)
             if k:
-                y = 560 + j * 290
-                s.put(self.icons[ic], 700, y + 120, sx=k * 0.8, sy=k * 0.8)
-                s.put(text_block(lab, 80, INK), 910, y + 70, sx=k, sy=k)
+                y = 420 + j * 330
+                s.put(self.icons[ic], 720, y + 280, sx=k, sy=k)
+                s.put(text_block(lab, 104, INK, stroke=2, sfill=INK), 950, y + 210, sx=k, sy=k)
         return s
 
     def s5(self, t):  # 인사 + 도장 쾅
         hit = 0.6
         s = Stage(self.backdrop(t, 5), shake=14 if hit < t < hit + 0.18 else 0)
         bow = 12 * max(0, math.sin(min(math.pi, t * 3)))
-        s.put(self.hero["bow"], 540, 1440, rot=-bow * 0.3, sy=1 - bow / 200)
+        s.put(self.hero["bow"], 540, 1540, rot=-bow * 0.3, sy=1 - bow / 200)
         k = pop(t, hit, 0.22)
         if k:
-            s.put(self.seal, 860, 760, sx=k * (2.2 - 1.2 * min(1, (t - hit) / 0.22)), sy=k * (2.2 - 1.2 * min(1, (t - hit) / 0.22)),
+            s.put(self.seal, 860, 640, sx=k * (2.2 - 1.2 * min(1, (t - hit) / 0.22)), sy=k * (2.2 - 1.2 * min(1, (t - hit) / 0.22)),
                   rot=-8)
         return s
 
