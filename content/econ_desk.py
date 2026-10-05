@@ -182,7 +182,7 @@ def flow_html() -> str:
     rows = []
     for it in kw.get("items", [])[:20]:
         link = desk.issue_link("경제키워드", it["kw"], "이 키워드로 제목 후보를 만들어 주세요.")
-        who = {"대표": "👤 대표", "Grok(X·웹)": "𝕏 Grok"}.get(it.get("src", ""), it.get("src", ""))
+        who = {"대표": "👤 대표", "Grok(X·웹)": "𝕏 Grok", "참고 블로거": "📚 참고 블로거"}.get(it.get("src", ""), it.get("src", ""))
         rows.append(f'<a class="btn" style="text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
                     f'href="{e(link, quote=True)}"><b>{e(it["kw"])}</b> <span class="muted">· {e(who)}</span>'
                     f'<br><span class="muted">{e(it.get("why", ""))}</span></a>')
@@ -237,7 +237,7 @@ def inbox_buttons(today: str) -> str:
 BLOG = ROOT / "config" / "econ_blog.yaml"
 COSTS = ROOT / "econ" / "costs.csv"
 METRICS = ROOT / "econ" / "metrics"
-CMD_NAME = {"keywords": "키워드 모으기", "titles": "제목 후보", "produce": "글 제작", "capture": "캡처 읽기", "learn": "주간 학습"}
+CMD_NAME = {"keywords": "키워드 모으기", "titles": "제목 후보", "produce": "글 제작", "capture": "캡처 읽기", "learn": "주간 학습", "refs": "참고 블로거 조사"}
 
 
 def blog_rss(url: str) -> list[dict]:
@@ -313,7 +313,10 @@ def stats_html(posts: list[dict]) -> str:
     learn = sorted((ROOT / "reports" / "경제-학습").glob("*.md"), reverse=True)[:1]
     learn_html = (f'<details class="card"><summary><b>🧠 이번 주 배운 것</b> <span class="muted">{e(learn[0].stem)}</span></summary>'
                   f'<pre style="white-space:pre-wrap;font-size:13px">{e(learn[0].read_text(encoding="utf-8")[:3000])}</pre></details>') if learn else ""
-    return "<div>" + cost + pub + blog + "</div><div><h2>캡처에서 읽은 숫자</h2>" + cap_html + learn_html + "</div>"
+    rss = sorted((ROOT / "econ" / "ref" / "rss").glob("*.md"), reverse=True)[:1]
+    rss_html = (f'<details class="card" open><summary><b>📚 참고 블로거 아침 조사</b> <span class="muted">{e(rss[0].stem)}</span></summary>'
+                f'<pre style="white-space:pre-wrap;font-size:13px">{e(rss[0].read_text(encoding="utf-8")[:6000])}</pre></details>') if rss else ""
+    return ("<div>" + cost + pub + blog + rss_html + "</div><div><h2>캡처에서 읽은 숫자</h2>" + cap_html + learn_html + "</div>")
 
 
 def load() -> list[dict]:
