@@ -489,6 +489,9 @@ def humanize(sys_prompt: list[str], art: dict, body: str, memo: str) -> tuple[di
 FONT = ROOT / "assets" / "fonts" / "Pretendard-Black.otf"
 
 
+DRAW_THUMB = False  # 제목 장면 새로 그리기: 대표가 "원했던 것과 다름" → 재논의 전까지 끔(창고 그림, 글자 없음, 0원)
+
+
 def make_thumb(post: Path, person: str, scene: str, used: list[str]) -> str:
     """썸네일 = 글자 없는 그림 한 장, 화풍 그대로, 제목에 맞는 장면 (대표 결정 2026-10-05).
     인물 글 = Gemini 얼굴·상반신 캐리커처(작은 'AI 일러스트' 표시만), 아니면 제목 장면을 GPT Image 2로 새로 그림.
@@ -509,12 +512,12 @@ def make_thumb(post: Path, person: str, scene: str, used: list[str]) -> str:
                                    fill=PAPER, stroke_width=3, stroke_fill=INK)  # 실존 인물 캐리커처 표시 규칙(10-05)
             c.save(post / "thumb.png")
             return f"인물 상반신({person}, Gemini 캐리커처), 글자 없음"
-    if scene and draw_scene(scene, post / "thumb.png"):
+    if DRAW_THUMB and scene and draw_scene(scene, post / "thumb.png"):
         return "제목 장면 새로 그림(GPT Image 2 고화질), 글자 없음"
     from .art_library import pick as lib_pick
     name = (used or lib_pick(["시황"], [], 1) or ["market-morning"])[0]
     _cover(Image.open(LIB / f"{name}.jpg").convert("RGB"), W, W, 0.5).save(post / "thumb.png")
-    return f"⚠️ 새 그림 실패 → 창고 그림({name}), 글자 없음"
+    return f"창고 그림({name}), 글자 없음" + ("" if not DRAW_THUMB else " (⚠️ 새 그림 실패)")
 
 
 def draw_scene(scene: str, out: Path) -> bool:
