@@ -1,6 +1,6 @@
 """쿠니네 방식 블로그 (대표 결정 2026-10-05: "쿠니네 방식으로 다 맞춘다").
 
-역할: 조사 = Grok(웹 + X) · 글 = Claude · 그림 = GPT Image(실사풍) → 없으면 Pexels 무료 사진 · 사실 대조 = GPT(웹).
+역할: 조사 = Grok(웹 + X) · 글 = Claude · 그림 = GPT Image(실사풍) → 없으면 Pexels 무료 사진. (GPT 사실 대조는 대표 결정으로 뺌)
 프롬프트: prompts/kunine-blog.md(강사 원문, 그대로) + prompts/kunine-addon.md(우리 자동화용 덧붙임).
 
 titles <키워드>        : Grok 조사 메모 → Claude가 6유형 × 5개 = 30개 + 유형별 BEST 6 + 최종 BEST 5
@@ -182,11 +182,7 @@ def produce(slug: str, n: int) -> Path:
         a = F.claude_json(sys_prompt, ask + f"\n\n[다시 쓰기] 네이버 상위 글과 겹쳐 새 정보가 없습니다. 조사 메모 안에서 더할 것: "
                           f"{gain_note}", BODY, stage="고쳐쓰기(정보 이득)")
         ok_gain, gain_note = gain(kw, a)
-    check_raw = F.gpt("아래 경제 블로그 초안의 숫자·날짜·기관 전망·인물 직책이 사실인지 웹 검색으로 확인하세요. 주요 언론사·공식 "
-                      "기관 출처만 인정합니다. 틀리거나 확인 안 되는 것만 JSON으로: "
-                      '{"issues": [{"claim": "초안 문장", "problem": "무엇이 틀렸나", "fix": "고칠 내용(출처)"}]}. 문제가 없으면 '
-                      '{"issues": []}\n\n' + text_of(a), search=True)
-    issues = (F.parse_json(check_raw) or {}).get("issues", [])
+    issues: list[dict] = []  # GPT 사실 대조는 뺐다 (대표 결정 2026-10-05: "검사는 필요 없을 것 같다"). 숫자는 Grok 조사 메모 안에서만 쓴다
     bad = check(a, kw)
     if issues or bad:
         a = F.claude_json(sys_prompt, ask + "\n\n[고칠 것]\n" + "\n".join(f"- {b}" for b in bad)
@@ -223,7 +219,7 @@ def produce(slug: str, n: int) -> Path:
     (post / "body.txt").write_text("\n\n".join(lines) + "\n", encoding="utf-8")
     finals = [t for t in T["items"] if t.get("rank") and t is not pick][:4]
     tags = ",".join(x.replace("#", "").replace(" ", "") for x in a["tags"][:20])
-    status = "✅ 사실 대조 통과" if not issues else f"✅ 사실 대조 후 고침({len(issues)}곳)"
+    status = "✅ 발행 가능 (사실 대조 생략, 숫자는 조사 메모 기준)"
     if not ok_gain:
         status += " · ⚠️ 정보 이득 부족 — 발행 보류, Claude에게 알려 주세요"
     if left:
@@ -237,7 +233,7 @@ def produce(slug: str, n: int) -> Path:
         *[f"{i + 2}. {t['title']} — {t['type']}" for i, t in enumerate(finals)], "",
         "## 본문", "", "(body.txt)", "", "## 출처", "", *[f"- {s}" for s in a["sources"]],
         "", "## 사진 출처", "", *([f"- {c}" for c in credits] or ["- 없음"]),
-        "", "## 사실 대조 (GPT)", "", *([f"- {x.get('claim', '')} → {x.get('fix', '')}" for x in issues] or ["- 문제 없음"])]),
+        ]),
         encoding="utf-8")
     F.save(tdir / "chosen.yaml", {"title": pick["title"], "post": slug, "at": datetime.now(F.KST).strftime("%H:%M")})
     print(f"제작 완료 → {post}")
