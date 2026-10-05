@@ -1,0 +1,75 @@
+# 억선생의 경제판 하루 흐름 (content/econ_flow.py): 키워드 → (대표 선택) → 제목 후보 → (대표 선택) → 전체 제작
+# - 자동: 매일 아침 05:50(한국) 키워드 모으기
+# - 버튼: 발행 도우미 → 이슈 → desk-button.yml이 이 워크플로를 부름 (cmd·arg)
+name: 경제 흐름
+
+on:
+  schedule:
+    - cron: "50 20 * * *"   # UTC 20:50 = 한국 05:50 키워드 모으기
+    - cron: "30 22 * * 0"   # UTC 일 22:30 = 한국 월 07:30 주간 점검·학습 (learn)
+  workflow_dispatch:
+    inputs:
+      cmd: {description: "keywords | add | titles | produce | learn", required: true, default: keywords}
+      arg1: {description: "키워드 / 주제폴더", required: false, default: ""}
+      arg2: {description: "제목 번호", required: false, default: ""}
+  workflow_call:
+    inputs:
+      cmd: {type: string, required: true}
+      arg1: {type: string, required: false, default: ""}
+      arg2: {type: string, required: false, default: ""}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: econ-flow
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: 실행
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          NCP_APIGW_API_KEY_ID: ${{ secrets.NCP_APIGW_API_KEY_ID }}   # 정보 이득 게이트: 네이버 블로그 검색 API
+          NCP_APIGW_API_KEY: ${{ secrets.NCP_APIGW_API_KEY }}
+          CMD: ${{ inputs.cmd || (github.event.schedule == '30 22 * * 0' && 'learn') || 'keywords' }}
+          ARG1: ${{ inputs.arg1 }}
+          ARG2: ${{ inputs.arg2 }}
+        run: |
+          if [ "$CMD" = "keywords" ]; then python -m content.econ_flow keywords
+          elif [ "$CMD" = "add" ]; then python -m content.econ_flow add "$ARG1"
+          elif [ "$CMD" = "titles" ]; then python -m content.econ_flow titles "$ARG1"
+          elif [ "$CMD" = "produce" ]; then python -m content.econ_flow produce "$ARG1" "$ARG2"
+          elif [ "$CMD" = "learn" ]; then python -m content.econ_inbox learn
+          else echo "모르는 명령"; exit 1; fi
+      - name: 저장 (econ/ 커밋)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add econ/ reports/
+          git diff --cached --quiet && exit 0
+          git commit -m "경제 흐름: $(date +%F)"
+          for i in 1 2 3; do
+            git pull --rebase --autostash -X theirs origin main && git push origin HEAD:main && exit 0
+            sleep $((i * 5))
+          done
+          exit 1
+
+  desk:
+    needs: run
+    uses: ./.github/workflows/econ-desk.yml
+    secrets: inherit

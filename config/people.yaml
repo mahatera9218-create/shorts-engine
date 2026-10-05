@@ -1,0 +1,10 @@
+# 글 주인공 표기 (대표 지시 2026-10-05): 썸네일·이름표에 "회사 + 이름"을 바로. 예) 삼성 이재용, SK 최태원, 엔비디아 젠슨황
+# 그림은 조선 화풍 캐리커처 규칙(DECISIONS 2026-10-05). 직책·소속은 글 쓰는 날 취재에서 다시 확인한다(바뀔 수 있음).
+people:
+  - {tag: "삼성 이재용", company: 삼성, name: 이재용, en: "Lee Jae-yong, chairman of Samsung Electronics"}
+  - {tag: "SK 최태원", company: SK, name: 최태원, en: "Chey Tae-won, chairman of SK Group"}
+  - {tag: "현대차 정의선", company: 현대차, name: 정의선, en: "Chung Eui-sun, chairman of Hyundai Motor Group"}
+  - {tag: "LG 구광모", company: LG, name: 구광모, en: "Koo Kwang-mo, chairman of LG Group"}
+  - {tag: "엔비디아 젠슨황", company: 엔비디아, name: 젠슨황, en: "Jensen Huang, CEO of Nvidia"}
+  - {tag: "테슬라 머스크", company: 테슬라, name: 머스크, en: "Elon Musk, CEO of Tesla"}
+  - {tag: "연준 워시", company: 연준, name: 케빈워시, en: "Kevin Warsh, American central banker"}
