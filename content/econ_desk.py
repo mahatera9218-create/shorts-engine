@@ -45,6 +45,10 @@ nav.tabs a.on{background:var(--accent);color:#fff;border-color:var(--accent)}
 /* 태블릿 (대표 주 작업 기기, 2026-10-05): 넓은 화면은 두 칸 — 왼쪽 할 일, 오른쪽 결과 */
 @media (min-width:900px){main{max-width:1240px}.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}
 .cols>div>.card:first-child,.cols>div>h2:first-child{margin-top:0}.stick{position:sticky;top:64px;max-height:calc(100vh - 80px);overflow:auto}nav.tabs{max-width:640px}}
+details.fold{padding-top:10px}details.fold>summary{list-style:none;cursor:pointer}details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary h2{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+details.fold>summary h2::after{content:"접기 ▴";font-size:13px;color:var(--soft);font-weight:600}
+details.fold:not([open])>summary h2::after{content:"펼치기 ▾"}
 .seal{display:inline-block;background:var(--accent);color:#fff;border-radius:6px;padding:0 6px;font-weight:800}
 """
 
@@ -159,18 +163,21 @@ def index(posts: list[dict]) -> str:
 <section class="tab" id="blog"><div class="cols"><div>
 {flow_html()}
 </div><div class="stick">
-<h2><span class="step">3</span>올릴 글</h2>{"".join(row(p) for p in sorted(live, key=lambda p: p["folder"], reverse=True)) or '<p class="muted">올릴 글이 아직 없어요.</p>'}
-{f'<h2 style="margin-top:28px">발행한 글</h2>' + "".join(row(p, True) for p in used[:10]) if used else ''}
+<details class="card fold" data-k="f3" open><summary><h2><span><span class="step">3</span>올릴 글</span></h2></summary>{"".join(row(p) for p in sorted(live, key=lambda p: p["folder"], reverse=True)) or '<p class="muted">올릴 글이 아직 없어요.</p>'}
+{f'<h2 style="margin-top:28px">발행한 글</h2>' + "".join(row(p, True) for p in used[:10]) if used else ''}</details>
 </div></div></section>
 <section class="tab" id="stats" hidden><div class="cols">{stats_html(posts)}</div></section>
 <section class="tab" id="video" hidden><p class="muted">영상은 당분간 보류예요 (대표 결정 10-05). 글에 집중!</p>{vids or '<p class="muted">올릴 영상이 없어요.</p>'}</section>
 <div class="card muted" style="margin-top:28px">홈 화면에 두기: 이 화면에서 브라우저 메뉴(⋮ 또는 공유 ↑) → <b>홈 화면에 추가</b>. 억선생 얼굴 아이콘으로 생겨요.</div>
 </main><script>const POST={{"blocks":[],"images":[]}};{desk.JS}
 function tab(){{const h=(location.hash||'#blog').slice(1);document.querySelectorAll('section.tab').forEach(s=>s.hidden=s.id!==h);
-document.querySelectorAll('nav.tabs a').forEach(a=>a.classList.toggle('on',a.dataset.t===h))}}addEventListener('hashchange',tab);tab();</script></body></html>"""
+document.querySelectorAll('nav.tabs a').forEach(a=>a.classList.toggle('on',a.dataset.t===h))}}addEventListener('hashchange',tab);tab();
+document.querySelectorAll('details.fold').forEach(d=>{{try{{const v=localStorage.getItem('fold:'+d.dataset.k);if(v!==null)d.open=v==='1'}}catch(e){{}}
+d.addEventListener('toggle',()=>{{try{{localStorage.setItem('fold:'+d.dataset.k,d.open?'1':'0')}}catch(e){{}}}})}});</script></body></html>"""
 
 
 FLOW = ROOT / "econ" / "flow"
+MIN_SCORE = 50  # 키워드 이 점수 미만은 도우미에 안 보여 줌 (대표 지시 2026-10-05)
 _REFS = (yaml.safe_load((ROOT / "config" / "econ_refs.yaml").read_text(encoding="utf-8")) or {}) \
     if (ROOT / "config" / "econ_refs.yaml").exists() else {}
 REF_MAIN = _REFS.get("main", "")
@@ -183,8 +190,12 @@ def flow_html() -> str:
     today = datetime.now(KST).strftime("%Y-%m-%d")
     day = FLOW / today
     kw = (yaml.safe_load((day / "keywords.yaml").read_text(encoding="utf-8")) or {}) if (day / "keywords.yaml").exists() else {}
-    rows = []
+    rows, hidden = [], 0
     for it in kw.get("items", [])[:20]:
+        mine = it.get("src") in ("대표", "캡처") or any(k in (it.get("sources") or {}) for k in ("대표", "캡처"))
+        if "score" in it and it["score"] < MIN_SCORE and not mine:  # 50점 미만은 안 보여 줌 (대표 지시 2026-10-05), 대표가 넣은 건 예외
+            hidden += 1
+            continue
         link = desk.issue_link("경제키워드", it["kw"], "이 키워드로 제목 후보를 만들어 주세요.")
         src = dict(it.get("sources") or {})
         bl = it.get("bloggers") or []
@@ -206,14 +217,14 @@ def flow_html() -> str:
               f"location.href='https://github.com/{desk.REPO}/issues/new?title='+encodeURIComponent('[경제키워드추가] {today}')"
               "+'&body='+encodeURIComponent(v+String.fromCharCode(10,10)+'아래 초록색 Create만 누르면 됩니다.')}")
     refresh = desk.issue_link("경제키워드새로", today, "Grok과 코드로 키워드를 다시 모아 주세요.")
-    kw_html = f"""<div class="card" style="border:2px solid var(--accent)"><h2><span class="step">1</span>오늘의 키워드 고르기</h2>
-<div class="muted">점수순이에요(100점 = 출처 겹침 40 + 네이버 뉴스량 25 + 검색량 35). 누르면 그 키워드로 <b>제목 후보</b>를 만들어요 (약 3~5분). {e(kw.get("updated", ""))} 기준</div>
+    kw_html = f"""<details class="card fold" data-k="f1" open style="border:2px solid var(--accent)"><summary><h2><span><span class="step">1</span>오늘의 키워드 고르기</span></h2></summary>
+<div class="muted">점수순이에요(100점 = 출처 겹침 40 + 네이버 뉴스량 25 + 검색량 35, {MIN_SCORE}점 이상만{f" · {hidden}개 숨김" if hidden else ""}). 누르면 그 키워드로 <b>제목 후보</b>를 만들어요 (약 3~5분). {e(kw.get("updated", ""))} 기준</div>
 {''.join(rows) or '<p class="muted">아직 없어요. 매일 아침 6시쯤 Grok·코드가 모아요.</p>'}
 <textarea id="kwin" class="ed" rows="3" placeholder="어드바이저·뉴스 랭킹·트렌드에서 찾은 키워드 (한 줄에 하나)"></textarea>
 <button onclick="addKw()">➕ 내 키워드 넣기</button>
 {inbox_buttons(today)}
 <a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(refresh, quote=True)}">🔄 Grok으로 다시 모으기</a>
-<script>{add_js}</script></div>"""
+<script>{add_js}</script></details>"""
     topics = []
     for t in sorted(day.glob("*/titles.yaml")) if day.exists() else []:
         T = yaml.safe_load(t.read_text(encoding="utf-8")) or {}
@@ -229,12 +240,12 @@ def flow_html() -> str:
             btns.append(f'<a class="btn" style="text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
                         f'href="{e(link, quote=True)}">{i}. {e(it["title"])}<br><span class="muted">{e(it.get("type", ""))} · '
                         f'{it.get("chars", "")}자 · 핵심 "{e(it.get("badge", ""))}"{e(flags)}</span></a>')
-        topics.append(f'<div class="card" style="border:2px solid var(--accent)"><h2><span class="step">2</span>제목 고르기 · {e(T.get("keyword", ""))}</h2>'
+        topics.append(f'<details class="card fold" data-k="f2-{e(t.parent.name)}" open style="border:2px solid var(--accent)"><summary><h2><span><span class="step">2</span>제목 고르기 · {e(T.get("keyword", ""))}</span></h2></summary>'
                       f'<div class="muted">마음에 드는 제목을 누르면 그 제목으로 <b>글·썸네일·본문 그림·쇼츠 대본</b>을 만들어요 (약 5~10분). {e(T.get("made", ""))} 기준'
                       f'{" · " + e(T.get("person")) if T.get("person") else ""}{" · 🔥 강하게 차례(3편에 1편)" if T.get("strong") else ""}</div>{"".join(btns)}'
                       f'<a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(desk.issue_link("경제제목새로", T.get("keyword", ""), "마음에 드는 제목이 없어요. 다시 취재해서 새로 뽑아 주세요."), quote=True)}">🔄 마음에 드는 게 없어요 · 다시 조사해서 새로 뽑기</a>'
                       f'<details><summary class="muted">취재 메모 보기</summary><pre style="white-space:pre-wrap;font-size:13px">'
-                      f'{e((t.parent / "research.md").read_text(encoding="utf-8")[:4000]) if (t.parent / "research.md").exists() else ""}</pre></details></div>')
+                      f'{e((t.parent / "research.md").read_text(encoding="utf-8")[:4000]) if (t.parent / "research.md").exists() else ""}</pre></details></details>')
     return kw_html + "".join(topics)
 
 
