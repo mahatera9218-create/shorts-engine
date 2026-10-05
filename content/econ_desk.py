@@ -424,7 +424,8 @@ def compare_html(blogs: dict, by_blog: dict[str, list[dict]]) -> str:
              f'<span class="muted">/ 상한 50,000원</span></p><div style="background:var(--line);border-radius:8px;height:12px">'
              f'<div style="width:{pct}%;height:12px;border-radius:8px;background:var(--accent)"></div></div>'
              '<div class="muted">토큰으로 어림한 값이라 AI 회사 청구액과 조금 다를 수 있어요.</div></div>')
-    cols, lines = [], {"오늘 발행 / 3": [], "이번 달 발행": [], "만든 글": [], "이번 달 비용": [], "1편 평균 비용": []}
+    cols, lines = [], {"오늘 발행 / 3": [], "이번 달 발행": [], "만든 글": [], "이번 달 비용": [],
+                       "키워드 모으기 (1번)": [], "제목 후보 (키워드 1개)": [], "글·사진 만들기 (1편)": [], "글 1편 어림": []}
     for bid, b in blogs.items():
         posts = by_blog.get(bid, [])
         used = [p for p in posts if p.get("status", {}).get("status") == "used"]
@@ -435,7 +436,17 @@ def compare_html(blogs: dict, by_blog: dict[str, list[dict]]) -> str:
         lines["이번 달 발행"].append(sum(1 for p in used if str(p["status"].get("at", "")).startswith(month)))
         lines["만든 글"].append(len(posts))
         lines["이번 달 비용"].append(f"{won:,}원")
-        lines["1편 평균 비용"].append(f"{won // made:,}원" if made else "-")
+        # 단계별로 나눠 보기 (대표 질문 2026-10-06 "글 하나에 천원꼴? 키워드 조사는 한 번이니 나눠 봐야?")
+        def avg(cmd):
+            v = [float(r["total_usd"]) for r in mine if r["cmd"] == cmd]
+            return (krw(sum(v) / len(v)), len(v)) if v else (None, 0)
+        (kw_a, kw_n), (ti_a, ti_n), (pr_a, pr_n) = avg("keywords"), avg("titles"), avg("produce")
+        cell = lambda a, n: f"{a:,}원 <span class=\"muted\">({n}번)</span>" if a is not None else "-"  # noqa: E731
+        lines["키워드 모으기 (1번)"].append(cell(kw_a, kw_n))
+        lines["제목 후보 (키워드 1개)"].append(cell(ti_a, ti_n))
+        lines["글·사진 만들기 (1편)"].append(cell(pr_a, pr_n))
+        kw_share = krw(sum(float(r["total_usd"]) for r in mine if r["cmd"] == "keywords") / pr_n) if pr_n else 0
+        lines["글 1편 어림"].append(f"{(ti_a or 0) + (pr_a or 0) + kw_share:,}원" if pr_n else "-")
         feed = blog_rss(b.get("url", ""))
         link = (f'<a class="btn" href="{e(b["url"], quote=True)}">블로그 열기</a>' if b.get("url")
                 else '<div class="muted">블로그 주소를 알려 주시면 연결돼요.</div>')
@@ -448,7 +459,9 @@ def compare_html(blogs: dict, by_blog: dict[str, list[dict]]) -> str:
     table = (f'<div class="card"><h2>한눈에 비교</h2><table style="width:100%;border-collapse:collapse;font-size:15px">'
              f'<tr><th style="text-align:left;padding:6px">항목</th>{th}</tr>{tr}</table></div>')
     grid = f'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px">{"".join(cols)}</div>'
-    return head_ + table + grid
+    note = ('<div class="card muted" style="font-size:14px">글 1편 어림 = 제목 후보 1번 + 글·사진 1번 + 키워드 모으기 비용을 만든 글 수로 나눈 몫. '
+            '제목을 다시 뽑거나 고른 키워드로 글을 안 만들면 그만큼 더 들어요.</div>')
+    return head_ + table + note + grid
 
 
 def load() -> list[dict]:
