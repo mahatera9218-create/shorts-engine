@@ -16,3 +16,42 @@
     contrast. A heavy wooden treasure chest overflowing with gleaming gold bars at a Joseon market stall,
     merchants in hanbok leaning in with wide eyes, a golden glow lighting their faces, dark storm clouds
     gathering behind (uncertain times). Absolutely no text, letters, numbers, logos or signatures anywhere.
+# 쿠니네 방식 + 우리 화풍 (대표 요청 2026-10-05): 대상 하나를 가운데 크게, 제목 대상 그대로(비유·군중 없음), 글자 없음, 정사각
+- file: 쿠니네식-원달러환율.png
+  size: 1024x1024
+  quality: high
+  prompt: >-
+    Square blog thumbnail in the composition of a news photo: ONE subject only, large and centered, filling most
+    of the frame, shown directly (no metaphor, no crowd, no story scene). Subject: a thick stack of US dollar
+    banknotes and a stack of Korean won banknotes side by side on a dark lacquered money-changer's counter,
+    seen close up, with a few brass coins. Painted in Joseon ink-and-color technique with bold black outlines
+    and the hwatu palette (deep black background, vermilion, gold, pine green, cream). Banknote faces are
+    stylized with no readable writing and no portraits. Absolutely no text, letters, numbers or logos anywhere.
+- file: 쿠니네식-비트코인.png
+  size: 1024x1024
+  quality: high
+  prompt: >-
+    Square blog thumbnail in the composition of a news photo: ONE subject only, large and centered, filling most
+    of the frame, shown directly (no metaphor, no crowd). Subject: a single large shining golden Bitcoin coin
+    standing upright, its B symbol embossed, on a dark background with a warm autumn-gold glow and a few red
+    maple leaves (October). Painted in Joseon ink-and-color technique with bold black outlines and the hwatu
+    palette (black, vermilion, gold, pine green, cream). No other text, letters, numbers or logos anywhere.
+- file: 쿠니네식-청년미래적금.png
+  size: 1024x1024
+  quality: high
+  prompt: >-
+    Square blog thumbnail in the composition of a news photo: ONE subject only, large and centered, filling most
+    of the frame, shown directly (no metaphor, no crowd). Subject: an open savings bankbook lying on a desk with a
+    neat tower of coins beside it and a young person's hand placing one more coin on the tower (hand only, no face).
+    Painted in Joseon ink-and-color technique with bold black outlines and the hwatu palette (cream, vermilion,
+    gold, pine green, black). The bankbook pages show only blank lines. Absolutely no text, letters, numbers or
+    logos anywhere.
+- file: 쿠니네식-금값.png
+  size: 1024x1024
+  quality: high
+  prompt: >-
+    Square blog thumbnail in the composition of a news photo: ONE subject only, large and centered, filling most
+    of the frame, shown directly (no metaphor, no crowd). Subject: a pyramid of shining gold bars stacked on a
+    dark velvet cloth, dramatic light from above, strong contrast with a near-black background. Painted in Joseon
+    ink-and-color technique with bold black outlines and the hwatu palette (black, gold, vermilion accents, cream).
+    The bars are plain with no stamps. Absolutely no text, letters, numbers or logos anywhere.
