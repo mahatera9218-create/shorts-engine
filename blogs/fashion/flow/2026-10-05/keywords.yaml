@@ -1,0 +1,183 @@
+date: '2026-10-05'
+updated: '22:07'
+items:
+- kw: 환승연애2 해은 미우미우 가방
+  core: 미우미우 가방
+  area: 가방
+  why: 환승연애2 해은 착용으로 화제가 된 미우미우 가방
+  person: 환승연애2 해은
+  rows:
+  - G1
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 64
+  parts:
+    출처: 40
+    뉴스: 0
+    검색: 24
+  stats:
+    뉴스24h: 0
+    블로그24h: 0
+    월검색: 55670
+- kw: 환승연애2 해은 미우미우 부츠
+  core: 미우미우 부츠
+  area: 신발
+  why: 해은 신발로 인기를 얻은 미우미우 부츠
+  person: 환승연애2 해은
+  rows:
+  - G2
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 53
+  parts:
+    출처: 40
+    뉴스: 0
+    검색: 13
+  stats:
+    뉴스24h: 1
+    블로그24h: 0
+    월검색: 2810
+- kw: 공항패션
+  core: 공항패션
+  area: 데일리룩
+  why: 최근 24시간 네이버 기사 29건으로 관심 높음
+  person: ''
+  rows:
+  - W2
+  src: 인기종목
+  bloggers: []
+  sources:
+    인기종목: 1
+  score: 52
+  parts:
+    출처: 32
+    뉴스: 7
+    검색: 13
+  stats:
+    뉴스24h: 29
+    블로그24h: 100
+    월검색: 3000
+- kw: 카리나 글로니 가방
+  core: 글로니 가방
+  area: 가방
+  why: 카리나가 어깨백으로 든 글로니 가방이 화제
+  person: 에스파 카리나
+  rows:
+  - G4
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 51
+  parts:
+    출처: 40
+    뉴스: 0
+    검색: 11
+  stats:
+    뉴스24h: 0
+    블로그24h: 7
+    월검색: 1620
+- kw: 류수정 샌드릭 가방
+  core: 샌드릭 가방
+  area: 가방
+  why: 류수정이 든 샌드릭 베를린백이 눈길
+  person: 러블리즈 류수정
+  rows:
+  - G5
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 46
+  parts:
+    출처: 40
+    뉴스: 0
+    검색: 6
+  stats:
+    뉴스24h: 0
+    블로그24h: 0
+    월검색: 490
+- kw: 드라마 패션
+  core: 드라마 패션
+  area: 드라마 패션
+  why: 최근 24시간 네이버 기사 35건으로 관심 높음
+  person: ''
+  rows:
+  - W1
+  src: 인기종목
+  bloggers: []
+  sources:
+    인기종목: 1
+  score: 42
+  parts:
+    출처: 32
+    뉴스: 9
+    검색: 1
+  stats:
+    뉴스24h: 35
+    블로그24h: 100
+    월검색: 120
+- kw: 환승연애2 해은 트렌치코트
+  core: 아수라 재킷
+  area: 의류
+  why: 해은이 입은 아수라 트렌치재킷에 관심이 쏠림
+  person: 환승연애2 해은
+  rows:
+  - G3
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 40
+  parts:
+    출처: 40
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    블로그24h: 0
+    월검색: 10
+- kw: 고현정 행사룩
+  core: 고현정 행사룩
+  area: 데일리룩
+  why: 고현정 행사 근황 룩이 화제
+  person: 고현정
+  rows:
+  - G8
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 40
+  parts:
+    출처: 40
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    블로그24h: 49
+    월검색: 10
+- kw: 한소희 인턴 패션
+  core: 한소희 인턴
+  area: 드라마 패션
+  why: 드라마 인턴 출연 한소희가 화제
+  person: 한소희
+  rows:
+  - N27
+  src: 국내뉴스
+  bloggers: []
+  sources:
+    국내뉴스: 1
+  score: 24
+  parts:
+    출처: 12
+    뉴스: 0
+    검색: 12
+  stats:
+    뉴스24h: 2
+    블로그24h: 26
+    월검색: 2550
