@@ -105,7 +105,8 @@ jobs:
     if: >-
       github.event_name == 'issues' &&
       github.event.issue.user.login == github.repository_owner &&
-      startsWith(github.event.issue.title, '[경제발행완료]')
+      (startsWith(github.event.issue.title, '[경제발행완료]') || startsWith(github.event.issue.title, '[연예발행완료]') ||
+       startsWith(github.event.issue.title, '[패션발행완료]'))
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -126,9 +127,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add econ/
+          git add econ/ blogs/
           git diff --cached --quiet && exit 0
-          git commit -m "경제 발행 도우미: 발행 완료 ${{ steps.m.outputs.folder }}"
+          git commit -m "발행 도우미: 발행 완료 ${{ steps.m.outputs.folder }}"
           for i in 1 2 3; do
             git pull --rebase --autostash -X theirs origin main && git push origin HEAD:main && exit 0
             sleep $((i * 5))
@@ -156,7 +157,8 @@ jobs:
       github.event_name == 'issues' &&
       github.event.issue.user.login == github.repository_owner &&
       (startsWith(github.event.issue.title, '[경제캡처]') || startsWith(github.event.issue.title, '[경제참고]') ||
-       startsWith(github.event.issue.title, '[경제수정]'))
+       startsWith(github.event.issue.title, '[경제수정]') || startsWith(github.event.issue.title, '[연예수정]') ||
+       startsWith(github.event.issue.title, '[패션수정]'))
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -181,13 +183,13 @@ jobs:
           case "$TITLE" in
             "[경제캡처]"*) python -m content.econ_inbox capture "$NUM" ;;
             "[경제참고]"*) python -m content.econ_inbox ref "$RUNNER_TEMP/body.txt" ;;
-            *) python -m content.econ_inbox edit "$TITLE" "$RUNNER_TEMP/body.txt" ;;
+            *) python -m content.econ_inbox edit "$TITLE" "$RUNNER_TEMP/body.txt" ;;   # [경제|연예|패션수정]
           esac
       - name: 저장 (econ/ 커밋)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add econ/
+          git add econ/ blogs/
           git diff --cached --quiet && exit 0
           git commit -m "경제 받은 편지함: 이슈 #${{ github.event.issue.number }}"
           for i in 1 2 3; do
@@ -216,13 +218,16 @@ jobs:
     if: >-
       github.event_name == 'issues' &&
       github.event.issue.user.login == github.repository_owner &&
-      (startsWith(github.event.issue.title, '[경제키워드') || startsWith(github.event.issue.title, '[경제제목'))
+      (startsWith(github.event.issue.title, '[경제키워드') || startsWith(github.event.issue.title, '[경제제목') ||
+       startsWith(github.event.issue.title, '[연예키워드') || startsWith(github.event.issue.title, '[연예제목') ||
+       startsWith(github.event.issue.title, '[패션키워드') || startsWith(github.event.issue.title, '[패션제목'))
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
       cmd: ${{ steps.p.outputs.cmd }}
       arg1: ${{ steps.p.outputs.arg1 }}
       arg2: ${{ steps.p.outputs.arg2 }}
+      blog: ${{ steps.p.outputs.blog }}
     steps:
       - name: 버튼 읽기
         id: p
@@ -234,6 +239,8 @@ jobs:
           import os, re
           t, b = os.environ["TITLE"].strip(), os.environ.get("BODY") or ""
           cmd = arg1 = arg2 = ""
+          blog = {"경제": "econ", "연예": "ent", "패션": "fashion"}.get(t[1:3], "econ")  # [경제…]·[연예…]·[패션…] (2026-10-05)
+          t = "[경제" + t[3:] if t[1:3] in ("연예", "패션") else t  # 아래 판별은 경제 이름으로 통일
           if t.startswith("[경제키워드추가]"):
               cmd, arg1 = "add", "\n".join(l.strip() for l in b.splitlines() if l.strip() and "Create" not in l)[:800]
           elif t.startswith("[경제키워드새로]"):
@@ -246,7 +253,7 @@ jobs:
               m = re.match(r"^\[경제제목\]\s*(\d{4}-\d{2}-\d{2}-[0-9A-Za-z가-힣-]+)\s+(\d{1,2})\s*$", t)
               if m: cmd, arg1, arg2 = "produce", m.group(1), m.group(2)
           with open(os.environ["GITHUB_OUTPUT"], "a") as f:
-              f.write(f"cmd={cmd}\narg1<<EOF_X\n{arg1}\nEOF_X\narg2={arg2}\n")
+              f.write(f"cmd={cmd}\narg1<<EOF_X\n{arg1}\nEOF_X\narg2={arg2}\nblog={blog}\n")
           PY
       - name: 이슈 닫기
         env:
@@ -271,6 +278,7 @@ jobs:
       cmd: ${{ needs.econ-parse.outputs.cmd }}
       arg1: ${{ needs.econ-parse.outputs.arg1 }}
       arg2: ${{ needs.econ-parse.outputs.arg2 }}
+      blog: ${{ needs.econ-parse.outputs.blog }}
     secrets: inherit
 
   designate:   # ⚡ 이 선수로 지금 쓰기 (대표 결정 2026-10-03): 대표가 찍은 선수를 바로 한 편

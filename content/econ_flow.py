@@ -33,8 +33,10 @@ from PIL import Image, ImageDraw, ImageFont
 from market.common import ROOT
 
 KST = ZoneInfo("Asia/Seoul")
-FLOW = ROOT / "econ" / "flow"
-POSTS = ROOT / "econ" / "posts"
+from .blogs import get as _blog  # 경제·연예·패션 중 지금 블로그 (환경 변수 BLOG, 2026-10-05)
+BLOG = _blog()
+FLOW = BLOG["base"] / "flow"
+POSTS = BLOG["base"] / "posts"
 LIB = ROOT / "assets" / "art-library"
 SKILLS = ROOT / ".claude" / "skills"
 AREAS = ["국내주식", "미국주식", "금", "비트코인", "돈굴리기", "거시·환율"]
@@ -69,9 +71,9 @@ def log_cost(cmd: str, item: str) -> None:
     with COSTS.open("a", encoding="utf-8", newline="") as f:
         w = csv.writer(f)
         if new:
-            w.writerow(["date", "time", "cmd", "item", "claude_usd", "gpt_usd", "grok_usd", "image_usd", "total_usd"])
+            w.writerow(["date", "time", "cmd", "item", "claude_usd", "gpt_usd", "grok_usd", "image_usd", "total_usd", "blog"])
         w.writerow([today(), datetime.now(KST).strftime("%H:%M"), cmd, item[:40]]
-                   + [f"{SPENT[k]:.4f}" for k in ("claude", "gpt", "grok", "image")] + [f"{sum(SPENT.values()):.4f}"])
+                   + [f"{SPENT[k]:.4f}" for k in ("claude", "gpt", "grok", "image")] + [f"{sum(SPENT.values()):.4f}", BLOG["id"]])
 
 
 def _usage_cost(u: dict, inp: float, out: float) -> float:
@@ -230,11 +232,13 @@ def keywords() -> Path:
     """여러 출처에서 모아 묶고 점수를 매긴다 (대표 지시 2026-10-05: Grok만 믿지 말고 겹치면 우선). content/econ_score.py"""
     from .econ_score import run
     day = FLOW / today()
-    g = grok(f"오늘은 {today()}(한국 시간)입니다. 지금 X(트위터)와 웹에서 한국 개인 투자자들이 가장 많이 이야기하는 "
-             "경제·투자 화제 8개를 찾아 주세요. 분야는 국내주식·미국주식·금·비트코인·돈굴리기(예적금·ISA 등)·거시·환율. "
-             "한 종목에 몰리지 않게, 실제로 오늘 화제인 것만. 작전주·테마주 추천·리딩방은 빼세요. "
+    from .econ_score import CFG as _kcfg
+    topic = (load(_kcfg(), {}) or {}).get("grok_topic") or (
+        "한국 개인 투자자들이 가장 많이 이야기하는 경제·투자 화제. 분야는 국내주식·미국주식·금·비트코인·돈굴리기(예적금·ISA 등)·거시·환율. "
+        "한 종목에 몰리지 않게, 작전주·테마주 추천·리딩방은 빼세요")
+    g = grok(f"오늘은 {today()}(한국 시간)입니다. 지금 X(트위터)에서 {topic}. 실제로 오늘 화제인 것 8개만. "
              'JSON 배열만 답하세요: [{"kw": "짧은 키워드", "area": "분야", "why": "왜 화제인지 한 줄", '
-             '"person": "관련 인물이 있으면 회사+이름(예: 삼성 이재용), 없으면 빈칸"}]')
+             '"person": "관련 인물이 있으면 이름(회사·소속), 없으면 빈칸"}]')
     grok_items = [it for it in (parse_json(g) or []) if isinstance(it, dict) and it.get("kw")]
     old = load(day / "keywords.yaml", {"items": []})
     mine = [x for x in old.get("items", []) if x.get("src") in ("대표", "캡처")]
@@ -682,12 +686,12 @@ def _run(cmd: str) -> None:
         keywords()
     elif cmd == "add":
         add(sys.argv[2])
-    elif cmd == "titles":  # 쿠니네 방식 (대표 결정 2026-10-05). 옛 억선생 방식은 titles()/produce()에 남겨 둠
-        from .kunine import titles as k_titles
-        k_titles(sys.argv[2])
+    elif cmd == "titles":  # 경제 = 쿠니네 방식, 연예·패션 = 강사 연예·패션 프롬프트 (대표 결정 2026-10-05)
+        mod = __import__("content.kunine" if BLOG["id"] == "econ" else "content.celeb", fromlist=["titles"])
+        mod.titles(sys.argv[2])
     elif cmd == "produce":
-        from .kunine import produce as k_produce
-        k_produce(sys.argv[2], int(sys.argv[3]))
+        mod = __import__("content.kunine" if BLOG["id"] == "econ" else "content.celeb", fromlist=["produce"])
+        mod.produce(sys.argv[2], int(sys.argv[3]))
     else:
         raise SystemExit(f"모르는 명령: {cmd}")
 

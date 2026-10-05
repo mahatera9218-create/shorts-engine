@@ -110,11 +110,13 @@ def ref(path: str) -> str:
 
 def edit(title: str, path: str) -> str:
     from .edits import parse, apply
-    m = re.match(r"^\[경제수정\]\s*(\d{4}-\d{2}-\d{2}-[0-9A-Za-z가-힣-]+)\s*$", title.strip())
-    if not m or not (F.POSTS / m.group(1) / "post.md").exists():
+    from .blogs import by_label
+    m = re.match(r"^\[(경제|연예|패션)수정\]\s*(\d{4}-\d{2}-\d{2}-[0-9A-Za-z가-힣-]+)\s*$", title.strip())
+    b = by_label(m.group(1)) if m else None
+    if not b or not (b["base"] / "posts" / m.group(2) / "post.md").exists():
         return "형식이 다르거나 없는 글이에요."
     t, blocks = parse(Path(path).read_text(encoding="utf-8"))
-    done = apply(F.POSTS / m.group(1), t, blocks)
+    done = apply(b["base"] / "posts" / m.group(2), t, blocks)
     return f"반영: {', '.join(done)}. 다음 글부터 이렇게 고친 방향을 배워요." if done else "바뀐 것이 없어요."
 
 

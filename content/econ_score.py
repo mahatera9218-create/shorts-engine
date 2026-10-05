@@ -21,7 +21,8 @@ import requests
 from market.common import ROOT, load_yaml, request_json, secret
 from . import econ_flow as F
 
-CFG = ROOT / "config" / "econ_keywords.yaml"
+def CFG():  # noqa: N802 — 블로그마다 키워드 설정이 다르다 (config/blogs.yaml의 keywords)
+    return ROOT / F.BLOG.get("keywords", "config/econ_keywords.yaml")
 UA = {"User-Agent": "Mozilla/5.0 (eok-econ keyword reader; RSS)"}
 
 
@@ -50,13 +51,13 @@ def headlines(url: str, hours: int = 24) -> list[str]:
 
 def gather(grok_items: list[dict], mine: list[dict]) -> list[tuple[str, str, str]]:
     """(번호, 출처 이름, 내용) 줄 목록. 출처 이름은 점수표(source_points)의 이름과 같다."""
-    cfg = F.load(CFG, {})
+    cfg = F.load(CFG(), {})
     rows: list[tuple[str, str, str]] = []
     for i, it in enumerate(mine, 1):
         rows.append((f"D{i}", "캡처" if str(it.get("why", "")).startswith("📷") else "대표", it["kw"]))
     for i, it in enumerate(grok_items, 1):
         rows.append((f"G{i}", "Grok", f"{it['kw']} — {it.get('why', '')}"))
-    refs = F.load(ROOT / "econ" / "ref" / "rss" / f"{F.today()}.yaml", {})
+    refs = F.load(ROOT / "econ" / "ref" / "rss" / f"{F.today()}.yaml", {}) if F.BLOG["id"] == "econ" else {}
     main = F.load(ROOT / "config" / "econ_refs.yaml", {}).get("main", "")
     n = 0
     for b in refs.get("bloggers", []):
@@ -69,7 +70,7 @@ def gather(grok_items: list[dict], mine: list[dict]) -> list[tuple[str, str, str
             for t in headlines(url):
                 n += 1
                 rows.append((f"{'N' if kind == '국내뉴스' else 'Y'}{n}", kind, t))
-    for i, it in enumerate(F.price_moves(), 1):
+    for i, it in enumerate(F.price_moves() if F.BLOG["id"] == "econ" else [], 1):
         rows.append((f"P{i}", "시세", f"{it['kw']} — {it['why']}"))
     # 인기 종목: 국내·미국 대표 종목의 최근 24시간 네이버 기사 수 (뉴스 제목에서 테마로 묶여 사라지지 않게, 2026-10-05 대표 지적)
     hub = _hub()
@@ -94,7 +95,7 @@ CLUSTER = {"type": "object", "additionalProperties": False, "required": ["keywor
                "properties": {
                    "kw": {"type": "string", "description": "네이버에서 사람들이 실제로 칠 검색어 (2~4단어, 한국어)"},
                    "core": {"type": "string", "description": "검색량·뉴스량을 잴 핵심 검색어 1~2단어 (예: '원달러 환율', '비트코인', '청년미래적금')"},
-                   "area": {"type": "string", "enum": F.AREAS},
+                   "area": {"type": "string", "enum": F.load(CFG(), {}).get("areas") or F.AREAS},
                    "why": {"type": "string", "description": "왜 오늘 쓸 만한지 한 줄"},
                    "person": {"type": "string", "description": "관련 인물이 있으면 회사+이름(예: 삼성 이재용), 없으면 빈칸"},
                    "rows": {"type": "array", "items": {"type": "string"}, "description": "이 키워드가 나온 줄 번호 전부 (예: G2, B5, N13)"}}}}}}
@@ -103,7 +104,7 @@ CLUSTER = {"type": "object", "additionalProperties": False, "required": ["keywor
 def cluster(rows: list[tuple[str, str, str]]) -> list[dict]:
     text = "\n".join(f"{rid} ({src}) {t}" for rid, src, t in rows)
     res = F.claude_json(
-        ["너는 경제 블로그 편집장이다. 한국 개인 투자자·직장인이 오늘 네이버에서 찾아볼 경제·돈 주제를 고른다. "
+        [F.load(CFG(), {}).get("editor") or "너는 경제 블로그 편집장이다. 한국 개인 투자자·직장인이 오늘 네이버에서 찾아볼 경제·돈 주제를 고른다. "
          "작전주·테마주 추천·리딩방·정치 싸움은 뺀다. 줄에 없는 주제를 지어내지 않는다."],
         f"오늘은 {F.today()}(한국 시간). 아래는 여러 출처에서 모은 줄입니다(번호와 출처 표시). 같은 이야기는 한 키워드로 묶고, "
         "키워드마다 그 이야기가 나온 줄 번호를 빠짐없이 적어 주세요. 해외 기사는 한국 독자가 찾을 한국어 검색어로 바꿔 주세요. "
@@ -159,7 +160,7 @@ def score(items: list[dict], src_rows: dict[str, str]) -> list[dict]:
     """items: {kw, core, rows[...]} → score·parts·sources를 채워 점수순으로.
     100점 = 출처 겹침 40(그날 1등 = 40, 나머지는 비율) + 뉴스량 25(24시간 기사 100건 = 25) + 검색량 35(월 100만 = 35, 10만 ≈ 26, 1만 ≈ 17).
     '오늘 블로그 빈자리'는 인기 주제일수록 늘 0이라 점수에서 뺐다(2026-10-05 대표 지적 '점수가 너무 낮다'). 숫자는 참고로만 보여 준다."""
-    cfg = F.load(CFG, {})
+    cfg = F.load(CFG(), {})
     pts, caps = cfg.get("source_points", {}), cfg.get("caps", {})
     hub = _hub()
     q = {it["kw"]: (it.get("core") or it["kw"]) for it in items}  # 긴 키워드는 검색량이 0에 가까워 핵심어로 잰다
