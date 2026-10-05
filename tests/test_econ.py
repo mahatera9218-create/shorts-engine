@@ -28,8 +28,8 @@ class EconTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             F.COSTS = Path(d) / "c.csv"
             F.COSTS.write_text("date,time,cmd,item,claude_usd,gpt_usd,grok_usd,image_usd,total_usd\n"
-                               f"{F.today()},06:00,produce,x,1,0,0,0,40\n", encoding="utf-8")
-            self.assertEqual(F.month_spent_krw(), 56000)
+                               f"{F.today()},06:00,produce,x,1,0,0,0,110\n", encoding="utf-8")
+            self.assertEqual(F.month_spent_krw(), 154000)  # 상한 15만원 넘김
             with self.assertRaises(SystemExit):
                 F.guard()
         F.COSTS = old
