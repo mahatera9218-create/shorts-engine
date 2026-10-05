@@ -23,8 +23,9 @@ STYLE = ("Korean traditional art direction: a reinterpretation of Joseon-dynasty
          "Korean minhwa, with the flat bold color palette of a Korean hwatu flower card (vermilion red, black ink, "
          "cream hanji, pine green, gold). Crisp clean ink outlines, smooth flat color areas, no grain, no noise, no "
          "blur, high detail. Distinctly Korean elements only (hanbok, gat, thatched and tiled roofs, market stalls, "
-         "yeopjeon coins, jogakbo patterns); nothing Chinese or Japanese. No real people's faces, no logos, no "
-         "watermark, no signature. ")
+         "yeopjeon coins, jogakbo patterns); nothing Chinese or Japanese. Every person is a fictional Joseon "
+         "townsperson with a fully drawn, expressive face (eyes, eyebrows, nose, mouth) - never blank or faceless; "
+         "no portraits of real, identifiable people, no logos, no watermark, no signature. ")
 
 
 def draw(folder: Path) -> list[str]:
