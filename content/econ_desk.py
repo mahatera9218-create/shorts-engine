@@ -276,10 +276,11 @@ def flow_html() -> str:
 
 def masters_html() -> str:
     """제목 고수(경제토르·유미) 최근 제목과 공식 — ② 칸 안에 접어서 (대표 지시 2026-10-05, content/title_refs.py)."""
-    from .title_refs import GUIDE, history, masters
+    from .title_refs import GUIDE, for_blog, guide_text, history
     e = html.escape
     parts = []
-    for bid, name in masters().items():
+    mine = for_blog(BID)  # 경제 탭 = 경제토르, 패션 탭 = 유미 (2026-10-05)
+    for bid, name in mine.items():
         ps = history(bid)
         if not ps:
             continue
@@ -289,11 +290,11 @@ def masters_html() -> str:
         parts.append(f'<details><summary class="muted">{e(name)} 최근 제목 {min(len(ps), 15)}개 (모은 것 {len(ps)}개)</summary>{rows}</details>')
     if GUIDE.exists():
         parts.append(f'<details><summary class="muted">제목 공식 (두 분 제목에서 뽑은 틀)</summary>'
-                     f'<pre style="white-space:pre-wrap;font-size:13px">{e(GUIDE.read_text(encoding="utf-8")[:6000])}</pre></details>')
+                     f'<pre style="white-space:pre-wrap;font-size:13px">{e(guide_text(BID).split(chr(10), 1)[-1][:6000])}</pre></details>')
     if not parts:
         return ""
     return ('<div style="margin-top:14px;padding-top:10px;border-top:1px solid var(--line)"><b>제목 고수 참고</b> '
-            '<span class="muted">경제토르·유미 · 제목 후보도 이 공식을 참고해 만들어요</span>' + "".join(parts) + "</div>")
+            f'<span class="muted">{e("·".join(mine.values()))} · 제목 후보도 이 공식을 참고해 만들어요</span>' + "".join(parts) + "</div>")
 
 
 def inbox_buttons(today: str) -> str:
