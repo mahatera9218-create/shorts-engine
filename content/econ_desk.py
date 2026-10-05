@@ -403,11 +403,13 @@ def compare_html(blogs: dict, by_blog: dict[str, list[dict]]) -> str:
     e = html.escape
     now = datetime.now(KST)
     month, today = now.strftime("%Y-%m"), now.strftime("%Y-%m-%d")
-    rows = [r for r in (csv.DictReader(COSTS.open(encoding="utf-8")) if COSTS.exists() else []) if r["date"].startswith(month)]
+    from .econ_flow import COST_FROM  # 이 날부터 다시 셈 (대표 지시 2026-10-06)
+    rows = [r for r in (csv.DictReader(COSTS.open(encoding="utf-8")) if COSTS.exists() else [])
+            if r["date"].startswith(month) and r["date"] >= COST_FROM]
     krw = lambda usd: int(round(usd * 1400))  # noqa: E731  (econ_flow.KRW와 같게)
     total = krw(sum(float(r["total_usd"]) for r in rows))
     pct = min(100, total * 100 // 50000)
-    head_ = (f'<div class="card"><h2>이번 달 AI 비용 (모든 블로그 합계)</h2><p style="font-size:26px;margin:4px 0"><b>{total:,}원</b> '
+    head_ = (f'<div class="card"><h2>이번 달 AI 비용 (모든 블로그 합계, {int(COST_FROM[5:7])}월 {int(COST_FROM[8:])}일부터)</h2><p style="font-size:26px;margin:4px 0"><b>{total:,}원</b> '
              f'<span class="muted">/ 상한 50,000원</span></p><div style="background:var(--line);border-radius:8px;height:12px">'
              f'<div style="width:{pct}%;height:12px;border-radius:8px;background:var(--accent)"></div></div>'
              '<div class="muted">토큰으로 어림한 값이라 AI 회사 청구액과 조금 다를 수 있어요.</div></div>')
