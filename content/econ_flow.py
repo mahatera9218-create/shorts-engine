@@ -678,4 +678,7 @@ def _run(cmd: str) -> None:
 
 
 if __name__ == "__main__":
-    main()
+    # `python -m`으로 돌리면 이 파일이 __main__으로 한 번 더 올라가, 다른 모듈(econ_score 등)이 쓴 비용이 따로 쌓인다.
+    # 같은 모듈(content.econ_flow)로 돌려서 비용 기록(SPENT)을 하나로 모은다 (2026-10-05 키워드 Claude 비용 누락 수정).
+    from content import econ_flow as _m
+    _m.main()
