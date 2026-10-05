@@ -1,6 +1,6 @@
 # 제목 고수 (대표 지정 2026-10-05: "제목을 진짜 잘 짓는다함"). 아이디: 도우미에 보이는 이름
 # 공개 RSS(최근 글 약 50개)로 제목을 모아 쌓고, Claude가 '제목 공식'(구조)만 뽑는다 → content/title_refs.py
-# 이 파일을 고쳐 main에 올리면 바로 한 번 다시 조사 (.github/workflows/title-refs.yml)
+# 이 파일을 고쳐 main에 올리면 바로 한 번 다시 조사 (.github/workflows/title-refs.yml). 첫 조사 2026-10-05
 masters:
   kka_dream: 경제토르
   influha: 유미
