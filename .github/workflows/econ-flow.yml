@@ -14,7 +14,7 @@ on:
   #   paths: ["config/econ_refs.yaml"]
   workflow_dispatch:
     inputs:
-      cmd: {description: "keywords | add | titles | produce | learn | refs", required: true, default: keywords}
+      cmd: {description: "keywords | add | titles | produce | learn | refs | masters", required: true, default: keywords}
       arg1: {description: "키워드 / 주제폴더", required: false, default: ""}
       arg2: {description: "제목 번호", required: false, default: ""}
       blog: {description: "econ | ent | fashion", required: false, default: econ}
@@ -68,6 +68,7 @@ jobs:
           elif [ "$CMD" = "produce" ]; then python -m content.econ_flow produce "$ARG1" "$ARG2"
           elif [ "$CMD" = "learn" ]; then python -m content.econ_inbox learn
           elif [ "$CMD" = "refs" ]; then python -m content.econ_refs
+          elif [ "$CMD" = "masters" ]; then python -m content.title_refs   # 제목 고수(경제토르·유미) 조사
           else echo "모르는 명령"; exit 1; fi
       - name: 저장 (econ/ 커밋)
         run: |

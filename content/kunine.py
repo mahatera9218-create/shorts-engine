@@ -69,12 +69,18 @@ TITLES = {"type": "object", "additionalProperties": False, "required": ["groups"
                                   "properties": {"title": {"type": "string"}, "type": {"type": "string", "enum": TYPES}}}}}}
 
 
+def title_guide() -> str:
+    """제목 고수(경제토르·유미) 공식 — 구조만 참고 (대표 지시 2026-10-05, content/title_refs.py)"""
+    from .title_refs import guide_text
+    return guide_text()
+
+
 def titles(kw: str) -> Path:
     d = F.FLOW / F.today() / F.topic_slug(kw)
     d.mkdir(parents=True, exist_ok=True)
     memo = research(kw) or F.claude_research(kw)  # Grok이 안 되면 Claude 웹 검색으로 대신
     (d / "research.md").write_text(f"# 조사 메모: {kw}\n\n{memo}\n", encoding="utf-8")
-    out = F.claude_json(prompt(), (
+    out = F.claude_json(prompt() + [g for g in [title_guide()] if g], (
         f"핵심키워드: {kw}\n\n[조사 메모]\n{memo[:10000]}\n\n"
         "이번 단계는 **제목만** 만듭니다(본문은 다음 단계). 원문의 '제목 후보 생성 규칙'대로 6유형 × 5개, 유형별 BEST, "
         "최종 BEST 5를 JSON으로 주세요."), TITLES, stage="제목(쿠니네)")

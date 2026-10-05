@@ -1,0 +1,19 @@
+# 제목 고수 조사 (대표 지시 2026-10-05): 경제토르(kka_dream)·유미(influha)의 공개 RSS 제목 → 제목 공식 → 도우미 ② 칸
+# config/title_masters.yaml 을 고쳐 main에 올리면 한 번 돈다. 자동 예약은 없음 (자동은 꺼 두기, 대표 결정).
+name: 제목 고수 조사
+
+on:
+  push:
+    branches: [main]
+    paths: ["config/title_masters.yaml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    uses: ./.github/workflows/econ-flow.yml
+    with:
+      cmd: masters
+    secrets: inherit
