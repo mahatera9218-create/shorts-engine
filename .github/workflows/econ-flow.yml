@@ -35,7 +35,7 @@ concurrency:
 jobs:
   run:
     runs-on: ubuntu-24.04   # ubuntu-latest가 2026-10-06 새벽 서버 배정을 못 받아 15분 뒤 취소가 반복돼 고정 (Ubuntu 26 이전 중)
-    timeout-minutes: 30
+    timeout-minutes: 60   # 키워드 여러 개 제목을 한 번에 (최대 5개, 2026-10-06)
     steps:
       - uses: actions/checkout@v4
         with:

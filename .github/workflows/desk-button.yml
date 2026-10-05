@@ -247,7 +247,7 @@ jobs:
           elif t.startswith("[경제제목새로]"):
               cmd, arg1 = "titles", t[len("[경제제목새로]"):].strip()[:60]
           elif t.startswith("[경제키워드]"):
-              cmd, arg1 = "titles", t[len("[경제키워드]"):].strip()[:60]
+              cmd, arg1 = "titles", t[len("[경제키워드]"):].strip()[:300]   # 여러 개는 " / "로 이어 옴 (2026-10-06)
           elif t.startswith("[경제제목]"):
               m = re.match(r"^\[경제제목\]\s*(\d{4}-\d{2}-\d{2}-[0-9A-Za-z가-힣-]+)\s+(\d{1,2})\s*$", t)
               if m: cmd, arg1, arg2 = "produce", m.group(1), m.group(2)
@@ -261,7 +261,7 @@ jobs:
           CMD: ${{ steps.p.outputs.cmd }}
         run: |
           case "$CMD" in
-            titles) msg="제목 후보를 만들고 있어요 (약 3~5분). 도우미의 ② 제목 고르기에 올라와요.";;
+            titles) msg="제목 후보를 만들고 있어요 (키워드 1개에 약 3~5분). 도우미의 ② 제목 고르기에 올라와요.";;
             produce) msg="이 제목으로 글·그림·쇼츠 대본을 만들고 있어요 (약 5~10분). 도우미 목록에 올라와요.";;
             add) msg="키워드를 도우미에 넣었어요 (1~2분).";;
             keywords) msg="Grok과 코드로 키워드를 다시 모으고 있어요 (약 3분).";;

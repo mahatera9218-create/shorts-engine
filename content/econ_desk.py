@@ -220,17 +220,28 @@ def flow_html() -> str:
         st = it.get("stats") or {}
         bar = (f'<span class="muted">출처 {pt.get("출처", 0)}/40 · 뉴스 {pt.get("뉴스", 0)}/25 · 검색 {pt.get("검색", 0)}/35'
                f'{" · 월검색 " + format(st["월검색"], ",") if st.get("월검색") else ""}</span><br>') if pt else ""
-        rows.append(f'<a class="btn" style="text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
+        rows.append(f'<div style="display:flex;gap:8px;align-items:stretch"><label style="display:flex;align-items:center;padding:0 4px">'
+                    f'<input type="checkbox" class="kwpick-{BID}" value="{e(it["kw"], quote=True)}" onchange="pick_{BID}()" style="width:22px;height:22px"></label>'
+                    f'<a class="btn" style="flex:1;text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
                     f'href="{e(link, quote=True)}"><b>{e(it["kw"])}</b>'
                     f'{sc}'
-                    f'<br><span class="muted">📌 {e(who)}</span><br>{bar}<span class="muted">{e(it.get("why", ""))}</span></a>')
+                    f'<br><span class="muted">📌 {e(who)}</span><br>{bar}<span class="muted">{e(it.get("why", ""))}</span></a></div>')
     add_js = (f"function addKw_{BID}(){{const v=document.getElementById('kwin-{BID}').value.trim();if(!v){{alert('키워드를 적어 주세요');return}}"
               f"location.href='https://github.com/{desk.REPO}/issues/new?title='+encodeURIComponent('[{LABEL}키워드추가] {today}')"
               "+'&body='+encodeURIComponent(v+String.fromCharCode(10,10)+'아래 초록색 Create만 누르면 됩니다.')}")
+    # 여러 개 골라 제목 한 번에 (대표 지시 2026-10-06): 체크한 키워드를 ' / '로 이어 이슈 하나로 → 차례로 제목 후보
+    add_js += (f"function pick_{BID}(){{const n=document.querySelectorAll('.kwpick-{BID}:checked').length;"
+               f"const b=document.getElementById('kwmulti-{BID}');b.textContent='선택한 키워드 '+n+'개 제목 한 번에 뽑기';b.style.opacity=n?1:.5}}"
+               f"function multi_{BID}(){{const v=[...document.querySelectorAll('.kwpick-{BID}:checked')].map(x=>x.value);"
+               f"if(!v.length){{alert('왼쪽 네모를 눌러 키워드를 골라 주세요');return}}if(v.length>5){{alert('한 번에 5개까지예요');return}}"
+               f"location.href='https://github.com/{desk.REPO}/issues/new?title='+encodeURIComponent('[{LABEL}키워드] '+v.join(' / '))"
+               "+'&body='+encodeURIComponent('이 키워드들로 제목 후보를 차례로 만들어 주세요.'+String.fromCharCode(10,10)+'아래 초록색 Create만 누르면 됩니다.')}")
+    multi_btn = (f'<button id="kwmulti-{BID}" onclick="multi_{BID}()" style="opacity:.5;position:sticky;bottom:10px;z-index:5;box-shadow:0 4px 14px rgba(0,0,0,.18)">선택한 키워드 0개 제목 한 번에 뽑기</button>'
+                 '<div class="muted">왼쪽 네모로 여러 개(최대 5개) 고르면 한 번에 제목 후보를 만들어요. 1개에 약 3~5분, 비용 약 150원.</div>') if rows else ""
     refresh = desk.issue_link(f"{LABEL}키워드새로", today, "여러 출처에서 키워드를 모아 점수를 매겨 주세요.")
     kw_html = f"""<details class="card fold" data-k="f1-{BID}" open style="border:2px solid var(--accent)"><summary><h2><span><span class="step">1</span>오늘의 키워드 고르기</span></h2></summary>
 <div class="muted">점수순이에요(100점 = 출처 겹침 40 + 네이버 뉴스량 25 + 검색량 35, {MIN_SCORE}점 이상만{f" · {hidden}개 숨김" if hidden else ""}). 누르면 그 키워드로 <b>제목 후보</b>를 만들어요 (약 3~5분). {e(kw.get("updated", ""))} 기준</div>
-{''.join(rows) or '<p class="muted">아직 없어요. 아래 <b>🔄 키워드 모으기</b>를 누르면 여러 출처에서 모아 점수를 매겨요(약 3분).</p>'}
+{''.join(rows)}{multi_btn}{'' if rows else '<p class="muted">아직 없어요. 아래 <b>🔄 키워드 모으기</b>를 누르면 여러 출처에서 모아 점수를 매겨요(약 3분).</p>'}
 <textarea id="kwin-{BID}" rows="3" style="width:100%;min-height:84px;font:inherit;line-height:1.6;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:6px 0;background:var(--card);color:var(--ink);resize:vertical" placeholder="{'어드바이저·뉴스 랭킹·트렌드에서 찾은 키워드' if BID == 'econ' else '눈에 띈 연예인 + 아이템 (예: 윤아 코트)'} (한 줄에 하나)"></textarea>
 <button onclick="addKw_{BID}()">➕ 내 키워드 넣기</button>
 {inbox_buttons(today) if BID == 'econ' else ''}
