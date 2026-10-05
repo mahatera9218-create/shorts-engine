@@ -5,11 +5,15 @@ name: 경제 흐름
 
 on:
   schedule:
+    - cron: "40 20 * * *"   # UTC 20:40 = 한국 05:40 참고 블로거 RSS 조사 (refs)
     - cron: "50 20 * * *"   # UTC 20:50 = 한국 05:50 키워드 모으기
     - cron: "30 22 * * 0"   # UTC 일 22:30 = 한국 월 07:30 주간 점검·학습 (learn)
+  push:   # 참고 블로거 목록을 고치면 바로 한 번 조사 (refs)
+    branches: [main]
+    paths: ["config/econ_refs.yaml"]
   workflow_dispatch:
     inputs:
-      cmd: {description: "keywords | add | titles | produce | learn", required: true, default: keywords}
+      cmd: {description: "keywords | add | titles | produce | learn | refs", required: true, default: keywords}
       arg1: {description: "키워드 / 주제폴더", required: false, default: ""}
       arg2: {description: "제목 번호", required: false, default: ""}
   workflow_call:
@@ -46,7 +50,7 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           NCP_APIGW_API_KEY_ID: ${{ secrets.NCP_APIGW_API_KEY_ID }}   # 정보 이득 게이트: 네이버 블로그 검색 API
           NCP_APIGW_API_KEY: ${{ secrets.NCP_APIGW_API_KEY }}
-          CMD: ${{ inputs.cmd || (github.event.schedule == '30 22 * * 0' && 'learn') || 'keywords' }}
+          CMD: ${{ inputs.cmd || (github.event.schedule == '30 22 * * 0' && 'learn') || ((github.event.schedule == '40 20 * * *' || github.event_name == 'push') && 'refs') || 'keywords' }}
           ARG1: ${{ inputs.arg1 }}
           ARG2: ${{ inputs.arg2 }}
         run: |
@@ -55,6 +59,7 @@ jobs:
           elif [ "$CMD" = "titles" ]; then python -m content.econ_flow titles "$ARG1"
           elif [ "$CMD" = "produce" ]; then python -m content.econ_flow produce "$ARG1" "$ARG2"
           elif [ "$CMD" = "learn" ]; then python -m content.econ_inbox learn
+          elif [ "$CMD" = "refs" ]; then python -m content.econ_refs
           else echo "모르는 명령"; exit 1; fi
       - name: 저장 (econ/ 커밋)
         run: |
