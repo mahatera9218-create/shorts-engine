@@ -68,6 +68,9 @@ def log_cost(cmd: str, item: str) -> None:
     import csv
     new = not COSTS.exists()
     COSTS.parent.mkdir(parents=True, exist_ok=True)
+    if not new and not COSTS.read_text(encoding="utf-8").split("\n", 1)[0].endswith(",blog"):  # 옛 머리줄에 blog 칸 더하기 (없으면 성과 탭이 다 경제로 셈)
+        head, _, rest = COSTS.read_text(encoding="utf-8").partition("\n")
+        COSTS.write_text(head.rstrip() + ",blog\n" + rest, encoding="utf-8")
     with COSTS.open("a", encoding="utf-8", newline="") as f:
         w = csv.writer(f)
         if new:
