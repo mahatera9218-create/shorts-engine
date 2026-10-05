@@ -29,12 +29,12 @@ permissions:
   contents: write
 
 concurrency:
-  group: econ-flow
+  group: econ-flow-${{ inputs.blog || 'econ' }}   # 블로그별로 따로 줄 서기 (2026-10-06)
   cancel-in-progress: false
 
 jobs:
   run:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # ubuntu-latest가 2026-10-06 새벽 서버 배정을 못 받아 15분 뒤 취소가 반복돼 고정 (Ubuntu 26 이전 중)
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
