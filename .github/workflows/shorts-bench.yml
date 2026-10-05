@@ -7,8 +7,8 @@ on:
   push:
     branches: [main]
     paths: ["config/shorts_bench.yaml", "market/shorts_bench.py"]
-  schedule:
-    - cron: "37 23 * * 0"   # UTC 일요일 23:37 = 한국 월요일 08:37 (주간 점검 전에)
+  # schedule:   # 2026-10-05 대표 결정: 스포츠 자동 중단 (경제 전향)
+  #   - cron: "37 23 * * 0"   # UTC 일요일 23:37 = 한국 월요일 08:37 (주간 점검 전에)
 
 permissions:
   contents: write
