@@ -1,0 +1,46 @@
+# AI 연결 점검: Gemini · Grok · Claude 웹 검색이 키로 실제 답하는지 → reports/AI-연결-점검-<날짜>.md
+# 자동: content/ai_check.py를 고쳐 main에 올리면. 수동: Actions → AI 연결 점검
+name: AI 연결 점검
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["content/ai_check.py"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: repo-reports
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: 점검
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python -m content.ai_check | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: 저장
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/
+          git diff --cached --quiet && exit 0
+          git commit -m "AI 연결 점검 $(date +%F)"
+          for i in 1 2 3; do
+            git pull --rebase --autostash -X theirs origin "${GITHUB_REF_NAME}" && git push && exit 0
+            sleep $((i * 5))
+          done
+          exit 1
