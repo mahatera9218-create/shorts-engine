@@ -408,7 +408,7 @@ def learned() -> list[str]:
     if edits:
         out.append("[대표가 최근 고친 곳: 원래 → 고친 글. 같은 방향으로 처음부터 쓴다]\n"
                    + "\n".join(f.read_text(encoding="utf-8")[-1500:] for f in edits)[:6000])
-    for pat, who in (("*.md", "Aside"), ("rss/*.md", "공개 RSS 아침 조사")):
+    for pat, who in (("20*.md", "Aside"), ("참고-블로거-틀.md", "공개 RSS로 정리한 틀")):
         ref = sorted((ROOT / "econ" / "ref").glob(pat), reverse=True)[:1]
         if ref:
             out.append(f"[참고 블로거 조사({who}). 구조·흐름·제목 모양만 참고하고 문장·표현은 절대 옮기지 않는다]\n"

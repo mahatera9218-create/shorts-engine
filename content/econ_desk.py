@@ -171,6 +171,10 @@ document.querySelectorAll('nav.tabs a').forEach(a=>a.classList.toggle('on',a.dat
 
 
 FLOW = ROOT / "econ" / "flow"
+_REFS = (yaml.safe_load((ROOT / "config" / "econ_refs.yaml").read_text(encoding="utf-8")) or {}) \
+    if (ROOT / "config" / "econ_refs.yaml").exists() else {}
+REF_MAIN = _REFS.get("main", "")
+REF_NAMES = _REFS.get("bloggers", {}) if isinstance(_REFS.get("bloggers"), dict) else {}
 
 
 def flow_html() -> str:
@@ -182,8 +186,13 @@ def flow_html() -> str:
     rows = []
     for it in kw.get("items", [])[:20]:
         link = desk.issue_link("경제키워드", it["kw"], "이 키워드로 제목 후보를 만들어 주세요.")
-        src = it.get("sources") or {}
-        who = " · ".join(f"{k}{'×' + str(v) if v > 1 else ''}" for k, v in src.items()) or it.get("src", "")
+        src = dict(it.get("sources") or {})
+        bl = it.get("bloggers") or []
+        main_name = REF_NAMES.get(REF_MAIN, "")
+        src.pop(REF_MAIN, None)
+        src.pop("블로거", None)
+        who = " · ".join([("⭐" if b == main_name else "") + b for b in sorted(bl, key=lambda b: b != main_name)]
+                         + [f"{k}{'×' + str(v) if v > 1 else ''}" for k, v in src.items()]) or it.get("src", "")
         pt = it.get("parts") or {}
         sc = f' <span class="seal">{it["score"]}점</span>' if "score" in it else ""
         bar = (f'<span class="muted">출처 {pt.get("출처", 0)} · 뉴스 {pt.get("뉴스", 0)} · 검색 {pt.get("검색", 0)} · '
@@ -320,8 +329,11 @@ def stats_html(posts: list[dict]) -> str:
     learn_html = (f'<details class="card"><summary><b>🧠 이번 주 배운 것</b> <span class="muted">{e(learn[0].stem)}</span></summary>'
                   f'<pre style="white-space:pre-wrap;font-size:13px">{e(learn[0].read_text(encoding="utf-8")[:3000])}</pre></details>') if learn else ""
     rss = sorted((ROOT / "econ" / "ref" / "rss").glob("*.md"), reverse=True)[:1]
-    rss_html = (f'<details class="card" open><summary><b>📚 참고 블로거 아침 조사</b> <span class="muted">{e(rss[0].stem)}</span></summary>'
-                f'<pre style="white-space:pre-wrap;font-size:13px">{e(rss[0].read_text(encoding="utf-8")[:6000])}</pre></details>') if rss else ""
+    frame = ROOT / "econ" / "ref" / "참고-블로거-틀.md"
+    rss_html = ((f'<details class="card" open><summary><b>📚 참고 블로거 새 글</b> <span class="muted">{e(rss[0].stem)}</span></summary>'
+                 f'<pre style="white-space:pre-wrap;font-size:13px">{e(rss[0].read_text(encoding="utf-8")[:6000])}</pre></details>') if rss else "") + (
+        (f'<details class="card"><summary><b>📐 참고 블로거 틀</b> <span class="muted">썸네일·제목·글 구성 (한 번 분석)</span></summary>'
+         f'<pre style="white-space:pre-wrap;font-size:13px">{e(frame.read_text(encoding="utf-8")[:8000])}</pre></details>') if frame.exists() else "")
     return ("<div>" + cost + pub + blog + rss_html + "</div><div><h2>캡처에서 읽은 숫자</h2>" + cap_html + learn_html + "</div>")
 
 

@@ -1,4 +1,7 @@
-"""참고 블로거 아침 조사 (대표 지시 2026-10-05): Aside 대신 공개 RSS로, 매일 자동, 대표 개입 없음.
+"""참고 블로거 조사 (대표 지시 2026-10-05): 공개 RSS로, 대표 개입 없음.
+
+매일(기본): 새 글 제목만 모은다 (AI 없음, 0원) → econ/ref/rss/<날짜>.yaml·.md → 키워드 점수(content/econ_score.py)
+--analyze : 아래 '틀' 분석을 한 번 더 (2026-10-05에 한 번 함, 대표: "틀은 됐고 새 글 키워드만") → econ/ref/참고-블로거-틀.md
 
 대표가 정한 참고 블로거(config/econ_refs.yaml)의 공개 RSS(rss.blog.naver.com/<아이디>.xml, 네이버가 허용한 통로)를 읽어
   - 어제·오늘 무슨 주제로 썼나 (제목·카테고리·태그·시각)
@@ -9,7 +12,7 @@
 최우선 블로거(config main, zkfldb888)는 썸네일 최근 8장을 따로 보고 '썸네일·이미지 방식'을 규칙으로 정리한다.
 남의 제목·문장은 참고 자료로만 두고 글에는 옮기지 않는다(글쓰기 규칙). 글 본문 페이지는 긁지 않는다.
 
-사용법: python -m content.econ_refs
+사용법: python -m content.econ_refs [--analyze]
 """
 from __future__ import annotations
 
@@ -84,9 +87,43 @@ def _image(url: str) -> dict | None:
     return None
 
 
+FRAME = ROOT / "econ" / "ref" / "참고-블로거-틀.md"
+
+
+def names() -> dict[str, str]:
+    b = F.load(CFG, {}).get("bloggers", {})
+    return b if isinstance(b, dict) else {x: x for x in b}
+
+
+def titles() -> Path:
+    """매일: 어제·오늘 새 글 제목만 (AI 없음)."""
+    cfg, nm = F.load(CFG, {}), names()
+    main = cfg.get("main", "")
+    since = (datetime.now(F.KST) - timedelta(days=1)).strftime("%Y-%m-%d")
+    out, missing, md = [], [], [f"# 참고 블로거 새 글 ({F.today()}, 어제·오늘, 공개 RSS)", ""]
+    for bid in sorted(nm, key=lambda b: b != main):
+        try:
+            recent = [i for i in feed(bid) if i["at"].strftime("%Y-%m-%d") >= since]
+        except Exception as e:  # noqa: BLE001
+            missing.append(nm[bid])
+            print(f"{bid} RSS 실패: {type(e).__name__}")
+            continue
+        out.append({"id": bid, "name": nm[bid], "recent": [i["title"] for i in recent]})
+        md += [f"## {'⭐ ' if bid == main else ''}{nm[bid]}", ""] + (
+            [f"- {i['at']:%m-%d %H:%M} {i['title']}" for i in recent] or ["- 새 글 없음"]) + [""]
+    if missing:
+        md.append(f"⚠️ RSS를 못 읽음: {', '.join(missing)}")
+    OUT.mkdir(parents=True, exist_ok=True)
+    F.save(OUT / f"{F.today()}.yaml", {"main": main, "bloggers": out})
+    (OUT / f"{F.today()}.md").write_text("\n".join(md) + "\n", encoding="utf-8")
+    print(f"참고 블로거 새 글 {sum(len(b['recent']) for b in out)}편 (못 읽음 {len(missing)})")
+    return OUT / f"{F.today()}.md"
+
+
 def collect() -> Path:
+    """틀 분석 (한 번): 주제·제목·썸네일·보이는 글 구성 + 최우선 블로거 썸네일 방식."""
     cfg = F.load(CFG, {})
-    ids = cfg.get("bloggers", [])
+    ids = list(names())
     since = (datetime.now(F.KST) - timedelta(days=1)).strftime("%Y-%m-%d")  # 어제 0시부터
     main = cfg.get("main", "")
     rows, content, missing = [], [], []
@@ -130,8 +167,8 @@ def collect() -> Path:
         raise SystemExit(f"정리가 끝까지 안 됨 (stop_reason={msg.stop_reason}, 출력 {u.output_tokens}토큰)")
     res = json.loads("".join(b.text for b in msg.content if getattr(b, "type", "") == "text"))
     OUT.mkdir(parents=True, exist_ok=True)
-    out = OUT / f"{F.today()}.md"
-    md = [f"# 참고 블로거 아침 조사 ({F.today()}, 공개 RSS)", "",
+    out = FRAME
+    md = [f"# 참고 블로거 틀 ({F.today()} 분석, 공개 RSS)", "",
           "표·글꼴·정렬·인용·구분선은 RSS에 없어서 Aside 조사(📄 붙여넣기)로 채워요.", "",
           f"## ⭐ {main} 썸네일·이미지 방식 (최우선)", "", res["main_profile"], "",
           "## 공통 패턴", "", res["common"], "", "## 여러 명이 겹쳐 쓴 주제", ""]
@@ -142,15 +179,16 @@ def collect() -> Path:
     if missing:
         md += ["", f"⚠️ RSS를 못 읽은 블로거: {', '.join(missing)}"]
     out.write_text("\n".join(md) + "\n", encoding="utf-8")
-    # 키워드 점수용: 어제·오늘 제목 목록 (content/econ_score.py가 읽음) + 최우선 블로거 방식 (썸네일 규칙에 씀)
-    F.save(OUT / f"{F.today()}.yaml", {"main": main, "main_profile": res["main_profile"],
-                                       "hot_topics": res["hot_topics"],
-                                       "bloggers": [{"id": r["id"], "recent": [i["title"] for i in r["recent"]]} for r in rows]})
+    F.save(FRAME.with_suffix(".yaml"), {"at": F.today(), "main": main, "main_profile": res["main_profile"]})
     F.log_cost("refs", f"{len(rows)}명")
     print(f"참고 블로거 {len(rows)}명 정리 → {out} (못 읽음 {len(missing)})")
     return out
 
 
 if __name__ == "__main__":
-    F.guard()
-    collect()
+    import sys
+    if "--analyze" in sys.argv:
+        F.guard()
+        collect()
+    else:
+        titles()
