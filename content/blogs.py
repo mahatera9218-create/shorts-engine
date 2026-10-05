@@ -1,6 +1,6 @@
-"""운영 블로그 3개(경제·연예·패션) 설정 (대표 결정 2026-10-05). config/blogs.yaml을 읽는다.
+"""운영 블로그 설정: 경제 + 연예인 패션 (대표 결정 2026-10-05, 연예·패션은 같은 날 하나로 합침). config/blogs.yaml을 읽는다.
 
-지금 어느 블로그 일인지는 환경 변수 BLOG(econ·ent·fashion, 기본 econ)로 정한다 (.github/workflows/econ-flow.yml이 넘김).
+지금 어느 블로그 일인지는 환경 변수 BLOG(econ·fashion, 기본 econ)로 정한다 (.github/workflows/econ-flow.yml이 넘김).
 """
 from __future__ import annotations
 

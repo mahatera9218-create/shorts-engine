@@ -1,7 +1,7 @@
-"""연예(셀피드)·패션(캐시미어 다이어리) 블로그 (대표 결정 2026-10-05).
+"""연예인 패션 블로그(캐시미어 다이어리) (대표 결정 2026-10-05, 연예·패션은 같은 날 하나로 합침).
 
 프롬프트: prompts/ent-fashion-blog.md(강사 원문, 그대로) + prompts/addon-common-celeb.md(우리 자동화용) + 블로그별 페르소나
-(prompts/addon-ent.md · addon-fashion.md, config/blogs.yaml의 addon).
+(prompts/addon-fashion.md, config/blogs.yaml의 addon).
 역할: 조사 = Grok(웹 + X, 어제·오늘) · 글 = Claude · 사진 = 실제 사진(위키미디어 공용, 자유 이용 허락된 것) → 제품 AI 사진(GPT Image)
 → Pexels. SNS·방송 장면·언론사 사진은 자동으로 가져오지 않는다(저작권·초상권).
 
@@ -138,7 +138,7 @@ def check(a: dict) -> list[str]:
         bad.append("언론사명·링크 → 빼기")
     if len(a["tags"]) >= 20:
         bad.append(f"해시태그 {len(a['tags'])}개 → 19개 이하")
-    greet = {"ent": "셀피드입니다", "fashion": "캐다입니다"}.get(F.BLOG["id"], "")
+    greet = {"fashion": "캐다입니다"}.get(F.BLOG["id"], "")
     if greet and greet not in a["greeting"]:
         bad.append(f"인사말 '{greet}'로 시작하기")
     return bad
