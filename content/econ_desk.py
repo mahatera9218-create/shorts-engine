@@ -1,0 +1,225 @@
+"""경제 블로그 발행 도우미 '억선생의 경제판' (2026-10-05, 대표 지시: 스포츠처럼 홈 화면에 깔아 두고 쓰게).
+
+- econ/posts/<날짜-주제>/ 의 발행 패키지(post.md · body.txt · 사진 · short.mp4 · short.txt)를 휴대폰용 정적 사이트로 만든다.
+- 글마다: 사진 한 번에 저장 → 제목 → 썸네일 → 본문 복사 → 태그 → 쇼츠·클립(영상 저장 + 설명·해시태그) → 발행 완료.
+- 글 형식은 스포츠 도우미와 같다(content/desk.parse 재사용). 색은 화투 팔레트, 홈 화면 아이콘은 억선생 프로필.
+- 발행 완료: 이슈 "[경제발행완료] <글>" → .github/workflows/desk-button.yml → 이 파일 --mark → econ/posts/<글>/status.yaml
+- 검색엔진 수집 금지(noindex·robots·X-Robots-Tag). Cloudflare Pages (.github/workflows/econ-desk.yml)
+
+사용법: python -m content.econ_desk [출력 폴더, 기본 site-econ]
+        python -m content.econ_desk --mark "[경제발행완료] 2026-10-05-금값-출렁"
+"""
+from __future__ import annotations
+
+import html
+import json
+import os
+import re
+import shutil
+import sys
+from datetime import datetime
+from pathlib import Path
+from zoneinfo import ZoneInfo
+
+import yaml
+
+from market.common import ROOT
+from . import desk
+
+POSTS = ROOT / "econ" / "posts"
+BRAND = ROOT / "assets" / "brand"
+NAME = "억선생의 경제판"
+KST = ZoneInfo("Asia/Seoul")
+MARK = re.compile(r"^\[경제발행완료\]\s*(\d{4}-\d{2}-\d{2}-[\w가-힣-]+)\s*$")
+
+CSS = desk.CSS + """
+:root{--bg:#f3ebdd;--card:#fffaf1;--ink:#16140f;--soft:#6b5e4a;--line:#e0d3bd;--accent:#c81e28;--btn:#16140f;--btnink:#f3ebdd;--gold:#e8b422;--pine:#1e5a3a}
+@media (prefers-color-scheme:dark){:root{--bg:#16140f;--card:#221e17;--ink:#f3ebdd;--soft:#b9ab92;--line:#3a3328;--btn:#f3ebdd;--btnink:#16140f}}
+header.brand{display:flex;align-items:center;gap:12px;margin:6px 0 4px}
+header.brand img{width:56px;height:56px;border-radius:50%;border:3px solid var(--accent)}
+header.brand h1{margin:0;font-size:21px}header.brand .muted{margin:0}
+.step{background:var(--accent)}h2{border-left:5px solid var(--accent);padding-left:8px}
+nav.tabs{display:flex;gap:6px;position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:5}
+nav.tabs a{flex:1;text-align:center;padding:12px 4px;border-radius:12px;border:1px solid var(--line);color:var(--ink);text-decoration:none;font-weight:700}
+nav.tabs a.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.seal{display:inline-block;background:var(--accent);color:#fff;border-radius:6px;padding:0 6px;font-weight:800}
+"""
+
+
+def head(title: str, depth: str = "") -> str:
+    e = html.escape
+    return f"""<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="theme-color" content="#c81e28"><link rel="manifest" href="{depth}manifest.webmanifest">
+<link rel="apple-touch-icon" href="{depth}icon-180.png"><meta name="apple-mobile-web-app-title" content="억선생 도우미">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>{e(title)}</title><style>{CSS}</style></head><body><main>"""
+
+
+def read_short(folder: Path) -> dict | None:
+    """short.mp4 + short.txt(첫 줄 제목, 나머지 설명·해시태그)."""
+    v, t = folder / "short.mp4", folder / "short.txt"
+    if not v.exists():
+        return None
+    title, _, desc = (t.read_text(encoding="utf-8") if t.exists() else "").partition("\n")
+    return {"title": title.strip(), "desc": desc.strip()}
+
+
+def video_card(p: dict, src: str) -> str:
+    e, s = html.escape, p["short"]
+    return f"""<div class="card"><h2>🎬 쇼츠 · 클립 (같은 영상)</h2>
+<video src="{e(src)}" controls playsinline preload="none" style="width:100%;max-width:320px;border-radius:10px;display:block;margin-top:8px"></video>
+<button onclick="saveClip(this,{e(json.dumps(src), quote=True)})">🎬 영상 저장</button>
+{desk.edit_box("st:" + p["folder"], s["title"], "제목 복사", one_line=True)}
+{desk.copy_pair(s["desc"], "영상", p["folder"])}
+<ol class="muted"><li><b>유튜브 쇼츠</b>: 유튜브 앱 + → 동영상 업로드 → 저장한 영상 → 제목·설명 붙여넣기 → 공개</li>
+<li><b>네이버 클립</b>: 블로그 앱 + → 클립 만들기 → 같은 영상 → 설명·해시태그 붙여넣기 → 올리기</li></ol>
+<div class="muted">영상에 'AI 그림·AI 음성' 표시가 들어 있고, 설명에도 적혀 있어요.</div></div>"""
+
+
+def page(p: dict) -> str:
+    e = html.escape
+    best = next((t for t in p["titles"] if t["best"]), p["titles"][0] if p["titles"] else {"text": p["folder"], "type": ""})
+    status = ('<span class="badge ok">✅ 발행 가능</span>' if p["ok"] else
+              '<span class="badge warn">⚠️ 확인 필요 — 발행하지 말고 Claude에게 알려주세요</span>')
+    probs = "".join(f"<li>{e(x)}</li>" for x in p["problems"])
+    rest = "".join(f'<button class="ghost" onclick="setEd(\'title\',{e(json.dumps(t["text"]), quote=True)})">{e(t["text"])}'
+                   f' <span class="muted">· {e(t["type"])} · 이 제목으로 바꾸기</span></button>' for t in p["titles"] if t is not best)
+    body = "".join(
+        f'<textarea class="ed" data-k="b{i}" rows="3">{e(b["text"])}</textarea>' if "text" in b else
+        f'<div class="ph"><img src="{e(b["img"])}" alt="사진 {b["n"]}" loading="lazy"><small>📷 사진 {b["n"]} · {e(b["label"])}</small></div>'
+        for i, b in enumerate(p["blocks"]) if "text" in b or "img" in b)
+    each = "".join(f'<div class="ph"><img src="{e(x["file"])}" alt="사진 {x["n"]}" loading="lazy"><small>📷 사진 {x["n"]} · {e(x["label"])}'
+                   f'{" · 대표이미지로 지정" if x["n"] == 1 else ""} (길게 눌러 저장)</small></div>' for x in p["images"])
+    tags = " ".join("#" + t for t in p["tags"])
+    chips = "".join(f'<button class="ghost chip" onclick="copyText(this,{e(json.dumps(t), quote=True)})">{e(t)}</button>' for t in p["tags"])
+    thumb = next((x["file"] for x in p["images"] if x["n"] == 1), "")
+    data = json.dumps({"blocks": p["blocks"], "images": p["images"], "folder": p["folder"], "repo": desk.REPO},
+                      ensure_ascii=False).replace("</", "<\\/")
+    used = p.get("status", {}).get("status") == "used"
+    done = desk.issue_link("경제발행완료", p["folder"], "블로그·쇼츠·클립 발행을 마쳤어요.")
+    return head(best["text"], "../../") + f"""
+<a href="../../" class="muted">← 글 목록</a>
+<h1>{e(best["text"])}</h1><div class="muted">{e(p["date"])} · 카테고리 {e(p["category"])}</div>
+<p>{status}</p>{f"<ul>{probs}</ul>" if probs else ""}
+{'<div class="card" style="border-color:var(--accent)"><b>⚠️ 이미 발행한 글이에요</b><div class="muted">같은 글을 두 번 올리지 마세요.</div></div>' if used else ''}
+<div class="card"><h2><span class="step">1</span>사진 저장</h2>
+<button onclick="saveAll(this)">📷 사진 {len(p["images"])}장 한 번에 저장</button>
+<div class="muted">공유 창에서 "이미지 저장"을 누르세요. 파일 이름 앞 번호가 넣는 순서예요.</div></div>
+<div class="card"><h2><span class="step">2</span>제목</h2>{desk.edit_box("title", best["text"], "제목 복사", one_line=True)}
+{f'<details><summary class="muted">다른 제목 {len(p["titles"]) - 1}개</summary>{rest}</details>' if rest else ''}</div>
+<div class="card"><h2><span class="step">3</span>대표 사진 (썸네일)</h2>{f'<img class="thumb" src="{e(thumb)}" alt="썸네일">' if thumb else ''}
+<div class="muted">본문에 넣은 뒤 이 그림을 대표이미지로 지정하세요.</div></div>
+<div class="card"><h2><span class="step">4</span>본문</h2>
+<button onclick="copyBody(this)">📋 본문 복사 (사진 자리 📷 표시)</button>
+<div class="muted">네이버 앱에 붙여넣고, "📷 사진 N" 줄 자리에 N번 사진을 넣으세요. 고칠 문단은 아래 <a href="#draft">초안</a>에서 바로 고치면 복사에 반영돼요.</div></div>
+<div class="card"><h2><span class="step">5</span>태그</h2><button class="ghost" onclick="copyText(this,{e(json.dumps(tags), quote=True)})">📋 한 번에 복사: {e(tags)}</button>
+<div class="chips">{chips}</div></div>
+{video_card(p, "short.mp4") if p.get("short") else ''}
+<div class="card"><h2><span class="step">6</span>다 올렸으면</h2>
+<a class="btn" href="{e(done, quote=True)}">✅ 발행 완료 표시</a>
+<div class="muted">GitHub 화면이 열리면 초록 <b>Create</b>만 누르세요. 2~3분 뒤 목록에서 "발행한 글"로 내려가요.</div></div>
+<div class="card body" id="draft"><h2>✏️ 초안 (눌러서 고치기)</h2>
+<div class="muted">고친 문단은 주황 테두리로 보이고, 이 휴대폰에 저장돼 위 <b>본문 복사</b>에 반영돼요.</div>{body}</div>
+<div class="card" id="each"><h2>사진 하나씩 저장</h2>{each}</div>
+<details class="card"><summary>출처</summary><pre style="white-space:pre-wrap">{e(p["sources"])}</pre></details>
+</main><script>const POST={data};{desk.JS}</script></body></html>"""
+
+
+def index(posts: list[dict]) -> str:
+    e = html.escape
+    live = [p for p in posts if p.get("status", {}).get("status") not in ("used", "rejected")]
+    used = [p for p in posts if p.get("status", {}).get("status") == "used"]
+
+    def row(p, muted=False):
+        t = next((x["text"] for x in p["titles"] if x["best"]), p["folder"])
+        mark = "☑️" if muted else ("✅" if p["ok"] else "⚠️")
+        v = " · 🎬" if p.get("short") else ""
+        style = "text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" + (";opacity:.55" if muted else "")
+        return f'<a class="btn" style="{style}" href="p/{desk.slug(p["folder"])}/">{mark} {e(p["date"])} · {e(t)}{v}</a>'
+
+    vids = "".join(f'<div class="card"><b>{e(p["short"]["title"])}</b><div class="muted">{e(p["date"])}</div>'
+                   f'<video src="p/{desk.slug(p["folder"])}/short.mp4" controls playsinline preload="none" '
+                   f'style="width:100%;max-width:320px;border-radius:10px;display:block;margin-top:8px"></video>'
+                   f'<a class="btn" href="p/{desk.slug(p["folder"])}/">글·영상 올리기 화면으로</a></div>'
+                   for p in live if p.get("short"))
+    now = datetime.now(KST).strftime("%m월 %d일 %H:%M")
+    return head(f"{NAME} 발행 도우미") + f"""
+<header class="brand"><img src="icon-180.png" alt=""><div><h1>{NAME}</h1><p class="muted">발행 도우미 · {now} 업데이트</p></div></header>
+<nav class="tabs"><a href="#blog" data-t="blog">📝 블로그</a><a href="#video" data-t="video">🎬 쇼츠·클립</a></nav>
+<section class="tab" id="blog">
+<h2>올릴 글</h2>{"".join(row(p) for p in sorted(live, key=lambda p: p["folder"], reverse=True)) or '<p class="muted">올릴 글이 아직 없어요.</p>'}
+{f'<h2 style="margin-top:28px">발행한 글</h2>' + "".join(row(p, True) for p in used[:10]) if used else ''}
+</section>
+<section class="tab" id="video" hidden>{vids or '<p class="muted">올릴 영상이 없어요.</p>'}</section>
+<div class="card muted" style="margin-top:28px">홈 화면에 두기: 이 화면에서 브라우저 메뉴(⋮ 또는 공유 ↑) → <b>홈 화면에 추가</b>. 억선생 얼굴 아이콘으로 생겨요.</div>
+</main><script>const POST={{"blocks":[],"images":[]}};{desk.JS}
+function tab(){{const h=(location.hash||'#blog').slice(1);document.querySelectorAll('section.tab').forEach(s=>s.hidden=s.id!==h);
+document.querySelectorAll('nav.tabs a').forEach(a=>a.classList.toggle('on',a.dataset.t===h))}}addEventListener('hashchange',tab);tab();</script></body></html>"""
+
+
+def load() -> list[dict]:
+    out = []
+    for f in sorted((x for x in POSTS.iterdir() if x.is_dir()), reverse=True) if POSTS.exists() else []:
+        p = desk.parse(f)
+        if p:
+            p["short"] = read_short(f)
+            out.append(p)
+    return out
+
+
+def build(out: Path) -> list[dict]:
+    if out.exists():
+        shutil.rmtree(out)
+    out.mkdir(parents=True)
+    posts = load()
+    for p in posts:
+        d = out / "p" / desk.slug(p["folder"])
+        d.mkdir(parents=True)
+        for x in p["images"]:
+            src = POSTS / p["folder"] / x["file"]
+            if src.exists():
+                shutil.copy(src, d / x["file"])
+        if p.get("short"):
+            shutil.copy(POSTS / p["folder"] / "short.mp4", d / "short.mp4")
+        (d / "index.html").write_text(page(p), encoding="utf-8")
+    (out / "index.html").write_text(index(posts), encoding="utf-8")
+    for s in (180, 192, 512):
+        shutil.copy(BRAND / f"eok-icon-{s}.png", out / f"icon-{s}.png")
+    (out / "manifest.webmanifest").write_text(json.dumps({
+        "name": f"{NAME} 발행 도우미", "short_name": "억선생", "start_url": "./", "display": "standalone",
+        "background_color": "#f3ebdd", "theme_color": "#c81e28",
+        "icons": [{"src": f"icon-{s}.png", "sizes": f"{s}x{s}", "type": "image/png"} for s in (192, 512)]},
+        ensure_ascii=False), encoding="utf-8")
+    (out / "robots.txt").write_text("User-agent: *\nDisallow: /\n", encoding="utf-8")
+    (out / "_headers").write_text("/*\n  X-Robots-Tag: noindex, nofollow, noarchive\n", encoding="utf-8")
+    return posts
+
+
+def mark(title: str) -> str | None:
+    """'[경제발행완료] <글>' → econ/posts/<글>/status.yaml. 처리한 글 이름 (형식이 다르거나 없는 글이면 None)."""
+    m = MARK.match(title.strip())
+    if not m or not (POSTS / m.group(1) / "post.md").exists():
+        return None
+    f = POSTS / m.group(1) / "status.yaml"
+    st = (yaml.safe_load(f.read_text(encoding="utf-8")) or {}) if f.exists() else {}
+    st.update(status="used", at=datetime.now(KST).strftime("%Y-%m-%d %H:%M"))
+    f.write_text(yaml.safe_dump(st, allow_unicode=True), encoding="utf-8")
+    return m.group(1)
+
+
+def main() -> None:
+    if len(sys.argv) > 2 and sys.argv[1] == "--mark":
+        name = mark(sys.argv[2])
+        print(f"발행 완료 표시: {name}" if name else "형식이 다르거나 없는 글")
+        if os.environ.get("GITHUB_OUTPUT"):
+            with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as fh:
+                fh.write(f"folder={name or ''}\n")
+        sys.exit(0 if name else 1)
+    out = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "site-econ"
+    posts = build(out)
+    print(f"{NAME} 발행 도우미: 글 {len(posts)}편 → {out}")
+
+
+if __name__ == "__main__":
+    main()
