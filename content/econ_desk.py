@@ -175,7 +175,7 @@ def index(by_blog: dict[str, list[dict]]) -> str:
     secs = "".join(blog_section(b, by_blog.get(bid, [])) for bid, b in blogs.items())
     first = next(iter(blogs))
     return head(f"{NAME} 발행 도우미") + f"""
-<header class="brand"><img src="icon-180.png" alt=""><div><h1>발행 도우미</h1><p class="muted">경제 · 연예 · 패션 · {now} 업데이트</p></div></header>
+<header class="brand"><img src="icon-180.png" alt=""><div><h1>발행 도우미</h1><p class="muted">{" · ".join(html.escape(b["label"]) for b in blogs.values())} · {now} 업데이트</p></div></header>
 <nav class="tabs">{tabs}<a href="#stats" data-t="stats">성과</a></nav>
 {secs}
 <section class="tab" id="stats" hidden>{compare_html(blogs, by_blog)}</section>
