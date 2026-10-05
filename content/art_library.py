@@ -17,7 +17,7 @@ from pathlib import Path
 
 import requests
 import yaml
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 
 from market.common import ROOT
 from .post_art import STYLE
@@ -74,10 +74,11 @@ def sheet() -> None:
     rows = (len(have) + cols - 1) // cols
     c = Image.new("RGB", (cols * (w + 8) + 8, rows * (h + 34) + 8), (243, 235, 221))
     d = ImageDraw.Draw(c)
+    f = ImageFont.truetype(str(ROOT / "assets" / "fonts" / "Pretendard-Black.otf"), 18)
     for i, s in enumerate(have):
         x, y = 8 + (i % cols) * (w + 8), 8 + (i // cols) * (h + 34)
         c.paste(Image.open(LIB / f"{s['id']}.jpg").resize((w, h), Image.LANCZOS), (x, y))
-        d.text((x + 4, y + h + 6), f"{s['id']}  {' '.join(s['tags'][:3])}", fill=(22, 20, 18))
+        d.text((x + 4, y + h + 6), f"{s['id']}  {' '.join(s['tags'][:3])}", fill=(22, 20, 18), font=f)
     c.save(LIB / "0-한눈에.jpg", quality=85)
 
 
