@@ -52,10 +52,10 @@ class EconTest(unittest.TestCase):
         a["sections"][0]["paragraphs"] = ["회사 공식 발표에 따르면 올랐다"]
         self.assertEqual(kunine.check(a, "삼성전자 주가"), [])
 
-    def test_three_blogs(self):
+    def test_blogs(self):
         from content import blogs
         b = blogs.all_blogs()
-        self.assertEqual([b[k]["label"] for k in ("econ", "ent", "fashion")], ["경제", "연예", "패션"])
+        self.assertEqual({k: v["label"] for k, v in b.items()}, {"econ": "경제", "fashion": "패션"})  # 연예는 패션에 합침
         self.assertEqual(blogs.by_label("패션")["name"], "캐시미어 다이어리")
 
     def test_celeb_check(self):
