@@ -22,7 +22,7 @@ import re
 import shutil
 import sys
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -128,20 +128,32 @@ def _resp_text(data: dict) -> str:
     return "\n".join(out)
 
 
-def grok(prompt: str) -> str:
-    """Grok: X 검색 + 웹 검색 (Responses API). 실패하면 빈 문자열."""
+GROK_PRICE = {"grok-4.3": (1.25, 2.5), "grok-4.5": (2.0, 6.0), "grok-4.6": (2.0, 6.0)}  # 달러/100만 토큰 (2026-08 공개 단가)
+
+
+def grok(prompt: str, days: int = 1) -> str:
+    """Grok: X 검색만 (Responses API). 실패하면 빈 문자열.
+    비용 줄이기 (대표 지시 2026-10-05, 키워드 1번에 약 400~700원 → 대폭 줄이기):
+    싼 모델(grok-4.3) 우선 · 웹 검색 뺌(웹 기사는 RSS로 따로 모음) · X 검색은 최근 days일만 · 생각 턴 2번까지."""
     if not key("XAI_API_KEY"):
         return ""
     h = {"Authorization": f"Bearer {key('XAI_API_KEY')}"}
+    since = (datetime.now(KST) - timedelta(days=days)).strftime("%Y-%m-%d")
     try:
         ids = [m["id"] for m in requests.get("https://api.x.ai/v1/models", headers=h, timeout=30).json()["data"]]
-        model = _pick(ids, ["grok-4.6", "grok-4.5", "grok-4.3"], "grok")
-        r = requests.post("https://api.x.ai/v1/responses", headers=h, timeout=300, json={
-            "model": model, "input": prompt, "tools": [{"type": "x_search"}, {"type": "web_search"}]})
+        model = _pick(ids, ["grok-4.3", "grok-4.5", "grok-4.6"], "grok")
+        body = {"model": model, "input": prompt, "max_turns": 2,
+                "tools": [{"type": "x_search", "from_date": since}]}
+        r = requests.post("https://api.x.ai/v1/responses", headers=h, timeout=300, json=body)
+        if r.status_code == 400:  # 이 모델·주소가 max_turns를 안 받으면 빼고 한 번 더
+            body.pop("max_turns")
+            r = requests.post("https://api.x.ai/v1/responses", headers=h, timeout=300, json=body)
         r.raise_for_status()
         data = r.json()
         calls = sum(1 for it in data.get("output", []) if str(it.get("type", "")).endswith("_call"))
-        SPENT["grok"] += _usage_cost(data.get("usage") or {}, 2.0, 6.0) + calls * 0.005  # 어림: 토큰 + 검색 1번 $0.005
+        inp, out = GROK_PRICE.get(model, (2.0, 6.0))
+        SPENT["grok"] += _usage_cost(data.get("usage") or {}, inp, out) + calls * 0.005  # 토큰 + 검색 1번 $0.005
+        print(f"Grok {model}: 검색 {calls}번, 토큰 {(data.get('usage') or {}).get('input_tokens')}/{(data.get('usage') or {}).get('output_tokens')}")
         return _resp_text(data)
     except Exception as e:  # Grok이 안 되면 그 몫만 빼고 계속
         print(f"Grok 실패: {type(e).__name__} {str(e)[:150]}")
