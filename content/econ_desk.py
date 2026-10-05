@@ -1,8 +1,8 @@
-"""경제 블로그 발행 도우미 '억선생의 경제판' (2026-10-05, 대표 지시: 스포츠처럼 홈 화면에 깔아 두고 쓰게).
+"""경제 블로그 발행 도우미 (2026-10-05, 대표 지시: 스포츠처럼 홈 화면에 깔아 두고 쓰게. 같은 날 담백한 디자인으로 바꿈).
 
 - econ/posts/<날짜-주제>/ 의 발행 패키지(post.md · body.txt · 사진 · short.mp4 · short.txt)를 휴대폰용 정적 사이트로 만든다.
 - 글마다: 사진 한 번에 저장 → 제목 → 썸네일 → 본문 복사 → 태그 → 쇼츠·클립(영상 저장 + 설명·해시태그) → 발행 완료.
-- 글 형식은 스포츠 도우미와 같다(content/desk.parse 재사용). 색은 화투 팔레트, 홈 화면 아이콘은 억선생 프로필.
+- 글 형식은 스포츠 도우미와 같다(content/desk.parse 재사용). 색은 흰 바탕·남색 포인트, 홈 화면 아이콘은 막대그래프(억선생 자료는 클립용으로 따로 보관).
 - 발행 완료: 이슈 "[경제발행완료] <글>" → .github/workflows/desk-button.yml → 이 파일 --mark → econ/posts/<글>/status.yaml
 - 검색엔진 수집 금지(noindex·robots·X-Robots-Tag). Cloudflare Pages (.github/workflows/econ-desk.yml)
 
@@ -28,15 +28,15 @@ from . import desk
 
 POSTS = ROOT / "econ" / "posts"
 BRAND = ROOT / "assets" / "brand"
-NAME = "억선생의 경제판"
+NAME = "경제 블로그"  # 블로그 이름은 대표가 정함 (2026-10-05)
 KST = ZoneInfo("Asia/Seoul")
 MARK = re.compile(r"^\[경제발행완료\]\s*(\d{4}-\d{2}-\d{2}-[\w가-힣-]+)\s*$")
 
 CSS = desk.CSS + """
-:root{--bg:#f3ebdd;--card:#fffaf1;--ink:#16140f;--soft:#6b5e4a;--line:#e0d3bd;--accent:#c81e28;--btn:#16140f;--btnink:#f3ebdd;--gold:#e8b422;--pine:#1e5a3a}
-@media (prefers-color-scheme:dark){:root{--bg:#16140f;--card:#221e17;--ink:#f3ebdd;--soft:#b9ab92;--line:#3a3328;--btn:#f3ebdd;--btnink:#16140f}}
+:root{--bg:#f4f6fa;--card:#ffffff;--ink:#141a26;--soft:#5d6779;--line:#dfe4ec;--accent:#1c3d8c;--btn:#1c3d8c;--btnink:#ffffff;--gold:#2f6fe0;--pine:#1f8a5b}
+@media (prefers-color-scheme:dark){:root{--bg:#0f131b;--card:#181e2a;--ink:#e8ecf3;--soft:#9aa5b8;--line:#2a3344;--accent:#7aa2ff;--btn:#7aa2ff;--btnink:#0f131b}}
 header.brand{display:flex;align-items:center;gap:12px;margin:6px 0 4px}
-header.brand img{width:56px;height:56px;border-radius:50%;border:3px solid var(--accent)}
+header.brand img{width:48px;height:48px;border-radius:12px}
 header.brand h1{margin:0;font-size:21px}header.brand .muted{margin:0}
 .step{background:var(--accent)}h2{border-left:5px solid var(--accent);padding-left:8px}
 nav.tabs{display:flex;gap:6px;position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:5}
@@ -57,8 +57,8 @@ def head(title: str, depth: str = "") -> str:
     e = html.escape
     return f"""<!doctype html><html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive">
-<meta name="theme-color" content="#c81e28"><link rel="manifest" href="{depth}manifest.webmanifest">
-<link rel="apple-touch-icon" href="{depth}icon-180.png"><meta name="apple-mobile-web-app-title" content="억선생 도우미">
+<meta name="theme-color" content="#1c3d8c"><link rel="manifest" href="{depth}manifest.webmanifest">
+<link rel="apple-touch-icon" href="{depth}icon-180.png"><meta name="apple-mobile-web-app-title" content="발행 도우미">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>{e(title)}</title><style>{CSS}</style></head><body><main>"""
 
@@ -168,7 +168,7 @@ def index(posts: list[dict]) -> str:
 </div></div></section>
 <section class="tab" id="stats" hidden><div class="cols">{stats_html(posts)}</div></section>
 <section class="tab" id="video" hidden><p class="muted">영상은 당분간 보류예요 (대표 결정 10-05). 글에 집중!</p>{vids or '<p class="muted">올릴 영상이 없어요.</p>'}</section>
-<div class="card muted" style="margin-top:28px">홈 화면에 두기: 이 화면에서 브라우저 메뉴(⋮ 또는 공유 ↑) → <b>홈 화면에 추가</b>. 억선생 얼굴 아이콘으로 생겨요.</div>
+<div class="card muted" style="margin-top:28px">홈 화면에 두기: 이 화면에서 브라우저 메뉴(⋮ 또는 공유 ↑) → <b>홈 화면에 추가</b>. 막대그래프 아이콘으로 생겨요.</div>
 </main><script>const POST={{"blocks":[],"images":[]}};{desk.JS}
 function tab(){{const h=(location.hash||'#blog').slice(1);document.querySelectorAll('section.tab').forEach(s=>s.hidden=s.id!==h);
 document.querySelectorAll('nav.tabs a').forEach(a=>a.classList.toggle('on',a.dataset.t===h))}}addEventListener('hashchange',tab);tab();
@@ -216,14 +216,14 @@ def flow_html() -> str:
     add_js = ("function addKw(){const v=document.getElementById('kwin').value.trim();if(!v){alert('키워드를 적어 주세요');return}"
               f"location.href='https://github.com/{desk.REPO}/issues/new?title='+encodeURIComponent('[경제키워드추가] {today}')"
               "+'&body='+encodeURIComponent(v+String.fromCharCode(10,10)+'아래 초록색 Create만 누르면 됩니다.')}")
-    refresh = desk.issue_link("경제키워드새로", today, "Grok과 코드로 키워드를 다시 모아 주세요.")
+    refresh = desk.issue_link("경제키워드새로", today, "여러 출처에서 키워드를 모아 점수를 매겨 주세요.")
     kw_html = f"""<details class="card fold" data-k="f1" open style="border:2px solid var(--accent)"><summary><h2><span><span class="step">1</span>오늘의 키워드 고르기</span></h2></summary>
 <div class="muted">점수순이에요(100점 = 출처 겹침 40 + 네이버 뉴스량 25 + 검색량 35, {MIN_SCORE}점 이상만{f" · {hidden}개 숨김" if hidden else ""}). 누르면 그 키워드로 <b>제목 후보</b>를 만들어요 (약 3~5분). {e(kw.get("updated", ""))} 기준</div>
-{''.join(rows) or '<p class="muted">아직 없어요. 매일 아침 6시쯤 Grok·코드가 모아요.</p>'}
+{''.join(rows) or '<p class="muted">아직 없어요. 아래 <b>🔄 키워드 모으기</b>를 누르면 여러 출처에서 모아 점수를 매겨요(약 3분).</p>'}
 <textarea id="kwin" class="ed" rows="3" placeholder="어드바이저·뉴스 랭킹·트렌드에서 찾은 키워드 (한 줄에 하나)"></textarea>
 <button onclick="addKw()">➕ 내 키워드 넣기</button>
 {inbox_buttons(today)}
-<a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(refresh, quote=True)}">🔄 Grok으로 다시 모으기</a>
+<a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(refresh, quote=True)}">🔄 키워드 모으기</a>
 <script>{add_js}</script></details>"""
     topics = []
     for t in sorted(day.glob("*/titles.yaml")) if day.exists() else []:
@@ -385,10 +385,10 @@ def build(out: Path) -> list[dict]:
         (d / "index.html").write_text(page(p), encoding="utf-8")
     (out / "index.html").write_text(index(posts), encoding="utf-8")
     for s in (180, 192, 512):
-        shutil.copy(BRAND / f"eok-icon-{s}.png", out / f"icon-{s}.png")
+        shutil.copy(BRAND / f"desk-icon-{s}.png", out / f"icon-{s}.png")
     (out / "manifest.webmanifest").write_text(json.dumps({
-        "name": f"{NAME} 발행 도우미", "short_name": "억선생", "start_url": "./", "display": "standalone",
-        "background_color": "#f3ebdd", "theme_color": "#c81e28",
+        "name": f"{NAME} 발행 도우미", "short_name": "발행 도우미", "start_url": "./", "display": "standalone",
+        "background_color": "#f4f6fa", "theme_color": "#1c3d8c",
         "icons": [{"src": f"icon-{s}.png", "sizes": f"{s}x{s}", "type": "image/png"} for s in (192, 512)]},
         ensure_ascii=False), encoding="utf-8")
     (out / "robots.txt").write_text("User-agent: *\nDisallow: /\n", encoding="utf-8")

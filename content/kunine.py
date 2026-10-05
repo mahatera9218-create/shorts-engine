@@ -178,11 +178,7 @@ def produce(slug: str, n: int) -> Path:
     ask = (f"핵심키워드: {kw}\n확정 제목: {pick['title']} ({pick['type']})\n\n[조사 메모]\n{memo[:10000]}\n\n"
            "이번 단계는 **본문만** 씁니다(제목은 정해졌습니다). 원문의 본문 규칙과 덧붙임 규칙대로 JSON으로 주세요.")
     a = F.claude_json(sys_prompt, ask, BODY, stage="글쓰기(쿠니네)")
-    ok_gain, gain_note = gain(kw, a)
-    if not ok_gain and not gain_note.startswith("⚠️"):
-        a = F.claude_json(sys_prompt, ask + f"\n\n[다시 쓰기] 네이버 상위 글과 겹쳐 새 정보가 없습니다. 조사 메모 안에서 더할 것: "
-                          f"{gain_note}", BODY, stage="고쳐쓰기(정보 이득)")
-        ok_gain, gain_note = gain(kw, a)
+    ok_gain, gain_note = True, "생략 (대표 결정 2026-10-05)"  # 정보 이득 검사 뺌 — gain()은 다시 켤 때를 위해 남김
     issues: list[dict] = []  # GPT 사실 대조는 뺐다 (대표 결정 2026-10-05: "검사는 필요 없을 것 같다"). 숫자는 Grok 조사 메모 안에서만 쓴다
     bad = check(a, kw)
     if issues or bad:
