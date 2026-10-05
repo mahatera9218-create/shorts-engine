@@ -76,9 +76,10 @@ def gather(grok_items: list[dict], mine: list[dict]) -> list[tuple[str, str, str
 CLUSTER = {"type": "object", "additionalProperties": False, "required": ["keywords"],
            "properties": {"keywords": {"type": "array", "items": {
                "type": "object", "additionalProperties": False,
-               "required": ["kw", "area", "why", "person", "rows"],
+               "required": ["kw", "core", "area", "why", "person", "rows"],
                "properties": {
                    "kw": {"type": "string", "description": "네이버에서 사람들이 실제로 칠 검색어 (2~4단어, 한국어)"},
+                   "core": {"type": "string", "description": "검색량·뉴스량을 잴 핵심 검색어 1~2단어 (예: '원달러 환율', '비트코인', '청년미래적금')"},
                    "area": {"type": "string", "enum": F.AREAS},
                    "why": {"type": "string", "description": "왜 오늘 쓸 만한지 한 줄"},
                    "person": {"type": "string", "description": "관련 인물이 있으면 회사+이름(예: 삼성 이재용), 없으면 빈칸"},
@@ -143,7 +144,8 @@ def score(items: list[dict], src_rows: dict[str, str]) -> list[dict]:
     cfg = F.load(CFG, {})
     pts, caps = cfg.get("source_points", {}), cfg.get("caps", {})
     hub = _hub()
-    vols = _volumes([it["kw"] for it in items])
+    q = {it["kw"]: (it.get("core") or it["kw"]) for it in items}  # 긴 키워드는 검색량이 0에 가까워 핵심어로 잰다
+    vols = _volumes(list(dict.fromkeys(q.values())))
     for it in items:
         cnt: dict[str, int] = {}
         for rid in it.get("rows", []):
@@ -158,11 +160,11 @@ def score(items: list[dict], src_rows: dict[str, str]) -> list[dict]:
         news = blog = None
         if hub:
             try:
-                news, _ = _recent_count(hub, "news_search", it["kw"])
-                blog, _ = _recent_count(hub, "blog_search", it["kw"])
+                news, _ = _recent_count(hub, "news_search", q[it["kw"]])
+                blog, _ = _recent_count(hub, "blog_search", it["kw"])  # 빈자리는 쓸 글 키워드 그대로
             except Exception as e:  # noqa: BLE001
                 print(f"네이버 검색 실패 {it['kw']}: {str(e)[:80]}")
-        vol = vols.get(it["kw"])
+        vol = vols.get(q[it["kw"]])
         parts = {"출처": round(src_pts),
                  "뉴스": round(20 * min(news, 100) / 100) if news is not None else 0,
                  "검색": round(min(25.0, max(0.0, (math.log10(vol) - 2) * 8.3))) if vol else 0,
