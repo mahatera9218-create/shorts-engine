@@ -231,7 +231,7 @@ def flow_html() -> str:
     kw_html = f"""<details class="card fold" data-k="f1-{BID}" open style="border:2px solid var(--accent)"><summary><h2><span><span class="step">1</span>오늘의 키워드 고르기</span></h2></summary>
 <div class="muted">점수순이에요(100점 = 출처 겹침 40 + 네이버 뉴스량 25 + 검색량 35, {MIN_SCORE}점 이상만{f" · {hidden}개 숨김" if hidden else ""}). 누르면 그 키워드로 <b>제목 후보</b>를 만들어요 (약 3~5분). {e(kw.get("updated", ""))} 기준</div>
 {''.join(rows) or '<p class="muted">아직 없어요. 아래 <b>🔄 키워드 모으기</b>를 누르면 여러 출처에서 모아 점수를 매겨요(약 3분).</p>'}
-<textarea id="kwin-{BID}" class="ed" rows="3" placeholder="어드바이저·뉴스 랭킹·트렌드에서 찾은 키워드 (한 줄에 하나)"></textarea>
+<textarea id="kwin-{BID}" rows="3" style="width:100%;min-height:84px;font:inherit;line-height:1.6;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:6px 0;background:var(--card);color:var(--ink);resize:vertical" placeholder="{'어드바이저·뉴스 랭킹·트렌드에서 찾은 키워드' if BID == 'econ' else '눈에 띈 연예인 + 아이템 (예: 윤아 코트)'} (한 줄에 하나)"></textarea>
 <button onclick="addKw_{BID}()">➕ 내 키워드 넣기</button>
 {inbox_buttons(today) if BID == 'econ' else ''}
 <a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(refresh, quote=True)}">🔄 키워드 모으기</a>
@@ -289,7 +289,7 @@ def masters_html() -> str:
                        for p in ps[:15])
         parts.append(f'<details><summary class="muted">{e(name)} 최근 제목 {min(len(ps), 15)}개 (모은 것 {len(ps)}개)</summary>{rows}</details>')
     if GUIDE.exists():
-        parts.append(f'<details><summary class="muted">제목 공식 (두 분 제목에서 뽑은 틀)</summary>'
+        parts.append(f'<details><summary class="muted">제목 공식 ({e("·".join(mine.values()))} 제목에서 뽑은 틀)</summary>'
                      f'<pre style="white-space:pre-wrap;font-size:13px">{e(guide_text(BID).split(chr(10), 1)[-1][:6000])}</pre></details>')
     if not parts:
         return ""
@@ -398,7 +398,7 @@ def stats_html(posts: list[dict]) -> str:
 
 
 def compare_html(blogs: dict, by_blog: dict[str, list[dict]]) -> str:
-    """성과: 경제·연예·패션을 한 화면에서 비교 (대표 지시 2026-10-05). 비용은 econ/costs.csv의 blog 칸(옛 줄은 경제)."""
+    """성과: 블로그들을 한 화면에서 비교 (대표 지시 2026-10-05). 비용은 econ/costs.csv의 blog 칸(옛 줄은 경제)."""
     import csv
     e = html.escape
     now = datetime.now(KST)
@@ -407,7 +407,7 @@ def compare_html(blogs: dict, by_blog: dict[str, list[dict]]) -> str:
     krw = lambda usd: int(round(usd * 1400))  # noqa: E731  (econ_flow.KRW와 같게)
     total = krw(sum(float(r["total_usd"]) for r in rows))
     pct = min(100, total * 100 // 50000)
-    head_ = (f'<div class="card"><h2>이번 달 AI 비용 (3개 블로그 합계)</h2><p style="font-size:26px;margin:4px 0"><b>{total:,}원</b> '
+    head_ = (f'<div class="card"><h2>이번 달 AI 비용 (모든 블로그 합계)</h2><p style="font-size:26px;margin:4px 0"><b>{total:,}원</b> '
              f'<span class="muted">/ 상한 50,000원</span></p><div style="background:var(--line);border-radius:8px;height:12px">'
              f'<div style="width:{pct}%;height:12px;border-radius:8px;background:var(--accent)"></div></div>'
              '<div class="muted">토큰으로 어림한 값이라 AI 회사 청구액과 조금 다를 수 있어요.</div></div>')
