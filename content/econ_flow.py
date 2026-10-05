@@ -237,7 +237,7 @@ def titles(kw: str) -> Path:
         t["chars"] = n
         t["flags"] = ([f"{n}자(33~45자 밖)"] if not 33 <= n <= 45 else []) + (["GPT: 낚시 느낌"] if i in bait else [])
         t["rank"] = top.index(i) + 1 if i in top else None
-    items.sort(key=lambda t: (t["rank"] or 99, len(t["flags"])))
+    items.sort(key=lambda t: (bool(t["flags"]), t["rank"] or 99))  # 경고(글자 수·낚시) 있는 제목은 뒤로
     save(d / "titles.yaml", {"keyword": kw, "person": out.get("person", ""), "gpt_why": rank.get("why", ""),
                              "items": items})
     print(f"제목 {len(items)}개 → {d}")
@@ -257,6 +257,7 @@ WRITE_RULES = """억선생의 경제판 글 규칙 (DECISIONS 2026-10-04~05):
 - 기사는 소스로만 참고하고 새로 쓴다. 남의 문장 옮기지 않는다. 숫자는 취재 메모에 있는 것만.
 - 가짜 경험('제가 투자해 보니') 금지, 투자 권유 금지, 단정 전망 금지, 도박 말 금지.
 - 말투: 상위 경제 블로거처럼 쉽고 담백하게. 문단은 2~4문장. 소제목은 질문형.
+- 그림 자리는 코드가 넣으니 '[그림 1]' 같은 자리표를 쓰지 않는다.
 - 분량 1,500~2,500자. 끝에 '※ 이 글은 경제 공부를 위한 정보이며 투자 권유가 아닙니다. 본문 그림은 AI로 만들었습니다.'"""
 
 ARTICLE = {"type": "object", "additionalProperties": False,
@@ -312,7 +313,7 @@ def produce(slug: str, n: int) -> Path:
             files.append(got[0])
     thumb_note = make_thumb(post, T.get("person", ""), pick["badge"], used)
     # 본문: 첫 2문단 뒤, 중간, 끝 앞에 그림
-    paras = art["paragraphs"]
+    paras = [x for x in art["paragraphs"] if not re.fullmatch(r"\s*\[(그림|사진|이미지)\s*\d*\]\s*", x)]  # AI가 넣은 그림 자리표 제거
     slots = [2, max(3, len(paras) // 2), max(4, len(paras) - 2)]
     lines = ["[이미지 1_썸네일: thumb.png]"]
     for i, p in enumerate(paras):
