@@ -266,10 +266,34 @@ def flow_html() -> str:
                       f'<a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(desk.issue_link(f"{LABEL}제목새로", T.get("keyword", ""), "마음에 드는 제목이 없어요. 다시 취재해서 새로 뽑아 주세요."), quote=True)}">🔄 마음에 드는 게 없어요 · 다시 조사해서 새로 뽑기</a>'
                       f'<details><summary class="muted">취재 메모 보기</summary><pre style="white-space:pre-wrap;font-size:13px">'
                       f'{e((t.parent / "research.md").read_text(encoding="utf-8")[:4000]) if (t.parent / "research.md").exists() else ""}</pre></details></details>')
+    if topics:  # 제목 고수 참고를 마지막 ② 칸 안에 접어서 (대표 지시 2026-10-05)
+        topics[-1] = topics[-1][:-len("</details>")] + masters_html() + "</details>"
     if not topics:  # 제목이 아직 없어도 ② 칸은 늘 보이게 (대표 지적 2026-10-05: 1·3만 보여 헷갈림)
         topics.append(f'<details class="card fold" data-k="f2-empty-{BID}" open><summary><h2><span><span class="step">2</span>제목 고르기</span></h2></summary>'
-                      '<p class="muted">① 에서 키워드를 하나 누르면 3~5분 뒤 여기에 제목 후보가 올라와요.</p></details>')
+                      '<p class="muted">① 에서 키워드를 하나 누르면 3~5분 뒤 여기에 제목 후보가 올라와요.</p>' + masters_html() + '</details>')
     return kw_html + "".join(topics)
+
+
+def masters_html() -> str:
+    """제목 고수(경제토르·유미) 최근 제목과 공식 — ② 칸 안에 접어서 (대표 지시 2026-10-05, content/title_refs.py)."""
+    from .title_refs import GUIDE, history, masters
+    e = html.escape
+    parts = []
+    for bid, name in masters().items():
+        ps = history(bid)
+        if not ps:
+            continue
+        rows = "".join(f'<div style="padding:4px 0;border-bottom:1px solid var(--line)">{e(p["title"])}'
+                       f'<br><span class="muted">{e(p["at"][:10])}{" · " + e(p["category"]) if p.get("category") else ""}</span></div>'
+                       for p in ps[:15])
+        parts.append(f'<details><summary class="muted">{e(name)} 최근 제목 {min(len(ps), 15)}개 (모은 것 {len(ps)}개)</summary>{rows}</details>')
+    if GUIDE.exists():
+        parts.append(f'<details><summary class="muted">제목 공식 (두 분 제목에서 뽑은 틀)</summary>'
+                     f'<pre style="white-space:pre-wrap;font-size:13px">{e(GUIDE.read_text(encoding="utf-8")[:6000])}</pre></details>')
+    if not parts:
+        return ""
+    return ('<div style="margin-top:14px;padding-top:10px;border-top:1px solid var(--line)"><b>제목 고수 참고</b> '
+            '<span class="muted">경제토르·유미 · 제목 후보도 이 공식을 참고해 만들어요</span>' + "".join(parts) + "</div>")
 
 
 def inbox_buttons(today: str) -> str:
