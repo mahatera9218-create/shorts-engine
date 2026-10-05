@@ -17,11 +17,13 @@ on:
       cmd: {description: "keywords | add | titles | produce | learn | refs", required: true, default: keywords}
       arg1: {description: "키워드 / 주제폴더", required: false, default: ""}
       arg2: {description: "제목 번호", required: false, default: ""}
+      blog: {description: "econ | ent | fashion", required: false, default: econ}
   workflow_call:
     inputs:
       cmd: {type: string, required: true}
       arg1: {type: string, required: false, default: ""}
       arg2: {type: string, required: false, default: ""}
+      blog: {type: string, required: false, default: econ}
 
 permissions:
   contents: write
@@ -55,6 +57,7 @@ jobs:
           NAVER_AD_API_KEY: ${{ secrets.NAVER_AD_API_KEY }}       # 키워드 점수: 월간 검색량 (검색광고 API)
           NAVER_AD_SECRET_KEY: ${{ secrets.NAVER_AD_SECRET_KEY }}
           NAVER_AD_CUSTOMER_ID: ${{ secrets.NAVER_AD_CUSTOMER_ID }}
+          BLOG: ${{ inputs.blog || 'econ' }}   # 경제·연예·패션 (config/blogs.yaml, 2026-10-05)
           CMD: ${{ inputs.cmd || (github.event.schedule == '30 22 * * 0' && 'learn') || ((github.event.schedule == '40 20 * * *' || github.event_name == 'push') && 'refs') || 'keywords' }}
           ARG1: ${{ inputs.arg1 }}
           ARG2: ${{ inputs.arg2 }}
@@ -70,9 +73,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add econ/ reports/
+          git add econ/ blogs/ reports/
           git diff --cached --quiet && exit 0
-          git commit -m "경제 흐름: $(date +%F)"
+          git commit -m "글 흐름(${{ inputs.blog || 'econ' }}): $(date +%F)"
           for i in 1 2 3; do
             git pull --rebase --autostash -X theirs origin main && git push origin HEAD:main && exit 0
             sleep $((i * 5))

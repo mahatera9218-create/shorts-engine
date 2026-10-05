@@ -52,6 +52,29 @@ class EconTest(unittest.TestCase):
         a["sections"][0]["paragraphs"] = ["회사 공식 발표에 따르면 올랐다"]
         self.assertEqual(kunine.check(a, "삼성전자 주가"), [])
 
+    def test_three_blogs(self):
+        from content import blogs
+        b = blogs.all_blogs()
+        self.assertEqual([b[k]["label"] for k in ("econ", "ent", "fashion")], ["경제", "연예", "패션"])
+        self.assertEqual(blogs.by_label("패션")["name"], "캐시미어 다이어리")
+
+    def test_celeb_check(self):
+        import os
+        os.environ["BLOG"] = "fashion"
+        try:
+            import importlib
+            from content import econ_flow, celeb
+            importlib.reload(econ_flow)
+            importlib.reload(celeb)
+            a = {"greeting": "안녕하세요", "sections": [{"heading": "h", "images": [], "paragraphs": ["첨부한 사진을 보면 예뻐요"]}],
+                 "summary": "세 가지가 좋았어요", "tags": ["t"] * 25}
+            bad = " ".join(celeb.check(a))
+            for word in ("1,500자", "요약", "제작 과정", "해시태그", "캐다입니다"):
+                self.assertIn(word, bad)
+        finally:
+            os.environ.pop("BLOG", None)
+            importlib.reload(econ_flow)
+
 
 if __name__ == "__main__":
     unittest.main()

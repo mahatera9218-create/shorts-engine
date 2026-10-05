@@ -1,10 +1,28 @@
-# 운영 중인 블로그 (비밀 정보 아님: 공개 주소만). 비밀번호·키는 절대 적지 않는다.
-blogs:
-  - id: sports-money
-    platform: naver
-    url: https://blog.naver.com/tenbillionsound
-    name: 억소리 나는 스포츠
-    nickname: 백억소리
-    topic: 스포츠 × 돈·숫자 (선수 중심)
-    opened: 2026-09-29
-    categories: [야구, 축구, 농구·골프]  # 2026-09-30 종목별로 개편
+# 운영 블로그 3개 (대표 결정 2026-10-05). 도우미 탭·버튼 이름(label)·데이터 폴더·프롬프트·말투가 여기서 정해진다.
+# label: 도우미 버튼이 여는 이슈 제목 앞말 ([경제키워드], [연예제목], [패션발행완료] …)
+econ:
+  label: 경제
+  name: 억선생의 경제판        # 블로그 이름·프로필은 대표가 직접 고침
+  url: https://blog.naver.com/eokconomy
+  dir: econ                   # 데이터 폴더 (flow/·posts/)
+  prompt: prompts/kunine-blog.md
+  addon: prompts/kunine-addon.md
+  keywords: config/econ_keywords.yaml
+ent:
+  label: 연예
+  name: 셀피드
+  nick: 셀피드
+  url: ""                     # 블로그를 만들면 주소를 넣는다
+  dir: blogs/ent
+  prompt: prompts/ent-fashion-blog.md
+  addon: prompts/addon-ent.md
+  keywords: config/keywords_ent.yaml
+fashion:
+  label: 패션
+  name: 캐시미어 다이어리
+  nick: 캐다
+  url: ""
+  dir: blogs/fashion
+  prompt: prompts/ent-fashion-blog.md
+  addon: prompts/addon-fashion.md
+  keywords: config/keywords_fashion.yaml
