@@ -248,12 +248,25 @@ def add(text: str) -> None:
 
 # ---------------------------------------------------------------- 2단계: 제목 후보 (후킹 로직)
 
-TITLE_RULES = """제목 공식 (억선생의 경제판, 홈판 + 검색):
-- 33~45자. 첫 15자 안에 검색 키워드와 멈출 요소(숫자·인물·대조)를 둔다.
-- 질문형 + 강한 사실 1개(숫자) + 긴장 1개(시간차·반전·통념 뒤집기·사건) + 빈칸 1개(본문 첫 2~3줄에서 회수).
+TITLE_RULES = """제목 공식 (억선생의 경제판, 홈판 + 검색. 2026-10-05 강사 프롬프트 반영):
+- 공백 포함 45자 이내(33~45자 권장). 핵심키워드를 반드시 넣고, 가능하면 제목 앞부분에. 첫 15자 안에 멈출 요소(숫자·인물·대조).
+- 제목 하나에 유머·센스·반전·현실 공감·결과·감정 중 2가지 이상. 읽은 사람이 "그래서 무슨 일이야?" 하게.
+- 실제 찬반이 있는 주제면 한쪽 결론을 미리 정하지 말고 쟁점을 궁금하게 ("누구 말이 맞지?", "왜 반대가 나오지?").
+- 10개가 서로 다른 문장 구조. 딱딱한 기사·검색형 제목 금지. 순서 숫자(1., 2.) 금지.
 - 인물이 주인공이면 '회사 + 이름'을 앞에 (예: 삼성 이재용, 엔비디아 젠슨황).
-- 금지: 과장어(역대급·충격·폭망), 낚시(본문에 없는 약속), 투자 권유(사라·팔아라·지금 담아야), 도박 말(판돈·올인), 단정 전망.
+- 금지: 낚시(본문에 없는 약속), 투자 권유(사라·팔아라·지금 담아야), 도박 말(판돈·올인), 단정 전망, 비방.
 - 숫자·사실은 취재 메모에 있는 것만."""
+
+STRONG = """[이번 글은 '강하게' 차례 (대표 결정 2026-10-05: 3편에 1편쯤)]
+- 사실 범위 안에서 표현을 약 30% 세게: 결과·감정이 바로 느껴지게 ("다 털렸다", "이건 좀 억울하다" 수준까지).
+- 사람들이 억울하거나 화날 만한 지점(누가 손해를 보나, 약속과 다른 결과, 불공평한 기준)을 실제 사실·숫자로 정면에.
+- 그래도 지킬 것: 사실과 숫자는 그대로, 특정인 비방·모욕 금지, 투자 권유·단정 전망 금지, 본문에 없는 약속 금지."""
+
+
+def strong_turn() -> bool:
+    """3편에 1편: 지금까지 만든 경제 글 수로 정한다 (0,1편째 보통 → 2번째마다 강하게)."""
+    n = sum(1 for x in POSTS.iterdir() if x.is_dir()) if POSTS.exists() else 0
+    return n % 3 == 2
 
 
 def titles(kw: str) -> Path:
@@ -273,7 +286,8 @@ def titles(kw: str) -> Path:
                       "properties": {"title": {"type": "string"}, "type": {"type": "string"},
                                      "promise": {"type": "string", "description": "본문 첫 2~3줄에서 회수할 답 한 줄"},
                                      "badge": {"type": "string", "description": "이 제목의 핵심 2~8자 (도우미 표시용, 썸네일에는 안 씀)"}}}}}}
-    out = claude_json([TITLE_RULES], (
+    strong = strong_turn()
+    out = claude_json([TITLE_RULES] + ([STRONG] if strong else []), (
         f"키워드: {kw}\n\n[취재 메모]\n{memo[:6000]}\n\n[X 분위기 (Grok)]\n{vibe[:1500] or '없음'}\n\n"
         f"[인물 표기 목록]\n{', '.join(p['tag'] for p in people)}\n\n"
         "위 공식으로 서로 다른 각도의 제목 10개를 만들어 주세요. type은 질문형·숫자형·대비형·반전형·인물형 중 하나."),
@@ -282,11 +296,13 @@ def titles(kw: str) -> Path:
     for t in items:  # 코드 검사만 (고르는 눈은 대표, 2026-10-05 결정: GPT 순위 뺌)
         n = len(t["title"])
         t["chars"] = n
-        t["flags"] = [f"{n}자(33~45자 밖)"] if not 33 <= n <= 45 else []
+        core = kw.split()[0]
+        t["flags"] = ([f"{n}자(45자 넘음)"] if n > 45 else [f"{n}자(짧음)"] if n < 25 else []) + (
+            [f"키워드 '{core}' 없음"] if core not in t["title"] else [])
     items.sort(key=lambda t: bool(t["flags"]))  # 글자 수 경고 있는 제목은 뒤로
     (d / "chosen.yaml").unlink(missing_ok=True)
     save(d / "titles.yaml", {"keyword": kw, "person": out.get("person", ""), "made": datetime.now(KST).strftime("%H:%M"),
-                             "items": items})
+                             "strong": strong, "items": items})
     print(f"제목 {len(items)}개 → {d}")
     return d
 
@@ -298,21 +314,55 @@ def skill(name: str) -> str:
     return f.read_text(encoding="utf-8") if f.exists() else ""
 
 
-WRITE_RULES = """억선생의 경제판 글 규칙 (DECISIONS 2026-10-04~05). blog-voice 스킬의 '억선생의 경제판: 사람 냄새와 이야기'를 반드시 따른다:
-- 장면으로 시작 → 질문 → 답 → '누가 무엇을 했나'로 이유 → 갈림길(앞으로 두 갈래) → 억선생 생각(권유 없음) → 독자에게 묻는 한 줄.
-- 문단마다 글쓴이(억선생, '저')의 생각·의외였던 점·의견·반응이 한 마디 이상. 숫자 문장 뒤엔 그 숫자를 보고 든 생각.
-- 제목의 질문에 본문 첫 2~3줄에서 바로 답한다.
-- 순서: 답 → 오늘 숫자(기준 시각·출처) → 왜(배경) → 기관·증권사 전망(누가, 출처) → 앞으로 일정 → 글쓴이 생각(권유 없음) → 면책 한 줄.
-- 기사는 소스로만 참고하고 새로 쓴다. 남의 문장 옮기지 않는다. 숫자는 취재 메모에 있는 것만.
-- 관찰 표현('지수를 보며 ~했어요', '차트를 들여다보니')은 권장. 매매·보유·현장 경험('제가 사 보니', '제 계좌') 같은 가짜 경험 금지, 투자 권유 금지, 단정 전망 금지, 도박 말 금지.
-- 말투: 상위 경제 블로거처럼 쉽고 담백하게. 문단은 2~4문장. 소제목은 질문형.
-- 그림 자리는 코드가 넣으니 '[그림 1]' 같은 자리표를 쓰지 않는다.
-- 분량 1,500~2,500자. 끝에 '※ 이 글은 경제 공부를 위한 정보이며 투자 권유가 아닙니다. 본문 그림은 AI로 만들었습니다.'"""
+WRITE_RULES = """억선생의 경제판 글 규칙 (DECISIONS 2026-10-04~05, 강사 프롬프트 반영 10-05). blog-voice 스킬의 '억선생의 경제판' 절도 따른다.
+
+[쓰기 전 머릿속 분석 — 본문에 이 말들을 절대 쓰지 않는다]
+- 이 키워드를 검색한 사람이 무엇부터 찾는지 '검색 의도 순서'를 정하고, 그 순서로 글을 짠다.
+- 취재 메모의 최근 기사들을 비교해 지금 가장 주목받는 이슈를 중심에 둔다(최신 한 건만 보지 않는다). 기존과 달라진 점을 찾는다.
+- 지금 가장 궁금한 점, 억울하거나 화날 만한 점, 기대·기쁨, 놀라운·의외인 점, 현실 공감, 반응이 커질 점, 찬반이 갈리는 쟁점,
+  누구에겐 이익이고 누구에겐 부담인 점, 숫자 해석이 엇갈리는 점 — 이 10가지를 찾아 실제 사건·돈·생활 이야기에 녹인다.
+- 사실과 숫자가 충분하면 의견이 가장 갈리는 실제 쟁점을 중심축으로. 억지 논쟁은 만들지 않는다.
+- 본문에 '궁금해 미칠 부분', '화나는 부분', '억울한 부분', '후킹 포인트', '논쟁 포인트', '검색자가 궁금해하는 이유' 같은 분석 말 금지.
+
+[본문]
+- 본문은 1,500자 이내(Q&A·면책 제외). 정보를 주는 문장만 남기고 글자 수 채우기 문장은 뺀다. 문단마다 새 사실이나 해석.
+- 도입부는 매번 다르게: 가장 중요한 숫자 / 최근 사건 / 달라진 상황 / 독자가 겪는 현실 문제 / 예상과 실제의 차이 /
+  시장에서 보이는 현상 / 엇갈리는 이해관계 중 이 주제에 가장 흥미로운 것. 첫 문단에서 글의 핵심을 분명히, 결론을 억지로 숨기지 않는다.
+- 제목의 약속(promise)은 첫 2~3줄에서 바로 답한다.
+- 실제 블로거가 여러 자료를 조사해 자기 말로 설명하듯. 짧은 문장과 긴 문장을 섞고, 같은 어미 반복 금지, 원인→결과로 이어지는 이야기.
+- 글쓴이는 억선생('저'): 문단마다 생각·의외였던 점·의견·반응 한 마디. 관찰 표현('지수를 보며', '공시를 읽다가')은 권장.
+  매매·보유·현장 같은 가짜 경험 금지, 투자 권유 금지, 단정 전망 금지, 도박 말 금지.
+- 핵심키워드는 본문에 자연스럽게, 전체 20회 이내.
+- 숫자 비교가 있으면 표 하나(table)로. 없으면 table.rows는 빈 배열.
+- 출처: 본문·표·Q&A·태그 어디에도 언론사명·기사명·URL·도메인·각주·'○○에 따르면(언론사)'을 쓰지 않는다.
+  여러 자료에서 공통으로 확인된 사실만 자기 문장으로. 공식 발표가 중요할 때만 '한국은행 발표에 따르면', '공시를 보면',
+  '회사 공식 발표에 따르면'처럼 기관 이름만(링크 없이). 확인한 출처 목록은 sources에만 적는다(블로그에 안 나감).
+- 기사 문장은 옮기지 않는다. 숫자는 취재 메모에 있는 것만.
+- AI 티 문구 금지: 단순히 ○○의 문제가 아닙니다 / 중요한 것은 지금부터입니다 / 여기서 주목해야 할 점은 / 그렇다면 우리는 어떻게
+  해야 할까요 / 결국 핵심은 하나입니다 / 이제부터 하나씩 살펴보겠습니다 / 과연 어떤 결과가 / 지금까지 알아보았습니다 /
+  정리하자면 / 시사하는 바가 큽니다 / 눈여겨볼 필요가 있습니다 / 귀추가 주목됩니다.
+- 소제목은 짧게, 필요할 때만. 그림 자리표('[그림 1]') 쓰지 않음(코드가 넣음).
+- 마무리는 주제에 맞게 자연스럽게(억선생 생각 + 독자에게 묻는 한 줄 가능). 끝에 qa 3개(질문 한 줄·답 한 줄),
+  마지막 문단은 '※ 이 글은 경제 공부를 위한 정보이며 투자 권유가 아닙니다. 본문 그림은 AI로 만들었습니다.'
+- tags는 주제와 관련된 해시태그용 단어 18개(# 없이, 핵심키워드 변형 포함)."""
+
+PRESS = re.compile(r"https?://|www\.|\.(com|co\.kr|net)\b|연합뉴스|한국경제|매일경제|조선일보|중앙일보|동아일보|한겨레|머니투데이|"
+                   r"이데일리|뉴스1|뉴시스|서울경제|헤럴드경제|아시아경제|파이낸셜뉴스|블룸버그|로이터|CNBC|월스트리트저널|WSJ|"
+                   r"파이낸셜타임스|기사 원문|출처:")
+
 
 ARTICLE = {"type": "object", "additionalProperties": False,
-           "required": ["paragraphs", "tags", "image_tags", "short", "sources", "area", "thumb_scene"],
+           "required": ["paragraphs", "tags", "image_tags", "short", "sources", "area", "thumb_scene", "qa", "table"],
            "properties": {
                "area": {"type": "string", "enum": AREAS},
+               "qa": {"type": "array", "description": "글 끝 3줄 Q&A (질문·답 각 한 줄)",
+                      "items": {"type": "object", "additionalProperties": False, "required": ["q", "a"],
+                                "properties": {"q": {"type": "string"}, "a": {"type": "string"}}}},
+               "table": {"type": "object", "additionalProperties": False, "required": ["title", "header", "rows", "after"],
+                         "description": "숫자 비교 표 하나 (없으면 rows 빈 배열). 출처·언론사명 넣지 않음",
+                         "properties": {"title": {"type": "string"}, "header": {"type": "array", "items": {"type": "string"}},
+                                        "rows": {"type": "array", "items": {"type": "array", "items": {"type": "string"}}},
+                                        "after": {"type": "integer", "description": "몇 번째 문단(1부터) 뒤에 넣을지"}}},
                "thumb_scene": {"type": "string", "description": (
                    "썸네일 그림 장면 (영어 2~3문장). 제목의 주인공(회사·자산·사건)을 한눈에 알아보게 조선 풍속화로: "
                    "회사면 그 회사의 대표 제품·산업을 조선 장터 물건으로 바꿔 그림(예: SK하이닉스 → 장인이 빛나는 "
@@ -352,9 +402,11 @@ def produce(slug: str, n: int) -> Path:
     issues = (parse_json(check) or {}).get("issues", [])
     if issues:
         art = claude_json(sys_prompt, (
-            f"아래 초안을 사실 대조 결과대로 고쳐 주세요. 확인 안 되는 문장은 빼거나 '~로 알려졌다'가 아니라 출처를 밝혀 쓰세요.\n\n"
+            f"아래 초안을 사실 대조 결과대로 고쳐 주세요. 확인 안 되는 문장은 뺍니다. 본문에 언론사명·링크는 쓰지 말고, 꼭 필요하면 "
+            f"'한국은행 발표에 따르면'처럼 기관 이름만 씁니다. 근거 출처는 sources에만.\n\n"
             f"[초안]\n{body}\n\n[사실 대조 (GPT)]\n{json.dumps(issues, ensure_ascii=False)}\n\n[취재 메모]\n{memo[:6000]}"),
             ARTICLE, stage="고쳐쓰기")
+    art, polish_note = polish(sys_prompt, art, T["keyword"])
     post = POSTS / slug
     post.mkdir(parents=True, exist_ok=True)
     # 그림: 썸네일 + 본문 창고 그림 3장
@@ -371,21 +423,33 @@ def produce(slug: str, n: int) -> Path:
     # 본문: 첫 2문단 뒤, 중간, 끝 앞에 그림
     paras = [x for x in art["paragraphs"] if not re.fullmatch(r"\s*\[(그림|사진|이미지)\s*\d*\]\s*", x)]  # AI가 넣은 그림 자리표 제거
     slots = [2, max(3, len(paras) // 2), max(4, len(paras) - 2)]
+    tb = art.get("table") or {}
+    if tb.get("rows"):
+        (post / "table.json").write_text(json.dumps({k: tb[k] for k in ("title", "header", "rows")}, ensure_ascii=False),
+                                         encoding="utf-8")
+    foot = [x for x in paras if x.startswith("※")]
+    paras = [x for x in paras if not x.startswith("※")]
     lines = ["[이미지 1_썸네일: thumb.png]"]
     for i, p in enumerate(paras):
         lines.append(p)
+        if tb.get("rows") and i + 1 == max(1, min(tb.get("after", 2), len(paras))):
+            lines.append(f"[표 1: {tb['title']}]")
         for k, s in enumerate(slots):
             if i + 1 == s and k < len(files):
                 lines.append(f"[이미지 {k + 2}_{files[k]}: {files[k]}.jpg]")
+    if art.get("qa"):
+        lines.append("\n".join(f"Q. {x['q']}\nA. {x['a']}" for x in art["qa"][:3]))
+    lines += foot
     (post / "body.txt").write_text("\n\n".join(lines) + "\n", encoding="utf-8")
     alts = [t for t in T["items"] if t is not pick][:2]
-    tags = ",".join(art["tags"][:12] + ["억선생", "억선생의경제판"])
+    tags = ",".join(art["tags"][:18] + ["억선생", "억선생의경제판"])  # 해시태그 20개 (강사 기준)
     (post / "post.md").write_text("\n".join([
         f"# 발행 패키지 · {T['keyword']}", "",
         f"**상태:** {'✅ 사실 대조 통과' if not issues else '✅ 사실 대조 후 고침(' + str(len(issues)) + '곳)'}"
         + ("" if gain_ok else " · ⚠️ 정보 이득 부족 — 발행 보류, Claude에게 알려 주세요"),
         f"**정보 이득:** {gain_note}",
-        f"**썸네일:** {thumb_note}", f"**사람 냄새 검사:** {voice_note}", "", f"- 카테고리: **{art['area']}**", f"- 태그: {tags}", "",
+        f"**썸네일:** {thumb_note}", f"**사람 냄새 검사:** {voice_note}", f"**형식 검사:** {polish_note}",
+        f"**글 성격:** {'🔥 강하게 (3편에 1편)' if T.get('strong') else '보통'}", "", f"- 카테고리: **{art['area']}**", f"- 태그: {tags}", "",
         "## 제목 (추천 ★)", "", f"1. ★ {pick['title']} — {pick['type']}",
         *[f"{i + 2}. {t['title']} — {t['type']}" for i, t in enumerate(alts)], "",
         "## 본문", "", "(body.txt)", "", "## 출처", "", *[f"- {s}" for s in art["sources"]],
@@ -465,6 +529,30 @@ def info_gain(keyword: str, title: str, sys_prompt: list[str], art: dict, body: 
     if g2["pass"] and g2["gain"]:
         return fix, nbody, "✅ 고쳐 써서 통과 — " + " / ".join(g2["gain"][:3]), True
     return fix, nbody, "⛔ 상위 10개 글에 없는 정보를 못 찾음 — " + g2["missing"][:120], False
+
+
+def polish(sys_prompt: list[str], art: dict, keyword: str) -> tuple[dict, str]:
+    """강사 기준 형식 검사(코드): 본문 1,500자 이내 · 언론사명/링크 없음 · 핵심키워드 20회 이내. 어긋나면 한 번 고쳐 쓴다."""
+    def check(a: dict) -> list[str]:
+        prose = [x for x in a["paragraphs"] if not x.startswith("※")]
+        text = "\n".join(prose)
+        n, core = len(re.sub(r"\s", "", text)), keyword.split()[0]
+        bad = []
+        if n > 1600:
+            bad.append(f"본문 {n}자(공백 빼고) → 1,500자 안으로 줄이기")
+        m = PRESS.findall(text + " ".join(x["q"] + x["a"] for x in a.get("qa", [])))
+        if m:
+            bad.append(f"언론사명·링크 {len(m)}곳 → 빼고 사실만 (기관 발표는 기관 이름만)")
+        if text.count(core) > 20:
+            bad.append(f"핵심키워드 '{core}' {text.count(core)}회 → 20회 이내")
+        return bad
+    bad = check(art)
+    if not bad:
+        return art, "통과 (1,500자·출처 표기·키워드 횟수)"
+    fixed = claude_json(sys_prompt, "아래 초안을 이 문제만 고쳐 다시 주세요. 내용·사실·사람 냄새는 그대로.\n- " + "\n- ".join(bad)
+                        + "\n\n[초안]\n" + json.dumps(art, ensure_ascii=False), ARTICLE, stage="고쳐쓰기(형식)")
+    left = check(fixed)
+    return fixed, ("고쳐 씀: " + " / ".join(bad)) + (f" · ⚠️ 남음: {' / '.join(left)}" if left else "")
 
 
 def humanize(sys_prompt: list[str], art: dict, body: str, memo: str) -> tuple[dict, str, str]:
