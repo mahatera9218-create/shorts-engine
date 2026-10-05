@@ -226,9 +226,9 @@ def keywords() -> Path:
             items.append({"kw": it["kw"], "area": it.get("area", ""), "src": "Grok(X·웹)", "why": it.get("why", ""),
                           "person": it.get("person", "")})
     old = load(day / "keywords.yaml", {"items": []})
-    mine = [x for x in old.get("items", []) if x.get("src") == "대표"]
+    mine = [x for x in old.get("items", []) if x.get("src") in ("대표", "참고 블로거")]  # 대표·참고 블로거 몫은 남김
     save(day / "keywords.yaml", {"date": today(), "updated": datetime.now(KST).strftime("%H:%M"), "items": mine + items})
-    print(f"키워드 {len(mine) + len(items)}개 (대표 {len(mine)} · Grok/코드 {len(items)})")
+    print(f"키워드 {len(mine) + len(items)}개 (대표·참고 블로거 {len(mine)} · Grok/코드 {len(items)})")
     return day / "keywords.yaml"
 
 
@@ -405,10 +405,11 @@ def learned() -> list[str]:
     if edits:
         out.append("[대표가 최근 고친 곳: 원래 → 고친 글. 같은 방향으로 처음부터 쓴다]\n"
                    + "\n".join(f.read_text(encoding="utf-8")[-1500:] for f in edits)[:6000])
-    ref = sorted((ROOT / "econ" / "ref").glob("*.md"), reverse=True)[:1]
-    if ref:
-        out.append("[참고 블로거 조사(Aside). 구조·흐름·제목 모양만 참고하고 문장·표현은 절대 옮기지 않는다]\n"
-                   + ref[0].read_text(encoding="utf-8")[:5000])
+    for pat, who in (("*.md", "Aside"), ("rss/*.md", "공개 RSS 아침 조사")):
+        ref = sorted((ROOT / "econ" / "ref").glob(pat), reverse=True)[:1]
+        if ref:
+            out.append(f"[참고 블로거 조사({who}). 구조·흐름·제목 모양만 참고하고 문장·표현은 절대 옮기지 않는다]\n"
+                       + ref[0].read_text(encoding="utf-8")[:5000])
     return out
 
 
@@ -488,6 +489,9 @@ def humanize(sys_prompt: list[str], art: dict, body: str, memo: str) -> tuple[di
 FONT = ROOT / "assets" / "fonts" / "Pretendard-Black.otf"
 
 
+DRAW_THUMB = False  # 제목 장면 새로 그리기: 대표가 "원했던 것과 다름" → 재논의 전까지 끔(창고 그림, 글자 없음, 0원)
+
+
 def make_thumb(post: Path, person: str, scene: str, used: list[str]) -> str:
     """썸네일 = 글자 없는 그림 한 장, 화풍 그대로, 제목에 맞는 장면 (대표 결정 2026-10-05).
     인물 글 = Gemini 얼굴·상반신 캐리커처(작은 'AI 일러스트' 표시만), 아니면 제목 장면을 GPT Image 2로 새로 그림.
@@ -508,12 +512,12 @@ def make_thumb(post: Path, person: str, scene: str, used: list[str]) -> str:
                                    fill=PAPER, stroke_width=3, stroke_fill=INK)  # 실존 인물 캐리커처 표시 규칙(10-05)
             c.save(post / "thumb.png")
             return f"인물 상반신({person}, Gemini 캐리커처), 글자 없음"
-    if scene and draw_scene(scene, post / "thumb.png"):
+    if DRAW_THUMB and scene and draw_scene(scene, post / "thumb.png"):
         return "제목 장면 새로 그림(GPT Image 2 고화질), 글자 없음"
     from .art_library import pick as lib_pick
     name = (used or lib_pick(["시황"], [], 1) or ["market-morning"])[0]
     _cover(Image.open(LIB / f"{name}.jpg").convert("RGB"), W, W, 0.5).save(post / "thumb.png")
-    return f"⚠️ 새 그림 실패 → 창고 그림({name}), 글자 없음"
+    return f"창고 그림({name}), 글자 없음" + ("" if not DRAW_THUMB else " (⚠️ 새 그림 실패)")
 
 
 def draw_scene(scene: str, out: Path) -> bool:
