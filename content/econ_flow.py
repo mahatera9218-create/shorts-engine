@@ -244,7 +244,9 @@ def skill(name: str) -> str:
     return f.read_text(encoding="utf-8") if f.exists() else ""
 
 
-WRITE_RULES = """억선생의 경제판 글 규칙 (DECISIONS 2026-10-04~05):
+WRITE_RULES = """억선생의 경제판 글 규칙 (DECISIONS 2026-10-04~05). blog-voice 스킬의 '억선생의 경제판: 사람 냄새와 이야기'를 반드시 따른다:
+- 장면으로 시작 → 질문 → 답 → '누가 무엇을 했나'로 이유 → 갈림길(앞으로 두 갈래) → 억선생 생각(권유 없음) → 독자에게 묻는 한 줄.
+- 문단마다 글쓴이(억선생, '저')의 생각·의외였던 점·의견·반응이 한 마디 이상. 숫자 문장 뒤엔 그 숫자를 보고 든 생각.
 - 제목의 질문에 본문 첫 2~3줄에서 바로 답한다.
 - 순서: 답 → 오늘 숫자(기준 시각·출처) → 왜(배경) → 기관·증권사 전망(누가, 출처) → 앞으로 일정 → 글쓴이 생각(권유 없음) → 면책 한 줄.
 - 기사는 소스로만 참고하고 새로 쓴다. 남의 문장 옮기지 않는다. 숫자는 취재 메모에 있는 것만.
@@ -282,6 +284,7 @@ def produce(slug: str, n: int) -> Path:
         f"[취재 메모]\n{memo[:9000]}\n\n창고 그림 태그 목록: {', '.join(lib_tags)}\n위 규칙으로 글을 써 주세요."),
         ARTICLE, stage="글쓰기")
     body = "\n\n".join(art["paragraphs"])
+    art, body, voice_note = humanize(sys_prompt, art, body, memo)
     check = gpt("아래 경제 블로그 초안의 숫자·날짜·기관 전망·인물 직책이 사실인지 웹 검색으로 확인하세요. "
                 "주요 언론사·공식 기관 출처만 인정합니다. 틀리거나 확인 안 되는 것만 JSON으로: "
                 '{"issues": [{"claim": "초안 문장", "problem": "무엇이 틀렸나", "fix": "고칠 내용(출처)"}]}. 문제가 없으면 '
@@ -320,7 +323,7 @@ def produce(slug: str, n: int) -> Path:
     (post / "post.md").write_text("\n".join([
         f"# 발행 패키지 · {T['keyword']}", "",
         f"**상태:** {'✅ 사실 대조 통과' if not issues else '✅ 사실 대조 후 고침(' + str(len(issues)) + '곳)'}",
-        f"**썸네일:** {thumb_note}", "", f"- 카테고리: **{art['area']}**", f"- 태그: {tags}", "",
+        f"**썸네일:** {thumb_note}", f"**사람 냄새 검사:** {voice_note}", "", f"- 카테고리: **{art['area']}**", f"- 태그: {tags}", "",
         "## 제목 (추천 ★)", "", f"1. ★ {pick['title']} — {pick['type']}",
         *[f"{i + 2}. {t['title']} — {t['type']}" for i, t in enumerate(alts)], "",
         "## 본문", "", "(body.txt)", "", "## 출처", "", *[f"- {s}" for s in art["sources"]],
@@ -334,6 +337,26 @@ def produce(slug: str, n: int) -> Path:
     save(tdir / "chosen.yaml", {"title": pick["title"], "post": slug, "at": datetime.now(KST).strftime("%H:%M")})
     print(f"제작 완료 → {post}")
     return post
+
+
+def humanize(sys_prompt: list[str], art: dict, body: str, memo: str) -> tuple[dict, str, str]:
+    """사람 냄새·이야기 검사 (스포츠 때와 같은 기준, 2026-10-05): 생각 없는 문단이 25%를 넘거나 AI 티가 있으면 한 번 고쳐 쓴다."""
+    from .voice import check_draft, human_gaps, prose_paragraphs
+    gaps, ai = human_gaps(body), check_draft(body)
+    total = max(1, len(prose_paragraphs(body)))
+    if len(gaps) / total <= 0.25 and not ai:
+        return art, body, f"통과 (생각 없는 문단 {len(gaps)}/{total})"
+    fix = claude_json(sys_prompt, (
+        "아래 초안은 사실은 맞지만 사람 냄새와 이야기가 부족합니다. 사실·숫자·출처는 그대로 두고 다음만 고쳐 주세요.\n"
+        "1) 아래 문단마다 억선생('저')의 생각·의외였던 점·의견·반응을 한 마디씩 (문단마다 다른 말로, 하지 않은 경험은 금지)\n"
+        "2) 첫머리를 그날의 한 장면으로, 이유는 '누가 무엇을 했나'로, 끝은 억선생 생각 + 독자에게 묻는 한 줄\n"
+        f"3) AI 티 표현 고치기: {', '.join(ai) or '없음'}\n\n[생각이 안 보이는 문단 앞부분]\n" + "\n".join(gaps)
+        + f"\n\n[초안]\n{body}\n\n[취재 메모]\n{memo[:4000]}"), ARTICLE, stage="고쳐쓰기(사람 냄새)")
+    nbody = "\n\n".join(fix["paragraphs"])
+    ngaps = human_gaps(nbody)
+    if len(ngaps) <= len(gaps):
+        return fix, nbody, f"고쳐 씀 (생각 없는 문단 {len(gaps)} → {len(ngaps)}/{max(1, len(prose_paragraphs(nbody)))})"
+    return art, body, f"고쳐 써도 나아지지 않아 원본 유지 (생각 없는 문단 {len(gaps)}/{total})"
 
 
 # ---------------------------------------------------------------- 썸네일
