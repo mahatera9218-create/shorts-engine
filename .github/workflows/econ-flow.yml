@@ -74,7 +74,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add econ/ blogs/ reports/
+          for d in econ blogs reports; do [ -e "$d" ] && git add "$d"; done   # 없는 폴더가 있어도 멈추지 않게
           git diff --cached --quiet && exit 0
           git commit -m "글 흐름(${{ inputs.blog || 'econ' }}): $(date +%F)"
           for i in 1 2 3; do
