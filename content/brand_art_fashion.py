@@ -43,6 +43,24 @@ PROFILES = {  # 1024x1024, 동그라미 안에 하나 크게
                   "the frame, minimal and elegant.",
 }
 
+# 상점 그림 프로필 (대표 지시 2026-10-06: "작지만 아우라와 따뜻함이 느껴지는 상점 건물"). 간판에 글자 없음.
+SHOP = ("Square 1:1 profile picture for an elegant Korean women's fashion blog called Cashmere Diary, shown as a small "
+        "circle: one small boutique shop building, large and centered, the whole facade visible. Small but with a "
+        "quiet aura of luxury and a warm, welcoming glow from the windows. Hand-painted illustration, not a photo. "
+        "Palette of cream, warm beige #E0D3BB, camel, ivory, deep green and soft gold light. Simple plain background "
+        "so it reads well when small. No people, no text, no letters, no numbers, no logos on the sign or awning. ")
+SHOPS = {
+    "상점-1-해질녘-부티크": "Watercolor and ink: a narrow two-storey European boutique at dusk, cream stone facade, "
+                      "camel striped awning, tall arched shop window glowing warm gold with folded cashmere knits "
+                      "and a coat on a mannequin, a little lantern by the door.",
+    "상점-2-담쟁이-코너숍": "Soft gouache: a tiny corner shop with deep green wooden frontage and ivy climbing the "
+                      "walls, warm light spilling from the window display of cashmere scarves, potted olive tree and "
+                      "a bench by the door, early evening.",
+    "상점-3-정면-대칭": "Elegant flat illustration, perfectly symmetrical front view: a small jewel-box boutique with "
+                    "a rounded doorway, ivory facade, camel awning, two glowing windows with folded knits, wall "
+                    "lamps on both sides, calm and timeless.",
+}
+
 
 def draw(prompt: str, size: str, out: Path) -> None:
     if out.exists():
@@ -85,6 +103,8 @@ def main() -> None:
         draw(STYLE + scene, "1536x1024", OUT / f"커버-{name}.png")
     for name, scene in PROFILES.items():
         draw(STYLE + scene, "1024x1024", OUT / f"프로필-{name}.png")
+    for name, scene in SHOPS.items():
+        draw(SHOP + scene, "1024x1024", OUT / f"프로필-{name}.png")
     preview()
 
 
