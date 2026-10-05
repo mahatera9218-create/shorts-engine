@@ -1,0 +1,35 @@
+# 새 블로그 '억선생의 경제판' 상단 커버 (대표 요청 2026-10-05)
+# 네이버: PC는 3:2(가로), 모바일 앱은 가운데 정사각형만 보임 → 중요한 것(억선생)은 가운데 정사각형(가로의 가운데 2/3) 안에.
+# 커버 위에 블로그 이름·닉네임이 네이버 글자로 얹히므로 그림 속 글자는 없음. 프로필(억선생)을 참고 그림으로.
+- file: 1-장터-아침.png
+  ref: assets/brand/eok-profile.png
+  size: 1536x1024
+  quality: high
+  prompt: >-
+    Wide 3:2 blog cover banner. Use the attached image only as the character reference: the same merchant
+    'Mr. Eok' (round face, mustache, black gat, indigo jeogori), drawn small-to-medium size standing exactly in the
+    CENTER of the picture, smiling and pointing at a big abacus and strings of yeopjeon coins on his market stall.
+    Around him a lively Joseon market morning: tiled roofs, thatched stalls, people in hanbok trading rice, gold
+    and cloth, a big gold full moon/sun disc behind him, pine branches at the top corners like a hwatu card.
+    Keep the left and right thirds simple and calm, important things only in the center square. Lower quarter
+    calm and plain (text will be overlaid there by Naver). No text, no letters, no numbers.
+- file: 2-산수-달.png
+  ref: assets/brand/eok-profile.png
+  size: 1536x1024
+  quality: high
+  prompt: >-
+    Wide 3:2 blog cover banner in the style of a hwatu bright card (the moon card 'gongsan'): a huge gold full
+    moon over layered red-and-black hills, a pine tree on the left, cranes flying. In the exact CENTER, the same
+    merchant 'Mr. Eok' from the attached reference image (round face, mustache, black gat, indigo jeogori)
+    sitting on a hill holding a fan and a string of yeopjeon coins, calm wise smile, looking at the viewer.
+    Important content only in the center square; lower quarter plain for overlaid text. No text, no letters.
+- file: 3-조각보.png
+  ref: assets/brand/eok-profile.png
+  size: 1536x1024
+  quality: high
+  prompt: >-
+    Wide 3:2 blog cover banner: a background of Korean jogakbo patchwork in vermilion, black, cream, pine green
+    and gold, with small motifs of yeopjeon coins, a gold bar, a rising arrow made of a brush stroke and a
+    bull and a bear drawn as minhwa animals in the corners. In the exact CENTER, a cream round medallion with the
+    same merchant 'Mr. Eok' from the attached reference image (head and shoulders, friendly confident smile).
+    Important content only in the center square; lower quarter plain. No text, no letters, no numbers.

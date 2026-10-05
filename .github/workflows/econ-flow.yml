@@ -6,9 +6,10 @@ name: 경제 흐름
 on:
   schedule:
     - cron: "50 20 * * *"   # UTC 20:50 = 한국 05:50 키워드 모으기
+    - cron: "30 22 * * 0"   # UTC 일 22:30 = 한국 월 07:30 주간 점검·학습 (learn)
   workflow_dispatch:
     inputs:
-      cmd: {description: "keywords | add | titles | produce", required: true, default: keywords}
+      cmd: {description: "keywords | add | titles | produce | learn", required: true, default: keywords}
       arg1: {description: "키워드 / 주제폴더", required: false, default: ""}
       arg2: {description: "제목 번호", required: false, default: ""}
   workflow_call:
@@ -43,7 +44,9 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          CMD: ${{ inputs.cmd || 'keywords' }}
+          NCP_APIGW_API_KEY_ID: ${{ secrets.NCP_APIGW_API_KEY_ID }}   # 정보 이득 게이트: 네이버 블로그 검색 API
+          NCP_APIGW_API_KEY: ${{ secrets.NCP_APIGW_API_KEY }}
+          CMD: ${{ inputs.cmd || (github.event.schedule == '30 22 * * 0' && 'learn') || 'keywords' }}
           ARG1: ${{ inputs.arg1 }}
           ARG2: ${{ inputs.arg2 }}
         run: |
@@ -51,14 +54,15 @@ jobs:
           elif [ "$CMD" = "add" ]; then python -m content.econ_flow add "$ARG1"
           elif [ "$CMD" = "titles" ]; then python -m content.econ_flow titles "$ARG1"
           elif [ "$CMD" = "produce" ]; then python -m content.econ_flow produce "$ARG1" "$ARG2"
+          elif [ "$CMD" = "learn" ]; then python -m content.econ_inbox learn
           else echo "모르는 명령"; exit 1; fi
       - name: 저장 (econ/ 커밋)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add econ/ reports/costs.csv 2>/dev/null || git add econ/
+          git add econ/ reports/
           git diff --cached --quiet && exit 0
-          git commit -m "경제 흐름: ${{ inputs.cmd || 'keywords' }} $(date +%F)"
+          git commit -m "경제 흐름: $(date +%F)"
           for i in 1 2 3; do
             git pull --rebase --autostash -X theirs origin main && git push origin HEAD:main && exit 0
             sleep $((i * 5))

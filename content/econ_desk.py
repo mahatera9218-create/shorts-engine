@@ -94,7 +94,8 @@ def page(p: dict) -> str:
     tags = " ".join("#" + t for t in p["tags"])
     chips = "".join(f'<button class="ghost chip" onclick="copyText(this,{e(json.dumps(t), quote=True)})">{e(t)}</button>' for t in p["tags"])
     thumb = next((x["file"] for x in p["images"] if x["n"] == 1), "")
-    data = json.dumps({"blocks": p["blocks"], "images": p["images"], "folder": p["folder"], "repo": desk.REPO},
+    data = json.dumps({"blocks": p["blocks"], "images": p["images"], "folder": p["folder"], "repo": desk.REPO,
+                       "editTag": "[경제수정]"},
                       ensure_ascii=False).replace("</", "<\\/")
     used = p.get("status", {}).get("status") == "used"
     done = desk.issue_link("경제발행완료", p["folder"], "블로그·쇼츠·클립 발행을 마쳤어요.")
@@ -120,7 +121,9 @@ def page(p: dict) -> str:
 <a class="btn" href="{e(done, quote=True)}">✅ 발행 완료 표시</a>
 <div class="muted">GitHub 화면이 열리면 초록 <b>Create</b>만 누르세요. 2~3분 뒤 목록에서 "발행한 글"로 내려가요.</div></div>
 <div class="card body" id="draft"><h2>✏️ 초안 (눌러서 고치기)</h2>
-<div class="muted">고친 문단은 주황 테두리로 보이고, 이 휴대폰에 저장돼 위 <b>본문 복사</b>에 반영돼요.</div>{body}</div>
+<div class="muted">고친 문단은 주황 테두리로 보이고, 이 휴대폰에 저장돼 위 <b>본문 복사</b>에 반영돼요.</div>{body}
+<button onclick="saveEdits(this)">💾 고친 내용 저장 (다음 글이 배워요)</button>
+<div class="muted">제목·문단을 고쳤다면 눌러 주세요. GitHub 화면에서 초록 <b>Create</b>만 누르면, 고친 방향을 모아 다음 글부터 그렇게 써요.</div></div>
 <div class="card" id="each"><h2>사진 하나씩 저장</h2>{each}</div>
 <details class="card"><summary>출처</summary><pre style="white-space:pre-wrap">{e(p["sources"])}</pre></details>
 </main><script>const POST={data};{desk.JS}</script></body></html>"""
@@ -146,13 +149,14 @@ def index(posts: list[dict]) -> str:
     now = datetime.now(KST).strftime("%m월 %d일 %H:%M")
     return head(f"{NAME} 발행 도우미") + f"""
 <header class="brand"><img src="icon-180.png" alt=""><div><h1>{NAME}</h1><p class="muted">발행 도우미 · {now} 업데이트</p></div></header>
-<nav class="tabs"><a href="#blog" data-t="blog">📝 블로그</a><a href="#video" data-t="video">🎬 쇼츠·클립</a></nav>
+<nav class="tabs"><a href="#blog" data-t="blog">📝 블로그</a><a href="#stats" data-t="stats">📊 성과</a><a href="#video" data-t="video">🎬 영상</a></nav>
 <section class="tab" id="blog">
 {flow_html()}
 <h2><span class="step">3</span>올릴 글</h2>{"".join(row(p) for p in sorted(live, key=lambda p: p["folder"], reverse=True)) or '<p class="muted">올릴 글이 아직 없어요.</p>'}
 {f'<h2 style="margin-top:28px">발행한 글</h2>' + "".join(row(p, True) for p in used[:10]) if used else ''}
 </section>
-<section class="tab" id="video" hidden>{vids or '<p class="muted">올릴 영상이 없어요.</p>'}</section>
+<section class="tab" id="stats" hidden>{stats_html(posts)}</section>
+<section class="tab" id="video" hidden><p class="muted">영상은 당분간 보류예요 (대표 결정 10-05). 글에 집중!</p>{vids or '<p class="muted">올릴 영상이 없어요.</p>'}</section>
 <div class="card muted" style="margin-top:28px">홈 화면에 두기: 이 화면에서 브라우저 메뉴(⋮ 또는 공유 ↑) → <b>홈 화면에 추가</b>. 억선생 얼굴 아이콘으로 생겨요.</div>
 </main><script>const POST={{"blocks":[],"images":[]}};{desk.JS}
 function tab(){{const h=(location.hash||'#blog').slice(1);document.querySelectorAll('section.tab').forEach(s=>s.hidden=s.id!==h);
@@ -184,6 +188,7 @@ def flow_html() -> str:
 {''.join(rows) or '<p class="muted">아직 없어요. 매일 아침 6시쯤 Grok·코드가 모아요.</p>'}
 <textarea id="kwin" class="ed" rows="3" placeholder="어드바이저·뉴스 랭킹·트렌드에서 찾은 키워드 (한 줄에 하나)"></textarea>
 <button onclick="addKw()">➕ 내 키워드 넣기</button>
+{inbox_buttons(today)}
 <a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(refresh, quote=True)}">🔄 Grok으로 다시 모으기</a>
 <script>{add_js}</script></div>"""
     topics = []
@@ -208,6 +213,100 @@ def flow_html() -> str:
                       f'<details><summary class="muted">취재 메모 보기</summary><pre style="white-space:pre-wrap;font-size:13px">'
                       f'{e((t.parent / "research.md").read_text(encoding="utf-8")[:4000]) if (t.parent / "research.md").exists() else ""}</pre></details></div>')
     return kw_html + "".join(topics)
+
+
+def inbox_buttons(today: str) -> str:
+    """캡처 올리기 · Aside 조사 붙여넣기 (대표 결정 2026-10-05). 둘 다 GitHub 이슈로 받아 workflow가 처리."""
+    e = html.escape
+    cap = desk.issue_link("경제캡처", today, "이 아래 빈 줄을 누르고, 아래쪽 📎(파일 첨부)로 어드바이저·통계 캡처를 골라 붙여 주세요. 여러 장 가능.")
+    ref = desk.issue_link("경제참고", today, "(여기를 지우고 Aside 결과를 통째로 붙여 넣으세요)")
+    ghost = "background:transparent;color:var(--ink);border:1px solid var(--line)"
+    return (f'<a class="btn" style="{ghost}" href="{e(cap, quote=True)}">📷 어드바이저 캡처 올리기</a>'
+            f'<a class="btn" style="{ghost}" href="{e(ref, quote=True)}">📄 Aside 조사 붙여넣기</a>'
+            '<div class="muted">캡처는 Claude가 읽어 키워드는 위 목록에, 숫자는 📊 성과에 넣어요. '
+            'Aside 조사는 글 구조 참고로만 써요(문장은 안 옮김).</div>')
+
+
+BLOG = ROOT / "config" / "econ_blog.yaml"
+COSTS = ROOT / "econ" / "costs.csv"
+METRICS = ROOT / "econ" / "metrics"
+CMD_NAME = {"keywords": "키워드 모으기", "titles": "제목 후보", "produce": "글 제작", "capture": "캡처 읽기", "learn": "주간 학습"}
+
+
+def blog_rss(url: str) -> list[dict]:
+    """내 블로그 공개 RSS(공식 통로) → 최근 발행 글 제목·날짜. 실패하면 빈 목록."""
+    import xml.etree.ElementTree as ET
+    import requests
+    m = re.search(r"blog\.naver\.com/([A-Za-z0-9_-]+)", url or "")
+    if not m:
+        return []
+    try:
+        r = requests.get(f"https://rss.blog.naver.com/{m.group(1)}.xml", timeout=20)
+        r.raise_for_status()
+        return [{"title": (i.findtext("title") or "").strip(), "link": i.findtext("link") or "",
+                 "date": i.findtext("pubDate") or ""} for i in ET.fromstring(r.content).iter("item")][:15]
+    except Exception as ex:  # noqa: BLE001
+        print(f"RSS 실패: {ex}")
+        return []
+
+
+def stats_html(posts: list[dict]) -> str:
+    """📊 성과: 비용(월 상한)·발행 수·캡처에서 읽은 숫자·주간 학습 (대표 결정 2026-10-05: 비용은 성과 분석에 씀)."""
+    import csv
+    from collections import defaultdict
+    e = html.escape
+    now = datetime.now(KST)
+    month, today = now.strftime("%Y-%m"), now.strftime("%Y-%m-%d")
+    rows = list(csv.DictReader(COSTS.open(encoding="utf-8"))) if COSTS.exists() else []
+    krw = lambda usd: int(round(usd * 1400))  # noqa: E731  (econ_flow.KRW와 같게)
+    mrows = [r for r in rows if r["date"].startswith(month)]
+    total = krw(sum(float(r["total_usd"]) for r in mrows))
+    by_cmd, by_day = defaultdict(float), defaultdict(float)
+    for r in mrows:
+        by_cmd[r["cmd"]] += float(r["total_usd"])
+        by_day[r["date"]] += float(r["total_usd"])
+    made = sum(1 for r in mrows if r["cmd"] == "produce")
+    pct = min(100, total * 100 // 50000)
+    cost = (f'<div class="card"><h2>💰 이번 달 AI 비용</h2><p style="font-size:26px;margin:4px 0"><b>{total:,}원</b> '
+            f'<span class="muted">/ 상한 50,000원</span></p>'
+            f'<div style="background:var(--line);border-radius:8px;height:12px"><div style="width:{pct}%;height:12px;border-radius:8px;'
+            f'background:{"var(--accent)" if pct >= 80 else "var(--pine)"}"></div></div>'
+            f'<div class="muted">상한에 닿으면 새 작업이 멈추고 알려 드려요. 글 1편 평균 '
+            f'{(krw(sum(float(r["total_usd"]) for r in mrows)) // made) if made else 0:,}원 (키워드·제목 포함).</div>'
+            + "".join(f'<div>{e(CMD_NAME.get(k, k))} · {krw(v):,}원</div>' for k, v in sorted(by_cmd.items(), key=lambda x: -x[1]))
+            + "<details><summary class=\"muted\">날짜별</summary>"
+            + "".join(f'<div>{d[5:]} · {krw(v):,}원</div>' for d, v in sorted(by_day.items(), reverse=True)) + "</details>"
+            '<div class="muted">AI 회사 화면의 실제 청구액과 조금 다를 수 있어요(토큰으로 어림).</div></div>')
+    used = [p for p in posts if p.get("status", {}).get("status") == "used"]
+    today_n = sum(1 for p in used if str(p["status"].get("at", "")).startswith(today))
+    month_n = sum(1 for p in used if str(p["status"].get("at", "")).startswith(month))
+    pub = (f'<div class="card"><h2>📝 발행</h2><p style="font-size:22px;margin:4px 0">오늘 <b>{today_n}</b> / 3편 · '
+           f'이번 달 <b>{month_n}</b>편</p><div class="muted">하루 3편으로 시작해 내 블로그가 홈판에 잘 뜨는 주제를 빨리 찾아요.</div></div>')
+    cfg = (yaml.safe_load(BLOG.read_text(encoding="utf-8")) or {}) if BLOG.exists() else {}
+    url = cfg.get("url") or ""
+    feed = blog_rss(url)
+    if url:
+        blog = (f'<div class="card"><h2>🏠 내 블로그</h2><a class="btn" href="{e(url, quote=True)}">블로그 열기</a>'
+                f'<a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" '
+                f'href="https://creator-advisor.naver.com/">크리에이터 어드바이저 열기</a>'
+                + ("".join(f'<div>· <a href="{e(i["link"], quote=True)}">{e(i["title"])}</a> <span class="muted">{e(i["date"][5:16])}</span></div>'
+                           for i in feed) or '<div class="muted">아직 올라온 글이 없거나 RSS를 못 읽었어요.</div>') + "</div>")
+    else:
+        blog = '<div class="card"><h2>🏠 내 블로그</h2><div class="muted">블로그 주소를 Claude에게 알려 주시면 여기에 연결돼요 (발행한 글 목록 자동 표시).</div></div>'
+    caps = []
+    for f in sorted(METRICS.glob("*.yaml"), reverse=True)[:6] if METRICS.exists() else []:
+        m = yaml.safe_load(f.read_text(encoding="utf-8")) or {}
+        tb = "".join(f'<tr><td>{e(x.get("title", ""))[:30]}</td><td>{e(x.get("views", ""))}</td><td>{e(x.get("ctr", ""))}</td></tr>'
+                     for x in m.get("posts", [])[:10])
+        inflow = " · ".join(f'{e(x[0])}{"(" + e(x[1]) + ")" if len(x) > 1 else ""}' for x in m.get("inflow", [])[:10] if x)
+        caps.append(f'<div class="card"><b>📷 {e(m.get("kind", ""))}</b> <span class="muted">{e(m.get("at", ""))} · {e(m.get("note", ""))}</span>'
+                    + (f'<table style="width:100%;font-size:14px"><tr><th>글</th><th>조회</th><th>클릭률</th></tr>{tb}</table>' if tb else "")
+                    + (f'<div class="muted">유입 검색어: {inflow}</div>' if inflow else "") + "</div>")
+    cap_html = "".join(caps) or '<div class="card muted">아직 올린 캡처가 없어요. 📝 블로그 탭의 <b>📷 어드바이저 캡처 올리기</b>로 올리면 여기에 쌓여요.</div>'
+    learn = sorted((ROOT / "reports" / "경제-학습").glob("*.md"), reverse=True)[:1]
+    learn_html = (f'<details class="card"><summary><b>🧠 이번 주 배운 것</b> <span class="muted">{e(learn[0].stem)}</span></summary>'
+                  f'<pre style="white-space:pre-wrap;font-size:13px">{e(learn[0].read_text(encoding="utf-8")[:3000])}</pre></details>') if learn else ""
+    return cost + pub + blog + "<h2>캡처에서 읽은 숫자</h2>" + cap_html + learn_html
 
 
 def load() -> list[dict]:

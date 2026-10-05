@@ -207,7 +207,7 @@ async function saveEdits(b){
   let body='';const t=ed('title');if(t&&t.value!==t.defaultValue)body+='제목: '+val('title')+'\\n\\n';
   document.querySelectorAll('textarea.ed[data-k^="b"]').forEach(x=>{if(x.value!==x.defaultValue)body+='[문단 '+x.dataset.k.slice(1)+']\\n'+x.value.trim()+'\\n\\n'});
   if(!body){alert('고친 곳이 없어요.');return}
-  const base='https://github.com/'+POST.repo+'/issues/new?title='+encodeURIComponent('[수정] '+POST.folder);
+  const base='https://github.com/'+POST.repo+'/issues/new?title='+encodeURIComponent((POST.editTag||'[수정]')+' '+POST.folder);
   let url=base+'&body='+encodeURIComponent(body+'아래 초록색 Create 버튼만 누르면 됩니다.');
   if(url.length>7000){try{await navigator.clipboard.writeText(body)}catch(e){prompt('길게 눌러 복사하세요',body)}
     alert('고친 내용이 길어서 복사해 뒀어요. 열리는 화면의 본문 칸을 길게 눌러 붙여넣은 뒤 Create를 누르세요.');url=base}
