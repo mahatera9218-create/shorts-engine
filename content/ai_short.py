@@ -29,7 +29,6 @@ OUT = Path("reports/쇼츠-시안/금값-출렁")
 MODEL = "gpt-image-2"
 QUALITY = "medium"
 VOICE, TEMPO = "nova", 1.2  # 대표 피드백 2026-10-05: 여자 목소리, 더 빠르게
-SORA = "sora-2"  # OpenAI 영상 (같은 OpenAI 키). 720x1280 세로, 4·8·12초, 초당 약 $0.10
 KLING = "kling-video/v3.0-turbo/image-to-video"  # 힉스필드 모델 경로 (docs.higgsfield.ai, 2026-10 확인)
 
 STYLE = (
@@ -206,53 +205,6 @@ def kling_clips(durs: list[float], log: list[str]) -> bool:
     return ok
 
 
-def sora_clips(durs: list[float], log: list[str]) -> bool:
-    """OpenAI Sora 2: 장면 그림을 첫 화면으로 4초 영상 (인물이 실제로 움직인다). 소리는 버리고 우리 목소리를 쓴다."""
-    if not key("OPENAI_API_KEY"):
-        return False
-    hdr = {"Authorization": f"Bearer {key('OPENAI_API_KEY')}"}
-    ok = True
-    for i, s in enumerate(SCENES, 1):
-        out = OUT / f"sora-{i}.mp4"
-        if out.exists():
-            continue
-        t0 = time.time()
-        try:
-            im = Image.open(OUT / f"scene-{i}.png").convert("RGB")
-            cw = int(im.height * 9 / 16)  # 2:3 그림 → 9:16 가운데 자르기 → 720x1280 (크기가 정확히 같아야 함)
-            ref = im.crop(((im.width - cw) // 2, 0, (im.width - cw) // 2 + cw, im.height)).resize((720, 1280), Image.LANCZOS)
-            buf = OUT / f"_ref-{i}.png"
-            ref.save(buf)
-            with buf.open("rb") as f:
-                r = requests.post("https://api.openai.com/v1/videos", headers=hdr, timeout=120,
-                                  data={"model": SORA, "seconds": "4", "size": "720x1280",
-                                        "prompt": "Animate this Joseon-era Korean ink-and-wash genre painting. "
-                                                  + s["move"] + ". Characters move expressively and comically, "
-                                                  "keep the exact painted hanji-paper style, flat colors and ink "
-                                                  "outlines, same faces and clothes, no text, no subtitles, "
-                                                  "no new characters, no photorealism."},
-                                  files={"input_reference": (buf.name, f, "image/png")})
-            buf.unlink(missing_ok=True)
-            if r.status_code >= 300:
-                raise RuntimeError(f"HTTP {r.status_code}: {r.text[:200]}")
-            vid = r.json()["id"]
-            for _ in range(120):  # 최대 약 10분
-                time.sleep(5)
-                st = requests.get(f"https://api.openai.com/v1/videos/{vid}", headers=hdr, timeout=60).json()
-                if st.get("status") in ("completed", "failed"):
-                    break
-            if st.get("status") != "completed":
-                raise RuntimeError(f"상태 {st.get('status')}: {json.dumps(st.get('error'), ensure_ascii=False)[:200]}")
-            c = requests.get(f"https://api.openai.com/v1/videos/{vid}/content", headers=hdr, timeout=300)
-            c.raise_for_status()
-            out.write_bytes(c.content)
-            log.append(f"- 소라 {i} (4초) {time.time() - t0:.0f}초")
-        except Exception as e:
-            ok = False
-            log.append(f"- 소라 {i} 실패: {str(e)[:200]}")
-    return ok
-
-
 def find_url(obj) -> str | None:
     if isinstance(obj, dict):
         for k in ("video", "videos", "output", "result"):
@@ -365,9 +317,9 @@ def build(kind: str, durs: list[float], audio: Path | None) -> str:
             if kind == "A":
                 yield from kenburns(i, d)
             else:
-                yield from video_frames(i, d, "kling" if kind == "B" else "sora")
+                yield from video_frames(i, d, "kling")
 
-    name = {"A": "A-그림움직임.mp4", "B": "B-클링.mp4", "C": "C-소라.mp4"}[kind]
+    name = {"A": "A-그림움직임.mp4", "B": "B-클링.mp4"}[kind]
     err = encode(frames(), total, audio, OUT / name)
     return f"- {name}: " + (f"실패 {err}" if err else f"{total:.0f}초 완성")
 
@@ -399,9 +351,7 @@ def main() -> None:
         audio = mix("ffmpeg", cues, sum(durs), OUT / "voice.wav") if cues else None
         log.append(build("A", durs, audio))
         all_ok = lambda pre: all((OUT / f"{pre}-{i}.mp4").exists() for i in range(1, len(SCENES) + 1))
-        if sora_clips(durs, log) and all_ok("sora"):
-            log.append(build("C", durs, audio))
-        if kling_clips(durs, log) and all((OUT / f"kling-{i}.mp4").exists() for i in range(1, len(SCENES) + 1)):
+        if kling_clips(durs, log) and all_ok("kling"):
             log.append(build("B", durs, audio))
         if audio:
             audio.unlink(missing_ok=True)
