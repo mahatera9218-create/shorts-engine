@@ -2,7 +2,7 @@
 
 - econ/posts/<날짜-주제>/ 의 발행 패키지(post.md · body.txt · 사진 · short.mp4 · short.txt)를 휴대폰용 정적 사이트로 만든다.
 - 글마다: 사진 한 번에 저장 → 제목 → 썸네일 → 본문 복사 → 태그 → 쇼츠·클립(영상 저장 + 설명·해시태그) → 발행 완료.
-- 글 형식은 스포츠 도우미와 같다(content/desk.parse 재사용). 색은 흰 바탕·남색 포인트, 홈 화면 아이콘은 막대그래프(억선생 자료는 클립용으로 따로 보관).
+- 글 형식은 스포츠 도우미와 같다(content/desk.parse 재사용). 디자인은 심플하게: Claude 색(크림 바탕·테라코타 포인트)에 어두운 글자, 이모지 없음(대표 지시 2026-10-05). 억선생 자료는 클립용으로 따로 보관.
 - 발행 완료: 이슈 "[경제발행완료] <글>" → .github/workflows/desk-button.yml → 이 파일 --mark → econ/posts/<글>/status.yaml
 - 검색엔진 수집 금지(noindex·robots·X-Robots-Tag). Cloudflare Pages (.github/workflows/econ-desk.yml)
 
@@ -33,8 +33,8 @@ KST = ZoneInfo("Asia/Seoul")
 MARK = re.compile(r"^\[경제발행완료\]\s*(\d{4}-\d{2}-\d{2}-[\w가-힣-]+)\s*$")
 
 CSS = desk.CSS + """
-:root{--bg:#f4f6fa;--card:#ffffff;--ink:#141a26;--soft:#5d6779;--line:#dfe4ec;--accent:#1c3d8c;--btn:#1c3d8c;--btnink:#ffffff;--gold:#2f6fe0;--pine:#1f8a5b}
-@media (prefers-color-scheme:dark){:root{--bg:#0f131b;--card:#181e2a;--ink:#e8ecf3;--soft:#9aa5b8;--line:#2a3344;--accent:#7aa2ff;--btn:#7aa2ff;--btnink:#0f131b}}
+:root{--bg:#f5f4ee;--card:#ffffff;--ink:#141413;--soft:#5e5d59;--line:#e5e3da;--accent:#c96442;--btn:#c96442;--btnink:#ffffff;--gold:#c96442;--pine:#5e7d4f;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#f5f4ee;--card:#ffffff;--ink:#141413;--soft:#5e5d59;--line:#e5e3da;--accent:#c96442;--btn:#c96442;--btnink:#ffffff}}  /* 늘 밝은 바탕·어두운 글자 (대표 지시) */
 header.brand{display:flex;align-items:center;gap:12px;margin:6px 0 4px}
 header.brand img{width:48px;height:48px;border-radius:12px}
 header.brand h1{margin:0;font-size:21px}header.brand .muted{margin:0}
@@ -57,7 +57,7 @@ def head(title: str, depth: str = "") -> str:
     e = html.escape
     return f"""<!doctype html><html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive">
-<meta name="theme-color" content="#1c3d8c"><link rel="manifest" href="{depth}manifest.webmanifest">
+<meta name="theme-color" content="#c96442"><link rel="manifest" href="{depth}manifest.webmanifest">
 <link rel="apple-touch-icon" href="{depth}icon-180.png"><meta name="apple-mobile-web-app-title" content="발행 도우미">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>{e(title)}</title><style>{CSS}</style></head><body><main>"""
@@ -202,7 +202,7 @@ def flow_html() -> str:
         main_name = REF_NAMES.get(REF_MAIN, "")
         src.pop(REF_MAIN, None)
         src.pop("블로거", None)
-        who = " · ".join([("⭐" if b == main_name else "") + b for b in sorted(bl, key=lambda b: b != main_name)]
+        who = " · ".join([b + ("(최우선)" if b == main_name else "") for b in sorted(bl, key=lambda b: b != main_name)]
                          + [f"{k}{'×' + str(v) if v > 1 else ''}" for k, v in src.items()]) or it.get("src", "")
         pt = it.get("parts") or {}
         sc = f' <span class="seal">{it["score"]}점</span>' if "score" in it else ""
@@ -242,10 +242,10 @@ def flow_html() -> str:
 
         items = T.get("items", [])
         if T.get("mode") == "쿠니네":  # 최종 BEST 5를 위에, 6유형 × 5개는 접어서 (대표 결정 2026-10-05)
-            btns = [btn(i, it, f"{'⭐ ' if it.get('rank') == 1 else ''}{it.get('rank')}. ")
+            btns = [btn(i, it, f"{it.get('rank')}. {'(추천) ' if it.get('rank') == 1 else ''}")
                     for i, it in enumerate(items, 1) if it.get("rank")]
             for g in T.get("groups", []):
-                inner = "".join(btn(j + 1, items[j], "★ " if j == g.get("best") else "· ") for j in g["idx"] if j < len(items))
+                inner = "".join(btn(j + 1, items[j], "BEST · " if j == g.get("best") else "· ") for j in g["idx"] if j < len(items))
                 btns.append(f'<details><summary class="muted">{e(g["type"])} 5개 보기</summary>{inner}</details>')
         else:
             btns = [btn(i, it, f"{i}. ") for i, it in enumerate(items, 1)]
@@ -368,6 +368,14 @@ def load() -> list[dict]:
     return out
 
 
+EMOJI = re.compile("[\U0001F000-\U0001FAFF\u2600-\u27BF\u2B00-\u2BFF\uFE0F\u200D\u23E9-\u23FA\u2122\u2139\u24C2]\\s?")
+
+
+def plain(html_text: str) -> str:
+    """이모지 없이 (대표 지시 2026-10-05). 화살표(→ ←)·동그라미 숫자는 남긴다."""
+    return EMOJI.sub("", html_text)
+
+
 def build(out: Path) -> list[dict]:
     if out.exists():
         shutil.rmtree(out)
@@ -382,13 +390,13 @@ def build(out: Path) -> list[dict]:
                 shutil.copy(src, d / x["file"])
         if p.get("short"):
             shutil.copy(POSTS / p["folder"] / "short.mp4", d / "short.mp4")
-        (d / "index.html").write_text(page(p), encoding="utf-8")
-    (out / "index.html").write_text(index(posts), encoding="utf-8")
+        (d / "index.html").write_text(plain(page(p)), encoding="utf-8")
+    (out / "index.html").write_text(plain(index(posts)), encoding="utf-8")
     for s in (180, 192, 512):
         shutil.copy(BRAND / f"desk-icon-{s}.png", out / f"icon-{s}.png")
     (out / "manifest.webmanifest").write_text(json.dumps({
         "name": f"{NAME} 발행 도우미", "short_name": "발행 도우미", "start_url": "./", "display": "standalone",
-        "background_color": "#f4f6fa", "theme_color": "#1c3d8c",
+        "background_color": "#f5f4ee", "theme_color": "#c96442",
         "icons": [{"src": f"icon-{s}.png", "sizes": f"{s}x{s}", "type": "image/png"} for s in (192, 512)]},
         ensure_ascii=False), encoding="utf-8")
     (out / "robots.txt").write_text("User-agent: *\nDisallow: /\n", encoding="utf-8")

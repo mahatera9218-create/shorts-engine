@@ -14,7 +14,7 @@ class EconTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             econ_desk.build(Path(d) / "site")
             html = (Path(d) / "site" / "index.html").read_text(encoding="utf-8")
-            self.assertIn("📊 성과", html)
+            self.assertIn("성과", html)
 
     def test_edit_parse(self):
         from content.edits import parse
