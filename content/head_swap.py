@@ -134,15 +134,16 @@ def sheet(log: list[str]) -> None:
         fig = fig.crop(fig.getbbox())
         fig.thumbnail((int(bg.width * 0.5), int(bg.height * 0.95)))
         bg.alpha_composite(fig, (int(bg.width * 0.45), bg.height - fig.height))
-        dd = ImageDraw.Draw(bg)
-        dd.text((int(bg.width * 0.46), 20), "AI 일러스트", font=ImageFont.truetype(
-            str(ROOT / "assets" / "fonts" / "Pretendard-Black.otf"), 30), fill=(243, 235, 221),
-            stroke_width=3, stroke_fill=(22, 20, 18))
         tmp = OUT / "_lee-bg.png"
         bg.convert("RGB").save(tmp)
         thumb(tmp, ["삼성전자", "회장님이", "웃은", "이유는?"], "", OUT / "썸네일-이재용.png", panel="먹", side="left",
               focus=0.8)
         tmp.unlink()
+        t = Image.open(OUT / "썸네일-이재용.png").convert("RGB")  # 'AI 일러스트' 표시: 그림 쪽 오른쪽 아래(잘리지 않게)
+        ImageDraw.Draw(t).text((t.width - 210, t.height - 56), "AI 일러스트", font=ImageFont.truetype(
+            str(ROOT / "assets" / "fonts" / "Pretendard-Black.otf"), 32), fill=(243, 235, 221),
+            stroke_width=4, stroke_fill=(22, 20, 18))
+        t.save(OUT / "썸네일-이재용.png")
         log.append("- 썸네일 시안: 썸네일-이재용.png")
 
 
