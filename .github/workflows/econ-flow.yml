@@ -4,13 +4,14 @@
 name: 경제 흐름
 
 on:
-  schedule:
-    - cron: "40 20 * * *"   # UTC 20:40 = 한국 05:40 참고 블로거 RSS 조사 (refs)
-    - cron: "50 20 * * *"   # UTC 20:50 = 한국 05:50 키워드 모으기
-    - cron: "30 22 * * 0"   # UTC 일 22:30 = 한국 월 07:30 주간 점검·학습 (learn)
-  push:   # 참고 블로거 목록을 고치면 바로 한 번 조사 (refs)
-    branches: [main]
-    paths: ["config/econ_refs.yaml"]
+  # 자동 예약 멈춤 (대표 지시 2026-10-05 "자동 다 멈춰", 전체 개편 중). 다시 켜려면 아래 # 를 지운다.
+  # schedule:
+  #   - cron: "40 20 * * *"   # UTC 20:40 = 한국 05:40 참고 블로거 RSS 조사 (refs)
+  #   - cron: "50 20 * * *"   # UTC 20:50 = 한국 05:50 키워드 모으기
+  #   - cron: "30 22 * * 0"   # UTC 일 22:30 = 한국 월 07:30 주간 점검·학습 (learn)
+  # push:   # 참고 블로거 목록을 고치면 바로 한 번 조사 (refs) — 개편 중 멈춤
+  #   branches: [main]
+  #   paths: ["config/econ_refs.yaml"]
   workflow_dispatch:
     inputs:
       cmd: {description: "keywords | add | titles | produce | learn | refs", required: true, default: keywords}
