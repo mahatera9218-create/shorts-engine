@@ -266,6 +266,9 @@ def flow_html() -> str:
                       f'<a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(desk.issue_link(f"{LABEL}제목새로", T.get("keyword", ""), "마음에 드는 제목이 없어요. 다시 취재해서 새로 뽑아 주세요."), quote=True)}">🔄 마음에 드는 게 없어요 · 다시 조사해서 새로 뽑기</a>'
                       f'<details><summary class="muted">취재 메모 보기</summary><pre style="white-space:pre-wrap;font-size:13px">'
                       f'{e((t.parent / "research.md").read_text(encoding="utf-8")[:4000]) if (t.parent / "research.md").exists() else ""}</pre></details></details>')
+    if not topics:  # 제목이 아직 없어도 ② 칸은 늘 보이게 (대표 지적 2026-10-05: 1·3만 보여 헷갈림)
+        topics.append(f'<details class="card fold" data-k="f2-empty-{BID}" open><summary><h2><span><span class="step">2</span>제목 고르기</span></h2></summary>'
+                      '<p class="muted">① 에서 키워드를 하나 누르면 3~5분 뒤 여기에 제목 후보가 올라와요.</p></details>')
     return kw_html + "".join(topics)
 
 
