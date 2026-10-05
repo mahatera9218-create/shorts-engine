@@ -60,12 +60,18 @@ TITLES = {"type": "object", "additionalProperties": False, "required": ["groups"
               "final": {"type": "string", "description": "15개 중 최종 추천 제목 1개"}}}
 
 
+def title_guide() -> str:
+    """제목 고수(경제토르·유미) 공식 — 구조만 참고 (대표 지시 2026-10-05, content/title_refs.py)"""
+    from .title_refs import guide_text
+    return guide_text()
+
+
 def titles(kw: str) -> Path:
     d = F.FLOW / F.today() / F.topic_slug(kw)
     d.mkdir(parents=True, exist_ok=True)
     memo = research(kw) or F.claude_research(kw)
     (d / "research.md").write_text(f"# 조사 메모: {kw}\n\n{memo}\n", encoding="utf-8")
-    out = F.claude_json(prompt(), (
+    out = F.claude_json(prompt() + [g for g in [title_guide()] if g], (
         f"키워드(주어): {kw}\n\n[조사 메모]\n{memo[:10000]}\n\n이번 단계는 **제목만** 만듭니다. 원문의 제목 규칙대로 그룹 1·2·3 각 5개와 "
         "최종 추천 1개를 JSON으로 주세요."), TITLES, stage="제목(연예·패션)")
     person = out.get("person", "")
