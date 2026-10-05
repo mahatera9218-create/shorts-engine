@@ -26,12 +26,18 @@ W, H, FPS = 1080, 1920, 30
 OUT = base.OUT
 ART = OUT / "parts"
 FONTS = Path(__file__).resolve().parent.parent / "assets" / "fonts"
-INK = (28, 24, 20)
-PAPER = (239, 230, 210)
-RED = (179, 38, 30)
+# 색: 화투 팔레트 (대표 결정 2026-10-05) — 홍·먹·바탕 미색·솔잎 녹색·달 금색
+INK = (22, 20, 18)
+PAPER = (243, 235, 221)
+RED = (200, 30, 40)
+GREEN = (30, 90, 58)
+GOLD = (232, 180, 34)
 
 STYLE = ("Joseon-dynasty Korean genre painting style in the manner of Kim Hong-do and Korean minhwa folk painting: "
          "ink brush outlines, light ochre/indigo/vermilion washes. No text, no letters, no signature. ")
+HWATU = ("A single vertical playing card with rounded corners in the style of a traditional Korean hwatu "
+         "flower card: thick black outlines, flat vermilion red, black, cream, pine green and gold, no gradients, "
+         "no text, no numbers. The card fills most of the frame. ")
 HERO_REF = ("Use the attached image only as the character reference: the same cheerful young merchant with the same "
             "round face, thin mustache, black gat hat, indigo jeogori and white baji. ")
 PARTS = {  # 이름: (프롬프트, 크기, 투명, 참고 그림 사용)
@@ -56,7 +62,26 @@ PARTS = {  # 이름: (프롬프트, 크기, 투명, 참고 그림 사용)
               "1024x1024", True, False),
     "cloud": (STYLE + "A dark swirling storm cloud in Korean folk-painting style with a lightning bolt. "
               "Isolated, no background.", "1024x1024", True, False),
+    # 화투 모티프 카드 (전통 도안을 따라 새로 그림. 남의 카드 스캔 복제 안 함)
+    "card_dollar": (HWATU + "Card art: a heavy string of brass yeopjeon coins hanging from a stylized black pine "
+                    "branch, bright red sun disc behind.", "1024x1536", "magenta", False),
+    "card_rate": (HWATU + "Card art: a wooden coin chest with a red tassel under stylized red maple leaves, "
+                  "a small deer looking at it.", "1024x1536", "magenta", False),
+    "card_mood": (HWATU + "Card art: like the classic 'rain' card — black willow branches, slanted rain lines, "
+                  "a red lightning bolt, a small frog.", "1024x1536", "magenta", False),
 }
+HWATU_STYLE = ("in the bold flat graphic style of a traditional Korean hwatu flower card: thick black outlines, flat "
+               "vermilion red, black, cream, pine green and gold only, no gradients, no shading. ")
+THUMBS = {  # 화투 모티프 썸네일 시안 (제목 글자는 그림에 넣고 Claude가 대조)
+    "thumb-hwatu-moon": ("Square 1:1 blog thumbnail " + HWATU_STYLE + "Upper 62%: a big hwatu-card-like panel "
+                         "with rounded corners — bold red sky, a black stylized hill, the full moon drawn as a huge "
+                         "shiny gold coin, three black geese flying. Lower area: plain cream paper with the title.", False),
+    "thumb-hwatu-rain": ("Square 1:1 blog thumbnail " + HWATU_STYLE + "Upper 62%: a hwatu 'rain card' homage — "
+                         "the same merchant character from the attached reference (black gat, indigo jeogori) "
+                         "holding a red oil-paper umbrella while gold coins fall like rain, black willow branches, "
+                         "a small frog. Lower area: plain cream paper with the title.", True),
+}
+THUMB_TITLE = "금값은 왜 하루에도 출렁일까?"
 
 
 # ---------------------------------------------------------------- 재료 그리기
@@ -69,7 +94,10 @@ def draw_parts(log: list[str]) -> None:
         if out.exists():
             continue
         t0 = time.time()
-        if transparent:  # 투명 배경은 이 모델에서 아직 막혀 있음(2026-10-05 HTTP 400) → 초록 화면에 그리고 코드로 지운다
+        if transparent == "magenta":  # 초록(솔잎)이 들어가는 화투 카드는 자홍색 화면
+            prompt += (" Place the card on a perfectly flat, solid, pure magenta background (#FF00FF), evenly lit, "
+                       "no shadow, no magenta or purple anywhere on the card.")
+        elif transparent:  # 투명 배경은 이 모델에서 아직 막혀 있음(2026-10-05 HTTP 400) → 초록 화면에 그리고 코드로 지운다
             prompt += (" Place it on a perfectly flat, solid, pure chroma-key green background (#00FF00), evenly lit, "
                        "no shadow, no ground, no paper texture, no green anywhere on the subject.")
         body = {"model": base.MODEL, "prompt": prompt, "size": size, "quality": base.QUALITY, "n": "1"}
@@ -86,12 +114,37 @@ def draw_parts(log: list[str]) -> None:
         out.write_bytes(base64.b64decode(r.json()["data"][0]["b64_json"]))
         if transparent:
             out.with_name(f"{name}-green.png").write_bytes(out.read_bytes())  # 원본도 남겨 다시 지울 수 있게
-            unscreen(out)
+            unscreen(out, "magenta" if transparent == "magenta" else "green")
         log.append(f"- 재료 {name} {time.time() - t0:.0f}초")
 
 
-def unscreen(path: Path) -> None:
-    """초록 화면 지우기(크로마키): 초록일수록 투명, 가장자리 초록 번짐은 눌러 준다."""
+def draw_thumbs(log: list[str]) -> None:
+    hdr = {"Authorization": f"Bearer {base.key('OPENAI_API_KEY')}"}
+    for name, (prompt, ref) in THUMBS.items():
+        out = OUT / f"{name}.png"
+        if out.exists():
+            continue
+        p = (prompt + f' Title text, exactly as written, in bold black Korean brush lettering, two lines, centered '
+             f'on the cream area: "{THUMB_TITLE}". Every Hangul character must be correct. A small red square seal '
+             'with the single Hangul character "억" in the bottom-right corner. No other text.')
+        body = {"model": base.MODEL, "prompt": p, "size": "1024x1024", "quality": base.QUALITY, "n": "1"}
+        t0 = time.time()
+        if ref:
+            with (OUT / "scene-1.png").open("rb") as f:
+                r = requests.post("https://api.openai.com/v1/images/edits", headers=hdr, data=body,
+                                  files=[("image[]", ("ref.png", f, "image/png"))], timeout=300)
+        else:
+            r = requests.post("https://api.openai.com/v1/images/generations", headers=hdr,
+                              json={**body, "n": 1}, timeout=300)
+        if r.status_code != 200:
+            log.append(f"- 썸네일 {name} 실패 HTTP {r.status_code}: {r.text[:160]}")
+            continue
+        out.write_bytes(base64.b64decode(r.json()["data"][0]["b64_json"]))
+        log.append(f"- 썸네일 {name} {time.time() - t0:.0f}초")
+
+
+def unscreen(path: Path, color: str = "green") -> None:
+    """색 화면 지우기(크로마키): 그 색일수록 투명, 가장자리 번짐은 눌러 준다."""
     im = Image.open(path).convert("RGB")
     px = im.load()
     a = Image.new("L", im.size, 255)
@@ -99,14 +152,19 @@ def unscreen(path: Path) -> None:
     for y in range(im.height):
         for x in range(im.width):
             r, g, b = px[x, y]
-            k = g - max(r, b)  # 초록이 얼마나 튀는가
+            if color == "green":
+                k = g - max(r, b)  # 초록이 얼마나 튀는가
+                fix = (r, max(r, b), b)
+            else:  # 자홍: 빨강·파랑이 함께 높고 초록이 낮음 → 번진 만큼 빨강·파랑을 뺀다
+                k = min(r, b) - g
+                fix = (max(0, r - max(k, 0)), g, max(0, b - max(k, 0)))
             if k > 90:
                 ap[x, y] = 0
             elif k > 30:
                 ap[x, y] = int(255 * (90 - k) / 60)
-                px[x, y] = (r, max(r, b), b)
+                px[x, y] = fix
             elif k > 0:
-                px[x, y] = (r, max(r, b), b)
+                px[x, y] = fix
     a = a.filter(ImageFilter.MinFilter(3)).filter(ImageFilter.GaussianBlur(0.8))
     out = im.convert("RGBA")
     out.putalpha(a)
@@ -178,7 +236,7 @@ def caption(text: str) -> Image.Image:
     pad = 36
     im = Image.new("RGBA", (t.width + pad * 2, t.height + pad), (0, 0, 0, 0))
     d = ImageDraw.Draw(im)
-    d.rounded_rectangle((0, 0, im.width - 1, im.height - 1), radius=28, fill=PAPER + (240,), outline=INK + (255,), width=5)
+    d.rounded_rectangle((0, 0, im.width - 1, im.height - 1), radius=28, fill=PAPER + (245,), outline=RED + (255,), width=7)
     im.alpha_composite(t, (pad, pad // 2))
     return im
 
@@ -190,6 +248,16 @@ def seal(size: int = 150) -> Image.Image:
     d.rounded_rectangle((10, 10, size - 11, size - 11), radius=10, outline=PAPER + (255,), width=5)
     t = text_block("억", int(size * 0.62), PAPER, font="SongMyung-Regular.ttf")
     im.alpha_composite(t, ((size - t.width) // 2, (size - t.height) // 2))
+    return im
+
+
+def card_back(size) -> Image.Image:
+    """화투 뒷면: 홍색 바탕에 검은 테두리."""
+    w, h = size
+    im = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    d.rounded_rectangle((0, 0, w - 1, h - 1), radius=int(w * 0.08), fill=RED + (255,), outline=INK + (255,), width=8)
+    d.rounded_rectangle((22, 22, w - 23, h - 23), radius=int(w * 0.06), outline=(150, 20, 30, 255), width=4)
     return im
 
 
@@ -215,7 +283,8 @@ class Scenes:
         self.coins = sprite("coins", 260)
         self.chest = sprite("chest", 300)
         self.cloud = sprite("cloud", 520)
-        self.icons = {"coins": sprite("coins", 300), "chest": sprite("chest", 250), "cloud": sprite("cloud", 280)}
+        self.cards = [sprite(n, 560) for n in ("card_dollar", "card_rate", "card_mood")]
+        self.card_back = card_back(self.cards[0].size)
         self.title = text_block("금값은 왜 하루에도 출렁일까?", 104, INK, stroke=2, sfill=INK)
         self.badge = text_block("AI 그림, AI 음성", 46, (90, 80, 66))
         self.seal = seal(230)
@@ -236,7 +305,7 @@ class Scenes:
     def chrome(self, s: Stage, i: int, t: float) -> None:
         d = ImageDraw.Draw(s.c)
         d.rectangle((0, 0, W, 210), fill=PAPER + (235,))
-        d.line((0, 210, W, 210), fill=INK, width=4)
+        d.line((0, 206, W, 206), fill=RED, width=8)
         s.c.alpha_composite(self.title, ((W - self.title.width) // 2, 105 - self.title.height // 2))
         s.c.alpha_composite(self.badge, (30, 222))
         k = pop(t, 0.08)
@@ -317,15 +386,21 @@ class Scenes:
             s.c.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, 170)))
         return s
 
-    def s4(self, t):  # 정리: 아이콘 셋이 차례로 쾅
+    def s4(self, t):  # 정리: 화투패 셋이 차례로 뒤집힘 (달러·금리·분위기)
         s = Stage(self.backdrop(t, 4))
-        s.put(self.hero["point"], 270, 1500, sy=1 + 0.02 * math.sin(t * 7))
-        for j, (ic, lab) in enumerate((("coins", "달러"), ("chest", "금리"), ("cloud", "분위기"))):
-            k = pop(t, 0.2 + j * 0.45)
-            if k:
-                y = 420 + j * 330
-                s.put(self.icons[ic], 720, y + 280, sx=k, sy=k)
-                s.put(text_block(lab, 104, INK, stroke=2, sfill=INK), 950, y + 210, sx=k, sy=k)
+        for j, lab in enumerate(("달러", "금리", "분위기")):
+            u = (t - 0.15 - j * 0.45) / 0.34
+            if u < 0:
+                continue
+            x, rot = 250 + j * 290, (-9, 0, 9)[j]
+            k = pop(t, 0.15 + j * 0.45, 0.2)
+            if u < 0.5:  # 뒷면(홍)이 접히고
+                s.put(self.card_back, x, 1080, sx=k * (1 - 2 * u), sy=k, rot=rot)
+            else:  # 앞면이 펴진다
+                s.put(self.cards[j], x, 1080, sx=ease_back(min(1, (u - 0.5) * 2)), rot=rot)
+                kk = pop(t, 0.15 + j * 0.45 + 0.2)
+                s.put(text_block(lab, 110, RED if j == 0 else INK, stroke=2, sfill=RED if j == 0 else INK),
+                      x, 1250, sx=kk, sy=kk)
         return s
 
     def s5(self, t):  # 인사 + 도장 쾅
@@ -364,6 +439,7 @@ def main() -> None:
     log = [f"# 조선 화풍 모션그래픽 쇼츠 시험 ({date.today()})", "", "## 진행 기록", ""]
     if base.key("OPENAI_API_KEY"):
         draw_parts(log)
+        draw_thumbs(log)
     missing = [n for n in PARTS if not (ART / f"{n}.png").exists()]
     if missing:
         log.append(f"- 재료가 모자라 영상은 못 만듦: {', '.join(missing)}")
@@ -377,7 +453,7 @@ def main() -> None:
             if i:
                 cues.append((sfx("ffmpeg", "whoosh"), st, 0.35))
         cues += [(sfx("ffmpeg", "boom"), 0.45, 0.9), (sfx("ffmpeg", "ding"), starts[5] + 0.6, 0.6)]
-        cues += [(sfx("ffmpeg", "tick"), starts[4] + 0.2 + j * 0.45, 0.6) for j in range(3)]
+        cues += [(sfx("ffmpeg", "tick"), starts[4] + 0.32 + j * 0.45, 0.7) for j in range(3)]  # 패 뒤집는 소리
         audio = mix("ffmpeg", cues, sum(durs), OUT / "m-voice.wav")
         err = base.encode(Scenes(durs).frames(), sum(durs), audio, OUT / "M-모션그래픽.mp4")
         audio.unlink(missing_ok=True)
