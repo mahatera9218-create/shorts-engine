@@ -269,7 +269,7 @@ def titles(kw: str) -> Path:
                       "required": ["title", "type", "promise", "badge"],
                       "properties": {"title": {"type": "string"}, "type": {"type": "string"},
                                      "promise": {"type": "string", "description": "본문 첫 2~3줄에서 회수할 답 한 줄"},
-                                     "badge": {"type": "string", "description": "썸네일에 얹을 핵심 2~8자 (인물이면 회사+이름, 아니면 숫자·대상)"}}}}}}
+                                     "badge": {"type": "string", "description": "이 제목의 핵심 2~8자 (도우미 표시용, 썸네일에는 안 씀)"}}}}}}
     out = claude_json([TITLE_RULES], (
         f"키워드: {kw}\n\n[취재 메모]\n{memo[:6000]}\n\n[X 분위기 (Grok)]\n{vibe[:1500] or '없음'}\n\n"
         f"[인물 표기 목록]\n{', '.join(p['tag'] for p in people)}\n\n"
@@ -307,9 +307,14 @@ WRITE_RULES = """억선생의 경제판 글 규칙 (DECISIONS 2026-10-04~05). bl
 - 분량 1,500~2,500자. 끝에 '※ 이 글은 경제 공부를 위한 정보이며 투자 권유가 아닙니다. 본문 그림은 AI로 만들었습니다.'"""
 
 ARTICLE = {"type": "object", "additionalProperties": False,
-           "required": ["paragraphs", "tags", "image_tags", "short", "sources", "area"],
+           "required": ["paragraphs", "tags", "image_tags", "short", "sources", "area", "thumb_scene"],
            "properties": {
                "area": {"type": "string", "enum": AREAS},
+               "thumb_scene": {"type": "string", "description": (
+                   "썸네일 그림 장면 (영어 2~3문장). 제목의 주인공(회사·자산·사건)을 한눈에 알아보게 조선 풍속화로: "
+                   "회사면 그 회사의 대표 제품·산업을 조선 장터 물건으로 바꿔 그림(예: SK하이닉스 → 장인이 빛나는 "
+                   "반도체 칩을 엽전처럼 쌓아 파는 공방, 금 → 금괴 궤짝), 오르면 축제·상승, 내리면 호랑이·먹구름 같은 분위기. "
+                   "실존 인물 얼굴·회사 로고·글자·숫자는 넣지 않는다.")},
                "paragraphs": {"type": "array", "items": {"type": "string"}},
                "tags": {"type": "array", "items": {"type": "string"}},
                "image_tags": {"type": "array", "items": {"type": "array", "items": {"type": "string"}},
@@ -359,7 +364,7 @@ def produce(slug: str, n: int) -> Path:
             used.append(got[0])
             shutil.copy(LIB / f"{got[0]}.jpg", post / f"{got[0]}.jpg")
             files.append(got[0])
-    thumb_note = make_thumb(post, T.get("person", ""), pick["badge"], used)
+    thumb_note = make_thumb(post, T.get("person", ""), art.get("thumb_scene", ""), used)
     # 본문: 첫 2문단 뒤, 중간, 끝 앞에 그림
     paras = [x for x in art["paragraphs"] if not re.fullmatch(r"\s*\[(그림|사진|이미지)\s*\d*\]\s*", x)]  # AI가 넣은 그림 자리표 제거
     slots = [2, max(3, len(paras) // 2), max(4, len(paras) - 2)]
@@ -483,9 +488,11 @@ def humanize(sys_prompt: list[str], art: dict, body: str, memo: str) -> tuple[di
 FONT = ROOT / "assets" / "fonts" / "Pretendard-Black.otf"
 
 
-def make_thumb(post: Path, person: str, badge: str, used: list[str]) -> str:
-    """인물이면 얼굴·상반신 캐리커처를 크게(Gemini) + 이름 배지, 아니면 창고 그림 + 핵심 배지 (대표 결정 2026-10-05)."""
-    from .hook_thumb import RED, PAPER, INK, GOLD, _seal, _cover
+def make_thumb(post: Path, person: str, scene: str, used: list[str]) -> str:
+    """썸네일 = 글자 없는 그림 한 장, 화풍 그대로, 제목에 맞는 장면 (대표 결정 2026-10-05).
+    인물 글 = Gemini 얼굴·상반신 캐리커처(작은 'AI 일러스트' 표시만), 아니면 제목 장면을 GPT Image 2로 새로 그림.
+    둘 다 안 되면 창고 그림 (글자 없이)."""
+    from .hook_thumb import PAPER, INK, _cover
     people = {p["tag"]: p for p in load(ROOT / "config" / "people.yaml", {"people": []})["people"]}
     p = people.get(person.strip())
     W = 1080
@@ -496,32 +503,36 @@ def make_thumb(post: Path, person: str, badge: str, used: list[str]) -> str:
             bg = _cover(Image.open(LIB / f"{(used or ['market-morning'])[0]}.jpg").convert("RGB"), W, W, 0.5)
             c = Image.blend(c, bg, 0.35)
             bust.thumbnail((int(W * 0.95), int(W * 0.95)))
-            c.paste(bust, ((W - bust.width) // 2 + 60, W - bust.height), bust)
-            draw_badge(c, person or badge)
-            ImageDraw.Draw(c).text((W - 220, W - 56), "AI 일러스트", font=ImageFont.truetype(str(FONT), 32),
-                                   fill=PAPER, stroke_width=4, stroke_fill=INK)
-            _seal(c, 40, W - 150, 110, RED, PAPER)
+            c.paste(bust, ((W - bust.width) // 2, W - bust.height), bust)
+            ImageDraw.Draw(c).text((W - 200, W - 50), "AI 일러스트", font=ImageFont.truetype(str(FONT), 28),
+                                   fill=PAPER, stroke_width=3, stroke_fill=INK)  # 실존 인물 캐리커처 표시 규칙(10-05)
             c.save(post / "thumb.png")
-            return f"인물 상반신({person}, Gemini 캐리커처) + 배지"
+            return f"인물 상반신({person}, Gemini 캐리커처), 글자 없음"
+    if scene and draw_scene(scene, post / "thumb.png"):
+        return "제목 장면 새로 그림(GPT Image 2 고화질), 글자 없음"
     from .art_library import pick as lib_pick
-    art = (used or lib_pick([badge], [], 1) or ["market-morning"])[0]
-    c = _cover(Image.open(LIB / f"{art}.jpg").convert("RGB"), W, W, 0.5)
-    draw_badge(c, badge)
-    _seal(c, W - 150, W - 150, 110, RED, PAPER)
-    c.save(post / "thumb.png")
-    return f"창고 그림({art}) + 배지"
+    name = (used or lib_pick(["시황"], [], 1) or ["market-morning"])[0]
+    _cover(Image.open(LIB / f"{name}.jpg").convert("RGB"), W, W, 0.5).save(post / "thumb.png")
+    return f"⚠️ 새 그림 실패 → 창고 그림({name}), 글자 없음"
 
 
-def draw_badge(c: Image.Image, text: str) -> None:
-    from .hook_thumb import INK, GOLD
-    d = ImageDraw.Draw(c)
-    size = 130
-    while size > 60 and d.textlength(text, font=ImageFont.truetype(str(FONT), size)) > c.width - 160:
-        size -= 4
-    f = ImageFont.truetype(str(FONT), size)
-    w = d.textlength(text, font=f)
-    d.rounded_rectangle((40, 40, 40 + w + 64, 40 + size + 48), radius=26, fill=INK)
-    d.text((72, 52), text, font=f, fill=GOLD)
+def draw_scene(scene: str, out: Path) -> bool:
+    """제목 장면을 화풍(post_art.STYLE) 그대로 정사각형 고화질로 그린다. 1장 약 $0.21."""
+    from .post_art import STYLE
+    if not key("OPENAI_API_KEY"):
+        return False
+    r = requests.post("https://api.openai.com/v1/images/generations", timeout=600,
+                      headers={"Authorization": f"Bearer {key('OPENAI_API_KEY')}"},
+                      json={"model": "gpt-image-2", "n": 1, "size": "1024x1024", "quality": "high",
+                            "prompt": STYLE + "Square blog thumbnail, one clear main subject large in the center, readable "
+                                      "even when very small, bold contrast. " + scene
+                                      + " Absolutely no text, letters, numbers, logos or signatures anywhere."})
+    if r.status_code != 200:
+        print(f"썸네일 그림 실패 HTTP {r.status_code}: {r.text[:160]}")
+        return False
+    SPENT["image"] += 0.21
+    out.write_bytes(base64.b64decode(r.json()["data"][0]["b64_json"]))
+    return True
 
 
 def gemini_bust(en: str) -> Image.Image | None:

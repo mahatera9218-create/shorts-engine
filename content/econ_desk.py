@@ -42,6 +42,9 @@ header.brand h1{margin:0;font-size:21px}header.brand .muted{margin:0}
 nav.tabs{display:flex;gap:6px;position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:5}
 nav.tabs a{flex:1;text-align:center;padding:12px 4px;border-radius:12px;border:1px solid var(--line);color:var(--ink);text-decoration:none;font-weight:700}
 nav.tabs a.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+/* 태블릿 (대표 주 작업 기기, 2026-10-05): 넓은 화면은 두 칸 — 왼쪽 할 일, 오른쪽 결과 */
+@media (min-width:900px){main{max-width:1240px}.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}
+.cols>div>.card:first-child,.cols>div>h2:first-child{margin-top:0}.stick{position:sticky;top:64px;max-height:calc(100vh - 80px);overflow:auto}nav.tabs{max-width:640px}}
 .seal{display:inline-block;background:var(--accent);color:#fff;border-radius:6px;padding:0 6px;font-weight:800}
 """
 
@@ -104,6 +107,7 @@ def page(p: dict) -> str:
 <h1>{e(best["text"])}</h1><div class="muted">{e(p["date"])} · 카테고리 {e(p["category"])}</div>
 <p>{status}</p>{f"<ul>{probs}</ul>" if probs else ""}
 {'<div class="card" style="border-color:var(--accent)"><b>⚠️ 이미 발행한 글이에요</b><div class="muted">같은 글을 두 번 올리지 마세요.</div></div>' if used else ''}
+<div class="cols"><div>
 <div class="card"><h2><span class="step">1</span>사진 저장</h2>
 <button onclick="saveAll(this)">📷 사진 {len(p["images"])}장 한 번에 저장</button>
 <div class="muted">공유 창에서 "이미지 저장"을 누르세요. 파일 이름 앞 번호가 넣는 순서예요.</div></div>
@@ -120,10 +124,12 @@ def page(p: dict) -> str:
 <div class="card"><h2><span class="step">6</span>다 올렸으면</h2>
 <a class="btn" href="{e(done, quote=True)}">✅ 발행 완료 표시</a>
 <div class="muted">GitHub 화면이 열리면 초록 <b>Create</b>만 누르세요. 2~3분 뒤 목록에서 "발행한 글"로 내려가요.</div></div>
+</div><div class="stick">
 <div class="card body" id="draft"><h2>✏️ 초안 (눌러서 고치기)</h2>
 <div class="muted">고친 문단은 주황 테두리로 보이고, 이 휴대폰에 저장돼 위 <b>본문 복사</b>에 반영돼요.</div>{body}
 <button onclick="saveEdits(this)">💾 고친 내용 저장 (다음 글이 배워요)</button>
 <div class="muted">제목·문단을 고쳤다면 눌러 주세요. GitHub 화면에서 초록 <b>Create</b>만 누르면, 고친 방향을 모아 다음 글부터 그렇게 써요.</div></div>
+</div></div>
 <div class="card" id="each"><h2>사진 하나씩 저장</h2>{each}</div>
 <details class="card"><summary>출처</summary><pre style="white-space:pre-wrap">{e(p["sources"])}</pre></details>
 </main><script>const POST={data};{desk.JS}</script></body></html>"""
@@ -150,12 +156,13 @@ def index(posts: list[dict]) -> str:
     return head(f"{NAME} 발행 도우미") + f"""
 <header class="brand"><img src="icon-180.png" alt=""><div><h1>{NAME}</h1><p class="muted">발행 도우미 · {now} 업데이트</p></div></header>
 <nav class="tabs"><a href="#blog" data-t="blog">📝 블로그</a><a href="#stats" data-t="stats">📊 성과</a><a href="#video" data-t="video">🎬 영상</a></nav>
-<section class="tab" id="blog">
+<section class="tab" id="blog"><div class="cols"><div>
 {flow_html()}
+</div><div class="stick">
 <h2><span class="step">3</span>올릴 글</h2>{"".join(row(p) for p in sorted(live, key=lambda p: p["folder"], reverse=True)) or '<p class="muted">올릴 글이 아직 없어요.</p>'}
 {f'<h2 style="margin-top:28px">발행한 글</h2>' + "".join(row(p, True) for p in used[:10]) if used else ''}
-</section>
-<section class="tab" id="stats" hidden>{stats_html(posts)}</section>
+</div></div></section>
+<section class="tab" id="stats" hidden><div class="cols">{stats_html(posts)}</div></section>
 <section class="tab" id="video" hidden><p class="muted">영상은 당분간 보류예요 (대표 결정 10-05). 글에 집중!</p>{vids or '<p class="muted">올릴 영상이 없어요.</p>'}</section>
 <div class="card muted" style="margin-top:28px">홈 화면에 두기: 이 화면에서 브라우저 메뉴(⋮ 또는 공유 ↑) → <b>홈 화면에 추가</b>. 억선생 얼굴 아이콘으로 생겨요.</div>
 </main><script>const POST={{"blocks":[],"images":[]}};{desk.JS}
@@ -205,7 +212,7 @@ def flow_html() -> str:
             link = desk.issue_link("경제제목", f"{t.parent.name} {i}", "이 제목으로 글·그림·쇼츠를 전부 만들어 주세요.")
             btns.append(f'<a class="btn" style="text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
                         f'href="{e(link, quote=True)}">{i}. {e(it["title"])}<br><span class="muted">{e(it.get("type", ""))} · '
-                        f'{it.get("chars", "")}자 · 썸네일 "{e(it.get("badge", ""))}"{e(flags)}</span></a>')
+                        f'{it.get("chars", "")}자 · 핵심 "{e(it.get("badge", ""))}"{e(flags)}</span></a>')
         topics.append(f'<div class="card" style="border:2px solid var(--accent)"><h2><span class="step">2</span>제목 고르기 · {e(T.get("keyword", ""))}</h2>'
                       f'<div class="muted">마음에 드는 제목을 누르면 그 제목으로 <b>글·썸네일·본문 그림·쇼츠 대본</b>을 만들어요 (약 5~10분). {e(T.get("made", ""))} 기준'
                       f'{" · " + e(T.get("person")) if T.get("person") else ""}</div>{"".join(btns)}'
@@ -306,7 +313,7 @@ def stats_html(posts: list[dict]) -> str:
     learn = sorted((ROOT / "reports" / "경제-학습").glob("*.md"), reverse=True)[:1]
     learn_html = (f'<details class="card"><summary><b>🧠 이번 주 배운 것</b> <span class="muted">{e(learn[0].stem)}</span></summary>'
                   f'<pre style="white-space:pre-wrap;font-size:13px">{e(learn[0].read_text(encoding="utf-8")[:3000])}</pre></details>') if learn else ""
-    return cost + pub + blog + "<h2>캡처에서 읽은 숫자</h2>" + cap_html + learn_html
+    return "<div>" + cost + pub + blog + "</div><div><h2>캡처에서 읽은 숫자</h2>" + cap_html + learn_html + "</div>"
 
 
 def load() -> list[dict]:
