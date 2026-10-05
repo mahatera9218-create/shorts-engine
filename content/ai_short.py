@@ -28,6 +28,8 @@ W, H, FPS = 1080, 1920, 30
 OUT = Path("reports/쇼츠-시안/금값-출렁")
 MODEL = "gpt-image-2"
 QUALITY = "medium"
+VOICE, TEMPO = "nova", 1.2  # 대표 피드백 2026-10-05: 여자 목소리, 더 빠르게
+SORA = "sora-2"  # OpenAI 영상 (같은 OpenAI 키). 720x1280 세로, 4·8·12초, 초당 약 $0.10
 KLING = "kling-video/v3.0-turbo/image-to-video"  # 힉스필드 모델 경로 (docs.higgsfield.ai, 2026-10 확인)
 
 STYLE = (
@@ -51,36 +53,36 @@ THUMB = {
 # 대사는 일반적인 원리만 말한다 (특정 날짜의 숫자·전망·권유 없음).
 SCENES = [
     {"cap": "금값은 왜 출렁일까?",
-     "say": "금은 안전자산이라는데, 왜 하루에도 크게 출렁일까요? 세 가지만 알면 보입니다.",
+     "say": "안전자산 금, 왜 하루에도 출렁일까요? 딱 세 가지예요.",
      "scene": HERO + " stands at his market stall holding a small gold bar, puzzled, while a crowd of villagers "
               "points at him; busy Joseon market street behind.",
-     "move": "the merchant tilts his head, villagers gesture, slow camera push-in"},
+     "move": "the merchant scratches his head and shrugs comically, villagers point and chatter, lively market bustle, quick push-in"},
     {"cap": "① 달러",
-     "say": "첫째, 달러입니다. 금값은 달러로 매겨져서, 달러가 강해지면 금값은 눌리기 쉽습니다.",
+     "say": "첫째, 달러. 달러가 세지면 금값은 눌려요.",
      "scene": HERO + " weighs a gold bar on a traditional Korean balance scale against a heavy pile of foreign "
               "silver coins brought by a foreign trader; the scale tips toward the silver.",
-     "move": "the balance scale slowly tips, coins clink, gentle camera drift"},
+     "move": "the merchant drops the gold bar on the scale, the scale slams down on the silver side, he gasps and leans back"},
     {"cap": "② 금리",
-     "say": "둘째, 금리입니다. 금은 이자가 없어서, 금리가 오를 것 같으면 돈이 이자 주는 곳으로 옮겨 갑니다.",
+     "say": "둘째, 금리. 금은 이자가 없어서 금리가 오르면 돈이 빠져요.",
      "scene": "villagers carrying wooden coin chests away from " + HERO + "'s gold stall toward a large merchant "
               "house that pays interest; he watches with a wry face.",
-     "move": "villagers walk carrying chests, slow pan right"},
+     "move": "villagers hurry past carrying chests, the merchant waves his arms trying to stop them, camera pans with the crowd"},
     {"cap": "③ 불안",
-     "say": "셋째, 불안입니다. 전쟁이나 위기 소식이 들리면 사람들이 금으로 몰리면서 값이 뛰기도 합니다.",
+     "say": "셋째, 불안. 위기 소식엔 금으로 우르르 몰려요.",
      "scene": "dark storm clouds over the market; a worried crowd rushes to " + HERO + "'s stall to buy gold, "
               "he looks overwhelmed but happy.",
-     "move": "clouds roll, crowd surges forward, slight camera shake"},
+     "move": "thunder flashes, the crowd surges forward waving coins, the merchant juggles gold bars happily, slight camera shake"},
     {"cap": "달러 · 금리 · 분위기",
-     "say": "그래서 금값 뉴스를 볼 땐 달러, 금리, 세상 분위기를 같이 보면 이유가 보입니다.",
+     "say": "달러, 금리, 분위기. 이 셋만 보면 이유가 보여요.",
      "scene": "a village seodang classroom: a kindly teacher with a long pipe points with a stick at three objects "
               "on a low table (a silver coin, a coin chest, a storm-cloud painting) while " + HERO + " and students "
               "listen.",
-     "move": "the teacher taps each object, students nod, slow push-in"},
+     "move": "the teacher taps the three objects one by one with his stick, the merchant nods eagerly and claps"},
     {"cap": "오늘의 이유는 블로그에서",
-     "say": "오늘 금값이 왜 움직였는지는 블로그에 쉽게 정리해 둘게요.",
+     "say": "오늘 금값 이야기는 블로그에 정리해 둘게요!",
      "scene": HERO + " bows politely holding an unrolled blank paper scroll, standing in front of his tidy stall "
               "at sunset.",
-     "move": "the merchant bows slowly, scroll flutters, gentle camera pull-back"},
+     "move": "the merchant grins, unrolls the scroll toward the viewer and bows deeply, scroll flutters in the wind"},
 ]
 
 
@@ -95,22 +97,24 @@ def voice(text: str) -> Path | None:
     if not key("OPENAI_API_KEY"):
         return None
     import hashlib
-    out = OUT / "voice" / (hashlib.sha1(text.encode()).hexdigest()[:12] + ".wav")
+    out = OUT / "voice" / (hashlib.sha1(f"{VOICE}|{TEMPO}|{text}".encode()).hexdigest()[:12] + ".wav")
     if out.exists():
         return out
     out.parent.mkdir(parents=True, exist_ok=True)
     r = requests.post("https://api.openai.com/v1/audio/speech",
                       headers={"Authorization": f"Bearer {key('OPENAI_API_KEY')}"},
-                      json={"model": "gpt-4o-mini-tts", "voice": "ash", "input": text, "response_format": "mp3",
-                            "instructions": "Speak natural, warm Korean like a friendly storyteller explaining "
-                                            "market news. Clear, slightly brisk pace, no exaggeration."},
+                      json={"model": "gpt-4o-mini-tts", "voice": VOICE, "input": text, "response_format": "mp3",
+                            "instructions": "Young Korean female presenter of a popular economy short. Bright, "
+                                            "confident and fast-paced, punchy delivery like a YouTube shorts host, "
+                                            "natural Korean intonation, no exaggeration."},
                       timeout=120)
     if r.status_code != 200:
         print(f"OpenAI 목소리 실패 HTTP {r.status_code}: {r.text[:200]}")
         return None
     mp3 = out.with_suffix(".mp3")
     mp3.write_bytes(r.content)
-    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(mp3), "-ar", "44100", str(out)], check=True)
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(mp3), "-af", f"atempo={TEMPO}", "-ar", "44100",
+                    str(out)], check=True)
     mp3.unlink()
     return out
 
@@ -202,6 +206,53 @@ def kling_clips(durs: list[float], log: list[str]) -> bool:
     return ok
 
 
+def sora_clips(durs: list[float], log: list[str]) -> bool:
+    """OpenAI Sora 2: 장면 그림을 첫 화면으로 4초 영상 (인물이 실제로 움직인다). 소리는 버리고 우리 목소리를 쓴다."""
+    if not key("OPENAI_API_KEY"):
+        return False
+    hdr = {"Authorization": f"Bearer {key('OPENAI_API_KEY')}"}
+    ok = True
+    for i, s in enumerate(SCENES, 1):
+        out = OUT / f"sora-{i}.mp4"
+        if out.exists():
+            continue
+        t0 = time.time()
+        try:
+            im = Image.open(OUT / f"scene-{i}.png").convert("RGB")
+            cw = int(im.height * 9 / 16)  # 2:3 그림 → 9:16 가운데 자르기 → 720x1280 (크기가 정확히 같아야 함)
+            ref = im.crop(((im.width - cw) // 2, 0, (im.width - cw) // 2 + cw, im.height)).resize((720, 1280), Image.LANCZOS)
+            buf = OUT / f"_ref-{i}.png"
+            ref.save(buf)
+            with buf.open("rb") as f:
+                r = requests.post("https://api.openai.com/v1/videos", headers=hdr, timeout=120,
+                                  data={"model": SORA, "seconds": "4", "size": "720x1280",
+                                        "prompt": "Animate this Joseon-era Korean ink-and-wash genre painting. "
+                                                  + s["move"] + ". Characters move expressively and comically, "
+                                                  "keep the exact painted hanji-paper style, flat colors and ink "
+                                                  "outlines, same faces and clothes, no text, no subtitles, "
+                                                  "no new characters, no photorealism."},
+                                  files={"input_reference": (buf.name, f, "image/png")})
+            buf.unlink(missing_ok=True)
+            if r.status_code >= 300:
+                raise RuntimeError(f"HTTP {r.status_code}: {r.text[:200]}")
+            vid = r.json()["id"]
+            for _ in range(120):  # 최대 약 10분
+                time.sleep(5)
+                st = requests.get(f"https://api.openai.com/v1/videos/{vid}", headers=hdr, timeout=60).json()
+                if st.get("status") in ("completed", "failed"):
+                    break
+            if st.get("status") != "completed":
+                raise RuntimeError(f"상태 {st.get('status')}: {json.dumps(st.get('error'), ensure_ascii=False)[:200]}")
+            c = requests.get(f"https://api.openai.com/v1/videos/{vid}/content", headers=hdr, timeout=300)
+            c.raise_for_status()
+            out.write_bytes(c.content)
+            log.append(f"- 소라 {i} (4초) {time.time() - t0:.0f}초")
+        except Exception as e:
+            ok = False
+            log.append(f"- 소라 {i} 실패: {str(e)[:200]}")
+    return ok
+
+
 def find_url(obj) -> str | None:
     if isinstance(obj, dict):
         for k in ("video", "videos", "output", "result"):
@@ -270,8 +321,8 @@ def kenburns(i: int, dur: float):
         yield fr.convert("RGB")
 
 
-def video_frames(i: int, dur: float):
-    src = OUT / f"kling-{i + 1}.mp4"
+def video_frames(i: int, dur: float, prefix: str = "kling"):
+    src = OUT / f"{prefix}-{i + 1}.mp4"
     cmd = ["ffmpeg", "-loglevel", "error", "-i", str(src), "-vf",
            f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},fps={FPS},tpad=stop_mode=clone:stop_duration=15",
            "-t", f"{dur:.2f}", "-f", "rawvideo", "-pix_fmt", "rgb24", "-"]
@@ -309,19 +360,22 @@ def encode(frames, total: float, audio: Path | None, out: Path) -> str:
 
 def build(kind: str, durs: list[float], audio: Path | None) -> str:
     total = sum(durs)
-    src = kenburns if kind == "A" else video_frames
-
     def frames():
         for i, d in enumerate(durs):
-            yield from src(i, d)
+            if kind == "A":
+                yield from kenburns(i, d)
+            else:
+                yield from video_frames(i, d, "kling" if kind == "B" else "sora")
 
-    name = "A-그림움직임.mp4" if kind == "A" else "B-클링.mp4"
+    name = {"A": "A-그림움직임.mp4", "B": "B-클링.mp4", "C": "C-소라.mp4"}[kind]
     err = encode(frames(), total, audio, OUT / name)
     return f"- {name}: " + (f"실패 {err}" if err else f"{total:.0f}초 완성")
 
 
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
+    for old in OUT.glob("결과-*.md"):
+        old.unlink()
     log = [f"# 조선 화풍 AI 쇼츠 시험 ({date.today()})", "",
            "주제: 금값은 왜 하루에도 출렁일까? (원리 설명, 특정 날짜 숫자 없음)", "", "## 진행 기록", ""]
     if not key("OPENAI_API_KEY"):
@@ -334,7 +388,7 @@ def main() -> None:
     ready = all((OUT / f"scene-{i}.png").exists() for i in range(1, len(SCENES) + 1))
     if ready and shutil.which("ffmpeg"):
         voices = [voice(s["say"]) for s in SCENES]
-        durs = [max(4.0, wav_seconds(v) + 0.5) if v else 5.0 for v in voices]
+        durs = [max(3.0, wav_seconds(v) + 0.35) if v else 4.0 for v in voices]  # 빠르게: 장면 3~4초
         cues, t = [], 0.0
         for v, d in zip(voices, durs):
             if v:
@@ -344,6 +398,9 @@ def main() -> None:
         log.append(f"- 목소리: {who if any(voices) else '없음(키 없음 또는 실패) → 무음'}")
         audio = mix("ffmpeg", cues, sum(durs), OUT / "voice.wav") if cues else None
         log.append(build("A", durs, audio))
+        all_ok = lambda pre: all((OUT / f"{pre}-{i}.mp4").exists() for i in range(1, len(SCENES) + 1))
+        if sora_clips(durs, log) and all_ok("sora"):
+            log.append(build("C", durs, audio))
         if kling_clips(durs, log) and all((OUT / f"kling-{i}.mp4").exists() for i in range(1, len(SCENES) + 1)):
             log.append(build("B", durs, audio))
         if audio:
