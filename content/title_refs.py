@@ -88,7 +88,8 @@ def analyze(got: dict[str, list[dict]]) -> None:
     lines = [f"# 제목 고수 공식 ({F.today()})", "",
              "대표 지정 제목 고수의 공개 RSS 제목을 모아 '구조'만 뽑았다. 문장은 베끼지 않는다.", ""]
     for m in r["masters"]:
-        lines += [f"## {names.get(m['id'], m['id'])} ({m['id']})", f"- 주제: {m['topics']}", f"- 모양: {m['style']}",
+        bid = next((b for b in names if b in m["id"]), m["id"])  # Claude가 '이름 (아이디)'로 줄 때도 있음
+        lines += [f"## {names.get(bid, bid)} ({bid})", f"- 주제: {m['topics']}", f"- 모양: {m['style']}",
                   f"- 클릭 장치: {m['strong_points']}", ""]
     lines += ["## 따라 쓸 제목 틀"] + [f"- {f['frame']} — {f['when']} ({f['who']})" for f in r["formulas"]]
     lines += ["", "## 쓸 때 주의", r["use_tips"], ""]
