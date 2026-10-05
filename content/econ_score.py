@@ -61,7 +61,7 @@ def gather(grok_items: list[dict], mine: list[dict]) -> list[tuple[str, str, str
     for b in refs.get("bloggers", []):
         for t in b.get("recent", []):
             n += 1
-            rows.append((f"B{n}", b["id"] if b["id"] == main else "블로거", f"[{b['id']}] {t}"))
+            rows.append((f"B{n}", b["id"] if b["id"] == main else "블로거", f"[{b.get('name', b['id'])}] {t}"))
     for kind in ("국내뉴스", "해외뉴스"):
         n = 0
         for url in cfg.get("feeds", {}).get(kind, []):
@@ -180,9 +180,11 @@ def run(grok_items: list[dict], mine: list[dict]) -> list[dict]:
         return []
     items = cluster(rows)
     src_rows = {rid: src for rid, src, _ in rows}
+    who = {rid: t[1:t.index("]")] for rid, _, t in rows if rid.startswith("B") and "]" in t}  # 블로거 이름
     for it in items:
         it["rows"] = [r for r in it["rows"] if r in src_rows]
         it["src"] = ", ".join(sorted({src_rows[r] for r in it["rows"]})) or "?"
+        it["bloggers"] = sorted({who[r] for r in it["rows"] if r in who})
     # 대표가 넣은 키워드가 묶기에서 빠졌으면 그대로 살린다
     have = {r for it in items for r in it["rows"]}
     for rid, src, t in rows:
