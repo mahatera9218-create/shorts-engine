@@ -1,0 +1,18 @@
+# 썸네일 시험 (대표 결정 2026-10-05: 글자 없이, 화풍 유지, 제목에 맞는 장면). 글 제작 때 econ_flow.draw_scene과 같은 지시.
+- file: SK하이닉스.png
+  size: 1024x1024
+  quality: high
+  prompt: >-
+    Square blog thumbnail, one clear main subject large in the center, readable even when very small, bold
+    contrast. A Joseon-era craftsman's workshop in a busy market: a proud artisan in hanbok holds up a glowing
+    silicon memory chip like a precious jewel, rows of shining chips stacked like yeopjeon coin towers on a
+    red lacquer table, customers crowding in amazement, festive red banners suggesting a rising market.
+    Absolutely no text, letters, numbers, logos or signatures anywhere.
+- file: 금값.png
+  size: 1024x1024
+  quality: high
+  prompt: >-
+    Square blog thumbnail, one clear main subject large in the center, readable even when very small, bold
+    contrast. A heavy wooden treasure chest overflowing with gleaming gold bars at a Joseon market stall,
+    merchants in hanbok leaning in with wide eyes, a golden glow lighting their faces, dark storm clouds
+    gathering behind (uncertain times). Absolutely no text, letters, numbers, logos or signatures anywhere.
