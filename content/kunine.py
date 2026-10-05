@@ -72,7 +72,7 @@ TITLES = {"type": "object", "additionalProperties": False, "required": ["groups"
 def title_guide() -> str:
     """제목 고수(경제토르·유미) 공식 — 구조만 참고 (대표 지시 2026-10-05, content/title_refs.py)"""
     from .title_refs import guide_text
-    return guide_text()
+    return guide_text(F.BLOG["id"])
 
 
 def titles(kw: str) -> Path:

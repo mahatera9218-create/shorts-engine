@@ -219,7 +219,6 @@ jobs:
       github.event_name == 'issues' &&
       github.event.issue.user.login == github.repository_owner &&
       (startsWith(github.event.issue.title, '[경제키워드') || startsWith(github.event.issue.title, '[경제제목') ||
-       startsWith(github.event.issue.title, '[연예키워드') || startsWith(github.event.issue.title, '[연예제목') ||
        startsWith(github.event.issue.title, '[패션키워드') || startsWith(github.event.issue.title, '[패션제목'))
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -239,8 +238,8 @@ jobs:
           import os, re
           t, b = os.environ["TITLE"].strip(), os.environ.get("BODY") or ""
           cmd = arg1 = arg2 = ""
-          blog = {"경제": "econ", "연예": "ent", "패션": "fashion"}.get(t[1:3], "econ")  # [경제…]·[연예…]·[패션…] (2026-10-05)
-          t = "[경제" + t[3:] if t[1:3] in ("연예", "패션") else t  # 아래 판별은 경제 이름으로 통일
+          blog = {"경제": "econ", "패션": "fashion"}.get(t[1:3], "econ")  # [경제…]·[패션…] (2026-10-05, 연예는 패션에 합침)
+          t = "[경제" + t[3:] if t[1:3] == "패션" else t  # 아래 판별은 경제 이름으로 통일
           if t.startswith("[경제키워드추가]"):
               cmd, arg1 = "add", "\n".join(l.strip() for l in b.splitlines() if l.strip() and "Create" not in l)[:800]
           elif t.startswith("[경제키워드새로]"):
