@@ -69,9 +69,10 @@ def draw_parts(log: list[str]) -> None:
         if out.exists():
             continue
         t0 = time.time()
+        if transparent:  # 투명 배경은 이 모델에서 아직 막혀 있음(2026-10-05 HTTP 400) → 초록 화면에 그리고 코드로 지운다
+            prompt += (" Place it on a perfectly flat, solid, pure chroma-key green background (#00FF00), evenly lit, "
+                       "no shadow, no ground, no paper texture, no green anywhere on the subject.")
         body = {"model": base.MODEL, "prompt": prompt, "size": size, "quality": base.QUALITY, "n": "1"}
-        if transparent:
-            body.update(background="transparent", output_format="png")
         if ref:
             with (OUT / "scene-1.png").open("rb") as f:
                 r = requests.post("https://api.openai.com/v1/images/edits", headers=hdr, data=body,
@@ -83,8 +84,33 @@ def draw_parts(log: list[str]) -> None:
             log.append(f"- 재료 {name} 실패 HTTP {r.status_code}: {r.text[:160]}")
             continue
         out.write_bytes(base64.b64decode(r.json()["data"][0]["b64_json"]))
-        im = Image.open(out)
-        log.append(f"- 재료 {name} {time.time() - t0:.0f}초 ({'투명' if im.mode == 'RGBA' and im.getextrema()[3][0] < 255 else '불투명'})")
+        if transparent:
+            out.with_name(f"{name}-green.png").write_bytes(out.read_bytes())  # 원본도 남겨 다시 지울 수 있게
+            unscreen(out)
+        log.append(f"- 재료 {name} {time.time() - t0:.0f}초")
+
+
+def unscreen(path: Path) -> None:
+    """초록 화면 지우기(크로마키): 초록일수록 투명, 가장자리 초록 번짐은 눌러 준다."""
+    im = Image.open(path).convert("RGB")
+    px = im.load()
+    a = Image.new("L", im.size, 255)
+    ap = a.load()
+    for y in range(im.height):
+        for x in range(im.width):
+            r, g, b = px[x, y]
+            k = g - max(r, b)  # 초록이 얼마나 튀는가
+            if k > 90:
+                ap[x, y] = 0
+            elif k > 30:
+                ap[x, y] = int(255 * (90 - k) / 60)
+                px[x, y] = (r, max(r, b), b)
+            elif k > 0:
+                px[x, y] = (r, max(r, b), b)
+    a = a.filter(ImageFilter.MinFilter(3)).filter(ImageFilter.GaussianBlur(0.8))
+    out = im.convert("RGBA")
+    out.putalpha(a)
+    out.save(path)
 
 
 # ---------------------------------------------------------------- 도구
