@@ -1,8 +1,8 @@
 """억선생의 경제판 하루 흐름 (대표 결정 2026-10-05): 키워드 → (대표 선택) → 제목 후보 → (대표 선택) → 전체 제작.
 
 1단계 keywords : 코드(시세 변동) + Grok(X·웹 자체 조사) + 대표가 넣은 키워드(어드바이저·뉴스 랭킹·트렌드) → 후보 목록
-2단계 titles   : 대표가 고른 키워드 → Claude 웹 검색 취재 메모 + Grok 오늘의 말투 → Claude 제목 10개 → GPT 독자 순위
-                 → 코드 검사(33~45자 등) → 대표가 고름
+2단계 titles   : 대표가 고른 키워드 → Claude 웹 검색 취재 메모 + Grok 오늘의 말투 → Claude 제목 10개
+                 → 코드 검사(33~45자) → 대표가 고름 (마음에 안 들면 '다시 뽑기' = 다시 취재부터)
 3단계 produce  : 고른 제목으로 글(Claude) → GPT 사실 대조 → Claude 고치기 → 썸네일(인물이면 상반신 캐리커처, 아니면 창고 그림)
                  + 본문 그림(창고) + 쇼츠 대본 → econ/posts/<날짜-주제>/ (발행 도우미)
 모든 단계의 결과는 econ/flow/<날짜>/ 에 남고, 발행 도우미(content/econ_desk.py)가 보여 준다. 키는 GitHub Secrets에서만.
@@ -225,20 +225,13 @@ def titles(kw: str) -> Path:
         "위 공식으로 서로 다른 각도의 제목 10개를 만들어 주세요. type은 질문형·숫자형·대비형·반전형·인물형 중 하나."),
         schema, stage="제목")
     items = out["titles"][:10]
-    # GPT: 경제 초보 독자 눈으로 누를 것 같은 순 3개 (다른 회사의 눈)
-    listing = "\n".join(f"{i + 1}. {t['title']}" for i, t in enumerate(items))
-    rank = parse_json(gpt("당신은 네이버 홈 피드를 훑는 30~40대 경제 초보 독자입니다. 아래 제목 중 가장 누르고 싶은 순서로 "
-                          "3개를 고르고, 과장·낚시로 느껴지는 번호도 알려 주세요. JSON만: "
-                          '{"top": [번호, 번호, 번호], "bait": [번호...], "why": "한 줄"}\n\n' + listing)) or {}
-    top = [i - 1 for i in rank.get("top", []) if isinstance(i, int) and 1 <= i <= len(items)]
-    bait = {i - 1 for i in rank.get("bait", []) if isinstance(i, int)}
-    for i, t in enumerate(items):  # 코드 검사
+    for t in items:  # 코드 검사만 (고르는 눈은 대표, 2026-10-05 결정: GPT 순위 뺌)
         n = len(t["title"])
         t["chars"] = n
-        t["flags"] = ([f"{n}자(33~45자 밖)"] if not 33 <= n <= 45 else []) + (["GPT: 낚시 느낌"] if i in bait else [])
-        t["rank"] = top.index(i) + 1 if i in top else None
-    items.sort(key=lambda t: (bool(t["flags"]), t["rank"] or 99))  # 경고(글자 수·낚시) 있는 제목은 뒤로
-    save(d / "titles.yaml", {"keyword": kw, "person": out.get("person", ""), "gpt_why": rank.get("why", ""),
+        t["flags"] = [f"{n}자(33~45자 밖)"] if not 33 <= n <= 45 else []
+    items.sort(key=lambda t: bool(t["flags"]))  # 글자 수 경고 있는 제목은 뒤로
+    (d / "chosen.yaml").unlink(missing_ok=True)
+    save(d / "titles.yaml", {"keyword": kw, "person": out.get("person", ""), "made": datetime.now(KST).strftime("%H:%M"),
                              "items": items})
     print(f"제목 {len(items)}개 → {d}")
     return d
