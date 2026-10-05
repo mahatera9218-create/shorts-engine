@@ -148,7 +148,8 @@ def index(posts: list[dict]) -> str:
 <header class="brand"><img src="icon-180.png" alt=""><div><h1>{NAME}</h1><p class="muted">발행 도우미 · {now} 업데이트</p></div></header>
 <nav class="tabs"><a href="#blog" data-t="blog">📝 블로그</a><a href="#video" data-t="video">🎬 쇼츠·클립</a></nav>
 <section class="tab" id="blog">
-<h2>올릴 글</h2>{"".join(row(p) for p in sorted(live, key=lambda p: p["folder"], reverse=True)) or '<p class="muted">올릴 글이 아직 없어요.</p>'}
+{flow_html()}
+<h2><span class="step">3</span>올릴 글</h2>{"".join(row(p) for p in sorted(live, key=lambda p: p["folder"], reverse=True)) or '<p class="muted">올릴 글이 아직 없어요.</p>'}
 {f'<h2 style="margin-top:28px">발행한 글</h2>' + "".join(row(p, True) for p in used[:10]) if used else ''}
 </section>
 <section class="tab" id="video" hidden>{vids or '<p class="muted">올릴 영상이 없어요.</p>'}</section>
@@ -156,6 +157,57 @@ def index(posts: list[dict]) -> str:
 </main><script>const POST={{"blocks":[],"images":[]}};{desk.JS}
 function tab(){{const h=(location.hash||'#blog').slice(1);document.querySelectorAll('section.tab').forEach(s=>s.hidden=s.id!==h);
 document.querySelectorAll('nav.tabs a').forEach(a=>a.classList.toggle('on',a.dataset.t===h))}}addEventListener('hashchange',tab);tab();</script></body></html>"""
+
+
+FLOW = ROOT / "econ" / "flow"
+
+
+def flow_html() -> str:
+    """① 오늘의 키워드 → ② 제목 고르기 (대표 결정 2026-10-05: 대표가 키워드·제목을 고른 뒤에 전체 제작)."""
+    e = html.escape
+    today = datetime.now(KST).strftime("%Y-%m-%d")
+    day = FLOW / today
+    kw = (yaml.safe_load((day / "keywords.yaml").read_text(encoding="utf-8")) or {}) if (day / "keywords.yaml").exists() else {}
+    rows = []
+    for it in kw.get("items", [])[:20]:
+        link = desk.issue_link("경제키워드", it["kw"], "이 키워드로 제목 후보를 만들어 주세요.")
+        who = {"대표": "👤 대표", "Grok(X·웹)": "𝕏 Grok"}.get(it.get("src", ""), it.get("src", ""))
+        rows.append(f'<a class="btn" style="text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
+                    f'href="{e(link, quote=True)}"><b>{e(it["kw"])}</b> <span class="muted">· {e(who)}</span>'
+                    f'<br><span class="muted">{e(it.get("why", ""))}</span></a>')
+    add_js = ("function addKw(){const v=document.getElementById('kwin').value.trim();if(!v){alert('키워드를 적어 주세요');return}"
+              f"location.href='https://github.com/{desk.REPO}/issues/new?title='+encodeURIComponent('[경제키워드추가] {today}')"
+              "+'&body='+encodeURIComponent(v+String.fromCharCode(10,10)+'아래 초록색 Create만 누르면 됩니다.')}")
+    refresh = desk.issue_link("경제키워드새로", today, "Grok과 코드로 키워드를 다시 모아 주세요.")
+    kw_html = f"""<div class="card" style="border:2px solid var(--accent)"><h2><span class="step">1</span>오늘의 키워드 고르기</h2>
+<div class="muted">누르면 그 키워드로 <b>제목 후보</b>를 만들어요 (약 3~5분). {e(kw.get("updated", ""))} 기준</div>
+{''.join(rows) or '<p class="muted">아직 없어요. 매일 아침 6시쯤 Grok·코드가 모아요.</p>'}
+<textarea id="kwin" class="ed" rows="3" placeholder="어드바이저·뉴스 랭킹·트렌드에서 찾은 키워드 (한 줄에 하나)"></textarea>
+<button onclick="addKw()">➕ 내 키워드 넣기</button>
+<a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(refresh, quote=True)}">🔄 Grok으로 다시 모으기</a>
+<script>{add_js}</script></div>"""
+    topics = []
+    for t in sorted(day.glob("*/titles.yaml")) if day.exists() else []:
+        T = yaml.safe_load(t.read_text(encoding="utf-8")) or {}
+        chosen = t.parent / "chosen.yaml"
+        if chosen.exists():
+            c = yaml.safe_load(chosen.read_text(encoding="utf-8")) or {}
+            topics.append(f'<div class="card"><b>{e(T.get("keyword", ""))}</b> → ✅ 「{e(c.get("title", ""))}」 제작 완료 ({e(c.get("at", ""))}). 아래 목록에서 올리세요.</div>')
+            continue
+        btns = []
+        for i, it in enumerate(T.get("items", []), 1):
+            star = "★" * (4 - it["rank"]) if it.get("rank") else ""
+            flags = " · ⚠️ " + ", ".join(it["flags"]) if it.get("flags") else ""
+            link = desk.issue_link("경제제목", f"{t.parent.name} {i}", "이 제목으로 글·그림·쇼츠를 전부 만들어 주세요.")
+            btns.append(f'<a class="btn" style="text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
+                        f'href="{e(link, quote=True)}">{e(star)} {e(it["title"])}<br><span class="muted">{e(it.get("type", ""))} · '
+                        f'{it.get("chars", "")}자 · 썸네일 "{e(it.get("badge", ""))}"{e(flags)}</span></a>')
+        topics.append(f'<div class="card" style="border:2px solid var(--accent)"><h2><span class="step">2</span>제목 고르기 · {e(T.get("keyword", ""))}</h2>'
+                      f'<div class="muted">★ = GPT(독자 눈)가 누르고 싶다고 고른 순. 누르면 그 제목으로 <b>글·썸네일·본문 그림·쇼츠 대본</b>을 만들어요 (약 5~10분).'
+                      f'{" · " + e(T.get("person")) if T.get("person") else ""}</div>{"".join(btns)}'
+                      f'<details><summary class="muted">취재 메모 보기</summary><pre style="white-space:pre-wrap;font-size:13px">'
+                      f'{e((t.parent / "research.md").read_text(encoding="utf-8")[:4000]) if (t.parent / "research.md").exists() else ""}</pre></details></div>')
+    return kw_html + "".join(topics)
 
 
 def load() -> list[dict]:
