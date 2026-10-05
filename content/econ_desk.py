@@ -196,15 +196,15 @@ def flow_html() -> str:
             continue
         btns = []
         for i, it in enumerate(T.get("items", []), 1):
-            star = "★" * (4 - it["rank"]) if it.get("rank") else ""
             flags = " · ⚠️ " + ", ".join(it["flags"]) if it.get("flags") else ""
             link = desk.issue_link("경제제목", f"{t.parent.name} {i}", "이 제목으로 글·그림·쇼츠를 전부 만들어 주세요.")
             btns.append(f'<a class="btn" style="text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
-                        f'href="{e(link, quote=True)}">{e(star)} {e(it["title"])}<br><span class="muted">{e(it.get("type", ""))} · '
+                        f'href="{e(link, quote=True)}">{i}. {e(it["title"])}<br><span class="muted">{e(it.get("type", ""))} · '
                         f'{it.get("chars", "")}자 · 썸네일 "{e(it.get("badge", ""))}"{e(flags)}</span></a>')
         topics.append(f'<div class="card" style="border:2px solid var(--accent)"><h2><span class="step">2</span>제목 고르기 · {e(T.get("keyword", ""))}</h2>'
-                      f'<div class="muted">★ = GPT(독자 눈)가 누르고 싶다고 고른 순. 누르면 그 제목으로 <b>글·썸네일·본문 그림·쇼츠 대본</b>을 만들어요 (약 5~10분).'
+                      f'<div class="muted">마음에 드는 제목을 누르면 그 제목으로 <b>글·썸네일·본문 그림·쇼츠 대본</b>을 만들어요 (약 5~10분). {e(T.get("made", ""))} 기준'
                       f'{" · " + e(T.get("person")) if T.get("person") else ""}</div>{"".join(btns)}'
+                      f'<a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(desk.issue_link("경제제목새로", T.get("keyword", ""), "마음에 드는 제목이 없어요. 다시 취재해서 새로 뽑아 주세요."), quote=True)}">🔄 마음에 드는 게 없어요 · 다시 조사해서 새로 뽑기</a>'
                       f'<details><summary class="muted">취재 메모 보기</summary><pre style="white-space:pre-wrap;font-size:13px">'
                       f'{e((t.parent / "research.md").read_text(encoding="utf-8")[:4000]) if (t.parent / "research.md").exists() else ""}</pre></details></div>')
     return kw_html + "".join(topics)

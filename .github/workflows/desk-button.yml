@@ -155,7 +155,7 @@ jobs:
     if: >-
       github.event_name == 'issues' &&
       github.event.issue.user.login == github.repository_owner &&
-      (startsWith(github.event.issue.title, '[경제키워드') || startsWith(github.event.issue.title, '[경제제목]'))
+      (startsWith(github.event.issue.title, '[경제키워드') || startsWith(github.event.issue.title, '[경제제목'))
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
@@ -177,6 +177,8 @@ jobs:
               cmd, arg1 = "add", "\n".join(l.strip() for l in b.splitlines() if l.strip() and "Create" not in l)[:800]
           elif t.startswith("[경제키워드새로]"):
               cmd = "keywords"
+          elif t.startswith("[경제제목새로]"):
+              cmd, arg1 = "titles", t[len("[경제제목새로]"):].strip()[:60]
           elif t.startswith("[경제키워드]"):
               cmd, arg1 = "titles", t[len("[경제키워드]"):].strip()[:60]
           elif t.startswith("[경제제목]"):
