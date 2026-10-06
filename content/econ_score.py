@@ -10,6 +10,7 @@
 """
 from __future__ import annotations
 
+import html
 import math
 import re
 from datetime import datetime, timedelta
@@ -64,6 +65,18 @@ def gather(grok_items: list[dict], mine: list[dict]) -> list[tuple[str, str, str
         for t in b.get("recent", []):
             n += 1
             rows.append((f"B{n}", b["id"] if b["id"] == main else "블로거", f"[{b.get('name', b['id'])}] {t}"))
+    # 참고 블로거 RSS (econ 말고 블로그별 설정 ref_bloggers, 2026-10-06): 최근 36시간 새 글 제목
+    if F.BLOG["id"] != "econ" and cfg.get("ref_bloggers"):
+        from .econ_refs import feed
+        since = datetime.now(F.KST) - timedelta(hours=36)
+        for bid, name in cfg["ref_bloggers"].items():
+            try:
+                for x in feed(bid):
+                    if x["at"] >= since and x["title"]:
+                        n += 1
+                        rows.append((f"B{n}", "블로거", f"[{name}] {x['title']}"))
+            except Exception as e:  # noqa: BLE001
+                print(f"블로거 RSS 실패 {bid}: {type(e).__name__}")
     for kind in ("국내뉴스", "해외뉴스"):
         n = 0
         for url in cfg.get("feeds", {}).get(kind, []):
@@ -72,6 +85,16 @@ def gather(grok_items: list[dict], mine: list[dict]) -> list[tuple[str, str, str
                 rows.append((f"{'N' if kind == '국내뉴스' else 'Y'}{n}", kind, t))
     for i, it in enumerate(F.price_moves() if F.BLOG["id"] == "econ" else [], 1):
         rows.append((f"P{i}", "시세", f"{it['kw']} — {it['why']}"))
+    # 뉴스 검색어 (블로그별 news_queries, 2026-10-06): 네이버 뉴스 검색 API로 최근 24시간 기사 제목 — 패션처럼 RSS가 약한 분야용
+    hub0 = _hub() if cfg.get("news_queries") else None
+    n = 0
+    for qy in cfg.get("news_queries", []) if hub0 else []:
+        try:
+            for t in _recent_titles(hub0, qy)[:cfg.get("news_per_query", 8)]:
+                n += 1
+                rows.append((f"S{n}", "뉴스검색", t))
+        except Exception as e:  # noqa: BLE001
+            print(f"뉴스 검색 실패 {qy}: {str(e)[:80]}")
     # 인기 종목: 국내·미국 대표 종목의 최근 24시간 네이버 기사 수 (뉴스 제목에서 테마로 묶여 사라지지 않게, 2026-10-05 대표 지적)
     hub = _hub()
     if hub:
@@ -140,6 +163,24 @@ def _recent_count(hub, path: str, kw: str) -> tuple[int, int]:
     return n, int(data.get("total") or 0)
 
 
+def _recent_titles(hub, kw: str) -> list[str]:
+    """네이버 뉴스 검색(최신순)에서 최근 24시간 기사 제목 (태그 뺌, 같은 제목 하나만)."""
+    data = request_json("GET", hub.base + hub.paths["news_search"], headers=hub._headers(),
+                        params={"query": kw, "display": 30, "sort": "date"})
+    since = datetime.now(F.KST) - timedelta(hours=24)
+    out = []
+    for it in data.get("items", []):
+        try:
+            if parsedate_to_datetime(it.get("pubDate") or "") < since:
+                continue
+        except (TypeError, ValueError):
+            continue
+        t = html.unescape(re.sub(r"<[^>]+>", "", it.get("title", ""))).strip()
+        if t and t not in out:
+            out.append(t)
+    return out
+
+
 def _volumes(kws: list[str]) -> dict[str, float]:
     if not all(secret(k) for k in ("NAVER_AD_API_KEY", "NAVER_AD_SECRET_KEY", "NAVER_AD_CUSTOMER_ID")):
         return {}
@@ -174,7 +215,7 @@ def score(items: list[dict], src_rows: dict[str, str]) -> list[dict]:
                 cnt[s] = cnt.get(s, 0) + 1
         src_pts = 0.0
         for s, c in cnt.items():
-            p = pts.get(s, 0) * (c if s in ("블로거", "국내뉴스", "해외뉴스") else 1)
+            p = pts.get(s, 0) * (c if s in ("블로거", "국내뉴스", "해외뉴스", "뉴스검색") else 1)
             src_pts += min(p, caps.get(s, p))
         raw[it["kw"]] = src_pts
         it["sources"] = cnt
