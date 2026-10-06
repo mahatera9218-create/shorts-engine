@@ -191,6 +191,8 @@ function val(k){const t=ed(k);return t?t.value.trim():''}
 function paint(t){t.classList.toggle('changed',t.value!==t.defaultValue);const c=document.querySelector('[data-count="'+t.dataset.k+'"]');if(c)c.textContent=t.value.trim().length+'자'+(t.value!==t.defaultValue?' · 고침':'')}
 function setEd(k,v){const t=ed(k);if(!t)return;t.value=v;ls(k,v===t.defaultValue?null:v);paint(t);grow(t)}
 function resetEd(k){const t=ed(k);if(t)setEd(k,t.defaultValue)}
+// 아이폰에서 칸을 눌러도 키보드가 안 뜰 때 (대표 지적 2026-10-06): 입력 창으로 고치기
+function askEd(k){const t=ed(k);if(!t)return;const v=prompt('고칠 내용을 입력하세요',t.value);if(v!==null){setEd(k,v.replace(/\\n/g,' '));ls(k,t.value===t.defaultValue?null:t.value)}}
 function copyEd(b,k){copyText(b,val(k))}
 document.addEventListener('DOMContentLoaded',()=>document.querySelectorAll('textarea.ed').forEach(t=>{const v=ls(t.dataset.k);if(v!=null)t.value=v;paint(t);grow(t);
   t.addEventListener('input',()=>{if(t.classList.contains('one'))t.value=t.value.replace(/\\n/g,' ');ls(t.dataset.k,t.value===t.defaultValue?null:t.value);paint(t);grow(t)})}))
@@ -246,7 +248,8 @@ def edit_box(key: str, text: str, label: str, one_line: bool = False) -> str:
     return (f'<textarea class="ed{" ttl one" if one_line else ""}" data-k="{k}" rows="{2 if one_line else 4}">{e(text)}</textarea>'
             f'<div class="muted" data-count="{k}"></div>'
             f'<div class="row"><button onclick="copyEd(this,\'{k}\')">📋 {e(label)}</button>'
-            f'<button class="ghost small" onclick="resetEd(\'{k}\')">↩ 원래대로</button></div>')
+            + (f'<button class="ghost small" onclick="askEd(\'{k}\')">✏️ 고치기</button>' if one_line else '')
+            + f'<button class="ghost small" onclick="resetEd(\'{k}\')">↩ 원래대로</button></div>')
 
 
 def copy_pair(text: str, what: str, key: str = "") -> str:
