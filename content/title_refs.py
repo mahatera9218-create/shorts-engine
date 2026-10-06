@@ -190,7 +190,10 @@ def deep(bid: str) -> None:
         msg = st.get_final_message()
     u = msg.usage
     F.SPENT["claude"] += (u.input_tokens * 2.0 + u.output_tokens * 10.0) / 1_000_000
-    r = _json.loads("".join(b.text for b in msg.content if getattr(b, "type", "") == "text"))
+    text = "".join(b.text for b in msg.content if getattr(b, "type", "") == "text")
+    if msg.stop_reason != "end_turn" or not text.strip():
+        raise RuntimeError(f"심층 분석 응답 없음 (stop_reason={msg.stop_reason}, 블록={[getattr(b, 'type', '') for b in msg.content]})")
+    r = _json.loads(text)
     md = [f"# {name} 심층 분석 ({F.today()}, 공개 RSS 최근 {len(items)}개)", ""]
     for k, h in (("topics", "주제 고르는 법"), ("titles", "제목 공식"), ("structure", "글 구성"), ("voice", "말투"),
                  ("thumbnail", "썸네일"), ("tags_time", "태그·카테고리·발행 시간"), ("rules", "우리가 따라 할 규칙")):
