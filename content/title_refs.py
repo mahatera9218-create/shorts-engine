@@ -142,7 +142,8 @@ def versions_ask(bid: str | None = None) -> str:
         return ""
     parts = [f"그리고 versions 칸에 아래 제목 고수마다 그 사람 방식으로 제목 3개씩 주세요(who = {', '.join(ms.values())}). "
              "같은 키워드·조사 메모의 사실로만, 그 사람의 제목 구조·말투·결을 따르되 문구는 베끼지 말 것. "
-             "투자 권유·단정 전망·외모 비하·과장된 거짓은 쓰지 않음."]
+             "투자 권유·단정 전망·외모 비하·과장된 거짓은 쓰지 않음. 위 원문의 제목 금지 규칙(괄호·기사형 태그·글자 수 등)도 그대로 지킴 — "
+             "'ㄷㄷ'·'T.T' 같은 인터넷 기호는 쓰지 않음."]
     for b, name in ms.items():
         parts.append(f"\n[{name} 최근 제목]\n" + "\n".join(f"- {p['title']}" for p in history(b)[:12]))
         if deep_doc(b).exists():  # 심층 분석 중 제목 공식·주제 고르는 법만 (글 방식은 안 배움, 대표 지시 2026-10-06)
