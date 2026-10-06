@@ -184,6 +184,9 @@ def produce(slug: str, n: int) -> Path:
     others = [t for t in T["items"] if t is not pick][:4]
     tags = ",".join(x.replace("#", "").replace(" ", "") for x in a["tags"][:19])
     status = "✅ 발행 가능" + (" · ⚠️ 형식: " + " / ".join(left) if left else "")
+    from .kunine import NO_CREDIT
+    if NO_CREDIT:
+        status += " · ⚠️ OpenAI 크레딧이 없어 AI 사진 대신 무료 사진으로 채움 — 대표가 크레딧 충전 필요"
     (post / "post.md").write_text("\n".join([
         f"# 발행 패키지 · {kw} ({F.BLOG['name']})", "", f"**상태:** {status}",
         f"**본문:** {len(text_of(a))}자 · 사진 {k - 2}장 + 썸네일", "",
