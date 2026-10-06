@@ -18,6 +18,7 @@
 - prompt(영어): 실제 뉴스 사진처럼 보이는 사실적인 장면. 대상 하나를 또렷하게, 자연광·보도사진 구도.
   - 실존 인물의 얼굴은 그리지 않습니다(사람이 필요하면 뒷모습·손·멀리 있는 군중·익명의 직장인).
   - 회사가 나오는 사진은 **그 회사임이 바로 보이게**: 실제 사옥·공장·매장 외관에 그 회사의 진짜 간판(로고·회사 이름)이 보이는 장면. 동네 창고·이름 없는 건물처럼 그리지 않습니다(대표 지시 2026-10-06). 이때 brand에 회사 영문 공식 이름, real_query에 위키미디어 검색어(예: "SK hynix Icheon campus")를 적습니다.
+    - prompt에는 **실제 장소 이름**을 구체적으로: 예) "Wide aerial photograph of the Samsung Electronics Seocho office tower in Gangnam, Seoul, tall blue glass skyscraper with the SAMSUNG logo near the top, sunny day, city and Han river in the background" / "Aerial view of the Samsung Electronics Giheung semiconductor campus, large grey fab building with the blue SAMSUNG logo". 넓게 내려다본 구도, 맑은 날, 그 회사 건물의 실제 모양·색을 살립니다.
   - 회사가 아닌 사진(금괴·지폐·현장 등)은 brand·real_query를 빈칸으로 두고, 로고·간판 글자·읽을 수 있는 글자·숫자는 넣지 않습니다.
   - 차트·표·그래프 그림은 만들지 않습니다(표는 table 칸으로).
 - stock_query(영어 2~4단어): AI 사진이 안 될 때 무료 사진에서 찾을 검색어(예: "semiconductor wafer", "seoul stock exchange").
