@@ -28,6 +28,7 @@ REF_LINE = "참조문헌: 뉴스, 언론보도 및 공식자료"  # 강사 지�
 AI_NOTE = "※ 일부 이미지는 AI로 만든 이미지입니다. 이 글은 정보 제공용이며 투자 권유가 아닙니다."
 MAX_IMAGES = 6           # 본문 사진 최대 (소제목 구간마다 2장)
 IMG_QUALITY = "medium"   # 1장 약 $0.06 (가로) — 비용 때문에 medium. 실사풍은 medium도 거칠지 않음(첫 주 확인)
+HIGH_UPTO = 2            # 글 맨 앞부터 이 번호까지 고화질 AI (1 = 썸네일, 2 = 본문 첫 장), 나머지는 무료 사진
 BRAND_QUALITY = "high"   # 회사(간판) 사진은 고화질 (대표 지시 2026-10-06: GPT 대화창 결과와 퀄이 다르다)
 
 
@@ -207,9 +208,8 @@ def produce(slug: str, n: int) -> Path:
         for im in sec["images"][:2]:
             if k - 1 > MAX_IMAGES:
                 break
-            if k > 2:  # 회사(간판) 고화질은 썸네일 + 본문 첫 장까지만 (대표 결정 2026-10-06, 비용)
-                im = {**im, "brand": "", "real_query": ""}
-            f = image(im, post / f"img{k}.png", "1536x1024", credits, used)
+            # 맨 앞 2장(썸네일 + 본문 첫 장)만 고화질 AI, 나머지는 무료 사진 (대표 결정 2026-10-06)
+            f = image(im, post / f"img{k}.png", "1536x1024", credits, used, tier="high" if k <= HIGH_UPTO else "free")
             if f:
                 label = re.sub(r"[:\[\]]", " ", im["alt"])[:20].strip()  # 도우미가 읽는 자리표 모양을 깨지 않게
                 lines.append(f"[이미지 {k}_{label}: {f}]")
@@ -252,13 +252,18 @@ def produce(slug: str, n: int) -> Path:
 
 # ---------------------------------------------------------------- 사진 (대표 결정: AI 실사풍 먼저, 안 되면 무료 사진)
 
-def image(spec: dict, out: Path, size: str, credits: list[str], used: set) -> str | None:
-    # 회사가 나오면 진짜 사옥·간판 사진 먼저 (대표 지적 2026-10-06: "삼성전자인데 동네 창고처럼 그려 놨다")
+def image(spec: dict, out: Path, size: str, credits: list[str], used: set, tier: str = "high") -> str | None:
+    """경제 사진 (대표 결정 2026-10-06): 글 맨 앞 2장(썸네일·본문 첫 장)은 고화질 AI, 나머지는 무료 사진만.
+    회사가 나오면 진짜 간판·로고가 보이게(같은 날 "삼성전자인데 동네 창고처럼"), 위키미디어 실제 사진은 비상용."""
     brand, real = spec.get("brand", "").strip(), spec.get("real_query", "").strip()
-    # 회사 사진은 고화질 AI(진짜 간판) 먼저 — 대표가 보여 준 GPT 대화창 결과 수준 (2026-10-06), 안 되면 위키미디어 실제 사진
-    if brand and ai_photo(spec["prompt"], out, size, brand):
+    if tier == "high" and ai_photo(spec["prompt"], out, size, brand, quality=BRAND_QUALITY):
         credits.append(f"{out.name}: AI 생성(GPT Image, 고화질) — {spec['alt']}")
         return out.name
+    if tier == "free":  # 무료 사진 먼저
+        got = pexels(spec["stock_query"], out.with_suffix(".jpg"), size, used)
+        if got:
+            credits.append(f"{out.with_suffix('.jpg').name}: Pexels · {got} — {spec['alt']}")
+            return out.with_suffix(".jpg").name
     if brand and real:
         from .celeb import commons
         got = commons(real, "", out.with_suffix(""), used, must=[w for w in re.split(r"\s+", brand) if len(w) > 2][:2])
@@ -272,13 +277,11 @@ def image(spec: dict, out: Path, size: str, credits: list[str], used: set) -> st
                 im.crop(((w - c) // 2, (h - c) // 2, (w + c) // 2, (h + c) // 2)).save(f, quality=92)
             credits.append(f"{got[0]}: 실제 사진 · {got[1]} — {spec['alt']} (CC BY·BY-SA는 사진 아래 작가·라이선스 표시)")
             return got[0]
-    if not brand and ai_photo(spec["prompt"], out, size):
-        credits.append(f"{out.name}: AI 생성(GPT Image) — {spec['alt']}")
-        return out.name
-    got = pexels(spec["stock_query"], out.with_suffix(".jpg"), size, used)
-    if got:
-        credits.append(f"{out.with_suffix('.jpg').name}: Pexels · {got} — {spec['alt']}")
-        return out.with_suffix(".jpg").name
+    if tier == "high":
+        got = pexels(spec["stock_query"], out.with_suffix(".jpg"), size, used)
+        if got:
+            credits.append(f"{out.with_suffix('.jpg').name}: Pexels · {got} — {spec['alt']}")
+            return out.with_suffix(".jpg").name
     credits.append(f"{out.name}: ⚠️ 사진 못 구함 — {spec['alt']}")
     return None
 

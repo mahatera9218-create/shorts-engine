@@ -25,6 +25,7 @@ UA = {"User-Agent": "shorts-engine/1.0 (blog image lookup; contact via GitHub)"}
 FREE = ("cc0", "public domain", "cc by", "cc-by", "pd")  # 위키미디어 자유 이용 라이선스만
 META = ("사용자가 제공", "첨부한", "첨부 자료", "캡처", "검색해보니", "확인해보니", "이번 글에서는", "이번 포스팅에서는",
         "제가 확인한 바로는", "자료를 기준으로", "제공된 정보", "검색 결과", "출처를 확인", "이미지 삽입", "사진 삽입", "사진 자리")
+HIGH_UPTO = 4  # 글 맨 앞부터 이 번호까지 고화질 (1 = 썸네일)
 MAX_IMAGES = 12  # 원문 "최대한 많이" — 구간마다 최대 3장 (대표 지시 2026-10-06 "패션은 사진에 힘주고")
 
 
@@ -171,7 +172,8 @@ def produce(slug: str, n: int) -> Path:
         for im in sec["images"][:3]:
             if k - 1 > MAX_IMAGES:
                 break
-            f = image(im, post / f"img{k}", "1536x1024", credits, used)
+            # 맨 앞 4장(썸네일 + 본문 3장)은 고화질, 나머지는 중간 화질 (대표 결정 2026-10-06)
+            f = image(im, post / f"img{k}", "1536x1024", credits, used, quality="high" if k <= HIGH_UPTO else "medium")
             if f:
                 label = re.sub(r"[:\[\]]", " ", credits[-1].split(" — ")[-1])[:30].strip()
                 lines.append(f"[이미지 {k}_{label}: {f}]")
@@ -207,14 +209,14 @@ FASHION_LEAD = ("Luxury fashion magazine editorial still-life photograph, soft n
                 "cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal "
                 "hardware, true-to-life colors, shallow depth of field, high-end catalog quality. ")  # 고화질 (2026-10-06)
 
-def image(spec: dict, stem: Path, size: str, credits: list[str], used: set) -> str | None:
+def image(spec: dict, stem: Path, size: str, credits: list[str], used: set, quality: str = "high") -> str | None:
     if spec["kind"] == "person":
         got = commons(spec.get("query_en") or spec["query"], spec["query"], stem, used)
         if got:
             credits.append(f"{got[0]}: 위키미디어 공용 · {got[1]} — {spec['alt']}")
             return got[0]
     if spec.get("prompt") and ai_photo(spec["prompt"] + " Product only, no people, no hands, no face.", stem.with_suffix(".png"), size,
-                                       quality="high", lead=FASHION_LEAD):
+                                       quality=quality, lead=FASHION_LEAD):
         credits.append(f"{stem.with_suffix('.png').name}: AI 제품 이미지(GPT Image) — {spec['alt']}")
         return stem.with_suffix(".png").name
     got = pexels(spec.get("stock_query", ""), stem.with_suffix(".jpg"), size, used)
