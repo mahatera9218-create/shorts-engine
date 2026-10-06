@@ -54,4 +54,5 @@ def find(query: str, n: int = 6) -> list[dict]:
                     "title": html.unescape(TAG.sub("", it.get("title", ""))).strip()[:60]})
         if len(out) >= n:
             break
+    print(f"  사진 후보 {len(out)}장: {query}")
     return out
