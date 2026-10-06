@@ -199,6 +199,8 @@ def produce(slug: str, n: int) -> Path:
         lines += sec["paragraphs"]
     lines.append(a["summary"])
     lines.append("※ 일부 이미지는 AI로 만든 제품 이미지입니다. 협찬·광고가 아닌 정보 글입니다.")
+    if any(x.get("person") for x in prompts):  # 대표가 넣을 실제 인물 사진의 출처 자리 (대표 결정 2026-10-06)
+        lines.append("사진 출처: (넣은 인물 사진의 출처를 적어 주세요 — 예: OOO 인스타그램, OO일보)")
     (post / "body.txt").write_text("\n\n".join(lines) + "\n", encoding="utf-8")
     (post / "prompts.json").write_text(json.dumps(prompts, ensure_ascii=False, indent=1), encoding="utf-8")
     others = [t for t in T["items"] if t is not pick][:4]
