@@ -28,6 +28,7 @@ REF_LINE = "참조문헌: 뉴스, 언론보도 및 공식자료"  # 강사 지�
 AI_NOTE = "※ 일부 이미지는 AI로 만든 이미지입니다. 이 글은 정보 제공용이며 투자 권유가 아닙니다."
 MAX_IMAGES = 6           # 본문 사진 최대 (소제목 구간마다 2장)
 IMG_QUALITY = "medium"   # 1장 약 $0.06 (가로) — 비용 때문에 medium. 실사풍은 medium도 거칠지 않음(첫 주 확인)
+BRAND_QUALITY = "high"   # 회사(간판) 사진은 고화질 (대표 지시 2026-10-06: GPT 대화창 결과와 퀄이 다르다)
 
 
 def prompt() -> list[str]:
@@ -250,6 +251,10 @@ def produce(slug: str, n: int) -> Path:
 def image(spec: dict, out: Path, size: str, credits: list[str], used: set) -> str | None:
     # 회사가 나오면 진짜 사옥·간판 사진 먼저 (대표 지적 2026-10-06: "삼성전자인데 동네 창고처럼 그려 놨다")
     brand, real = spec.get("brand", "").strip(), spec.get("real_query", "").strip()
+    # 회사 사진은 고화질 AI(진짜 간판) 먼저 — 대표가 보여 준 GPT 대화창 결과 수준 (2026-10-06), 안 되면 위키미디어 실제 사진
+    if brand and ai_photo(spec["prompt"], out, size, brand):
+        credits.append(f"{out.name}: AI 생성(GPT Image, 고화질) — {spec['alt']}")
+        return out.name
     if brand and real:
         from .celeb import commons
         got = commons(real, "", out.with_suffix(""), used, must=[w for w in re.split(r"\s+", brand) if len(w) > 2][:2])
@@ -263,7 +268,7 @@ def image(spec: dict, out: Path, size: str, credits: list[str], used: set) -> st
                 im.crop(((w - c) // 2, (h - c) // 2, (w + c) // 2, (h + c) // 2)).save(f, quality=92)
             credits.append(f"{got[0]}: 실제 사진 · {got[1]} — {spec['alt']} (CC BY·BY-SA는 사진 아래 작가·라이선스 표시)")
             return got[0]
-    if ai_photo(spec["prompt"], out, size, brand):
+    if not brand and ai_photo(spec["prompt"], out, size):
         credits.append(f"{out.name}: AI 생성(GPT Image) — {spec['alt']}")
         return out.name
     got = pexels(spec["stock_query"], out.with_suffix(".jpg"), size, used)
@@ -279,7 +284,7 @@ def ai_photo(desc: str, out: Path, size: str, brand: str = "") -> bool:
         return False
     r = requests.post("https://api.openai.com/v1/images/generations", timeout=600,
                       headers={"Authorization": f"Bearer {F.key('OPENAI_API_KEY')}"},
-                      json={"model": "gpt-image-2", "n": 1, "size": size, "quality": IMG_QUALITY, "prompt": (
+                      json={"model": "gpt-image-2", "n": 1, "size": size, "quality": BRAND_QUALITY if brand else IMG_QUALITY, "prompt": (
                           "Photorealistic editorial news photograph, natural light, real-world location, sharp focus. "
                           + desc + (  # 회사 사진은 그 회사의 실제 간판·로고가 보이게 (대표 지시 2026-10-06)
                               f" This must clearly be {brand}: show its real, accurate corporate signage — the actual "
@@ -291,7 +296,10 @@ def ai_photo(desc: str, out: Path, size: str, brand: str = "") -> bool:
     if r.status_code != 200:
         print(f"AI 사진 실패 HTTP {r.status_code}: {r.text[:160]}")
         return False
-    F.SPENT["image"] += 0.042 if size == "1024x1024" else 0.063  # 어림: medium 단가
+    if brand:  # 어림: high 단가 (gpt-image-1 공개 단가 기준, gpt-image-2 실제 청구는 다를 수 있음)
+        F.SPENT["image"] += 0.167 if size == "1024x1024" else 0.25
+    else:
+        F.SPENT["image"] += 0.042 if size == "1024x1024" else 0.063  # 어림: medium 단가
     out.write_bytes(base64.b64decode(r.json()["data"][0]["b64_json"]))
     return True
 
