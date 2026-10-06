@@ -251,11 +251,13 @@ def flow_html() -> str:
     kw = (yaml.safe_load((day / "keywords.yaml").read_text(encoding="utf-8")) or {}) if (day / "keywords.yaml").exists() else {}
     from .blogs import get as _bget
     _kc = ROOT / _bget(BID).get("keywords", "config/econ_keywords.yaml")
-    W = {"출처": 40, "뉴스": 25, "검색": 35, "최신": 0, **((yaml.safe_load(_kc.read_text(encoding="utf-8")) or {}).get("weights", {}) if _kc.exists() else {})}
+    _kcfg = (yaml.safe_load(_kc.read_text(encoding="utf-8")) or {}) if _kc.exists() else {}
+    W = {"출처": 40, "뉴스": 25, "검색": 35, "최신": 0, **_kcfg.get("weights", {})}
+    MIN = _kcfg.get("min_score", MIN_SCORE)  # 블로그마다 (패션은 30, 2026-10-06)
     rows, hidden = [], 0
     for it in kw.get("items", [])[:20]:
         mine = it.get("src") in ("대표", "캡처") or any(k in (it.get("sources") or {}) for k in ("대표", "캡처"))
-        if "score" in it and it["score"] < MIN_SCORE and not mine:  # 50점 미만은 안 보여 줌 (대표 지시 2026-10-05), 대표가 넣은 건 예외
+        if "score" in it and it["score"] < MIN and not mine:  # 50점 미만은 안 보여 줌 (대표 지시 2026-10-05), 대표가 넣은 건 예외
             hidden += 1
             continue
         link = desk.issue_link(f"{LABEL}키워드", it["kw"], "이 키워드로 제목 후보를 만들어 주세요.")
@@ -292,7 +294,7 @@ def flow_html() -> str:
                  '<div class="muted">왼쪽 네모로 여러 개(최대 5개) 고르면 한 번에 제목 후보를 만들어요. 1개에 약 3~5분, 비용 약 150원.</div>') if rows else ""
     refresh = desk.issue_link(f"{LABEL}키워드새로", today, "여러 출처에서 키워드를 모아 점수를 매겨 주세요.")
     kw_html = f"""<details class="card fold" data-k="f1-{BID}" open style="border:2px solid var(--accent)"><summary><h2><span><span class="step">1</span>오늘의 키워드 고르기</span></h2></summary>
-<div class="muted">점수순이에요(100점 = {"최신(6시간 기사) " + str(W["최신"]) + " + " if W.get("최신") else ""}출처 겹침 {W["출처"]} + 네이버 뉴스량 {W["뉴스"]} + 검색량 {W["검색"]}, {MIN_SCORE}점 이상만{f" · {hidden}개 숨김" if hidden else ""}). 누르면 그 키워드로 <b>제목 후보</b>를 만들어요 (약 3~5분). {e(kw.get("updated", ""))} 기준</div>
+<div class="muted">점수순이에요(100점 = {"최신(6시간 기사) " + str(W["최신"]) + " + " if W.get("최신") else ""}출처 겹침 {W["출처"]} + 네이버 뉴스량 {W["뉴스"]} + 검색량 {W["검색"]}, {MIN}점 이상만{f" · {hidden}개 숨김" if hidden else ""}). 누르면 그 키워드로 <b>제목 후보</b>를 만들어요 (약 3~5분). {e(kw.get("updated", ""))} 기준</div>
 {''.join(rows)}{multi_btn}{'' if rows else '<p class="muted">아직 없어요. 아래 <b>🔄 키워드 모으기</b>를 누르면 여러 출처에서 모아 점수를 매겨요(약 3분).</p>'}
 <textarea id="kwin-{BID}" rows="3" style="width:100%;min-height:84px;font:inherit;line-height:1.6;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:6px 0;background:var(--card);color:var(--ink);resize:vertical" placeholder="{'어드바이저·뉴스 랭킹·트렌드에서 찾은 키워드' if BID == 'econ' else '눈에 띈 연예인 + 아이템 (예: 윤아 코트)'} (한 줄에 하나)"></textarea>
 <button onclick="addKw_{BID}()">➕ 내 키워드 넣기</button>
