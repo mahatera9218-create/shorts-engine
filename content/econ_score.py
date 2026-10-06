@@ -231,9 +231,10 @@ def score(items: list[dict], src_rows: dict[str, str]) -> list[dict]:
         vol = vols.get(q[it["kw"]])
         # 만점 기준은 블로그마다 (패션은 검색량·기사가 경제보다 훨씬 적어 경제 기준이면 다 낮게 나옴, 2026-10-06)
         nf, vf = cfg.get("news_full", 100), cfg.get("vol_full", 1_000_000)
-        parts = {"출처": round(40 * raw[it["kw"]] / top),
-                 "뉴스": round(25 * min(news, nf) / nf) if news is not None else 0,
-                 "검색": round(min(35.0, max(0.0, (math.log10(vol) - 2) / (math.log10(vf) - 2) * 35))) if vol else 0}
+        w = {"출처": 40, "뉴스": 25, "검색": 35, **cfg.get("weights", {})}  # 패션은 홈피드형이라 검색량 비중을 낮춤 (2026-10-06)
+        parts = {"출처": round(w["출처"] * raw[it["kw"]] / top),
+                 "뉴스": round(w["뉴스"] * min(news, nf) / nf) if news is not None else 0,
+                 "검색": round(min(w["검색"], max(0.0, (math.log10(vol) - 2) / (math.log10(vf) - 2) * w["검색"]))) if vol else 0}
         it.update(score=sum(parts.values()), parts=parts,
                   stats={"뉴스24h": news, "블로그24h": blog, "월검색": int(vol) if vol else None})
     return sorted(items, key=lambda x: -x["score"])
