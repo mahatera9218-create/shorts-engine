@@ -104,8 +104,8 @@ ALL_HEAD = {  # 한 번에 붙여넣을 그림 요청 머리말 (원문 사진 �
 }
 
 
-def all_prompt(items: list[dict]) -> tuple[str, list[dict]]:
-    """사진 전부를 한 번에 요청하는 글 + 그림이 아닌 '실제 사진 찾기' 목록."""
+def all_prompt(items: list[dict]) -> str:
+    """이 글 사진 전부를 한 번에 요청하는 프롬프트 하나 (대표 지시 2026-10-06: 구분 없이 '사진 프롬프트' 하나로)."""
     draw = [it for it in items if not it.get("person") and it.get("desc")]
     find = [it for it in items if it.get("person")]
     lines = [ALL_HEAD.get(BID, ALL_HEAD["econ"]).format(n=len(draw)), ""]
@@ -113,31 +113,23 @@ def all_prompt(items: list[dict]) -> tuple[str, list[dict]]:
         shape = "정사각형 1:1" if it.get("size") == "1024x1024" else "가로 3:2"
         brand = f" — {it['brand']} 실제 건물, 진짜 로고·간판" if it.get("brand") else ""
         lines.append(f"{it['n']}번 ({shape}, {it['label']}{brand}): {it['desc']}")
-    return "\n".join(lines), find
+    if find:  # 실제 인물 사진은 그리지 않는다 — 번호만 비워 둔다
+        lines += ["", "※ 다음 번호는 그리지 마세요(실제 사진으로 넣을 자리): "
+                  + ", ".join(f"{it['n']}번 {it.get('find') or it['label']}" for it in find)]
+    return "\n".join(lines)
 
 
 def prompts_card(p: dict) -> str:
-    """사진 만들기: 이 글의 사진 전부를 ChatGPT·제미나이에 한 번에 요청하는 글 (대표 지시 2026-10-06)."""
+    """사진 프롬프트: 복사해서 ChatGPT·제미나이에 붙여넣으면 이 글 사진이 번호 순서대로 따로 나온다."""
     e = html.escape
     f = POSTS / p["folder"] / "prompts.json"
     if not f.exists():
         return ""
-    items = json.loads(f.read_text(encoding="utf-8"))
-    text, find = all_prompt(items)
-    finds = "".join(f'<div style="padding:6px 0;border-top:1px solid var(--line)"><b>사진 {it["n"]}</b> · {e(it["label"])} '
-                    f'<a href="https://search.naver.com/search.naver?where=image&query={e(urllib.parse.quote(it.get("find", "")), quote=True)}" '
-                    f'target="_blank" rel="noopener">실제 사진 찾기</a></div>' for it in find)
-    return (f'<div class="card" style="border:2px solid var(--accent)"><h2>사진 만들기 (ChatGPT·제미나이)</h2>'
-            f'<button onclick="copyText(this,{e(json.dumps(text), quote=True)})">📋 사진 {len(items) - len(find)}장 그림 설명 한 번에 복사</button>'
-            f'<a class="btn ghost" href="https://chatgpt.com/?q={e(urllib.parse.quote(text), quote=True)}" target="_blank" rel="noopener">ChatGPT에서 바로 열기</a>'
-            # 제미나이는 주소로 글을 채워 주는 기능이 없어서(2026-10 기준) 누를 때 복사해 두고 연다 → 붙여넣기만
-            f'<a class="btn ghost" href="https://gemini.google.com/app" target="_blank" rel="noopener" '
-            f'onclick="try{{navigator.clipboard.writeText({e(json.dumps(text), quote=True)})}}catch(x){{}}">제미나이 열기 (설명이 복사돼요 → 붙여넣기)</a>'
-            '<div class="muted">ChatGPT는 설명이 채워진 채로 열리고, 제미나이는 열린 화면 입력칸을 길게 눌러 붙여넣기만 하면 돼요. 직접 붙여넣을 때도 복사해서 ChatGPT나 제미나이에 넣으면 번호 순서대로 한 장씩 따로 만들어 줘요. 중간에 멈추면 "계속"이라고 보내세요. '
-            '받은 사진을 하나씩 저장해 본문의 같은 번호 자리에 넣으면 돼요. 미리 들어간 무료 사진은 예비예요.</div>'
-            f'<details><summary class="muted">설명 내용 보기</summary><div style="font-size:13px;white-space:pre-wrap;word-break:break-word">{e(text)}</div></details>'
-            + (f'<div style="margin-top:8px"><b>그림 대신 실제 사진을 찾을 자리</b>{finds}</div>' if finds else "")
-            + "</div>")
+    text = all_prompt(json.loads(f.read_text(encoding="utf-8")))
+    return (f'<div class="card" style="border:2px solid var(--accent)"><h2>사진 프롬프트</h2>'
+            f'<button onclick="copyText(this,{e(json.dumps(text), quote=True)})">📋 사진 프롬프트 복사</button>'
+            f'<div style="font-size:13px;white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px solid var(--line);'
+            f'border-radius:10px;padding:10px 12px;margin-top:8px;max-height:260px;overflow:auto">{e(text)}</div></div>')
 
 
 def page(p: dict) -> str:
