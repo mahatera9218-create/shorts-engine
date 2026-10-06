@@ -70,6 +70,7 @@ def feed(blog_id: str) -> list[dict]:
                     "category": (it.findtext("category") or "").strip(),
                     "tags": [t.strip() for t in (it.findtext("tag") or "").split(",") if t.strip()][:8],
                     "text_len": len(TAG.sub("", desc).strip()), "imgs": IMG.findall(desc),
+                    "summary": re.sub(r"\s+", " ", TAG.sub(" ", desc)).strip()[:220],  # RSS 요약 앞부분 (사실만 뽑는 용도, 2026-10-06)
                     "html_tags": sorted({t.lower() for t in re.findall(r"<([a-zA-Z0-9]+)", desc)})})
     return out
 
