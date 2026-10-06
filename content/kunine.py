@@ -35,49 +35,9 @@ BRAND_QUALITY = "high"   # 회사(간판) 사진은 고화질 (대표 지시 202
 
 
 def prompt() -> list[str]:
-    out = [re.sub(r"<!--.*?-->", "", PROMPT.read_text(encoding="utf-8"), flags=re.S).strip(),
-           re.sub(r"<!--.*?-->", "", ADDON.read_text(encoding="utf-8"), flags=re.S).strip()]
-    from .title_refs import deep_doc, for_blog  # 심층 조사한 고수(유미)의 주제·구성 참고 (대표 지시 2026-10-06)
-    for bid in for_blog(F.BLOG["id"]):
-        if deep_doc(bid).exists():
-            out.append("[참고: 심층 분석한 블로거 — 주제 고르는 법·글 구성은 참고, 위 원문·덧붙임 규칙이 우선(담백한 설명체, 투자 권유 금지), "
-                       "문장·표현은 베끼지 말 것]\n" + deep_doc(bid).read_text(encoding="utf-8")[:4000])
-    return out
-
-
-# ---------------------------------------------------------------- 조사 (Grok)
-
-def research(kw: str) -> str:
-    return F.grok(
-        f"오늘은 {F.today()}(한국 시간)입니다. 블로그 글을 쓰기 위한 조사 메모를 만들어 주세요. 핵심키워드: {kw}\n"
-        "웹과 X를 검색해 어제·오늘 나온 최신 뉴스·공식 발표·공시만 날짜순으로 확인하고, 여러 자료를 교차검증하세요"
-        "(배경 설명에 꼭 필요한 숫자만 그 전 자료 허용).\n"
-        "아래 순서로 짧게 정리:\n"
-        "1) 이 키워드를 검색한 사람이 무엇부터 찾는지 (검색 의도 순서)\n"
-        "2) 가장 최신 뉴스와 반복해서 나오는 핵심 이슈 (날짜 포함)\n"
-        "3) 확인된 숫자·금액·날짜·조건 (기준 시점과 출처를 함께)\n"
-        "4) 해석이 엇갈리는 점, 찬반·이해관계, 사람들이 놀라거나 억울해하거나 기대하는 점 (X 반응 포함, 소문은 '소문' 표시)\n"
-        "5) 기관·증권가 전망 (누가 어떻게)\n"
-        "6) 앞으로 일정\n"
-        "맨 끝에 '출처:' 아래 기사 제목과 URL 목록. 확인 안 된 건 지어내지 말고 모른다고 쓰세요.",
-        days=2, web=True, turns=2)  # 어제·오늘 뉴스만 (대표 결정 2026-10-05), 턴 2번으로 비용 절약
-
-
-# ---------------------------------------------------------------- 제목 (6유형 × 5)
-
-TITLES = {"type": "object", "additionalProperties": False, "required": ["groups", "final", "person", "versions"],
-          "properties": {
-              "versions": VERSION_SCHEMA,  # 제목 고수 방식 3개씩 (경제토르·유미, 대표 지시 2026-10-06)
-              "person": {"type": "string", "description": "글 주인공 인물이 있으면 '회사 이름', 없으면 빈칸"},
-              "groups": {"type": "array", "description": "비교형·실행형·이득형·궁금형·위협형·반전형 순서로 6개",
-                         "items": {"type": "object", "additionalProperties": False,
-                                   "required": ["type", "candidates", "best"],
-                                   "properties": {"type": {"type": "string", "enum": TYPES},
-                                                  "candidates": {"type": "array", "items": {"type": "string"}},
-                                                  "best": {"type": "integer", "description": "candidates 중 BEST의 번호(0부터)"}}}},
-              "final": {"type": "array", "description": "유형별 BEST 6개를 다시 비교해 고른 최종 BEST 5 (1번이 메인 추천)",
-                        "items": {"type": "object", "additionalProperties": False, "required": ["title", "type"],
-                                  "properties": {"title": {"type": "string"}, "type": {"type": "string", "enum": TYPES}}}}}}
+    # 글 방식은 쿠니네 원문 + 덧붙임만 (대표 지시 2026-10-06: 고수에게서는 제목·키워드만 배움)
+    return [re.sub(r"<!--.*?-->", "", PROMPT.read_text(encoding="utf-8"), flags=re.S).strip(),
+            re.sub(r"<!--.*?-->", "", ADDON.read_text(encoding="utf-8"), flags=re.S).strip()]
 
 
 def title_guide() -> str:

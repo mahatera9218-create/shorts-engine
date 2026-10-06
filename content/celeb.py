@@ -33,13 +33,8 @@ MAX_IMAGES = 12  # 원문 "최대한 많이" — 구간마다 최대 3장 (대�
 def prompt() -> list[str]:
     b = F.BLOG
     files = [b["prompt"], "prompts/addon-common-celeb.md", b["addon"]]
-    out = [re.sub(r"<!--.*?-->", "", (ROOT / f).read_text(encoding="utf-8"), flags=re.S).strip() for f in files]
-    from .title_refs import deep_doc, for_blog  # 심층 조사한 고수(유미)의 주제·구성·썸네일 방식 참고 (대표 지시 2026-10-06)
-    for bid in for_blog(b["id"]):
-        if deep_doc(bid).exists():
-            out.append("[참고: 심층 분석한 블로거 — 주제 고르는 법·글 구성·썸네일은 참고, 말투·인사말은 위 블로그 설정이 우선, "
-                       "문장·표현은 베끼지 말 것]\n" + deep_doc(bid).read_text(encoding="utf-8")[:4000])
-    return out
+    # 글 방식은 강사 원문 + 덧붙임만 (대표 지시 2026-10-06: 고수에게서는 제목·키워드만 배움)
+    return [re.sub(r"<!--.*?-->", "", (ROOT / f).read_text(encoding="utf-8"), flags=re.S).strip() for f in files]
 
 
 def research(kw: str) -> str:
