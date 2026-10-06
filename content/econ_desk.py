@@ -297,9 +297,7 @@ def flow_html() -> str:
         T = yaml.safe_load(t.read_text(encoding="utf-8")) or {}
         chosen = t.parent / "chosen.yaml"
         if chosen.exists():
-            c = yaml.safe_load(chosen.read_text(encoding="utf-8")) or {}
-            topics.append(f'<div class="card"><b>{e(T.get("keyword", ""))}</b> → ✅ 「{e(c.get("title", ""))}」 제작 완료 ({e(c.get("at", ""))}). 아래 목록에서 올리세요.</div>')
-            continue
+            continue  # 제작 끝난 주제는 ②에 안 남김 — ③ 올릴 글에 있음 (대표 지적 2026-10-06)
         def btn(i: int, it: dict, label: str) -> str:
             flags = " · ⚠️ " + ", ".join(it["flags"]) if it.get("flags") else ""
             link = desk.issue_link(f"{LABEL}제목", f"{t.parent.name} {i}", "이 제목으로 글·사진을 만들어 주세요.")
