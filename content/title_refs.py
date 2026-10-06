@@ -145,8 +145,11 @@ def versions_ask(bid: str | None = None) -> str:
              "투자 권유·단정 전망·외모 비하·과장된 거짓은 쓰지 않음."]
     for b, name in ms.items():
         parts.append(f"\n[{name} 최근 제목]\n" + "\n".join(f"- {p['title']}" for p in history(b)[:12]))
-        if deep_doc(b).exists():
-            parts.append(f"[{name} 심층 분석 요약]\n" + deep_doc(b).read_text(encoding="utf-8")[:2500])
+        if deep_doc(b).exists():  # 심층 분석 중 제목 공식·주제 고르는 법만 (글 방식은 안 배움, 대표 지시 2026-10-06)
+            doc = deep_doc(b).read_text(encoding="utf-8")
+            keep = [sec for sec in doc.split("\n## ") if sec.startswith(("제목 공식", "주제 고르는 법"))]
+            if keep:
+                parts.append(f"[{name} 제목·주제 분석]\n## " + "\n## ".join(keep)[:2500])
     return "\n".join(parts)
 
 

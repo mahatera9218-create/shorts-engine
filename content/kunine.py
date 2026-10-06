@@ -35,14 +35,9 @@ BRAND_QUALITY = "high"   # 회사(간판) 사진은 고화질 (대표 지시 202
 
 
 def prompt() -> list[str]:
-    out = [re.sub(r"<!--.*?-->", "", PROMPT.read_text(encoding="utf-8"), flags=re.S).strip(),
-           re.sub(r"<!--.*?-->", "", ADDON.read_text(encoding="utf-8"), flags=re.S).strip()]
-    from .title_refs import deep_doc, for_blog  # 심층 조사한 고수(유미)의 주제·구성 참고 (대표 지시 2026-10-06)
-    for bid in for_blog(F.BLOG["id"]):
-        if deep_doc(bid).exists():
-            out.append("[참고: 심층 분석한 블로거 — 주제 고르는 법·글 구성은 참고, 위 원문·덧붙임 규칙이 우선(담백한 설명체, 투자 권유 금지), "
-                       "문장·표현은 베끼지 말 것]\n" + deep_doc(bid).read_text(encoding="utf-8")[:4000])
-    return out
+    # 글 방식은 쿠니네 원문 + 덧붙임만 (대표 지시 2026-10-06: 고수에게서는 제목·키워드만 배움)
+    return [re.sub(r"<!--.*?-->", "", PROMPT.read_text(encoding="utf-8"), flags=re.S).strip(),
+            re.sub(r"<!--.*?-->", "", ADDON.read_text(encoding="utf-8"), flags=re.S).strip()]
 
 
 # ---------------------------------------------------------------- 조사 (Grok)
