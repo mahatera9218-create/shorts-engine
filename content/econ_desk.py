@@ -127,12 +127,21 @@ def prompts_card(p: dict) -> str:
     f = POSTS / p["folder"] / "prompts.json"
     if not f.exists():
         return ""
-    text = all_prompt(json.loads(f.read_text(encoding="utf-8")))
+    items = json.loads(f.read_text(encoding="utf-8"))
+    text = all_prompt(items)
+    # 인물 사진 자리: 대표가 직접 실제 사진을 넣는다 (대표 결정 2026-10-06, 출처 표기). 찾을 검색어 + 출처 줄
+    people = "".join(
+        f'<div style="padding:6px 0;border-top:1px solid var(--line)"><b>{it["n"]}번</b> {e(it["label"])} · '
+        f'<a href="https://search.naver.com/search.naver?where=image&query={e(urllib.parse.quote(it.get("find") or it["label"]), quote=True)}" '
+        f'target="_blank" rel="noopener">사진 찾기: {e(it.get("find") or it["label"])}</a></div>'
+        for it in items if it.get("person"))
+    people = (f'<div style="margin-top:10px"><b>인물 사진 자리 (직접 넣기)</b>{people}'
+              '<div class="muted" style="margin-top:6px">사진 아래에 출처를 꼭 적어 주세요. 예) 사진 출처: OOO 인스타그램 / OO일보</div></div>') if people else ""
     return (f'<div class="card" style="border:2px solid var(--accent)"><h2>사진 프롬프트</h2>'
             f'<button onclick="copyText(this,{e(json.dumps(text), quote=True)})">📋 사진 프롬프트 복사</button>'
             # 안쪽 스크롤 상자(overflow:auto)는 아이폰에서 아래 입력칸 키보드를 막는 일이 있어 접기 방식으로 (2026-10-06)
             f'<details><summary class="muted">프롬프트 내용 보기</summary><div style="font-size:13px;white-space:pre-wrap;word-break:break-word;'
-            f'background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:8px">{e(text)}</div></details></div>')
+            f'background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:8px">{e(text)}</div></details>{people}</div>')
 
 
 def page(p: dict) -> str:
