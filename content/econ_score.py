@@ -147,12 +147,16 @@ def _hub():
     return ApiHub(load_yaml("global.yaml")["endpoints"]["naver_hub"])
 
 
+FRESH: dict[str, int] = {}  # 최근 6시간 기사 수 (_recent_count가 news_search 때 채움, 2026-10-06 최신성 가점)
+
+
 def _recent_count(hub, path: str, kw: str) -> tuple[int, int]:
-    """(최근 24시간 글 수(최대 100), 전체 문서 수)."""
+    """(최근 24시간 글 수(최대 100), 전체 문서 수). 뉴스는 최근 6시간 수도 FRESH[kw]에 남긴다."""
     data = request_json("GET", hub.base + hub.paths[path], headers=hub._headers(),
                         params={"query": kw, "display": 100, "sort": "date"})
-    since = datetime.now(F.KST) - timedelta(hours=24)
-    n = 0
+    now = datetime.now(F.KST)
+    since, fresh = now - timedelta(hours=24), now - timedelta(hours=6)
+    n = n6 = 0
     for it in data.get("items", []):
         raw = it.get("pubDate") or it.get("postdate") or ""
         try:
@@ -160,6 +164,9 @@ def _recent_count(hub, path: str, kw: str) -> tuple[int, int]:
         except (TypeError, ValueError):
             continue
         n += at >= (since if "," in raw else since.replace(hour=0, minute=0))
+        n6 += "," in raw and at >= fresh
+    if path == "news_search":
+        FRESH[kw] = n6
     return n, int(data.get("total") or 0)
 
 
@@ -231,12 +238,15 @@ def score(items: list[dict], src_rows: dict[str, str]) -> list[dict]:
         vol = vols.get(q[it["kw"]])
         # 만점 기준은 블로그마다 (패션은 검색량·기사가 경제보다 훨씬 적어 경제 기준이면 다 낮게 나옴, 2026-10-06)
         nf, vf = cfg.get("news_full", 100), cfg.get("vol_full", 1_000_000)
-        w = {"출처": 40, "뉴스": 25, "검색": 35, **cfg.get("weights", {})}  # 패션은 홈피드형이라 검색량 비중을 낮춤 (2026-10-06)
-        parts = {"출처": round(w["출처"] * raw[it["kw"]] / top),
+        w = {"출처": 40, "뉴스": 25, "검색": 35, "최신": 0, **cfg.get("weights", {})}  # 블로그마다 나눔 (2026-10-06)
+        n6 = FRESH.get(q[it["kw"]])
+        ff = cfg.get("fresh_full", 10)  # 최신: 최근 6시간 기사 이 수면 만점 (대표 지시 2026-10-06 "따끈할수록 가점")
+        parts = {"최신": round(w["최신"] * min(n6, ff) / ff) if (n6 is not None and w["최신"]) else 0,
+                 "출처": round(w["출처"] * raw[it["kw"]] / top),
                  "뉴스": round(w["뉴스"] * min(news, nf) / nf) if news is not None else 0,
                  "검색": round(min(w["검색"], max(0.0, (math.log10(vol) - 2) / (math.log10(vf) - 2) * w["검색"]))) if vol else 0}
         it.update(score=sum(parts.values()), parts=parts,
-                  stats={"뉴스24h": news, "블로그24h": blog, "월검색": int(vol) if vol else None})
+                  stats={"뉴스24h": news, "뉴스6h": n6, "블로그24h": blog, "월검색": int(vol) if vol else None})
     return sorted(items, key=lambda x: -x["score"])
 
 

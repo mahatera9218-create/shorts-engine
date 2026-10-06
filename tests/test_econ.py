@@ -40,8 +40,8 @@ class EconTest(unittest.TestCase):
         src = {"B1": "zkfldb888", "B2": "블로거", "G1": "Grok", "N1": "국내뉴스", "G2": "Grok"}
         out = econ_score.score(items, src)
         self.assertEqual(out[0]["kw"], "청년미래적금")
-        self.assertEqual(out[0]["parts"]["출처"], 40)  # 그날 1등 = 40
-        self.assertEqual(out[1]["parts"]["출처"], round(40 * 6 / 22))
+        self.assertEqual(out[0]["parts"]["출처"], 35)  # 그날 1등 = 출처 만점 (경제 35, 2026-10-06 최신성 15 추가)
+        self.assertEqual(out[1]["parts"]["출처"], round(35 * 6 / 22))
 
     def test_kunine_check(self):
         from content import kunine
