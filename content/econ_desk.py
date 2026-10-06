@@ -320,8 +320,8 @@ def flow_html() -> str:
                     for i, it in enumerate(items, 1) if it.get("rank")]
             for g in T.get("groups", []):
                 inner = "".join(btn(j + 1, items[j], "BEST · " if j == g.get("best") else "· ") for j in g["idx"] if j < len(items))
-                thor = g["type"] == "경제토르식"  # 대표가 비교해 보려는 묶음이라 펼쳐 둠 (2026-10-06)
-                btns.append(f'<details{" open" if thor else ""}><summary class="muted">{"경제토르 방식 " if thor else e(g["type"]) + " "}{len(g["idx"])}개 보기</summary>{inner}</details>')
+                ver = g["type"].endswith("식")  # 제목 고수 방식 묶음은 비교해 보려고 펼쳐 둠 (2026-10-06)
+                btns.append(f'<details{" open" if ver else ""}><summary class="muted">{e(g["type"][:-1]) + " 방식 " if ver else e(g["type"]) + " "}{len(g["idx"])}개 보기</summary>{inner}</details>')
         else:
             btns = [btn(i, it, f"{i}. ") for i, it in enumerate(items, 1)]
         topics.append(f'<details class="card fold" data-k="f2-{e(t.parent.name)}" open style="border:2px solid var(--accent)"><summary><h2><span><span class="step">2</span>제목 고르기 · {e(T.get("keyword", ""))}</span></h2></summary>'

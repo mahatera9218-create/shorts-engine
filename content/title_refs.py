@@ -126,8 +126,87 @@ def guide_text(bid: str | None = None) -> str:
             + "\n".join(keep)[:5000])
 
 
+def deep_doc(bid: str) -> Path:
+    return OUT / f"{masters().get(bid, bid)}-심층.md"
+
+
+VERSION_SCHEMA = {"type": "array", "description": "제목 고수 방식 제목 (고수마다 3개)",
+                  "items": {"type": "object", "additionalProperties": False, "required": ["who", "titles"],
+                            "properties": {"who": {"type": "string"}, "titles": {"type": "array", "items": {"type": "string"}}}}}
+
+
+def versions_ask(bid: str | None = None) -> str:
+    """제목 후보에 붙일 '고수 방식 3개씩' 요청 (대표 지시 2026-10-06: 토르 버전·유미 버전 3개씩)."""
+    ms = for_blog(bid)
+    if not ms:
+        return ""
+    parts = [f"그리고 versions 칸에 아래 제목 고수마다 그 사람 방식으로 제목 3개씩 주세요(who = {', '.join(ms.values())}). "
+             "같은 키워드·조사 메모의 사실로만, 그 사람의 제목 구조·말투·결을 따르되 문구는 베끼지 말 것. "
+             "투자 권유·단정 전망·외모 비하·과장된 거짓은 쓰지 않음."]
+    for b, name in ms.items():
+        parts.append(f"\n[{name} 최근 제목]\n" + "\n".join(f"- {p['title']}" for p in history(b)[:12]))
+        if deep_doc(b).exists():
+            parts.append(f"[{name} 심층 분석 요약]\n" + deep_doc(b).read_text(encoding="utf-8")[:2500])
+    return "\n".join(parts)
+
+
+DEEP = {"type": "object", "additionalProperties": False,
+        "required": ["topics", "titles", "structure", "voice", "thumbnail", "tags_time", "rules"],
+        "properties": {k: {"type": "string", "description": d} for k, d in {
+            "topics": "주제를 어떻게 고르나 (인물·아이템·가격·시점, 분야 비중, 무엇이 반응 좋아 보이나)",
+            "titles": "제목 공식 (유형별 틀과 비율, 길이·기호·말투, 첫 15자에 무엇을 두나)",
+            "structure": "글 구성 (요약에서 보이는 도입·흐름·문단 길이·사진 수·글 길이)",
+            "voice": "말투·어미·감탄·독자에게 말 거는 방식",
+            "thumbnail": "썸네일 구성 (사진/합성/글자 유무·위치·색, 인물·제품 배치)",
+            "tags_time": "태그 쓰는 법, 카테고리, 발행 시간대·하루 편수",
+            "rules": "우리(캐시미어 다이어리·억선생의 경제판)가 따라 할 규칙 6~10개 — 문장 복사·외모 비하·가짜 경험은 빼고"}.items()}}
+
+
+def deep(bid: str) -> None:
+    """심층 조사: 공개 RSS 최근 글 전부(제목·카테고리·태그·요약·그림 수·시간) + 최근 썸네일 8장을 Claude가 보고 정리."""
+    from . import econ_flow as F
+    from .econ_refs import _image, feed
+    name = masters().get(bid, bid)
+    items = feed(bid)
+    if not items:
+        print(f"{name} RSS 없음")
+        return
+    lines = [f"{name}({bid}) 공개 RSS 최근 글 {len(items)}개"]
+    for i in items:
+        lines.append(f"- {i['at']:%m-%d %a %H:%M} [{i['category']}] {i['title']} · 그림 {len(i['imgs'])} · 요약 {i['text_len']}자 · "
+                     f"태그 {', '.join(i['tags'][:8])}\n  요약: {i.get('summary', '')[:200]}")
+    content = [{"type": "text", "text": "\n".join(lines)}]
+    for i in [x for x in items if x["imgs"]][:8]:
+        img = _image(i["imgs"][0])
+        if img:
+            content += [{"type": "text", "text": f"↓ '{i['title']}' 썸네일"}, img]
+    content.append({"type": "text", "text": (
+        f"위는 블로거 {name}의 공개 RSS 최근 글과 썸네일입니다. 이 블로거를 우리가 배울 수 있게 아주 자세히 분석해 주세요. "
+        "보이는 것만 쓰고 추측은 '추측'이라고 표시. 남의 문장은 길게 옮기지 말고 모양만 설명.")})
+    import anthropic
+    import json as _json
+    with anthropic.Anthropic().messages.stream(model="claude-sonnet-5-5", max_tokens=12000, messages=[{"role": "user", "content": content}],
+                                               output_config={"format": {"type": "json_schema", "schema": DEEP}}) as st:
+        msg = st.get_final_message()
+    u = msg.usage
+    F.SPENT["claude"] += (u.input_tokens * 2.0 + u.output_tokens * 10.0) / 1_000_000
+    r = _json.loads("".join(b.text for b in msg.content if getattr(b, "type", "") == "text"))
+    md = [f"# {name} 심층 분석 ({F.today()}, 공개 RSS 최근 {len(items)}개)", ""]
+    for k, h in (("topics", "주제 고르는 법"), ("titles", "제목 공식"), ("structure", "글 구성"), ("voice", "말투"),
+                 ("thumbnail", "썸네일"), ("tags_time", "태그·카테고리·발행 시간"), ("rules", "우리가 따라 할 규칙")):
+        md += [f"## {h}", r[k], ""]
+    deep_doc(bid).write_text("\n".join(md), encoding="utf-8")
+    F.log_cost("titlerefs", f"{name} 심층")
+    print(deep_doc(bid).read_text(encoding="utf-8")[:1500])
+
+
 def main() -> None:
     analyze(collect())
+    for b in (yaml.safe_load(CFG.read_text(encoding="utf-8")) or {}).get("deep") or []:
+        try:
+            deep(b)
+        except Exception as ex:  # noqa: BLE001 — 심층이 실패해도 제목 공식은 남김
+            print(f"심층 실패 {b}: {ex}")
 
 
 if __name__ == "__main__":
