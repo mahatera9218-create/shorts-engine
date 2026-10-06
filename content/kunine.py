@@ -113,8 +113,10 @@ def titles(kw: str) -> Path:
 
 # ---------------------------------------------------------------- 본문
 
-IMG = {"type": "object", "additionalProperties": False, "required": ["prompt", "stock_query", "alt"],
-       "properties": {"prompt": {"type": "string"}, "stock_query": {"type": "string"}, "alt": {"type": "string"}}}
+IMG = {"type": "object", "additionalProperties": False, "required": ["brand", "real_query", "prompt", "stock_query", "alt"],
+       "properties": {"brand": {"type": "string", "description": "사진에 나오는 회사의 영문 공식 이름(예: Samsung Electronics, SK hynix). 회사가 아니면 빈칸"},
+                      "real_query": {"type": "string", "description": "위키미디어 공용에서 그 회사의 실제 사옥·공장·매장 사진을 찾을 영어 검색어(예: Samsung Electronics Seocho building). 없으면 빈칸"},
+                      "prompt": {"type": "string"}, "stock_query": {"type": "string"}, "alt": {"type": "string"}}}
 BODY = {"type": "object", "additionalProperties": False,
         "required": ["intro", "sections", "closing", "table", "qa", "tags", "sources", "thumb", "area"],
         "properties": {
@@ -246,7 +248,22 @@ def produce(slug: str, n: int) -> Path:
 # ---------------------------------------------------------------- 사진 (대표 결정: AI 실사풍 먼저, 안 되면 무료 사진)
 
 def image(spec: dict, out: Path, size: str, credits: list[str], used: set) -> str | None:
-    if ai_photo(spec["prompt"], out, size):
+    # 회사가 나오면 진짜 사옥·간판 사진 먼저 (대표 지적 2026-10-06: "삼성전자인데 동네 창고처럼 그려 놨다")
+    brand, real = spec.get("brand", "").strip(), spec.get("real_query", "").strip()
+    if brand and real:
+        from .celeb import commons
+        got = commons(real, "", out.with_suffix(""), used, must=[w for w in re.split(r"\s+", brand) if len(w) > 2][:2])
+        if got:
+            if size == "1024x1024":  # 썸네일은 정사각형으로 가운데 자르기
+                from PIL import Image
+                f = out.with_suffix(".jpg")
+                im = Image.open(f).convert("RGB")
+                w, h = im.size
+                c = min(w, h)
+                im.crop(((w - c) // 2, (h - c) // 2, (w + c) // 2, (h + c) // 2)).save(f, quality=92)
+            credits.append(f"{got[0]}: 실제 사진 · {got[1]} — {spec['alt']} (CC BY·BY-SA는 사진 아래 작가·라이선스 표시)")
+            return got[0]
+    if ai_photo(spec["prompt"], out, size, brand):
         credits.append(f"{out.name}: AI 생성(GPT Image) — {spec['alt']}")
         return out.name
     got = pexels(spec["stock_query"], out.with_suffix(".jpg"), size, used)
@@ -257,15 +274,20 @@ def image(spec: dict, out: Path, size: str, credits: list[str], used: set) -> st
     return None
 
 
-def ai_photo(desc: str, out: Path, size: str) -> bool:
+def ai_photo(desc: str, out: Path, size: str, brand: str = "") -> bool:
     if not F.key("OPENAI_API_KEY"):
         return False
     r = requests.post("https://api.openai.com/v1/images/generations", timeout=600,
                       headers={"Authorization": f"Bearer {F.key('OPENAI_API_KEY')}"},
                       json={"model": "gpt-image-2", "n": 1, "size": size, "quality": IMG_QUALITY, "prompt": (
                           "Photorealistic editorial news photograph, natural light, real-world location, sharp focus. "
-                          + desc + " No identifiable real person's face, no logos, no brand marks, no readable text, "
-                          "letters or numbers anywhere, no watermark, no charts.")})
+                          + desc + (  # 회사 사진은 그 회사의 실제 간판·로고가 보이게 (대표 지시 2026-10-06)
+                              f" This must clearly be {brand}: show its real, accurate corporate signage — the actual "
+                              f"{brand} logo and company name exactly as they appear on its real buildings, correctly spelled. "
+                              "No other readable text. No identifiable real person's face, no watermark, no charts."
+                              if brand else
+                              " No identifiable real person's face, no logos, no brand marks, no readable text, "
+                              "letters or numbers anywhere, no watermark, no charts."))})
     if r.status_code != 200:
         print(f"AI 사진 실패 HTTP {r.status_code}: {r.text[:160]}")
         return False
