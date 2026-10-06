@@ -126,16 +126,19 @@ def person_row(it: dict, used: bool) -> str:
     e = html.escape
     q = it.get("find") or it["label"]
     cands = [] if used else find(q)
+    # 크기가 제각각이면 어수선해서 (대표 지적 2026-10-06) 3칸 정사각형 격자로 맞춤, 사이트·크기는 한 줄로 자름
     size = lambda c: f" · {c['w']}×{c['h']}" if c["w"] else ""
+    cap = "font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px"
+    btn = "min-height:30px;margin:2px 0 0;padding:4px;font-size:12px;font-weight:600;text-align:center"
     pics = "".join(
-        f'<div style="flex:0 0 46%;max-width:46%"><a href="{e(c["link"], quote=True)}" target="_blank" rel="noopener noreferrer">'
+        f'<div style="min-width:0"><a href="{e(c["link"], quote=True)}" target="_blank" rel="noopener noreferrer">'
         f'<img src="{e(c["thumb"], quote=True)}" referrerpolicy="no-referrer" loading="lazy" alt="" '
-        f'style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:8px;background:var(--bg)"></a>'
-        f'<div class="muted" style="font-size:11px;word-break:break-all">{e(c["host"])}{size(c)}</div>'
-        f'<button class="ghost" style="font-size:12px;padding:4px 8px" '
+        f'style="width:100%;aspect-ratio:1/1;object-fit:cover;object-position:top;border-radius:8px;background:var(--bg)"></a>'
+        f'<div class="muted" style="{cap}">{e(c["host"])}{size(c)}</div>'
+        f'<button class="ghost" style="{btn}" '
         f'onclick="copyText(this,{e(json.dumps("사진 출처: " + c["host"]), quote=True)})">출처 복사</button></div>'
         for c in cands)
-    pics = (f'<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px">{pics}</div>' if pics else
+    pics = (f'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px">{pics}</div>' if pics else
             "" if used else '<div class="muted">후보를 못 찾았어요 — 위 「네이버에서 더 찾기」로 찾아 주세요</div>')
     naver = (f'<a href="https://search.naver.com/search.naver?where=image&query={e(urllib.parse.quote(q), quote=True)}" '
              f'target="_blank" rel="noopener" class="muted">네이버에서 더 찾기</a>')
