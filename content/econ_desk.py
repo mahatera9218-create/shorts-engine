@@ -128,8 +128,9 @@ def prompts_card(p: dict) -> str:
     text = all_prompt(json.loads(f.read_text(encoding="utf-8")))
     return (f'<div class="card" style="border:2px solid var(--accent)"><h2>사진 프롬프트</h2>'
             f'<button onclick="copyText(this,{e(json.dumps(text), quote=True)})">📋 사진 프롬프트 복사</button>'
-            f'<div style="font-size:13px;white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px solid var(--line);'
-            f'border-radius:10px;padding:10px 12px;margin-top:8px;max-height:260px;overflow:auto">{e(text)}</div></div>')
+            # 안쪽 스크롤 상자(overflow:auto)는 아이폰에서 아래 입력칸 키보드를 막는 일이 있어 접기 방식으로 (2026-10-06)
+            f'<details><summary class="muted">프롬프트 내용 보기</summary><div style="font-size:13px;white-space:pre-wrap;word-break:break-word;'
+            f'background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:8px">{e(text)}</div></details></div>')
 
 
 def page(p: dict) -> str:
