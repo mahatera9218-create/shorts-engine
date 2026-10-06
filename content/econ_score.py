@@ -68,13 +68,15 @@ def gather(grok_items: list[dict], mine: list[dict]) -> list[tuple[str, str, str
     # 참고 블로거 RSS (econ 말고 블로그별 설정 ref_bloggers, 2026-10-06): 최근 36시간 새 글 제목
     if F.BLOG["id"] != "econ" and cfg.get("ref_bloggers"):
         from .econ_refs import feed
-        since = datetime.now(F.KST) - timedelta(hours=36)
+        now = datetime.now(F.KST)
+        since, fresh = now - timedelta(hours=36), now - timedelta(hours=12)
         for bid, name in cfg["ref_bloggers"].items():
             try:
                 for x in feed(bid):
                     if x["at"] >= since and x["title"]:
-                        n += 1
-                        rows.append((f"B{n}", "블로거", f"[{name}] {x['title']}"))
+                        n += 1  # 12시간 안 새 글은 '블로거새글'(점수 더), 요약 앞부분도 같이 — 브랜드·가격을 뽑게 (2026-10-06)
+                        rows.append((f"B{n}", "블로거새글" if x["at"] >= fresh else "블로거",
+                                     f"[{name}] {x['title']} — {x.get('summary', '')[:160]}"))
             except Exception as e:  # noqa: BLE001
                 print(f"블로거 RSS 실패 {bid}: {type(e).__name__}")
     for kind in ("국내뉴스", "해외뉴스"):
@@ -222,7 +224,7 @@ def score(items: list[dict], src_rows: dict[str, str]) -> list[dict]:
                 cnt[s] = cnt.get(s, 0) + 1
         src_pts = 0.0
         for s, c in cnt.items():
-            p = pts.get(s, 0) * (c if s in ("블로거", "국내뉴스", "해외뉴스", "뉴스검색") else 1)
+            p = pts.get(s, 0) * (c if s in ("블로거", "블로거새글", "국내뉴스", "해외뉴스", "뉴스검색") else 1)
             src_pts += min(p, caps.get(s, p))
         raw[it["kw"]] = src_pts
         it["sources"] = cnt
