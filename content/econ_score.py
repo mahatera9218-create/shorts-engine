@@ -75,7 +75,7 @@ def gather(grok_items: list[dict], mine: list[dict]) -> list[tuple[str, str, str
                 for x in feed(bid):
                     if x["at"] >= since and x["title"]:
                         n += 1  # 12시간 안 새 글은 '블로거새글'(점수 더), 요약 앞부분도 같이 — 브랜드·가격을 뽑게 (2026-10-06)
-                        rows.append((f"B{n}", "블로거새글" if x["at"] >= fresh else "블로거",
+                        rows.append((f"B{n}", "쿠니네패션" if bid == cfg.get("main_blogger") else ("블로거새글" if x["at"] >= fresh else "블로거"),
                                      f"[{name}] {x['title']} — {x.get('summary', '')[:160]}"))
             except Exception as e:  # noqa: BLE001
                 print(f"블로거 RSS 실패 {bid}: {type(e).__name__}")
