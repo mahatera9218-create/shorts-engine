@@ -19,7 +19,7 @@ import requests
 
 from market.common import ROOT
 from . import econ_flow as F
-from .kunine import ai_photo, pexels
+from .kunine import ai_photo, pexels, photo_prompt
 
 UA = {"User-Agent": "shorts-engine/1.0 (blog image lookup; contact via GitHub)"}
 FREE = ("cc0", "public domain", "cc by", "cc-by", "pd")  # 위키미디어 자유 이용 라이선스만
@@ -163,26 +163,35 @@ def produce(slug: str, n: int) -> Path:
     left = check(a)
     post = F.POSTS / slug
     post.mkdir(parents=True, exist_ok=True)
-    credits, used = [], set()
+    credits, used, prompts = [], set(), []
+
+    def ask(spec: dict, size: str) -> str:  # ChatGPT·제미나이에 붙여넣을 글 (인물 사진은 실제 사진을 찾을 검색어 안내)
+        if spec["kind"] == "person":
+            return f"[실제 사진 찾기] {spec['query']} — {spec['alt']}"
+        return photo_prompt(spec["prompt"] + " Product only, no people, no hands, no face.", size, lead=FASHION_LEAD)
+
     thumb = image(a["thumb"], post / "thumb", "1024x1024", credits, used)
-    lines = [f"[이미지 1_썸네일: {thumb}]"] if thumb else []
+    prompts.append({"n": 1, "label": "썸네일 · " + a["thumb"]["alt"], "make": True, "file": thumb or "",
+                    "prompt": ask(a["thumb"], "1024x1024")})
+    lines = [f"[이미지 1_썸네일: {thumb or '-'}]"]
     lines.append(a["greeting"])
     k = 2
     for sec in a["sections"]:
         for im in sec["images"][:3]:
             if k - 1 > MAX_IMAGES:
                 break
-            # 맨 앞 4장(썸네일 + 본문 3장)은 고화질, 나머지는 중간 화질 (대표 결정 2026-10-06)
+            # 맨 앞 4장(썸네일 + 본문 3장)은 대표가 ChatGPT·제미나이로 직접(고화질), 나머지는 실제 사진·무료 사진 (대표 결정 2026-10-06)
             f = image(im, post / f"img{k}", "1536x1024", credits, used, quality="high" if k <= HIGH_UPTO else "medium")
-            if f:
-                label = re.sub(r"[:\[\]]", " ", credits[-1].split(" — ")[-1])[:30].strip()
-                lines.append(f"[이미지 {k}_{label}: {f}]")
-                k += 1
+            label = re.sub(r"[:\[\]]", " ", im["alt"])[:30].strip()
+            lines.append(f"[이미지 {k}_{label}: {f or '-'}]")
+            prompts.append({"n": k, "label": im["alt"], "make": k <= HIGH_UPTO, "file": f or "", "prompt": ask(im, "1536x1024")})
+            k += 1
         lines.append(f"■ {sec['heading']}")
         lines += sec["paragraphs"]
     lines.append(a["summary"])
     lines.append("※ 일부 이미지는 AI로 만든 제품 이미지입니다. 협찬·광고가 아닌 정보 글입니다.")
     (post / "body.txt").write_text("\n\n".join(lines) + "\n", encoding="utf-8")
+    (post / "prompts.json").write_text(json.dumps(prompts, ensure_ascii=False, indent=1), encoding="utf-8")
     others = [t for t in T["items"] if t is not pick][:4]
     tags = ",".join(x.replace("#", "").replace(" ", "") for x in a["tags"][:19])
     status = "✅ 발행 가능" + (" · ⚠️ 형식: " + " / ".join(left) if left else "")
