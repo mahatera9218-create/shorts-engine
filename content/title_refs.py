@@ -185,8 +185,9 @@ def deep(bid: str) -> None:
         "보이는 것만 쓰고 추측은 '추측'이라고 표시. 남의 문장은 길게 옮기지 말고 모양만 설명.")})
     import anthropic
     import json as _json
-    with anthropic.Anthropic().messages.stream(model="claude-sonnet-5-5", max_tokens=12000, messages=[{"role": "user", "content": content}],
-                                               output_config={"format": {"type": "json_schema", "schema": DEEP}}) as st:
+    # 생각에 한도를 다 써서 빈 응답이 나온 적이 있어(2026-10-06) 한도를 넉넉히, 생각은 보통으로
+    with anthropic.Anthropic().messages.stream(model="claude-sonnet-5-5", max_tokens=32000, messages=[{"role": "user", "content": content}],
+                                               output_config={"effort": "medium", "format": {"type": "json_schema", "schema": DEEP}}) as st:
         msg = st.get_final_message()
     u = msg.usage
     F.SPENT["claude"] += (u.input_tokens * 2.0 + u.output_tokens * 10.0) / 1_000_000
