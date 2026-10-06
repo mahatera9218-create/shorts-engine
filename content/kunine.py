@@ -58,8 +58,10 @@ def research(kw: str) -> str:
 
 # ---------------------------------------------------------------- 제목 (6유형 × 5)
 
-TITLES = {"type": "object", "additionalProperties": False, "required": ["groups", "final", "person"],
+TITLES = {"type": "object", "additionalProperties": False, "required": ["groups", "final", "person", "thor"],
           "properties": {
+              "thor": {"type": "array", "items": {"type": "string"},
+                       "description": "경제토르 방식 제목 3개 (대표 지시 2026-10-06: 쿠니네 제목과 따로, 비교해 보려고)"},
               "person": {"type": "string", "description": "글 주인공 인물이 있으면 '회사 이름', 없으면 빈칸"},
               "groups": {"type": "array", "description": "비교형·실행형·이득형·궁금형·위협형·반전형 순서로 6개",
                          "items": {"type": "object", "additionalProperties": False,
@@ -70,6 +72,12 @@ TITLES = {"type": "object", "additionalProperties": False, "required": ["groups"
               "final": {"type": "array", "description": "유형별 BEST 6개를 다시 비교해 고른 최종 BEST 5 (1번이 메인 추천)",
                         "items": {"type": "object", "additionalProperties": False, "required": ["title", "type"],
                                   "properties": {"title": {"type": "string"}, "type": {"type": "string", "enum": TYPES}}}}}}
+
+
+def thor_examples(n: int = 15) -> str:
+    """경제토르 최근 제목 (공개 RSS로 쌓아 둔 것, content/title_refs.py) — 결을 익히는 용도, 베끼지 않음."""
+    from .title_refs import history
+    return "\n".join(f"- {p['title']}" for p in history("kka_dream")[:n]) or "(없음)"
 
 
 def title_guide() -> str:
@@ -86,7 +94,11 @@ def titles(kw: str) -> Path:
     out = F.claude_json(prompt() + [g for g in [title_guide()] if g], (
         f"핵심키워드: {kw}\n\n[조사 메모]\n{memo[:10000]}\n\n"
         "이번 단계는 **제목만** 만듭니다(본문은 다음 단계). 원문의 '제목 후보 생성 규칙'대로 6유형 × 5개, 유형별 BEST, "
-        "최종 BEST 5를 JSON으로 주세요."), TITLES, stage="제목(쿠니네)")
+        "최종 BEST 5를 JSON으로 주세요.\n\n"
+        "그리고 따로 thor 칸에 **경제토르 방식** 제목 3개를 주세요. [참고: 제목 고수 공식]의 경제토르 구조(종목명·주가를 앞에, 작은따옴표로 감정어 띄우기, "
+        "시점 짚기, 손익 갈림길, 숫자 대비, 독자 호명)와 아래 경제토르 최근 제목의 결을 따르되, 문구를 베끼지 말고 이번 키워드·조사 메모의 사실로만 새로 쓰세요. "
+        "투자 권유('사라'·'팔면 후회')와 단정 전망('무조건 오른다')은 쓰지 않습니다. 45자 이내.\n[경제토르 최근 제목]\n" + thor_examples()),
+        TITLES, stage="제목(쿠니네)")
     core = kw.split()[0]
     items, seen = [], set()
 
@@ -107,6 +119,8 @@ def titles(kw: str) -> Path:
     for g in out["groups"]:
         idx = [add(t, g["type"], None, t == bests.get(g["type"])) for t in g["candidates"][:5]]
         groups.append({"type": g["type"], "idx": idx, "best": idx[g["best"]] if 0 <= g["best"] < len(idx) else None})
+    if out.get("thor"):  # 경제토르 방식 3개 (따로 묶음)
+        groups.append({"type": "경제토르식", "idx": [add(t, "경제토르식", None, False) for t in out["thor"][:3]], "best": None})
     (d / "chosen.yaml").unlink(missing_ok=True)
     F.save(d / "titles.yaml", {"keyword": kw, "person": out.get("person", ""), "mode": "쿠니네",
                                "made": datetime.now(F.KST).strftime("%H:%M"), "items": items, "groups": groups})
