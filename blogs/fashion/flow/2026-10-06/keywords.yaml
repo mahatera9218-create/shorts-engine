@@ -1,53 +1,38 @@
 date: '2026-10-06'
-updated: '12:32'
+updated: '12:36'
 items:
-- kw: 65세 공항패션
-  core: 공항패션
-  area: 데일리룩
-  why: 65세 공항 패션 감각이 화제
+- kw: 닥스 데이투나잇
+  core: 닥스 자켓
+  area: 의류
+  why: LF 닥스가 FW 데이투나잇 컬렉션을 공개
   person: ''
   rows:
-  - B3
-  - W2
-  src: 블로거, 인기종목
-  bloggers:
-  - jayuyu
-  sources:
-    블로거: 1
-    인기종목: 1
-  score: 73
-  parts:
-    출처: 31
-    뉴스: 25
-    검색: 17
-  stats:
-    뉴스24h: 30
-    블로그24h: 7
-    월검색: 3060
-- kw: 명품 가방
-  core: 명품 가방
-  area: 가방
-  why: 최근 24시간 네이버 기사 19건의 인기 종목
-  person: ''
-  rows:
-  - W3
-  src: 인기종목
+  - S37
+  - S38
+  - S39
+  - S40
+  - S41
+  - S42
+  - S43
+  - S44
+  - S51
+  src: 뉴스검색
   bloggers: []
   sources:
-    인기종목: 1
-  score: 72
+    뉴스검색: 9
+  score: 59
   parts:
-    출처: 18
-    뉴스: 24
-    검색: 30
+    출처: 50
+    뉴스: 2
+    검색: 7
   stats:
-    뉴스24h: 19
-    블로그24h: 100
-    월검색: 35990
+    뉴스24h: 1
+    블로그24h: 2
+    월검색: 1120
 - kw: 고현정 파리패션위크
   core: 고현정 패션
   area: 데일리룩
-  why: 파리 발렌티노 행사 라이브러리 룩이 화제
+  why: 고현정이 파리에서 발렌티노 행사 룩을 선보여 화제
   person: 고현정
   rows:
   - B4
@@ -58,62 +43,82 @@ items:
   sources:
     블로거: 1
     뉴스검색: 1
-  score: 44
+  score: 54
   parts:
-    출처: 20
-    뉴스: 18
-    검색: 6
+    출처: 30
+    뉴스: 21
+    검색: 3
   stats:
     뉴스24h: 14
     블로그24h: 100
     월검색: 300
-- kw: 드라마 패션
-  core: 드라마 패션
-  area: 드라마 패션
-  why: 최근 24시간 네이버 기사 60건의 인기 종목
-  person: ''
-  rows:
-  - W1
-  src: 인기종목
-  bloggers: []
-  sources:
-    인기종목: 1
-  score: 44
-  parts:
-    출처: 18
-    뉴스: 25
-    검색: 1
-  stats:
-    뉴스24h: 60
-    블로그24h: 100
-    월검색: 120
-- kw: 유정 공항패션
-  core: 유정 가방
+- kw: 유정 찰스앤키스 가방
+  core: 찰스앤키스 가방
   area: 가방
-  why: 찰스앤키스 토트백과 니하이부츠 공항패션 화제
-  person: 배우 유정
+  why: 유정이 지네브라 토트백과 에이더 부츠로 공항패션을 선보여 화제
+  person: 유정
   rows:
-  - G7
+  - G2
   - G13
-  - W2
-  src: Grok, 인기종목
+  src: Grok
   bloggers: []
   sources:
     Grok: 2
-    인기종목: 1
-  score: 40
+  score: 49
   parts:
-    출처: 40
+    출처: 33
     뉴스: 0
-    검색: 0
+    검색: 16
   stats:
     뉴스24h: 0
-    블로그24h: 0
-    월검색: 10
+    블로그24h: 20
+    월검색: 21280
+- kw: 한승연 ECCO 신발
+  core: ECCO 신발
+  area: 신발
+  why: 한승연이 영상에서 ECCO Joke W 브라운을 신어 주목받음
+  person: 한승연
+  rows:
+  - G1
+  - G12
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 2
+  score: 44
+  parts:
+    출처: 33
+    뉴스: 2
+    검색: 9
+  stats:
+    뉴스24h: 1
+    블로그24h: 1
+    월검색: 2640
+- kw: 수지 드레스
+  core: 수지 드레스
+  area: 데일리룩
+  why: 수지가 모니크 륄리에 벨벳 상의와 핑크 스커트로 행사 룩을 완성
+  person: 수지
+  rows:
+  - G3
+  - G14
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 2
+  score: 38
+  parts:
+    출처: 33
+    뉴스: 2
+    검색: 3
+  stats:
+    뉴스24h: 1
+    블로그24h: 47
+    월검색: 250
 - kw: 스웨이드 신발
   core: 스웨이드 신발
   area: 신발
-  why: 올가을 스웨이드 열풍
+  why: 올가을 패션 주인공으로 스웨이드 열풍
   person: ''
   rows:
   - S14
@@ -121,223 +126,63 @@ items:
   bloggers: []
   sources:
     뉴스검색: 1
-  score: 36
+  score: 31
   parts:
-    출처: 7
-    뉴스: 9
-    검색: 20
+    출처: 10
+    뉴스: 10
+    검색: 11
   stats:
     뉴스24h: 7
     블로그24h: 100
     월검색: 4880
-- kw: 김희애 패션
-  core: 김희애 패션
-  area: 데일리룩
-  why: 무보정 논란에도 당당한 모습이 화제
+- kw: 김희애 셔츠
+  core: 김희애 셔츠
+  area: 의류
+  why: 무보정 논란에도 당당한 김희애, 셔츠로 청순미를 살린 룩이 관심
   person: 김희애
   rows:
+  - B1
   - S7
+  src: 뉴스검색, 블로거
+  bloggers:
+  - 유미
+  sources:
+    블로거: 1
+    뉴스검색: 1
+  score: 30
+  parts:
+    출처: 30
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    블로그24h: 24
+    월검색: 15
+- kw: 라코스테 2027 컬렉션
+  core: 라코스테 컬렉션
+  area: 의류
+  why: 라코스테가 2027 봄여름 컬렉션을 공개
+  person: ''
+  rows:
+  - S47
+  - S53
   src: 뉴스검색
   bloggers: []
   sources:
-    뉴스검색: 1
-  score: 24
+    뉴스검색: 2
+  score: 26
   parts:
-    출처: 7
-    뉴스: 10
-    검색: 7
-  stats:
-    뉴스24h: 8
-    블로그24h: 100
-    월검색: 420
-- kw: 류수정 가방
-  core: 류수정 가방
-  area: 가방
-  why: 류수정 샌드릭 베를린백 제품 링크가 X에서 공유되며 화제
-  person: 러블리즈 류수정
-  rows:
-  - G9
-  src: Grok
-  bloggers: []
-  sources:
-    Grok: 1
-  score: 22
-  parts:
-    출처: 22
-    뉴스: 0
+    출처: 20
+    뉴스: 6
     검색: 0
   stats:
-    뉴스24h: 0
-    블로그24h: 0
-    월검색: 10
-- kw: 류수정 착장
-  core: 류수정 패션
-  area: 데일리룩
-  why: 오늘 착장 브랜드 확인으로 화제
-  person: 러블리즈 류수정
-  rows:
-  - G1
-  src: Grok
-  bloggers: []
-  sources:
-    Grok: 1
-  score: 22
-  parts:
-    출처: 22
-    뉴스: 0
-    검색: 0
-  stats:
-    뉴스24h: 0
-    블로그24h: 0
-    월검색: 10
-- kw: 슬기 가디건
-  core: 슬기 가디건
-  area: 의류
-  why: 꼼데가르송 가디건 코디를 따라 입는 손민수 반응
-  person: 레드벨벳 슬기
-  rows:
-  - G2
-  src: Grok
-  bloggers: []
-  sources:
-    Grok: 1
-  score: 22
-  parts:
-    출처: 22
-    뉴스: 0
-    검색: 0
-  stats:
-    뉴스24h: 0
-    블로그24h: 1
+    뉴스24h: 4
+    블로그24h: 19
     월검색: 15
-- kw: 슬기 스니커즈
-  core: 슬기 신발
-  area: 신발
-  why: 아식스 스니커즈 코디가 주목받음
-  person: 레드벨벳 슬기
-  rows:
-  - G10
-  src: Grok
-  bloggers: []
-  sources:
-    Grok: 1
-  score: 22
-  parts:
-    출처: 22
-    뉴스: 0
-    검색: 0
-  stats:
-    뉴스24h: 0
-    블로그24h: 0
-    월검색: 15
-- kw: 엔믹스 규진 원피스
-  core: 규진 원피스
-  area: 데일리룩
-  why: 플리츠 원피스 룩 브랜드 링크가 공유됨
-  person: 엔믹스 규진
-  rows:
-  - G3
-  src: Grok
-  bloggers: []
-  sources:
-    Grok: 1
-  score: 22
-  parts:
-    출처: 22
-    뉴스: 0
-    검색: 0
-  stats:
-    뉴스24h: 0
-    블로그24h: 2
-    월검색: 10
-- kw: 엔믹스 해원 코디
-  core: 해원 스커트
-  area: 데일리룩
-  why: 스트라이프 세트와 레이어드 스커트 제품 확인 화제
-  person: 엔믹스 해원
-  rows:
-  - G4
-  - G12
-  src: Grok
-  bloggers: []
-  sources:
-    Grok: 2
-  score: 22
-  parts:
-    출처: 22
-    뉴스: 0
-    검색: 0
-  stats:
-    뉴스24h: 0
-    블로그24h: 2
-    월검색: 10
-- kw: 김시아 꽃티
-  core: 김시아 티셔츠
-  area: 의류
-  why: 에이블리·지그재그 꽃티 브랜드가 화제
-  person: 배우 김시아
-  rows:
-  - G5
-  - G11
-  src: Grok
-  bloggers: []
-  sources:
-    Grok: 2
-  score: 22
-  parts:
-    출처: 22
-    뉴스: 0
-    검색: 0
-  stats:
-    뉴스24h: 0
-    블로그24h: 0
-    월검색: 10
-- kw: 국초록 데일리룩
-  core: 국초록 데님
-  area: 데일리룩
-  why: 탑과 언밸런스 데님 착장 제품 링크 공유
-  person: 아워벌스데이 국초록
-  rows:
-  - G6
-  - G15
-  src: Grok
-  bloggers: []
-  sources:
-    Grok: 2
-  score: 22
-  parts:
-    출처: 22
-    뉴스: 0
-    검색: 0
-  stats:
-    뉴스24h: 0
-    블로그24h: 0
-    월검색: 10
-- kw: 지예은 데님팬츠
-  core: 지예은 데님
-  area: 데일리룩
-  why: 반팔 티와 데님 팬츠 착장 브랜드 확인
-  person: 런닝맨 지예은
-  rows:
-  - G8
-  - G14
-  src: Grok
-  bloggers: []
-  sources:
-    Grok: 2
-  score: 22
-  parts:
-    출처: 22
-    뉴스: 0
-    검색: 0
-  stats:
-    뉴스24h: 0
-    블로그24h: 0
-    월검색: 10
-- kw: 제니 샤넬 원희
+- kw: 샤넬 원희
   core: 샤넬 원희
   area: 가방
-  why: 샤넬이 제니 대신 원희를 선택해 화제
+  why: 샤넬이 제니 대신 원희를 선택했다는 소식
   person: ''
   rows:
   - B2
@@ -346,80 +191,39 @@ items:
   - jayuyu
   sources:
     블로거: 1
-  score: 14
+  score: 22
   parts:
-    출처: 13
-    뉴스: 1
+    출처: 20
+    뉴스: 2
     검색: 0
   stats:
     뉴스24h: 1
-    블로그24h: 12
+    블로그24h: 37
     월검색: 65
-- kw: 50대 여배우 셔츠
-  core: 여배우 셔츠
-  area: 의류
-  why: 12만원대 셔츠로 청순미를 살린 룩
+- kw: 로제 지수 장원영 파리
+  core: 장원영 파리
+  area: 데일리룩
+  why: 파리 행사에서 K팝 스타들의 룩이 주목받음
   person: ''
-  rows:
-  - B1
-  src: 블로거
-  bloggers:
-  - 유미
-  sources:
-    블로거: 1
-  score: 13
-  parts:
-    출처: 13
-    뉴스: 0
-    검색: 0
-  stats:
-    뉴스24h: 0
-    블로그24h: 23
-    월검색: 10
-- kw: 모모 수트
-  core: 모모 패션
-  area: 데일리룩
-  why: 트와이스 모모의 패션위크 수트 스타일
-  person: 트와이스 모모
-  rows:
-  - S10
-  src: 뉴스검색
-  bloggers: []
-  sources:
-    뉴스검색: 1
-  score: 11
-  parts:
-    출처: 7
-    뉴스: 4
-    검색: 0
-  stats:
-    뉴스24h: 3
-    블로그24h: 6
-    월검색: 10
-- kw: 로제 지수 파리패션위크
-  core: 로제 패션
-  area: 데일리룩
-  why: 파리 달군 K팝 스타들의 패션
-  person: 블랙핑크 로제
   rows:
   - S45
   src: 뉴스검색
   bloggers: []
   sources:
     뉴스검색: 1
-  score: 11
+  score: 19
   parts:
-    출처: 7
-    뉴스: 4
+    출처: 10
+    뉴스: 9
     검색: 0
   stats:
-    뉴스24h: 3
-    블로그24h: 23
-    월검색: 90
-- kw: 임영웅 니트
+    뉴스24h: 6
+    블로그24h: 22
+    월검색: 110
+- kw: 임영웅 그물 니트
   core: 임영웅 니트
   area: 의류
-  why: 200만원대 그물 니트가 화제
+  why: 200만원대 그물 니트 착용으로 화제
   person: 임영웅
   rows:
   - S9
@@ -427,12 +231,32 @@ items:
   bloggers: []
   sources:
     뉴스검색: 1
-  score: 9
+  score: 13
   parts:
-    출처: 7
-    뉴스: 2
+    출처: 10
+    뉴스: 3
     검색: 0
   stats:
     뉴스24h: 2
-    블로그24h: 3
+    블로그24h: 1
     월검색: 15
+- kw: 트와이스 모모 수트
+  core: 모모 수트
+  area: 드라마 패션
+  why: 패션위크에서 수트 스타일로 주목받음
+  person: 트와이스 모모
+  rows:
+  - S10
+  src: 뉴스검색
+  bloggers: []
+  sources:
+    뉴스검색: 1
+  score: 12
+  parts:
+    출처: 10
+    뉴스: 2
+    검색: 0
+  stats:
+    뉴스24h: 1
+    블로그24h: 3
+    월검색: 10
