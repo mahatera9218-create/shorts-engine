@@ -25,7 +25,7 @@ UA = {"User-Agent": "shorts-engine/1.0 (blog image lookup; contact via GitHub)"}
 FREE = ("cc0", "public domain", "cc by", "cc-by", "pd")  # 위키미디어 자유 이용 라이선스만
 META = ("사용자가 제공", "첨부한", "첨부 자료", "캡처", "검색해보니", "확인해보니", "이번 글에서는", "이번 포스팅에서는",
         "제가 확인한 바로는", "자료를 기준으로", "제공된 정보", "검색 결과", "출처를 확인", "이미지 삽입", "사진 삽입", "사진 자리")
-MAX_IMAGES = 8
+MAX_IMAGES = 12  # 원문 "최대한 많이" — 구간마다 최대 3장 (대표 지시 2026-10-06 "패션은 사진에 힘주고")
 
 
 def prompt() -> list[str]:
@@ -168,7 +168,7 @@ def produce(slug: str, n: int) -> Path:
     lines.append(a["greeting"])
     k = 2
     for sec in a["sections"]:
-        for im in sec["images"][:2]:
+        for im in sec["images"][:3]:
             if k - 1 > MAX_IMAGES:
                 break
             f = image(im, post / f"img{k}", "1536x1024", credits, used)
@@ -203,13 +203,18 @@ def produce(slug: str, n: int) -> Path:
 
 # ---------------------------------------------------------------- 사진: 실제 사진(위키미디어 공용) → 제품 AI 사진 → Pexels
 
+FASHION_LEAD = ("Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on "
+                "cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal "
+                "hardware, true-to-life colors, shallow depth of field, high-end catalog quality. ")  # 고화질 (2026-10-06)
+
 def image(spec: dict, stem: Path, size: str, credits: list[str], used: set) -> str | None:
     if spec["kind"] == "person":
         got = commons(spec.get("query_en") or spec["query"], spec["query"], stem, used)
         if got:
             credits.append(f"{got[0]}: 위키미디어 공용 · {got[1]} — {spec['alt']}")
             return got[0]
-    if spec.get("prompt") and ai_photo(spec["prompt"] + " Product only, no people, no hands, no face.", stem.with_suffix(".png"), size):
+    if spec.get("prompt") and ai_photo(spec["prompt"] + " Product only, no people, no hands, no face.", stem.with_suffix(".png"), size,
+                                       quality="high", lead=FASHION_LEAD):
         credits.append(f"{stem.with_suffix('.png').name}: AI 제품 이미지(GPT Image) — {spec['alt']}")
         return stem.with_suffix(".png").name
     got = pexels(spec.get("stock_query", ""), stem.with_suffix(".jpg"), size, used)
