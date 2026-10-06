@@ -1,33 +1,33 @@
 date: '2026-10-06'
-updated: '12:26'
+updated: '12:32'
 items:
-- kw: 공항패션
+- kw: 65세 공항패션
   core: 공항패션
   area: 데일리룩
-  why: 인기 종목 공항패션 기사 다수
+  why: 65세 공항 패션 감각이 화제
   person: ''
   rows:
-  - W2
   - B3
+  - W2
   src: 블로거, 인기종목
   bloggers:
   - jayuyu
   sources:
-    인기종목: 1
     블로거: 1
-  score: 52
+    인기종목: 1
+  score: 73
   parts:
     출처: 31
-    뉴스: 8
-    검색: 13
+    뉴스: 25
+    검색: 17
   stats:
     뉴스24h: 30
-    블로그24h: 100
+    블로그24h: 7
     월검색: 3060
 - kw: 명품 가방
   core: 명품 가방
   area: 가방
-  why: 인기 종목 명품 가방 기사 다수
+  why: 최근 24시간 네이버 기사 19건의 인기 종목
   person: ''
   rows:
   - W3
@@ -35,101 +35,19 @@ items:
   bloggers: []
   sources:
     인기종목: 1
-  score: 45
+  score: 72
   parts:
     출처: 18
-    뉴스: 5
-    검색: 22
+    뉴스: 24
+    검색: 30
   stats:
     뉴스24h: 19
     블로그24h: 100
     월검색: 35990
-- kw: 유정 찰스앤키스 가방
-  core: 찰스앤키스 가방
-  area: 가방
-  why: 유정 파리 공항패션 토트백이 화제
-  person: 유정
-  rows:
-  - G1
-  src: Grok
-  bloggers: []
-  sources:
-    Grok: 1
-  score: 42
-  parts:
-    출처: 22
-    뉴스: 0
-    검색: 20
-  stats:
-    뉴스24h: 0
-    블로그24h: 19
-    월검색: 21280
-- kw: 유정 공항패션 부츠
-  core: 유정 부츠
-  area: 신발
-  why: 유정 시크 공항룩 신발로 언급
-  person: 유정
-  rows:
-  - G2
-  - W2
-  src: Grok, 인기종목
-  bloggers: []
-  sources:
-    Grok: 1
-    인기종목: 1
-  score: 40
-  parts:
-    출처: 40
-    뉴스: 0
-    검색: 0
-  stats:
-    뉴스24h: 0
-    블로그24h: 76
-    월검색: 10
-- kw: 이안 발렌티노 가방
-  core: 발렌티노 가방
-  area: 가방
-  why: 하츠투하츠 이안 숄더백 언급
-  person: 하츠투하츠 이안
-  rows:
-  - G12
-  src: Grok
-  bloggers: []
-  sources:
-    Grok: 1
-  score: 39
-  parts:
-    출처: 22
-    뉴스: 0
-    검색: 17
-  stats:
-    뉴스24h: 0
-    블로그24h: 0
-    월검색: 9910
-- kw: 드라마 패션
-  core: 드라마 패션
-  area: 드라마 패션
-  why: 인기 종목 드라마 패션 기사 다수
-  person: ''
-  rows:
-  - W1
-  src: 인기종목
-  bloggers: []
-  sources:
-    인기종목: 1
-  score: 34
-  parts:
-    출처: 18
-    뉴스: 15
-    검색: 1
-  stats:
-    뉴스24h: 60
-    블로그24h: 100
-    월검색: 120
-- kw: 고현정 파리 패션
+- kw: 고현정 파리패션위크
   core: 고현정 패션
   area: 데일리룩
-  why: 파리패션위크 발렌티노 행사 라이브러리 룩
+  why: 파리 발렌티노 행사 라이브러리 룩이 화제
   person: 고현정
   rows:
   - B4
@@ -140,58 +58,58 @@ items:
   sources:
     블로거: 1
     뉴스검색: 1
-  score: 28
+  score: 44
   parts:
     출처: 20
-    뉴스: 4
-    검색: 4
+    뉴스: 18
+    검색: 6
   stats:
     뉴스24h: 14
     블로그24h: 100
     월검색: 300
-- kw: 김희애 셔츠
-  core: 김희애 패션
-  area: 데일리룩
-  why: 무보정 당당한 근황과 50대 셔츠룩 관심
-  person: 김희애
+- kw: 드라마 패션
+  core: 드라마 패션
+  area: 드라마 패션
+  why: 최근 24시간 네이버 기사 60건의 인기 종목
+  person: ''
   rows:
-  - S7
-  - B1
-  src: 뉴스검색, 블로거
-  bloggers:
-  - 유미
-  sources:
-    뉴스검색: 1
-    블로거: 1
-  score: 27
-  parts:
-    출처: 20
-    뉴스: 2
-    검색: 5
-  stats:
-    뉴스24h: 8
-    블로그24h: 23
-    월검색: 420
-- kw: 에이나 후드집업
-  core: 에이나 후드집업
-  area: 의류
-  why: 하츠투하츠 에이나 착용 정보 공유
-  person: 하츠투하츠 에이나
-  rows:
-  - G3
-  src: Grok
+  - W1
+  src: 인기종목
   bloggers: []
   sources:
-    Grok: 1
-  score: 25
+    인기종목: 1
+  score: 44
   parts:
-    출처: 22
+    출처: 18
+    뉴스: 25
+    검색: 1
+  stats:
+    뉴스24h: 60
+    블로그24h: 100
+    월검색: 120
+- kw: 유정 공항패션
+  core: 유정 가방
+  area: 가방
+  why: 찰스앤키스 토트백과 니하이부츠 공항패션 화제
+  person: 배우 유정
+  rows:
+  - G7
+  - G13
+  - W2
+  src: Grok, 인기종목
+  bloggers: []
+  sources:
+    Grok: 2
+    인기종목: 1
+  score: 40
+  parts:
+    출처: 40
     뉴스: 0
-    검색: 3
+    검색: 0
   stats:
     뉴스24h: 0
-    블로그24h: 1
-    월검색: 235
+    블로그24h: 0
+    월검색: 10
 - kw: 스웨이드 신발
   core: 스웨이드 신발
   area: 신발
@@ -203,103 +121,40 @@ items:
   bloggers: []
   sources:
     뉴스검색: 1
-  score: 24
+  score: 36
   parts:
     출처: 7
-    뉴스: 2
-    검색: 15
+    뉴스: 9
+    검색: 20
   stats:
     뉴스24h: 7
     블로그24h: 100
     월검색: 4880
-- kw: 에이나 데님팬츠
-  core: 에이나 데님
-  area: 의류
-  why: 공연룩 바지로 화제
-  person: 하츠투하츠 에이나
-  rows:
-  - G4
-  src: Grok
-  bloggers: []
-  sources:
-    Grok: 1
-  score: 22
-  parts:
-    출처: 22
-    뉴스: 0
-    검색: 0
-  stats:
-    뉴스24h: 0
-    블로그24h: 1
-    월검색: 10
-- kw: 에이나 주은 볼캡
-  core: 에이나 모자
+- kw: 김희애 패션
+  core: 김희애 패션
   area: 데일리룩
-  why: 에이나·주은 착용 모자 실시간 공유
-  person: 하츠투하츠 에이나
+  why: 무보정 논란에도 당당한 모습이 화제
+  person: 김희애
   rows:
-  - G5
-  - G11
-  src: Grok
+  - S7
+  src: 뉴스검색
   bloggers: []
   sources:
-    Grok: 2
-  score: 22
+    뉴스검색: 1
+  score: 24
   parts:
-    출처: 22
-    뉴스: 0
-    검색: 0
+    출처: 7
+    뉴스: 10
+    검색: 7
   stats:
-    뉴스24h: 0
-    블로그24h: 1
-    월검색: 25
-- kw: 에이나 주은 가방
-  core: 에이나 가방
-  area: 가방
-  why: 두 사람 가방으로 자주 언급
-  person: 하츠투하츠 에이나
-  rows:
-  - G6
-  src: Grok
-  bloggers: []
-  sources:
-    Grok: 1
-  score: 22
-  parts:
-    출처: 22
-    뉴스: 0
-    검색: 0
-  stats:
-    뉴스24h: 0
-    블로그24h: 1
-    월검색: 45
-- kw: 류수정 레이어드 티 스커트
-  core: 류수정 스커트
-  area: 데일리룩
-  why: 러블리즈 류수정 옷장 공유 트렌드
-  person: 류수정
-  rows:
-  - G7
-  - G8
-  - G14
-  src: Grok
-  bloggers: []
-  sources:
-    Grok: 3
-  score: 22
-  parts:
-    출처: 22
-    뉴스: 0
-    검색: 0
-  stats:
-    뉴스24h: 0
-    블로그24h: 0
-    월검색: 10
+    뉴스24h: 8
+    블로그24h: 100
+    월검색: 420
 - kw: 류수정 가방
   core: 류수정 가방
   area: 가방
-  why: 손민수 요청이 나온 가방
-  person: 류수정
+  why: 류수정 샌드릭 베를린백 제품 링크가 X에서 공유되며 화제
+  person: 러블리즈 류수정
   rows:
   - G9
   src: Grok
@@ -315,13 +170,13 @@ items:
     뉴스24h: 0
     블로그24h: 0
     월검색: 10
-- kw: 류수정 슬라우치 부츠
-  core: 류수정 부츠
-  area: 신발
-  why: 류수정 신발 실시간 정보
-  person: 류수정
+- kw: 류수정 착장
+  core: 류수정 패션
+  area: 데일리룩
+  why: 오늘 착장 브랜드 확인으로 화제
+  person: 러블리즈 류수정
   rows:
-  - G15
+  - G1
   src: Grok
   bloggers: []
   sources:
@@ -335,11 +190,31 @@ items:
     뉴스24h: 0
     블로그24h: 0
     월검색: 10
-- kw: 주은 크롭 자켓
-  core: 주은 자켓
+- kw: 슬기 가디건
+  core: 슬기 가디건
   area: 의류
-  why: 하츠투하츠 셋업 아우터 화제
-  person: 하츠투하츠 주은
+  why: 꼼데가르송 가디건 코디를 따라 입는 손민수 반응
+  person: 레드벨벳 슬기
+  rows:
+  - G2
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 22
+  parts:
+    출처: 22
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    블로그24h: 1
+    월검색: 15
+- kw: 슬기 스니커즈
+  core: 슬기 신발
+  area: 신발
+  why: 아식스 스니커즈 코디가 주목받음
+  person: 레드벨벳 슬기
   rows:
   - G10
   src: Grok
@@ -354,14 +229,14 @@ items:
   stats:
     뉴스24h: 0
     블로그24h: 0
-    월검색: 10
-- kw: 이안 데님 자켓
-  core: 이안 데님자켓
-  area: 의류
-  why: 크롭 데님 자켓 정보 공유
-  person: 하츠투하츠 이안
+    월검색: 15
+- kw: 엔믹스 규진 원피스
+  core: 규진 원피스
+  area: 데일리룩
+  why: 플리츠 원피스 룩 브랜드 링크가 공유됨
+  person: 엔믹스 규진
   rows:
-  - G13
+  - G3
   src: Grok
   bloggers: []
   sources:
@@ -375,10 +250,136 @@ items:
     뉴스24h: 0
     블로그24h: 2
     월검색: 10
-- kw: 모모 수트 패션위크
-  core: 모모 패션
+- kw: 엔믹스 해원 코디
+  core: 해원 스커트
+  area: 데일리룩
+  why: 스트라이프 세트와 레이어드 스커트 제품 확인 화제
+  person: 엔믹스 해원
+  rows:
+  - G4
+  - G12
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 2
+  score: 22
+  parts:
+    출처: 22
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    블로그24h: 2
+    월검색: 10
+- kw: 김시아 꽃티
+  core: 김시아 티셔츠
   area: 의류
-  why: 수트 스타일 패션위크 룩
+  why: 에이블리·지그재그 꽃티 브랜드가 화제
+  person: 배우 김시아
+  rows:
+  - G5
+  - G11
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 2
+  score: 22
+  parts:
+    출처: 22
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    블로그24h: 0
+    월검색: 10
+- kw: 국초록 데일리룩
+  core: 국초록 데님
+  area: 데일리룩
+  why: 탑과 언밸런스 데님 착장 제품 링크 공유
+  person: 아워벌스데이 국초록
+  rows:
+  - G6
+  - G15
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 2
+  score: 22
+  parts:
+    출처: 22
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    블로그24h: 0
+    월검색: 10
+- kw: 지예은 데님팬츠
+  core: 지예은 데님
+  area: 데일리룩
+  why: 반팔 티와 데님 팬츠 착장 브랜드 확인
+  person: 런닝맨 지예은
+  rows:
+  - G8
+  - G14
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 2
+  score: 22
+  parts:
+    출처: 22
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    블로그24h: 0
+    월검색: 10
+- kw: 제니 샤넬 원희
+  core: 샤넬 원희
+  area: 가방
+  why: 샤넬이 제니 대신 원희를 선택해 화제
+  person: ''
+  rows:
+  - B2
+  src: 블로거
+  bloggers:
+  - jayuyu
+  sources:
+    블로거: 1
+  score: 14
+  parts:
+    출처: 13
+    뉴스: 1
+    검색: 0
+  stats:
+    뉴스24h: 1
+    블로그24h: 12
+    월검색: 65
+- kw: 50대 여배우 셔츠
+  core: 여배우 셔츠
+  area: 의류
+  why: 12만원대 셔츠로 청순미를 살린 룩
+  person: ''
+  rows:
+  - B1
+  src: 블로거
+  bloggers:
+  - 유미
+  sources:
+    블로거: 1
+  score: 13
+  parts:
+    출처: 13
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    블로그24h: 23
+    월검색: 10
+- kw: 모모 수트
+  core: 모모 패션
+  area: 데일리룩
+  why: 트와이스 모모의 패션위크 수트 스타일
   person: 트와이스 모모
   rows:
   - S10
@@ -386,19 +387,39 @@ items:
   bloggers: []
   sources:
     뉴스검색: 1
-  score: 8
+  score: 11
   parts:
     출처: 7
-    뉴스: 1
+    뉴스: 4
     검색: 0
   stats:
     뉴스24h: 3
-    블로그24h: 47
+    블로그24h: 6
     월검색: 10
+- kw: 로제 지수 파리패션위크
+  core: 로제 패션
+  area: 데일리룩
+  why: 파리 달군 K팝 스타들의 패션
+  person: 블랙핑크 로제
+  rows:
+  - S45
+  src: 뉴스검색
+  bloggers: []
+  sources:
+    뉴스검색: 1
+  score: 11
+  parts:
+    출처: 7
+    뉴스: 4
+    검색: 0
+  stats:
+    뉴스24h: 3
+    블로그24h: 23
+    월검색: 90
 - kw: 임영웅 니트
   core: 임영웅 니트
   area: 의류
-  why: 200만원대 그물 니트 화제
+  why: 200만원대 그물 니트가 화제
   person: 임영웅
   rows:
   - S9
@@ -406,10 +427,10 @@ items:
   bloggers: []
   sources:
     뉴스검색: 1
-  score: 7
+  score: 9
   parts:
     출처: 7
-    뉴스: 0
+    뉴스: 2
     검색: 0
   stats:
     뉴스24h: 2
