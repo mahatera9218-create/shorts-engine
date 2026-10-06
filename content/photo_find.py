@@ -39,7 +39,7 @@ def find(query: str, n: int = 6) -> list[dict]:
         data = request_json("GET", url, headers=headers,
                             params={"query": query, "display": 30, "sort": "sim", "filter": "large"})
     except Exception as e:  # 사진 후보는 없어도 도우미는 떠야 한다
-        print(f"  사진 후보 실패 ({query}): {str(e)[:120]}")
+        print(f"  사진 후보 실패 ({query}): {str(e)[:260]}")
         return []
     out, seen = [], set()
     for it in data.get("items", []):
