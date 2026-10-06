@@ -309,10 +309,11 @@ def ai_photo(desc: str, out: Path, size: str, brand: str = "", quality: str = ""
         if r.status_code == 429 and "credit" in r.text.lower():
             NO_CREDIT.append(True)
         return False
-    if brand or quality == "high":  # 어림: high 단가 (gpt-image-1 공개 단가 기준, gpt-image-2 실제 청구는 다를 수 있음)
-        F.SPENT["image"] += 0.167 if size == "1024x1024" else 0.25
+    # 어림 단가: gpt-image-2 (2026-09 공개 가격 정리 기준, 2026-10-06 고침): high 정사각 $0.211·가로 $0.165, medium 정사각 $0.053·가로 $0.041
+    if brand or quality == "high":
+        F.SPENT["image"] += 0.211 if size == "1024x1024" else 0.165
     else:
-        F.SPENT["image"] += 0.042 if size == "1024x1024" else 0.063  # 어림: medium 단가
+        F.SPENT["image"] += 0.053 if size == "1024x1024" else 0.041
     out.write_bytes(base64.b64decode(r.json()["data"][0]["b64_json"]))
     return True
 
