@@ -207,6 +207,8 @@ def produce(slug: str, n: int) -> Path:
         for im in sec["images"][:2]:
             if k - 1 > MAX_IMAGES:
                 break
+            if k > 2:  # 회사(간판) 고화질은 썸네일 + 본문 첫 장까지만 (대표 결정 2026-10-06, 비용)
+                im = {**im, "brand": "", "real_query": ""}
             f = image(im, post / f"img{k}.png", "1536x1024", credits, used)
             if f:
                 label = re.sub(r"[:\[\]]", " ", im["alt"])[:20].strip()  # 도우미가 읽는 자리표 모양을 깨지 않게
