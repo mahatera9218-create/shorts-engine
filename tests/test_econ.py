@@ -8,6 +8,10 @@ class EconTest(unittest.TestCase):
     def test_imports(self):
         import content.econ_flow, content.econ_desk, content.econ_inbox, content.post_art, content.art_library  # noqa: F401
         import content.head_swap, content.hook_thumb  # noqa: F401
+        from content import celeb, kunine  # 글 흐름에 꼭 있어야 할 함수 (2026-10-06 편집 실수로 지워진 적 있음)
+        for m, names in ((kunine, ("research", "titles", "produce", "TITLES", "BODY")), (celeb, ("research", "titles", "produce"))):
+            for n in names:
+                self.assertTrue(hasattr(m, n), f"{m.__name__}.{n} 없음")
 
     def test_desk_builds(self):
         from content import econ_desk
