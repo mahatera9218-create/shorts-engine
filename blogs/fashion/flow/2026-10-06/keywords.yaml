@@ -1,26 +1,23 @@
 date: '2026-10-06'
-updated: '12:19'
+updated: '12:26'
 items:
 - kw: 공항패션
   core: 공항패션
   area: 데일리룩
-  why: 인기 종목으로 최근 24시간 네이버 기사 30건, 제노·준민·유정 착장이 함께 화제
+  why: 인기 종목 공항패션 기사 다수
   person: ''
   rows:
   - W2
-  - G1
-  - G2
-  - G3
-  - G7
-  - G8
-  src: Grok, 인기종목
-  bloggers: []
+  - B3
+  src: 블로거, 인기종목
+  bloggers:
+  - jayuyu
   sources:
     인기종목: 1
-    Grok: 5
-  score: 61
+    블로거: 1
+  score: 52
   parts:
-    출처: 40
+    출처: 31
     뉴스: 8
     검색: 13
   stats:
@@ -30,7 +27,7 @@ items:
 - kw: 명품 가방
   core: 명품 가방
   area: 가방
-  why: 인기 종목으로 최근 24시간 네이버 기사 19건이 나온 명품 가방
+  why: 인기 종목 명품 가방 기사 다수
   person: ''
   rows:
   - W3
@@ -47,10 +44,72 @@ items:
     뉴스24h: 19
     블로그24h: 100
     월검색: 35990
+- kw: 유정 찰스앤키스 가방
+  core: 찰스앤키스 가방
+  area: 가방
+  why: 유정 파리 공항패션 토트백이 화제
+  person: 유정
+  rows:
+  - G1
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 42
+  parts:
+    출처: 22
+    뉴스: 0
+    검색: 20
+  stats:
+    뉴스24h: 0
+    블로그24h: 19
+    월검색: 21280
+- kw: 유정 공항패션 부츠
+  core: 유정 부츠
+  area: 신발
+  why: 유정 시크 공항룩 신발로 언급
+  person: 유정
+  rows:
+  - G2
+  - W2
+  src: Grok, 인기종목
+  bloggers: []
+  sources:
+    Grok: 1
+    인기종목: 1
+  score: 40
+  parts:
+    출처: 40
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    블로그24h: 76
+    월검색: 10
+- kw: 이안 발렌티노 가방
+  core: 발렌티노 가방
+  area: 가방
+  why: 하츠투하츠 이안 숄더백 언급
+  person: 하츠투하츠 이안
+  rows:
+  - G12
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 39
+  parts:
+    출처: 22
+    뉴스: 0
+    검색: 17
+  stats:
+    뉴스24h: 0
+    블로그24h: 0
+    월검색: 9910
 - kw: 드라마 패션
   core: 드라마 패션
   area: 드라마 패션
-  why: 인기 종목으로 최근 24시간 네이버 기사 60건이 나온 드라마 패션
+  why: 인기 종목 드라마 패션 기사 다수
   person: ''
   rows:
   - W1
@@ -67,93 +126,97 @@ items:
     뉴스24h: 60
     블로그24h: 100
     월검색: 120
-- kw: 제노 EPT 신발
-  core: 제노 신발
-  area: 신발
-  why: NCT 제노가 공항패션에서 EPT Libero 신발을 신어 손민수 아이템으로 화제
-  person: NCT 제노
+- kw: 고현정 파리 패션
+  core: 고현정 패션
+  area: 데일리룩
+  why: 파리패션위크 발렌티노 행사 라이브러리 룩
+  person: 고현정
   rows:
-  - G1
-  - G8
-  src: Grok
-  bloggers: []
+  - B4
+  - S35
+  src: 뉴스검색, 블로거
+  bloggers:
+  - jayuyu
   sources:
-    Grok: 2
-  score: 22
+    블로거: 1
+    뉴스검색: 1
+  score: 28
   parts:
-    출처: 22
-    뉴스: 0
-    검색: 0
+    출처: 20
+    뉴스: 4
+    검색: 4
   stats:
-    뉴스24h: 0
-    블로그24h: 0
-    월검색: 10
-- kw: 준민 스파오 재킷
-  core: 준민 재킷
+    뉴스24h: 14
+    블로그24h: 100
+    월검색: 300
+- kw: 김희애 셔츠
+  core: 김희애 패션
+  area: 데일리룩
+  why: 무보정 당당한 근황과 50대 셔츠룩 관심
+  person: 김희애
+  rows:
+  - S7
+  - B1
+  src: 뉴스검색, 블로거
+  bloggers:
+  - 유미
+  sources:
+    뉴스검색: 1
+    블로거: 1
+  score: 27
+  parts:
+    출처: 20
+    뉴스: 2
+    검색: 5
+  stats:
+    뉴스24h: 8
+    블로그24h: 23
+    월검색: 420
+- kw: 에이나 후드집업
+  core: 에이나 후드집업
   area: 의류
-  why: xikers 준민이 공항패션에서 스파오 스웨이드 테일러드 재킷을 입어 관심
-  person: xikers 준민
-  rows:
-  - G2
-  - G7
-  src: Grok
-  bloggers: []
-  sources:
-    Grok: 2
-  score: 22
-  parts:
-    출처: 22
-    뉴스: 0
-    검색: 0
-  stats:
-    뉴스24h: 0
-    블로그24h: 0
-    월검색: 10
-- kw: 유정 찰스앤키스 토트백
-  core: 유정 가방
-  area: 가방
-  why: 배우 유정이 공항패션에 찰스앤키스 지네브라 토트백과 부츠를 매치
-  person: 배우 유정
+  why: 하츠투하츠 에이나 착용 정보 공유
+  person: 하츠투하츠 에이나
   rows:
   - G3
   src: Grok
   bloggers: []
   sources:
     Grok: 1
-  score: 22
+  score: 25
   parts:
     출처: 22
     뉴스: 0
-    검색: 0
+    검색: 3
   stats:
     뉴스24h: 0
-    블로그24h: 10
-    월검색: 10
-- kw: 류수정 샌드릭 가방
-  core: 류수정 가방
-  area: 가방
-  why: 러블리즈 류수정이 샌드릭 베를린백 카키를 들어 가방 정보 검색 증가
-  person: 러블리즈 류수정
+    블로그24h: 1
+    월검색: 235
+- kw: 스웨이드 신발
+  core: 스웨이드 신발
+  area: 신발
+  why: 올가을 스웨이드 열풍
+  person: ''
   rows:
-  - G6
-  src: Grok
+  - S14
+  src: 뉴스검색
   bloggers: []
   sources:
-    Grok: 1
-  score: 22
+    뉴스검색: 1
+  score: 24
   parts:
-    출처: 22
-    뉴스: 0
-    검색: 0
+    출처: 7
+    뉴스: 2
+    검색: 15
   stats:
-    뉴스24h: 0
-    블로그24h: 0
-    월검색: 10
-- kw: 류수정 플리츠 스커트
-  core: 류수정 스커트
-  area: 데일리룩
-  why: 러블리즈 류수정의 레이어드 티와 블리치드 플리츠 스커트 데일리룩
-  person: 러블리즈 류수정
+    뉴스24h: 7
+    블로그24h: 100
+    월검색: 4880
+- kw: 에이나 데님팬츠
+  core: 에이나 데님
+  area: 의류
+  why: 공연룩 바지로 화제
+  person: 하츠투하츠 에이나
   rows:
   - G4
   src: Grok
@@ -167,15 +230,36 @@ items:
     검색: 0
   stats:
     뉴스24h: 0
-    블로그24h: 0
+    블로그24h: 1
     월검색: 10
-- kw: 김시아 에이블리 티셔츠
-  core: 김시아 티셔츠
+- kw: 에이나 주은 볼캡
+  core: 에이나 모자
   area: 데일리룩
-  why: 김시아가 에이블리 플라워 프린팅 7부 티셔츠를 입어 데일리룩으로 주목
-  person: 김시아
+  why: 에이나·주은 착용 모자 실시간 공유
+  person: 하츠투하츠 에이나
   rows:
   - G5
+  - G11
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 2
+  score: 22
+  parts:
+    출처: 22
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    블로그24h: 1
+    월검색: 25
+- kw: 에이나 주은 가방
+  core: 에이나 가방
+  area: 가방
+  why: 두 사람 가방으로 자주 언급
+  person: 하츠투하츠 에이나
+  rows:
+  - G6
   src: Grok
   bloggers: []
   sources:
@@ -188,4 +272,146 @@ items:
   stats:
     뉴스24h: 0
     블로그24h: 1
+    월검색: 45
+- kw: 류수정 레이어드 티 스커트
+  core: 류수정 스커트
+  area: 데일리룩
+  why: 러블리즈 류수정 옷장 공유 트렌드
+  person: 류수정
+  rows:
+  - G7
+  - G8
+  - G14
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 3
+  score: 22
+  parts:
+    출처: 22
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    블로그24h: 0
     월검색: 10
+- kw: 류수정 가방
+  core: 류수정 가방
+  area: 가방
+  why: 손민수 요청이 나온 가방
+  person: 류수정
+  rows:
+  - G9
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 22
+  parts:
+    출처: 22
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    블로그24h: 0
+    월검색: 10
+- kw: 류수정 슬라우치 부츠
+  core: 류수정 부츠
+  area: 신발
+  why: 류수정 신발 실시간 정보
+  person: 류수정
+  rows:
+  - G15
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 22
+  parts:
+    출처: 22
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    블로그24h: 0
+    월검색: 10
+- kw: 주은 크롭 자켓
+  core: 주은 자켓
+  area: 의류
+  why: 하츠투하츠 셋업 아우터 화제
+  person: 하츠투하츠 주은
+  rows:
+  - G10
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 22
+  parts:
+    출처: 22
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    블로그24h: 0
+    월검색: 10
+- kw: 이안 데님 자켓
+  core: 이안 데님자켓
+  area: 의류
+  why: 크롭 데님 자켓 정보 공유
+  person: 하츠투하츠 이안
+  rows:
+  - G13
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 22
+  parts:
+    출처: 22
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    블로그24h: 2
+    월검색: 10
+- kw: 모모 수트 패션위크
+  core: 모모 패션
+  area: 의류
+  why: 수트 스타일 패션위크 룩
+  person: 트와이스 모모
+  rows:
+  - S10
+  src: 뉴스검색
+  bloggers: []
+  sources:
+    뉴스검색: 1
+  score: 8
+  parts:
+    출처: 7
+    뉴스: 1
+    검색: 0
+  stats:
+    뉴스24h: 3
+    블로그24h: 47
+    월검색: 10
+- kw: 임영웅 니트
+  core: 임영웅 니트
+  area: 의류
+  why: 200만원대 그물 니트 화제
+  person: 임영웅
+  rows:
+  - S9
+  src: 뉴스검색
+  bloggers: []
+  sources:
+    뉴스검색: 1
+  score: 7
+  parts:
+    출처: 7
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 2
+    블로그24h: 3
+    월검색: 15
