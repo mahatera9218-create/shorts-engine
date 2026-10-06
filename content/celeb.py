@@ -217,7 +217,7 @@ def image(spec: dict, stem: Path, size: str, credits: list[str], used: set) -> s
     return None
 
 
-def commons(q_en: str, q_ko: str, stem: Path, used: set) -> tuple[str, str] | None:
+def commons(q_en: str, q_ko: str, stem: Path, used: set, must: list[str] | None = None) -> tuple[str, str] | None:
     """위키미디어 공용에서 그 인물 사진 중 자유 이용(CC0·퍼블릭 도메인·CC BY·CC BY-SA)만. (파일명, '작가 · 라이선스')."""
     for q in [x for x in (q_en, q_ko) if x]:
         try:
@@ -234,6 +234,8 @@ def commons(q_en: str, q_ko: str, stem: Path, used: set) -> tuple[str, str] | No
             lic = re.sub(r"<[^>]+>", "", (meta.get("LicenseShortName") or {}).get("value", ""))
             artist = re.sub(r"<[^>]+>", "", (meta.get("Artist") or {}).get("value", "")).strip()[:60]
             if pg.get("pageid") in used or not any(f in lic.lower() for f in FREE) or info.get("width", 0) < 600:
+                continue
+            if must and not any(m.lower() in (pg.get("title") or "").lower() for m in must):  # 파일 이름에 회사 이름이 있어야 (경제, 2026-10-06)
                 continue
             g = requests.get(info.get("thumburl") or info["url"], headers=UA, timeout=60)
             if not g.ok:
