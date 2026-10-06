@@ -286,13 +286,14 @@ def image(spec: dict, out: Path, size: str, credits: list[str], used: set) -> st
 NO_CREDIT = []  # OpenAI 크레딧이 떨어지면 표시 (2026-10-06: 모르는 사이 Pexels로만 채워진 일이 있어 발행 패키지에 경고)
 
 
-def ai_photo(desc: str, out: Path, size: str, brand: str = "") -> bool:
+def ai_photo(desc: str, out: Path, size: str, brand: str = "", quality: str = "", lead: str = "") -> bool:
+    """quality·lead: 패션은 고화질·잡지 정물 구도로 (대표 지시 2026-10-06 "패션은 사진에 힘주고")."""
     if not F.key("OPENAI_API_KEY") or NO_CREDIT:
         return False
     r = requests.post("https://api.openai.com/v1/images/generations", timeout=600,
                       headers={"Authorization": f"Bearer {F.key('OPENAI_API_KEY')}"},
-                      json={"model": "gpt-image-2", "n": 1, "size": size, "quality": BRAND_QUALITY if brand else IMG_QUALITY, "prompt": (
-                          "Photorealistic editorial news photograph, natural light, real-world location, sharp focus. "
+                      json={"model": "gpt-image-2", "n": 1, "size": size, "quality": quality or (BRAND_QUALITY if brand else IMG_QUALITY), "prompt": (
+                          (lead or "Photorealistic editorial news photograph, natural light, real-world location, sharp focus. ")
                           + desc + (  # 회사 사진은 그 회사의 실제 간판·로고가 보이게 (대표 지시 2026-10-06)
                               f" This must clearly be {brand}: show its real, accurate corporate signage — the actual "
                               f"{brand} logo and company name exactly as they appear on its real buildings, correctly spelled. "
@@ -305,7 +306,7 @@ def ai_photo(desc: str, out: Path, size: str, brand: str = "") -> bool:
         if r.status_code == 429 and "credit" in r.text.lower():
             NO_CREDIT.append(True)
         return False
-    if brand:  # 어림: high 단가 (gpt-image-1 공개 단가 기준, gpt-image-2 실제 청구는 다를 수 있음)
+    if brand or quality == "high":  # 어림: high 단가 (gpt-image-1 공개 단가 기준, gpt-image-2 실제 청구는 다를 수 있음)
         F.SPENT["image"] += 0.167 if size == "1024x1024" else 0.25
     else:
         F.SPENT["image"] += 0.042 if size == "1024x1024" else 0.063  # 어림: medium 단가
