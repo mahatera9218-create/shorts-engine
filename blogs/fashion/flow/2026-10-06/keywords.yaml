@@ -1,0 +1,191 @@
+date: '2026-10-06'
+updated: '12:19'
+items:
+- kw: 공항패션
+  core: 공항패션
+  area: 데일리룩
+  why: 인기 종목으로 최근 24시간 네이버 기사 30건, 제노·준민·유정 착장이 함께 화제
+  person: ''
+  rows:
+  - W2
+  - G1
+  - G2
+  - G3
+  - G7
+  - G8
+  src: Grok, 인기종목
+  bloggers: []
+  sources:
+    인기종목: 1
+    Grok: 5
+  score: 61
+  parts:
+    출처: 40
+    뉴스: 8
+    검색: 13
+  stats:
+    뉴스24h: 30
+    블로그24h: 100
+    월검색: 3060
+- kw: 명품 가방
+  core: 명품 가방
+  area: 가방
+  why: 인기 종목으로 최근 24시간 네이버 기사 19건이 나온 명품 가방
+  person: ''
+  rows:
+  - W3
+  src: 인기종목
+  bloggers: []
+  sources:
+    인기종목: 1
+  score: 45
+  parts:
+    출처: 18
+    뉴스: 5
+    검색: 22
+  stats:
+    뉴스24h: 19
+    블로그24h: 100
+    월검색: 35990
+- kw: 드라마 패션
+  core: 드라마 패션
+  area: 드라마 패션
+  why: 인기 종목으로 최근 24시간 네이버 기사 60건이 나온 드라마 패션
+  person: ''
+  rows:
+  - W1
+  src: 인기종목
+  bloggers: []
+  sources:
+    인기종목: 1
+  score: 34
+  parts:
+    출처: 18
+    뉴스: 15
+    검색: 1
+  stats:
+    뉴스24h: 60
+    블로그24h: 100
+    월검색: 120
+- kw: 제노 EPT 신발
+  core: 제노 신발
+  area: 신발
+  why: NCT 제노가 공항패션에서 EPT Libero 신발을 신어 손민수 아이템으로 화제
+  person: NCT 제노
+  rows:
+  - G1
+  - G8
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 2
+  score: 22
+  parts:
+    출처: 22
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    블로그24h: 0
+    월검색: 10
+- kw: 준민 스파오 재킷
+  core: 준민 재킷
+  area: 의류
+  why: xikers 준민이 공항패션에서 스파오 스웨이드 테일러드 재킷을 입어 관심
+  person: xikers 준민
+  rows:
+  - G2
+  - G7
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 2
+  score: 22
+  parts:
+    출처: 22
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    블로그24h: 0
+    월검색: 10
+- kw: 유정 찰스앤키스 토트백
+  core: 유정 가방
+  area: 가방
+  why: 배우 유정이 공항패션에 찰스앤키스 지네브라 토트백과 부츠를 매치
+  person: 배우 유정
+  rows:
+  - G3
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 22
+  parts:
+    출처: 22
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    블로그24h: 10
+    월검색: 10
+- kw: 류수정 샌드릭 가방
+  core: 류수정 가방
+  area: 가방
+  why: 러블리즈 류수정이 샌드릭 베를린백 카키를 들어 가방 정보 검색 증가
+  person: 러블리즈 류수정
+  rows:
+  - G6
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 22
+  parts:
+    출처: 22
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    블로그24h: 0
+    월검색: 10
+- kw: 류수정 플리츠 스커트
+  core: 류수정 스커트
+  area: 데일리룩
+  why: 러블리즈 류수정의 레이어드 티와 블리치드 플리츠 스커트 데일리룩
+  person: 러블리즈 류수정
+  rows:
+  - G4
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 22
+  parts:
+    출처: 22
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    블로그24h: 0
+    월검색: 10
+- kw: 김시아 에이블리 티셔츠
+  core: 김시아 티셔츠
+  area: 데일리룩
+  why: 김시아가 에이블리 플라워 프린팅 7부 티셔츠를 입어 데일리룩으로 주목
+  person: 김시아
+  rows:
+  - G5
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 22
+  parts:
+    출처: 22
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    블로그24h: 1
+    월검색: 10
