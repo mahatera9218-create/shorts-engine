@@ -374,7 +374,7 @@ def stats_html(posts: list[dict]) -> str:
     used = [p for p in posts if p.get("status", {}).get("status") == "used"]
     today_n = sum(1 for p in used if str(p["status"].get("at", "")).startswith(today))
     month_n = sum(1 for p in used if str(p["status"].get("at", "")).startswith(month))
-    pub = (f'<div class="card"><h2>📝 발행</h2><p style="font-size:22px;margin:4px 0">오늘 <b>{today_n}</b> / 3편 · '
+    pub = (f'<div class="card"><h2>📝 발행</h2><p style="font-size:22px;margin:4px 0">오늘 <b>{today_n}</b> / 2편 · '
            f'이번 달 <b>{month_n}</b>편</p><div class="muted">하루 3편으로 시작해 내 블로그가 홈판에 잘 뜨는 주제를 빨리 찾아요.</div></div>')
     cfg = (yaml.safe_load(BLOG.read_text(encoding="utf-8")) or {}) if BLOG.exists() else {}
     url = cfg.get("url") or ""
@@ -425,7 +425,7 @@ def compare_html(blogs: dict, by_blog: dict[str, list[dict]]) -> str:
              f'<span class="muted">/ 상한 {F_CAP:,}원</span></p><div style="background:var(--line);border-radius:8px;height:12px">'
              f'<div style="width:{pct}%;height:12px;border-radius:8px;background:var(--accent)"></div></div>'
              '<div class="muted">토큰으로 어림한 값이라 AI 회사 청구액과 조금 다를 수 있어요.</div></div>')
-    cols, lines = [], {"오늘 발행 / 3": [], "이번 달 발행": [], "만든 글": [], "이번 달 비용": [],
+    cols, lines = [], {"오늘 발행 / 2": [], "이번 달 발행": [], "만든 글": [], "이번 달 비용": [],
                        "키워드 모으기 (1번)": [], "제목 후보 (키워드 1개)": [], "글·사진 만들기 (1편)": [], "글 1편 어림": []}
     for bid, b in blogs.items():
         posts = by_blog.get(bid, [])
@@ -433,7 +433,7 @@ def compare_html(blogs: dict, by_blog: dict[str, list[dict]]) -> str:
         mine = [r for r in rows if (r.get("blog") or "econ") == bid]
         won = krw(sum(float(r["total_usd"]) for r in mine))
         made = sum(1 for r in mine if r["cmd"] == "produce")
-        lines["오늘 발행 / 3"].append(sum(1 for p in used if str(p["status"].get("at", "")).startswith(today)))
+        lines["오늘 발행 / 2"].append(sum(1 for p in used if str(p["status"].get("at", "")).startswith(today)))
         lines["이번 달 발행"].append(sum(1 for p in used if str(p["status"].get("at", "")).startswith(month)))
         lines["만든 글"].append(len(posts))
         lines["이번 달 비용"].append(f"{won:,}원")
