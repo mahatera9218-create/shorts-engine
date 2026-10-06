@@ -136,7 +136,7 @@ def person_row(it: dict, used: bool) -> str:
         f'onclick="copyText(this,{e(json.dumps("사진 출처: " + c["host"]), quote=True)})">출처 복사</button></div>'
         for c in cands)
     pics = (f'<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px">{pics}</div>' if pics else
-            '<div class="muted">후보를 못 찾았어요 — 위 「네이버에서 더 찾기」로 찾아 주세요</div>')
+            "" if used else '<div class="muted">후보를 못 찾았어요 — 위 「네이버에서 더 찾기」로 찾아 주세요</div>')
     naver = (f'<a href="https://search.naver.com/search.naver?where=image&query={e(urllib.parse.quote(q), quote=True)}" '
              f'target="_blank" rel="noopener" class="muted">네이버에서 더 찾기</a>')
     return (f'<div style="padding:8px 0;border-top:1px solid var(--line)"><b>{it["n"]}번</b> {e(it["label"])}'
