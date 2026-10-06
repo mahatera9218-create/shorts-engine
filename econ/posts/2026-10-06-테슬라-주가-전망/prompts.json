@@ -1,0 +1,72 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · 황금빛 노을 속 테슬라 공장 전경",
+  "make": true,
+  "file": "thumb.jpg",
+  "desc": "Dramatic low-angle wide photograph of the Tesla Gigafactory Texas building with the large TESLA logo, golden backlit sunset sky with strong contrast, glowing light rays rising above the roof, cinematic high saturation, square composition, no other text",
+  "brand": "Tesla",
+  "size": "1024x1024",
+  "prompt": "Square 1:1 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Dramatic low-angle wide photograph of the Tesla Gigafactory Texas building with the large TESLA logo, golden backlit sunset sky with strong contrast, glowing light rays rising above the roof, cinematic high saturation, square composition, no other text This must clearly be Tesla: show its real, accurate corporate signage — the actual Tesla logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 2,
+  "label": "테슬라 기가 텍사스 공장 전경",
+  "make": true,
+  "file": "img2.jpg",
+  "desc": "Wide aerial photograph of the Tesla Gigafactory Texas near Austin, large white factory building with the TESLA logo, bright sunny day, rows of new cars in the parking lot, news photography style",
+  "brand": "Tesla",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Wide aerial photograph of the Tesla Gigafactory Texas near Austin, large white factory building with the TESLA logo, bright sunny day, rows of new cars in the parking lot, news photography style This must clearly be Tesla: show its real, accurate corporate signage — the actual Tesla logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 3,
+  "label": "테슬라 인도 센터에 줄지어 선 신차",
+  "make": true,
+  "file": "img3.jpg",
+  "desc": "Realistic photograph of new white Tesla Model Y cars lined up at a Tesla delivery center with the TESLA logo sign visible, natural daylight, close view of the vehicles",
+  "brand": "Tesla",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photograph of new white Tesla Model Y cars lined up at a Tesla delivery center with the TESLA logo sign visible, natural daylight, close view of the vehicles This must clearly be Tesla: show its real, accurate corporate signage — the actual Tesla logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 4,
+  "label": "오스틴 도심을 달리는 자율주행 로보택시",
+  "make": true,
+  "file": "img4.jpg",
+  "desc": "Realistic photograph of a Tesla Cybercab-style autonomous robotaxi driving on a city street in Austin, Texas, daytime, no readable text, news photo style",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photograph of a Tesla Cybercab-style autonomous robotaxi driving on a city street in Austin, Texas, daytime, no readable text, news photo style No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 5,
+  "label": "주가를 분석하는 투자자의 손",
+  "make": true,
+  "file": "img5.jpg",
+  "desc": "Close-up photograph of an anonymous office worker's hands holding a tablet showing blurred stock market screens, dim light, strong contrast, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Close-up photograph of an anonymous office worker's hands holding a tablet showing blurred stock market screens, dim light, strong contrast, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 6,
+  "label": "테슬라 프리몬트 공장 외관",
+  "make": true,
+  "file": "img6.jpg",
+  "desc": "Aerial photograph of the Tesla Fremont factory in California with the TESLA logo on the building, clear sky, large production facility, realistic news photo",
+  "brand": "Tesla",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Aerial photograph of the Tesla Fremont factory in California with the TESLA logo on the building, clear sky, large production facility, realistic news photo This must clearly be Tesla: show its real, accurate corporate signage — the actual Tesla logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 7,
+  "label": "기업 실적 발표를 준비하는 회의 장면",
+  "make": true,
+  "file": "img7.jpg",
+  "desc": "Realistic photograph of a conference room table with a laptop and notebook in soft window light, a corporate earnings meeting atmosphere, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photograph of a conference room table with a laptop and notebook in soft window light, a corporate earnings meeting atmosphere, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ }
+]
