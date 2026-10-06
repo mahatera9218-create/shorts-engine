@@ -115,11 +115,32 @@ def all_prompt(items: list[dict]) -> str:
         hook = (" — 썸네일이라 자극적으로: 홈피드에서 손이 멈추게 극적인 조명·강한 명암·높은 채도·대상을 화면 가득"
                 if it["n"] == 1 and BID == "econ" else "")  # 경제 썸네일은 자극적으로 (대표 지시 2026-10-06)
         lines.append(f"{it['n']}번 ({shape}, {it['label']}{brand}{hook}): {it['desc']}")
-    if find:  # 실제 인물 사진은 그리지 않고 웹에서 찾아 달라고 (대표 결정 2026-10-06, 본문 끝에 출처)
-        lines += ["", "[실제 사진 찾기] 아래 번호는 그림으로 만들지 말고, 웹에서 실제 사진을 찾아 주세요. "
-                  "연예인 공식 인스타그램 → 브랜드 공식 사진 → 보도 사진 순서로, 번호마다 사진 원본 링크와 출처(게시한 곳·날짜)를 알려 주세요."]
-        lines += [f"{it['n']}번: {it.get('find') or it['label']} — {it['label']}" for it in find]
+    if find:  # 실제 인물 사진은 그리지 않는다 — 발행 도우미의 '인물 사진 자리'에서 원본을 바로 받는다 (2026-10-06)
+        lines += ["", "※ " + ", ".join(f"{it['n']}번" for it in find) + "은 실제 인물 사진을 따로 넣을 자리라 만들지 않습니다."]
     return "\n".join(lines)
+
+
+def person_row(it: dict, used: bool) -> str:
+    """인물 사진 한 자리: 후보 사진(누르면 원본) + 출처 복사. 발행 끝난 글은 검색하지 않는다."""
+    from .photo_find import find
+    e = html.escape
+    q = it.get("find") or it["label"]
+    cands = [] if used else find(q)
+    size = lambda c: f" · {c['w']}×{c['h']}" if c["w"] else ""
+    pics = "".join(
+        f'<div style="flex:0 0 46%;max-width:46%"><a href="{e(c["link"], quote=True)}" target="_blank" rel="noopener noreferrer">'
+        f'<img src="{e(c["thumb"], quote=True)}" referrerpolicy="no-referrer" loading="lazy" alt="" '
+        f'style="width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:8px;background:var(--bg)"></a>'
+        f'<div class="muted" style="font-size:11px;word-break:break-all">{e(c["host"])}{size(c)}</div>'
+        f'<button class="ghost" style="font-size:12px;padding:4px 8px" '
+        f'onclick="copyText(this,{e(json.dumps("사진 출처: " + c["host"]), quote=True)})">출처 복사</button></div>'
+        for c in cands)
+    pics = (f'<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px">{pics}</div>' if pics else
+            '<div class="muted">후보를 못 찾았어요 — 위 「네이버에서 더 찾기」로 찾아 주세요</div>')
+    naver = (f'<a href="https://search.naver.com/search.naver?where=image&query={e(urllib.parse.quote(q), quote=True)}" '
+             f'target="_blank" rel="noopener" class="muted">네이버에서 더 찾기</a>')
+    return (f'<div style="padding:8px 0;border-top:1px solid var(--line)"><b>{it["n"]}번</b> {e(it["label"])}'
+            f'<div class="muted">검색어: {e(q)} · {naver}</div>{pics}</div>')
 
 
 def prompts_card(p: dict) -> str:
@@ -130,14 +151,13 @@ def prompts_card(p: dict) -> str:
         return ""
     items = json.loads(f.read_text(encoding="utf-8"))
     text = all_prompt(items)
-    # 인물 사진 자리: 대표가 직접 실제 사진을 넣는다 (대표 결정 2026-10-06, 출처 표기). 찾을 검색어 + 출처 줄
-    people = "".join(
-        f'<div style="padding:6px 0;border-top:1px solid var(--line)"><b>{it["n"]}번</b> {e(it["label"])} · '
-        f'<a href="https://search.naver.com/search.naver?where=image&query={e(urllib.parse.quote(it.get("find") or it["label"]), quote=True)}" '
-        f'target="_blank" rel="noopener">사진 찾기: {e(it.get("find") or it["label"])}</a></div>'
-        for it in items if it.get("person"))
-    people = (f'<div style="margin-top:10px"><b>인물 사진 자리 (직접 넣기)</b>{people}'
-              '<div class="muted" style="margin-top:6px">사진 아래에 출처를 꼭 적어 주세요. 예) 사진 출처: OOO 인스타그램 / OO일보</div></div>') if people else ""
+    # 인물 사진 자리: 대표가 직접 실제 사진을 넣는다 (대표 결정 2026-10-06, 출처 표기).
+    # 네이버 검색 화면은 휴대폰에서 저장이 안 돼서, 이미지 검색 API의 원본 주소를 바로 연다 (photo_find)
+    used = p.get("status", {}).get("status") == "used"
+    people = "".join(person_row(it, used) for it in items if it.get("person"))
+    people = (f'<div style="margin-top:10px"><b>인물 사진 자리 (직접 넣기)</b>'
+              '<div class="muted">사진을 누르면 원본이 열려요 → 길게 눌러 「사진 앱에 저장」 → 「출처 복사」를 본문 끝 사진 출처 줄에 붙이기</div>'
+              f'{people}</div>') if people else ""
     return (f'<div class="card" style="border:2px solid var(--accent)"><h2>사진 프롬프트</h2>'
             f'<button onclick="copyText(this,{e(json.dumps(text), quote=True)})">📋 사진 프롬프트 복사</button>'
             # 안쪽 스크롤 상자(overflow:auto)는 아이폰에서 아래 입력칸 키보드를 막는 일이 있어 접기 방식으로 (2026-10-06)
