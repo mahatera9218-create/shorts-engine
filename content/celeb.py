@@ -171,7 +171,8 @@ def produce(slug: str, n: int) -> Path:
         return photo_prompt(spec["prompt"] + " Product only, no people, no hands, no face.", size, lead=FASHION_LEAD)
 
     thumb = image(a["thumb"], post / "thumb", "1024x1024", credits, used)
-    prompts.append({"n": 1, "label": "썸네일 · " + a["thumb"]["alt"], "make": True, "file": thumb or "",
+    prompts.append({"n": 1, "label": "썸네일 · " + a["thumb"]["alt"], "make": True, "file": thumb or "", "size": "1024x1024",
+                    "person": a["thumb"]["kind"] == "person", "desc": a["thumb"].get("prompt", ""), "find": a["thumb"].get("query", ""),
                     "prompt": ask(a["thumb"], "1024x1024")})
     lines = [f"[이미지 1_썸네일: {thumb or '-'}]"]
     lines.append(a["greeting"])
@@ -184,7 +185,9 @@ def produce(slug: str, n: int) -> Path:
             f = image(im, post / f"img{k}", "1536x1024", credits, used, quality="high" if k <= HIGH_UPTO else "medium")
             label = re.sub(r"[:\[\]]", " ", im["alt"])[:30].strip()
             lines.append(f"[이미지 {k}_{label}: {f or '-'}]")
-            prompts.append({"n": k, "label": im["alt"], "make": k <= HIGH_UPTO, "file": f or "", "prompt": ask(im, "1536x1024")})
+            prompts.append({"n": k, "label": im["alt"], "make": True, "file": f or "", "size": "1536x1024",
+                            "person": im["kind"] == "person", "desc": im.get("prompt", ""), "find": im.get("query", ""),
+                            "prompt": ask(im, "1536x1024")})
             k += 1
         lines.append(f"■ {sec['heading']}")
         lines += sec["paragraphs"]

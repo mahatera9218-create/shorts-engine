@@ -203,6 +203,7 @@ def produce(slug: str, n: int) -> Path:
     credits, prompts = [], []
     thumb = image(a["thumb"], post / "thumb.png", "1024x1024", credits, used=set())
     prompts.append({"n": 1, "label": "썸네일 · " + a["thumb"]["alt"], "make": True, "file": thumb or "",
+                    "desc": a["thumb"]["prompt"], "brand": a["thumb"].get("brand", ""), "size": "1024x1024",
                     "prompt": photo_prompt(a["thumb"]["prompt"], "1024x1024", a["thumb"].get("brand", ""))})
     lines = [f"[이미지 1_썸네일: {thumb or '-'}]"]
     lines += a["intro"]
@@ -215,8 +216,9 @@ def produce(slug: str, n: int) -> Path:
             f = image(im, post / f"img{k}.png", "1536x1024", credits, used, tier="high" if k <= HIGH_UPTO else "free")
             label = re.sub(r"[:\[\]]", " ", im["alt"])[:20].strip()  # 도우미가 읽는 자리표 모양을 깨지 않게
             lines.append(f"[이미지 {k}_{label}: {f or '-'}]")
-            prompts.append({"n": k, "label": im["alt"], "make": k <= HIGH_UPTO, "file": f or "",
-                            "prompt": photo_prompt(im["prompt"], "1536x1024", im.get("brand", "") if k <= HIGH_UPTO else "")})
+            prompts.append({"n": k, "label": im["alt"], "make": True, "file": f or "",
+                            "desc": im["prompt"], "brand": im.get("brand", ""), "size": "1536x1024",
+                            "prompt": photo_prompt(im["prompt"], "1536x1024", im.get("brand", ""))})
             k += 1
         lines.append(f"■ {sec['heading']}")
         lines += sec["paragraphs"]
