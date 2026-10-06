@@ -18,4 +18,4 @@ fashion:
   prompt: prompts/ent-fashion-blog.md
   addon: prompts/addon-fashion.md
   keywords: config/keywords_fashion.yaml
-  title_masters: [8starstarstar8, kka_dream]   # 제목 고수 참고 + 제목 후보에 '고수 방식' 3개씩 (유미·경제토르, 대표 지시 2026-10-06)
+  title_masters: [jayuyu]   # 제목 고수 참고 + 제목 후보에 'jayuyu 방식' 3개 (유미·경제토르는 경제 블로거라 경제 쪽만, 2026-10-06)
