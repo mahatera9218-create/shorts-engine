@@ -34,6 +34,9 @@ jobs:
           python-version: "3.12"
           cache: pip
       - name: 페이지 만들기
+        env:  # 인물 사진 후보 (네이버 이미지 검색 API, 2026-10-06)
+          NCP_APIGW_API_KEY_ID: ${{ secrets.NCP_APIGW_API_KEY_ID }}
+          NCP_APIGW_API_KEY: ${{ secrets.NCP_APIGW_API_KEY }}
         run: |
           pip install -r requirements.txt
           python -m content.econ_desk site-econ
