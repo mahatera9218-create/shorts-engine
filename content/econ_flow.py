@@ -240,7 +240,8 @@ def keywords() -> Path:
     topic = (load(_kcfg(), {}) or {}).get("grok_topic") or (
         "한국 개인 투자자들이 가장 많이 이야기하는 경제·투자 화제. 분야는 국내주식·미국주식·금·비트코인·돈굴리기(예적금·ISA 등)·거시·환율. "
         "한 종목에 몰리지 않게, 작전주·테마주 추천·리딩방은 빼세요")
-    g = grok(f"오늘은 {today()}(한국 시간)입니다. 지금 X(트위터)에서 {topic}. 실제로 오늘 화제인 것 8개만. "
+    n_g = (load(_kcfg(), {}) or {}).get("grok_count", 8)  # 패션은 15개 (2026-10-06 대표 지적: 패션 키워드가 약함)
+    g = grok(f"오늘은 {today()}(한국 시간)입니다. 지금 X(트위터)에서 {topic}. 실제로 오늘 화제인 것 {n_g}개만. "
              'JSON 배열만 답하세요: [{"kw": "짧은 키워드", "area": "분야", "why": "왜 화제인지 한 줄", '
              '"person": "관련 인물이 있으면 이름(회사·소속), 없으면 빈칸"}]')
     grok_items = [it for it in (parse_json(g) or []) if isinstance(it, dict) and it.get("kw")]
