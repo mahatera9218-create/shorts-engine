@@ -16,6 +16,7 @@ import json
 import os
 import re
 import shutil
+import urllib.parse
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -92,8 +93,36 @@ def video_card(p: dict, src: str) -> str:
 <div class="muted">영상에 'AI 그림·AI 음성' 표시가 들어 있고, 설명에도 적혀 있어요.</div></div>"""
 
 
+def prompts_card(p: dict) -> str:
+    """사진 만들기: ChatGPT·제미나이에 붙여넣을 글 (대표 결정 2026-10-06: 사진 자동 그리기 대신 대표가 구독으로 직접)."""
+    e = html.escape
+    f = POSTS / p["folder"] / "prompts.json"
+    if not f.exists():
+        return ""
+    items = json.loads(f.read_text(encoding="utf-8"))
+    rows = []
+    for it in items:
+        q = it["prompt"]
+        find = q.startswith("[실제 사진 찾기]")
+        btns = (f'<button class="ghost" onclick="copyText(this,{e(json.dumps(q), quote=True)})">📋 그림 설명 복사</button>'
+                + ("" if find else f'<a class="btn ghost" href="https://chatgpt.com/?q={e(urllib.parse.quote(q), quote=True)}" '
+                   'target="_blank" rel="noopener">ChatGPT에서 바로 그리기</a>'))
+        have = (f'<img src="{e(it["file"])}" alt="" style="width:72px;height:48px;object-fit:cover;border-radius:6px;float:right">'
+                if it.get("file") else "")
+        tag = "직접 그리기" if it.get("make") else "예비 사진 있음 · 바꾸고 싶을 때만"
+        rows.append(f'<div style="padding:10px 0;border-top:1px solid var(--line)">{have}<b>사진 {it["n"]}</b> '
+                    f'<span class="muted">· {e(tag)}</span><div class="muted" style="font-size:14px">{e(it["label"])}</div>'
+                    f'<details><summary class="muted">설명 보기</summary><div style="font-size:13px;word-break:break-word">{e(q)}</div></details>'
+                    f'{btns}</div>')
+    return ('<div class="card" style="border:2px solid var(--accent)"><h2>사진 만들기 (ChatGPT·제미나이)</h2>'
+            '<div class="muted">"직접 그리기" 사진은 설명을 복사해 ChatGPT나 제미나이 앱에 붙여넣고, 받은 사진을 그 번호 자리에 넣으세요. '
+            '"ChatGPT에서 바로 그리기"를 누르면 설명이 채워진 채로 열려요. 나머지는 무료 사진이 미리 들어가 있어요.</div>'
+            + "".join(rows) + "</div>")
+
+
 def page(p: dict) -> str:
     e = html.escape
+    p = {**p, "images": [x for x in p["images"] if x["file"] != "-"]}  # '-' = 대표가 직접 넣을 자리
     best = next((t for t in p["titles"] if t["best"]), p["titles"][0] if p["titles"] else {"text": p["folder"], "type": ""})
     status = ('<span class="badge ok">✅ 발행 가능</span>' if p["ok"] else
               '<span class="badge warn">⚠️ 확인 필요 — 발행하지 말고 Claude에게 알려주세요</span>')
@@ -102,7 +131,9 @@ def page(p: dict) -> str:
                    f' <span class="muted">· {e(t["type"])} · 이 제목으로 바꾸기</span></button>' for t in p["titles"] if t is not best)
     body = "".join(
         f'<textarea class="ed" data-k="b{i}" rows="3">{e(b["text"])}</textarea>' if "text" in b else
-        f'<div class="ph"><img src="{e(b["img"])}" alt="사진 {b["n"]}" loading="lazy"><small>📷 사진 {b["n"]} · {e(b["label"])}</small></div>'
+        (f'<div class="ph"><div class="card muted" style="text-align:center;padding:24px">📷 사진 {b["n"]} · 직접 넣을 자리<br>{e(b["label"])}</div></div>'
+         if b["img"] == "-" else
+         f'<div class="ph"><img src="{e(b["img"])}" alt="사진 {b["n"]}" loading="lazy"><small>📷 사진 {b["n"]} · {e(b["label"])}</small></div>')
         for i, b in enumerate(p["blocks"]) if "text" in b or "img" in b)
     each = "".join(f'<div class="ph"><img src="{e(x["file"])}" alt="사진 {x["n"]}" loading="lazy"><small>📷 사진 {x["n"]} · {e(x["label"])}'
                    f'{" · 대표이미지로 지정" if x["n"] == 1 else ""} (길게 눌러 저장)</small></div>' for x in p["images"])
@@ -120,6 +151,7 @@ def page(p: dict) -> str:
 <p>{status}</p>{f"<ul>{probs}</ul>" if probs else ""}
 {'<div class="card" style="border-color:var(--accent)"><b>⚠️ 이미 발행한 글이에요</b><div class="muted">같은 글을 두 번 올리지 마세요.</div></div>' if used else ''}
 <div class="cols"><div>
+{prompts_card(p)}
 <div class="card"><h2><span class="step">1</span>사진 저장</h2>
 <button onclick="saveAll(this)">📷 사진 {len(p["images"])}장 한 번에 저장</button>
 <div class="muted">공유 창에서 "이미지 저장"을 누르세요. 파일 이름 앞 번호가 넣는 순서예요.</div></div>

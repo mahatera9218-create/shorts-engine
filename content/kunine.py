@@ -28,6 +28,7 @@ REF_LINE = "참조문헌: 뉴스, 언론보도 및 공식자료"  # 강사 지�
 AI_NOTE = "※ 일부 이미지는 AI로 만든 이미지입니다. 이 글은 정보 제공용이며 투자 권유가 아닙니다."
 MAX_IMAGES = 6           # 본문 사진 최대 (소제목 구간마다 2장)
 IMG_QUALITY = "medium"   # 1장 약 $0.06 (가로) — 비용 때문에 medium. 실사풍은 medium도 거칠지 않음(첫 주 확인)
+AI_IMAGES = False        # 사진 자동 그리기(API) 끔 — 대표가 ChatGPT·제미나이 구독으로 직접 (대표 결정 2026-10-06). 다시 켜려면 True
 HIGH_UPTO = 2            # 글 맨 앞부터 이 번호까지 고화질 AI (1 = 썸네일, 2 = 본문 첫 장), 나머지는 무료 사진
 BRAND_QUALITY = "high"   # 회사(간판) 사진은 고화질 (대표 지시 2026-10-06: GPT 대화창 결과와 퀄이 다르다)
 
@@ -199,21 +200,24 @@ def produce(slug: str, n: int) -> Path:
     post = F.POSTS / slug
     post.mkdir(parents=True, exist_ok=True)
     # 사진: 썸네일 + 구간마다 2장 (AI 실사풍 → 안 되면 Pexels)
-    credits = []
+    credits, prompts = [], []
     thumb = image(a["thumb"], post / "thumb.png", "1024x1024", credits, used=set())
-    lines = [f"[이미지 1_썸네일: {thumb}]"] if thumb else []
+    prompts.append({"n": 1, "label": "썸네일 · " + a["thumb"]["alt"], "make": True, "file": thumb or "",
+                    "prompt": photo_prompt(a["thumb"]["prompt"], "1024x1024", a["thumb"].get("brand", ""))})
+    lines = [f"[이미지 1_썸네일: {thumb or '-'}]"]
     lines += a["intro"]
     k, used = 2, set()
     for si, sec in enumerate(a["sections"], 1):
         for im in sec["images"][:2]:
             if k - 1 > MAX_IMAGES:
                 break
-            # 맨 앞 2장(썸네일 + 본문 첫 장)만 고화질 AI, 나머지는 무료 사진 (대표 결정 2026-10-06)
+            # 맨 앞 2장(썸네일 + 본문 첫 장)은 대표가 ChatGPT·제미나이로 직접(고화질), 나머지는 무료 사진 (대표 결정 2026-10-06)
             f = image(im, post / f"img{k}.png", "1536x1024", credits, used, tier="high" if k <= HIGH_UPTO else "free")
-            if f:
-                label = re.sub(r"[:\[\]]", " ", im["alt"])[:20].strip()  # 도우미가 읽는 자리표 모양을 깨지 않게
-                lines.append(f"[이미지 {k}_{label}: {f}]")
-                k += 1
+            label = re.sub(r"[:\[\]]", " ", im["alt"])[:20].strip()  # 도우미가 읽는 자리표 모양을 깨지 않게
+            lines.append(f"[이미지 {k}_{label}: {f or '-'}]")
+            prompts.append({"n": k, "label": im["alt"], "make": k <= HIGH_UPTO, "file": f or "",
+                            "prompt": photo_prompt(im["prompt"], "1536x1024", im.get("brand", "") if k <= HIGH_UPTO else "")})
+            k += 1
         lines.append(f"■ {sec['heading']}")
         lines += sec["paragraphs"]
         tb = a["table"]
@@ -224,6 +228,7 @@ def produce(slug: str, n: int) -> Path:
     lines += a["closing"]
     lines.append("\n".join(f"Q. {x['q']}\nA. {x['a']}" for x in a["qa"][:3]))
     lines += [REF_LINE, AI_NOTE]
+    (post / "prompts.json").write_text(json.dumps(prompts, ensure_ascii=False, indent=1), encoding="utf-8")
     (post / "body.txt").write_text("\n\n".join(lines) + "\n", encoding="utf-8")
     finals = [t for t in T["items"] if t.get("rank") and t is not pick][:4]
     tags = ",".join(x.replace("#", "").replace(" ", "") for x in a["tags"][:20])
@@ -289,21 +294,28 @@ def image(spec: dict, out: Path, size: str, credits: list[str], used: set, tier:
 NO_CREDIT = []  # OpenAI 크레딧이 떨어지면 표시 (2026-10-06: 모르는 사이 Pexels로만 채워진 일이 있어 발행 패키지에 경고)
 
 
+def photo_prompt(desc: str, size: str, brand: str = "", lead: str = "") -> str:
+    """사진 한 장을 그릴 영어 설명 전체. API에도, 도우미의 'ChatGPT·제미나이에 붙여넣기'에도 같은 글을 쓴다 (2026-10-06)."""
+    shape = "Square 1:1 image. " if size == "1024x1024" else "Landscape 3:2 image. "
+    return (shape + (lead or "Photorealistic editorial news photograph, natural light, real-world location, sharp focus. ")
+            + desc + (  # 회사 사진은 그 회사의 실제 간판·로고가 보이게 (대표 지시 2026-10-06)
+                f" This must clearly be {brand}: show its real, accurate corporate signage — the actual "
+                f"{brand} logo and company name exactly as they appear on its real buildings, correctly spelled. "
+                "No other readable text. No identifiable real person's face, no watermark, no charts."
+                if brand else
+                " No identifiable real person's face, no logos, no brand marks, no readable text, "
+                "letters or numbers anywhere, no watermark, no charts."))
+
+
 def ai_photo(desc: str, out: Path, size: str, brand: str = "", quality: str = "", lead: str = "") -> bool:
     """quality·lead: 패션은 고화질·잡지 정물 구도로 (대표 지시 2026-10-06 "패션은 사진에 힘주고")."""
-    if not F.key("OPENAI_API_KEY") or NO_CREDIT:
+    if not AI_IMAGES or not F.key("OPENAI_API_KEY") or NO_CREDIT:
         return False
     r = requests.post("https://api.openai.com/v1/images/generations", timeout=600,
                       headers={"Authorization": f"Bearer {F.key('OPENAI_API_KEY')}"},
-                      json={"model": "gpt-image-2", "n": 1, "size": size, "quality": quality or (BRAND_QUALITY if brand else IMG_QUALITY), "prompt": (
-                          (lead or "Photorealistic editorial news photograph, natural light, real-world location, sharp focus. ")
-                          + desc + (  # 회사 사진은 그 회사의 실제 간판·로고가 보이게 (대표 지시 2026-10-06)
-                              f" This must clearly be {brand}: show its real, accurate corporate signage — the actual "
-                              f"{brand} logo and company name exactly as they appear on its real buildings, correctly spelled. "
-                              "No other readable text. No identifiable real person's face, no watermark, no charts."
-                              if brand else
-                              " No identifiable real person's face, no logos, no brand marks, no readable text, "
-                              "letters or numbers anywhere, no watermark, no charts."))})
+                      json={"model": "gpt-image-2", "n": 1, "size": size,
+                            "quality": quality or (BRAND_QUALITY if brand else IMG_QUALITY),
+                            "prompt": photo_prompt(desc, size, brand, lead)})
     if r.status_code != 200:
         print(f"AI 사진 실패 HTTP {r.status_code}: {r.text[:160]}")
         if r.status_code == 429 and "credit" in r.text.lower():
