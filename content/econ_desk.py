@@ -112,7 +112,9 @@ def all_prompt(items: list[dict]) -> str:
     for it in draw:
         shape = "정사각형 1:1" if it.get("size") == "1024x1024" else "가로 3:2"
         brand = f" — {it['brand']} 실제 건물, 진짜 로고·간판" if it.get("brand") else ""
-        lines.append(f"{it['n']}번 ({shape}, {it['label']}{brand}): {it['desc']}")
+        hook = (" — 썸네일이라 자극적으로: 홈피드에서 손이 멈추게 극적인 조명·강한 명암·높은 채도·대상을 화면 가득"
+                if it["n"] == 1 and BID == "econ" else "")  # 경제 썸네일은 자극적으로 (대표 지시 2026-10-06)
+        lines.append(f"{it['n']}번 ({shape}, {it['label']}{brand}{hook}): {it['desc']}")
     if find:  # 실제 인물 사진은 그리지 않는다 — 번호만 비워 둔다
         lines += ["", "※ 다음 번호는 그리지 마세요(실제 사진으로 넣을 자리): "
                   + ", ".join(f"{it['n']}번 {it.get('find') or it['label']}" for it in find)]
