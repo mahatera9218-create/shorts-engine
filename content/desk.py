@@ -199,8 +199,12 @@ document.addEventListener('DOMContentLoaded',()=>document.querySelectorAll('text
 function tableText(x){return x.header.length===2?x.rows.map(r=>r[0]+': '+r[1]).join('\\n'):[x.header.join(' · ')].concat(x.rows.map(r=>r.join(' · '))).join('\\n')}
 function esc(t){return String(t).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
 function tableHtml(x){const t=document.getElementById('nt'+x.table);return t?t.outerHTML:''}  // 화면에 보이는 표 그대로 복사 (2026-10-03)
-function bodyText(){return POST.blocks.map((x,i)=>x.text!==undefined?(val('b'+i)||x.text):x.table?tableText(x):x.shop?'🛒 상품 자리 (상품 카드를 넣고 이 줄은 지우기)':'📷 사진 '+x.n+' ('+x.label+')').join('\\n\\n')}
-function bodyHtml(){return POST.blocks.map((x,i)=>x.text!==undefined?'<p>'+esc(val('b'+i)||x.text).replace(/\\n/g,'<br>')+'</p>':x.table?tableHtml(x):x.shop?'<p>🛒 상품 자리 (상품 카드를 넣고 이 줄은 지우기)</p>':'<p>📷 사진 '+x.n+' ('+esc(x.label)+')</p>').join('')}
+// 글꼴 강조 (대표 지시 2026-10-06): **굵게** __밑줄__ *기울임* → 복사할 때 서식으로, 글자만 복사할 땐 표시 빼고. ■ 소제목은 굵고 크게
+function plainT(t){return t.replace(/\\*\\*|__/g,'').replace(/(^|[^*])\\*([^*\\n]+)\\*/g,'$1$2')}
+function fmt(t){return esc(t).replace(/\\*\\*(.+?)\\*\\*/g,'<b>$1</b>').replace(/__(.+?)__/g,'<u>$1</u>').replace(/(^|[^*])\\*([^*\\n]+)\\*/g,'$1<i>$2</i>').replace(/\\n/g,'<br>')}
+function para(t){return /^■ /.test(t)?'<p><b><span style="font-size:20px">'+esc(plainT(t.slice(2)))+'</span></b></p>':'<p>'+fmt(t)+'</p>'}
+function bodyText(){return POST.blocks.map((x,i)=>x.text!==undefined?plainT(val('b'+i)||x.text):x.table?tableText(x):x.shop?'🛒 상품 자리 (상품 카드를 넣고 이 줄은 지우기)':'📷 사진 '+x.n+' ('+x.label+')').join('\\n\\n')}
+function bodyHtml(){return POST.blocks.map((x,i)=>x.text!==undefined?para(val('b'+i)||x.text):x.table?tableHtml(x):x.shop?'<p>🛒 상품 자리 (상품 카드를 넣고 이 줄은 지우기)</p>':'<p>📷 사진 '+x.n+' ('+esc(x.label)+')</p>').join('')}
 async function copyRich(b,html,text){  // 표가 표로 붙게 HTML과 글자를 같이 넣는다 (안 되는 브라우저는 글자만)
   try{await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([text],{type:'text/plain'})})]);flash(b,'복사됨 ✓')}
   catch(e){copyText(b,text)}}

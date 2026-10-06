@@ -145,7 +145,7 @@ BODY = {"type": "object", "additionalProperties": False,
 
 
 def text_of(a: dict) -> str:
-    return "\n\n".join(a["intro"] + [p for s in a["sections"] for p in [s["heading"]] + s["paragraphs"]] + a["closing"])
+    return re.sub(r"\*\*|__|(?<!\*)\*(?!\*)", "", "\n\n".join(a["intro"] + [p for s in a["sections"] for p in [s["heading"]] + s["paragraphs"]] + a["closing"]))  # 글자 수는 강조 표시 빼고
 
 
 def check(a: dict, kw: str) -> list[str]:

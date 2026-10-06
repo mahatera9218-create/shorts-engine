@@ -182,7 +182,9 @@ def page(p: dict) -> str:
 <a class="btn" href="{e(done, quote=True)}">✅ 발행 완료 표시</a>
 <div class="muted">GitHub 화면이 열리면 초록 <b>Create</b>만 누르세요. 2~3분 뒤 목록에서 "발행한 글"로 내려가요.</div></div>
 </div><div class="stick">
+<details class="card" ontoggle="if(this.open)document.getElementById('pv').innerHTML=bodyHtml()"><summary><b>글 미리보기 (굵게·밑줄 적용된 모양)</b></summary><div id="pv" style="line-height:1.8"></div></details>
 <div class="card body" id="draft"><h2>✏️ 초안 (눌러서 고치기)</h2>
+<div class="muted">**굵게** · __밑줄__ · *기울임* 표시는 본문 복사 때 서식으로 바뀌어요.</div>
 <div class="muted">고친 문단은 주황 테두리로 보이고, 이 휴대폰에 저장돼 위 <b>본문 복사</b>에 반영돼요.</div>{body}
 <button onclick="saveEdits(this)">💾 고친 내용 저장 (다음 글이 배워요)</button>
 <div class="muted">제목·문단을 고쳤다면 눌러 주세요. GitHub 화면에서 초록 <b>Create</b>만 누르면, 고친 방향을 모아 다음 글부터 그렇게 써요.</div></div>
