@@ -19,6 +19,7 @@ import requests
 
 from market.common import ROOT
 from . import econ_flow as F
+from .title_refs import VERSION_SCHEMA, versions_ask
 from .kunine import ai_photo, pexels, photo_prompt
 
 UA = {"User-Agent": "shorts-engine/1.0 (blog image lookup; contact via GitHub)"}
@@ -32,7 +33,13 @@ MAX_IMAGES = 12  # 원문 "최대한 많이" — 구간마다 최대 3장 (대�
 def prompt() -> list[str]:
     b = F.BLOG
     files = [b["prompt"], "prompts/addon-common-celeb.md", b["addon"]]
-    return [re.sub(r"<!--.*?-->", "", (ROOT / f).read_text(encoding="utf-8"), flags=re.S).strip() for f in files]
+    out = [re.sub(r"<!--.*?-->", "", (ROOT / f).read_text(encoding="utf-8"), flags=re.S).strip() for f in files]
+    from .title_refs import deep_doc, for_blog  # 심층 조사한 고수(유미)의 주제·구성·썸네일 방식 참고 (대표 지시 2026-10-06)
+    for bid in for_blog(b["id"]):
+        if deep_doc(bid).exists():
+            out.append("[참고: 심층 분석한 블로거 — 주제 고르는 법·글 구성·썸네일은 참고, 말투·인사말은 위 블로그 설정이 우선, "
+                       "문장·표현은 베끼지 말 것]\n" + deep_doc(bid).read_text(encoding="utf-8")[:4000])
+    return out
 
 
 def research(kw: str) -> str:
@@ -51,8 +58,9 @@ def research(kw: str) -> str:
 # ---------------------------------------------------------------- 제목 (그룹 3 × 5 + 최종 1)
 
 GROUPS = ["그룹 1 주인공 숨김", "그룹 2 이름 노출", "그룹 3 관련 인물"]
-TITLES = {"type": "object", "additionalProperties": False, "required": ["groups", "final", "person"],
+TITLES = {"type": "object", "additionalProperties": False, "required": ["groups", "final", "person", "versions"],
           "properties": {
+              "versions": VERSION_SCHEMA,  # 제목 고수 방식 3개씩 (유미·경제토르, 대표 지시 2026-10-06)
               "person": {"type": "string", "description": "주인공 이름"},
               "groups": {"type": "array", "description": "그룹 1·2·3 순서로 3개",
                          "items": {"type": "object", "additionalProperties": False, "required": ["group", "titles"],
@@ -74,7 +82,7 @@ def titles(kw: str) -> Path:
     (d / "research.md").write_text(f"# 조사 메모: {kw}\n\n{memo}\n", encoding="utf-8")
     out = F.claude_json(prompt() + [g for g in [title_guide()] if g], (
         f"키워드(주어): {kw}\n\n[조사 메모]\n{memo[:10000]}\n\n이번 단계는 **제목만** 만듭니다. 원문의 제목 규칙대로 그룹 1·2·3 각 5개와 "
-        "최종 추천 1개를 JSON으로 주세요."), TITLES, stage="제목(연예·패션)")
+        "최종 추천 1개를 JSON으로 주세요.\n\n" + versions_ask(F.BLOG["id"])), TITLES, stage="제목(연예·패션)")
     person = out.get("person", "")
     items, groups = [], []
 
@@ -93,6 +101,9 @@ def titles(kw: str) -> Path:
     add(out["final"], next((g["group"] for g in out["groups"] if out["final"] in g["titles"]), GROUPS[0]), 1)
     for g in out["groups"]:
         groups.append({"type": g["group"], "idx": [add(t, g["group"], None) for t in g["titles"][:5]], "best": None})
+    for v in out.get("versions", []):  # 제목 고수 방식 3개씩
+        typ = f"{v['who']}식"
+        groups.append({"type": typ, "idx": [add(t, typ + " 방식", None) for t in v["titles"][:3]], "best": None})
     (d / "chosen.yaml").unlink(missing_ok=True)
     F.save(d / "titles.yaml", {"keyword": kw, "person": person, "mode": "연예패션",
                                "made": datetime.now(F.KST).strftime("%H:%M"), "items": items, "groups": groups})

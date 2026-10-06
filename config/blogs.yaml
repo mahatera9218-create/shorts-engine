@@ -8,7 +8,7 @@ econ:
   prompt: prompts/kunine-blog.md
   addon: prompts/kunine-addon.md
   keywords: config/econ_keywords.yaml
-  title_masters: [kka_dream]   # 제목 고수 참고: 경제토르 (config/title_masters.yaml, 2026-10-05)
+  title_masters: [kka_dream, 8starstarstar8]   # 제목 고수 참고 + 제목 후보에 '고수 방식' 3개씩 (경제토르·유미, 대표 지시 2026-10-06)
 fashion:
   label: 패션
   name: 캐시미어 다이어리     # 대표 확정 2026-10-05
@@ -18,4 +18,4 @@ fashion:
   prompt: prompts/ent-fashion-blog.md
   addon: prompts/addon-fashion.md
   keywords: config/keywords_fashion.yaml
-  title_masters: [influha, jayuyu]   # 제목 고수 참고: 유미(셀럽 패션형 제목), jayuyu(패션 인플루언서, 2026-10-06)
+  title_masters: [8starstarstar8, kka_dream]   # 제목 고수 참고 + 제목 후보에 '고수 방식' 3개씩 (유미·경제토르, 대표 지시 2026-10-06)
