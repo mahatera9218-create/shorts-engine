@@ -19,7 +19,7 @@
   - 실존 인물의 얼굴은 그리지 않습니다(사람이 필요하면 뒷모습·손·멀리 있는 군중·익명의 직장인).
   - 회사가 나오는 사진은 **그 회사임이 바로 보이게**: 실제 사옥·공장·매장 외관에 그 회사의 진짜 간판(로고·회사 이름)이 보이는 장면. 동네 창고·이름 없는 건물처럼 그리지 않습니다(대표 지시 2026-10-06). 이때 brand에 회사 영문 공식 이름, real_query에 위키미디어 검색어(예: "SK hynix Icheon campus")를 적습니다.
     - prompt에는 **실제 장소 이름**을 구체적으로: 예) "Wide aerial photograph of the Samsung Electronics Seocho office tower in Gangnam, Seoul, tall blue glass skyscraper with the SAMSUNG logo near the top, sunny day, city and Han river in the background" / "Aerial view of the Samsung Electronics Giheung semiconductor campus, large grey fab building with the blue SAMSUNG logo". 넓게 내려다본 구도, 맑은 날, 그 회사 건물의 실제 모양·색을 살립니다.
-  - 사진 순서별 (대표 결정 2026-10-06): **썸네일과 첫 번째 소제목의 첫 사진**은 고화질 AI로 그립니다(회사면 진짜 간판·로고). **그 뒤 사진은 무료 사진(Pexels)에서 찾으니** stock_query를 구체적인 영어 2~4단어로(예: "semiconductor wafer closeup", "stock market screen") 잘 쓰고, 회사 건물이 아닌 내용 장면으로 정합니다.
+  - 모든 사진(썸네일 포함)은 대표가 ChatGPT·제미나이에 한 번에 요청해 그립니다(대표 결정 2026-10-06). 그러니 prompt는 사진마다 그 자체로 완결된 구체적 장면으로 쓰고, 서로 다른 장면이 되게. stock_query는 예비 무료 사진용으로 구체적인 영어 2~4단어.
   - 회사가 아닌 사진(금괴·지폐·현장 등)은 brand·real_query를 빈칸으로 두고, 로고·간판 글자·읽을 수 있는 글자·숫자는 넣지 않습니다.
   - 차트·표·그래프 그림은 만들지 않습니다(표는 table 칸으로).
 - stock_query(영어 2~4단어): AI 사진이 안 될 때 무료 사진에서 찾을 검색어(예: "semiconductor wafer", "seoul stock exchange").

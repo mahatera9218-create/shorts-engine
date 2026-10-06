@@ -93,31 +93,48 @@ def video_card(p: dict, src: str) -> str:
 <div class="muted">영상에 'AI 그림·AI 음성' 표시가 들어 있고, 설명에도 적혀 있어요.</div></div>"""
 
 
+ALL_HEAD = {  # 한 번에 붙여넣을 그림 요청 머리말 (원문 사진 기준, 대표 지시 2026-10-06 "한 번에 요청할 프롬프트")
+    "econ": ("아래 {n}장의 블로그 사진을 만들어 주세요. 반드시 번호 순서대로 한 장씩 따로따로 만들어 주세요(여러 장면을 한 장에 합치지 말 것, "
+             "중간에 멈추면 이어서 계속). 공통: 실제 뉴스 현장 사진처럼 사실적인 사진, 자연광, 또렷한 초점. "
+             "회사가 나오면 그 회사의 실제 건물과 진짜 로고·회사 이름 간판이 정확히 보이게. 그 밖의 글자·숫자·워터마크·차트는 넣지 말 것. "
+             "실존 인물의 얼굴이 알아보이게 그리지 말 것(뒷모습·손·멀리 있는 사람은 괜찮음)."),
+    "fashion": ("아래 {n}장의 패션 블로그 사진을 만들어 주세요. 반드시 번호 순서대로 한 장씩 따로따로 만들어 주세요(여러 장면을 한 장에 합치지 말 것, "
+                "중간에 멈추면 이어서 계속). 공통: 고급 패션 잡지 정물 사진, 부드러운 자연광, 크림색 리넨·따뜻한 돌 위, 조용한 럭셔리 분위기, "
+                "원단·니트·가죽·금속 장식의 질감이 아주 선명하게, 실제 색감. 제품만(사람·손·얼굴 없음), 브랜드 로고·글자·워터마크 없음."),
+}
+
+
+def all_prompt(items: list[dict]) -> tuple[str, list[dict]]:
+    """사진 전부를 한 번에 요청하는 글 + 그림이 아닌 '실제 사진 찾기' 목록."""
+    draw = [it for it in items if not it.get("person") and it.get("desc")]
+    find = [it for it in items if it.get("person")]
+    lines = [ALL_HEAD.get(BID, ALL_HEAD["econ"]).format(n=len(draw)), ""]
+    for it in draw:
+        shape = "정사각형 1:1" if it.get("size") == "1024x1024" else "가로 3:2"
+        brand = f" — {it['brand']} 실제 건물, 진짜 로고·간판" if it.get("brand") else ""
+        lines.append(f"{it['n']}번 ({shape}, {it['label']}{brand}): {it['desc']}")
+    return "\n".join(lines), find
+
+
 def prompts_card(p: dict) -> str:
-    """사진 만들기: ChatGPT·제미나이에 붙여넣을 글 (대표 결정 2026-10-06: 사진 자동 그리기 대신 대표가 구독으로 직접)."""
+    """사진 만들기: 이 글의 사진 전부를 ChatGPT·제미나이에 한 번에 요청하는 글 (대표 지시 2026-10-06)."""
     e = html.escape
     f = POSTS / p["folder"] / "prompts.json"
     if not f.exists():
         return ""
     items = json.loads(f.read_text(encoding="utf-8"))
-    rows = []
-    for it in items:
-        q = it["prompt"]
-        find = q.startswith("[실제 사진 찾기]")
-        btns = (f'<button class="ghost" onclick="copyText(this,{e(json.dumps(q), quote=True)})">📋 그림 설명 복사</button>'
-                + ("" if find else f'<a class="btn ghost" href="https://chatgpt.com/?q={e(urllib.parse.quote(q), quote=True)}" '
-                   'target="_blank" rel="noopener">ChatGPT에서 바로 그리기</a>'))
-        have = (f'<img src="{e(it["file"])}" alt="" style="width:72px;height:48px;object-fit:cover;border-radius:6px;float:right">'
-                if it.get("file") else "")
-        tag = "직접 그리기" if it.get("make") else "예비 사진 있음 · 바꾸고 싶을 때만"
-        rows.append(f'<div style="padding:10px 0;border-top:1px solid var(--line)">{have}<b>사진 {it["n"]}</b> '
-                    f'<span class="muted">· {e(tag)}</span><div class="muted" style="font-size:14px">{e(it["label"])}</div>'
-                    f'<details><summary class="muted">설명 보기</summary><div style="font-size:13px;word-break:break-word">{e(q)}</div></details>'
-                    f'{btns}</div>')
-    return ('<div class="card" style="border:2px solid var(--accent)"><h2>사진 만들기 (ChatGPT·제미나이)</h2>'
-            '<div class="muted">"직접 그리기" 사진은 설명을 복사해 ChatGPT나 제미나이 앱에 붙여넣고, 받은 사진을 그 번호 자리에 넣으세요. '
-            '"ChatGPT에서 바로 그리기"를 누르면 설명이 채워진 채로 열려요. 나머지는 무료 사진이 미리 들어가 있어요.</div>'
-            + "".join(rows) + "</div>")
+    text, find = all_prompt(items)
+    finds = "".join(f'<div style="padding:6px 0;border-top:1px solid var(--line)"><b>사진 {it["n"]}</b> · {e(it["label"])} '
+                    f'<a href="https://search.naver.com/search.naver?where=image&query={e(urllib.parse.quote(it.get("find", "")), quote=True)}" '
+                    f'target="_blank" rel="noopener">실제 사진 찾기</a></div>' for it in find)
+    return (f'<div class="card" style="border:2px solid var(--accent)"><h2>사진 만들기 (ChatGPT·제미나이)</h2>'
+            f'<button onclick="copyText(this,{e(json.dumps(text), quote=True)})">📋 사진 {len(items) - len(find)}장 그림 설명 한 번에 복사</button>'
+            f'<a class="btn ghost" href="https://chatgpt.com/?q={e(urllib.parse.quote(text), quote=True)}" target="_blank" rel="noopener">ChatGPT에서 바로 열기</a>'
+            '<div class="muted">복사해서 ChatGPT나 제미나이에 붙여넣으면 번호 순서대로 한 장씩 따로 만들어 줘요. 중간에 멈추면 "계속"이라고 보내세요. '
+            '받은 사진을 하나씩 저장해 본문의 같은 번호 자리에 넣으면 돼요. 미리 들어간 무료 사진은 예비예요.</div>'
+            f'<details><summary class="muted">설명 내용 보기</summary><div style="font-size:13px;white-space:pre-wrap;word-break:break-word">{e(text)}</div></details>'
+            + (f'<div style="margin-top:8px"><b>그림 대신 실제 사진을 찾을 자리</b>{finds}</div>' if finds else "")
+            + "</div>")
 
 
 def page(p: dict) -> str:
