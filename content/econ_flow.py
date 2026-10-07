@@ -246,26 +246,101 @@ def keywords() -> Path:
              '"person": "관련 인물이 있으면 이름(회사·소속), 없으면 빈칸"}]')
     grok_items = [it for it in (parse_json(g) or []) if isinstance(it, dict) and it.get("kw")]
     old = load(day / "keywords.yaml", {"items": []})
-    mine = [x for x in old.get("items", []) if x.get("src") in ("대표", "캡처")]
+    mine = [x for x in old.get("items", []) if x.get("src") in ("대표", "캡처") or x.get("naver_rank")]  # 어사이드도 남김 (2026-10-07)
     items = run(grok_items, mine)
     save(day / "keywords.yaml", {"date": today(), "updated": datetime.now(KST).strftime("%H:%M"), "items": items})
     print(f"키워드 {len(items)}개, 1위 {items[0]['kw']} {items[0]['score']}점" if items else "키워드 없음")
     return day / "keywords.yaml"
 
 
-def add(text: str) -> None:
-    """대표가 넣은 키워드 (도우미 입력칸 → 이슈 본문). 한 줄에 하나 또는 쉼표로."""
+def _norm(k: str) -> str:
+    return re.sub(r"\s+", "", k).lower()
+
+
+def add(text: str, aside: bool = False) -> None:
+    """대표가 넣은 키워드 (도우미 입력칸 → 이슈 본문). 한 줄에 하나 또는 쉼표로.
+    aside=True: 어사이드가 네이버 홈판·인기글에서 모은 목록(위가 많이 나온 순) → 순위를 '네이버 인기' 점수로 (대표 결정 2026-10-07).
+    이미 있는 키워드와 같은 주제면 버리지 않고 합쳐서 점수를 올리고, 그날 목록 전체를 다시 채점한다."""
     day = FLOW / today()
     data = load(day / "keywords.yaml", {"date": today(), "items": []})
-    have = {x["kw"] for x in data["items"]}
-    new = []
-    for kw in [k.strip(" -•\t") for k in re.split(r"[\n,]", text) if k.strip(" -•\t")]:
-        if kw not in have and len(kw) <= 40:
-            new.append({"kw": kw, "area": "", "src": "대표", "why": "대표가 조사해 넣음", "rows": ["D1"]})
-    if new:  # 검색량·뉴스량 점수는 바로 매긴다 (AI 비용 없음). 다음 '다시 모으기' 때 다른 출처와 겹치면 더 오름
+    items = data["items"]
+    lines = [k.strip(" -•\t") for k in re.split(r"[\n,]" if not aside else r"\n", text) if k.strip(" -•\t")]
+    lines = [re.sub(r"^\d+[.)]\s*", "", k) for k in lines]  # 어사이드가 번호를 붙여 와도
+    src = "어사이드" if aside else "대표"
+    for rank, kw in enumerate([k for k in lines if len(k) <= 40], 1):
+        nk = _norm(kw)
+        hit = next((x for x in items if _norm(x["kw"]) == nk or (len(nk) >= 4 and min(len(nk), len(_norm(x["kw"]))) >= 4
+                                                                 and (nk in _norm(x["kw"]) or _norm(x["kw"]) in nk))), None)
+        if hit:  # 같은 주제 → 합치기
+            hit.setdefault("sources", {})[src] = 1
+            hit["src"] = ", ".join(sorted(set(filter(None, (hit.get("src") or "").split(", "))) | {src}))
+            if aside:
+                hit["naver_rank"] = min(hit.get("naver_rank") or 99, rank)
+        else:
+            new = {"kw": kw, "area": "", "src": src, "why": "어사이드 · 네이버 홈판·인기글" if aside else "대표가 조사해 넣음",
+                   "rows": [], "sources": {src: 1}}
+            if aside:
+                new["naver_rank"] = rank
+            items.append(new)
+    if items:  # 검색량·뉴스량 점수는 바로 매긴다 (AI 비용 없음)
         from .econ_score import score
-        data["items"] = sorted(score(new, {"D1": "대표"}) + data["items"], key=lambda x: -x.get("score", 0))
+        data["items"] = score(items, None)
+    data["updated"] = datetime.now(KST).strftime("%H:%M")
     save(day / "keywords.yaml", data)
+
+
+AUTO_N = 3  # 블로그마다 하루 자동 글 수 (대표 결정 2026-10-07)
+
+
+def auto(force: bool = False) -> None:
+    """매일 자동 글 (대표 결정 2026-10-07): 그날 키워드 점수 1~3위 → 제목 후보 → ★추천 제목으로 글까지.
+    "어사이드가 오면 바로, 안 오면 10시에" — 하루 한 번만(auto.yaml). 같은 주제가 며칠 이어 나와도 거르지 않는다(대표 지시)."""
+    day = FLOW / today()
+    mark = day / "auto.yaml"
+    st = load(mark, {})
+    if st.get("status") == "완료" and not force:
+        print(f"오늘 자동 글은 이미 끝났어요 ({st.get('at')})")
+        return
+    if st.get("status") == "진행중" and not force:
+        started = datetime.strptime(f"{today()} {st.get('at', '00:00')}", "%Y-%m-%d %H:%M").replace(tzinfo=KST)
+        if datetime.now(KST) - started < timedelta(minutes=90):
+            print("오늘 자동 글이 이미 진행 중이에요")
+            return
+    if not (day / "keywords.yaml").exists():
+        keywords()
+    items = sorted(load(day / "keywords.yaml", {}).get("items", []), key=lambda x: -x.get("score", 0))
+    picks = [it["kw"] for it in items[:AUTO_N]]
+    aside = any(it.get("naver_rank") for it in items)
+    save(mark, {"status": "진행중", "at": datetime.now(KST).strftime("%H:%M"), "aside": aside, "picks": picks, "done": []})
+    mod = __import__("content.kunine" if BLOG["id"] == "econ" else "content.celeb", fromlist=["titles", "produce"])
+    done, bad = [], []
+    for kw in picks:
+        try:
+            guard()
+            d = mod.titles(kw)
+            log_cost("titles", kw)
+            _reset_spent()
+            T = load(d / "titles.yaml", {})
+            n = next((i for i, t in enumerate(T.get("items", []), 1) if t.get("rank") == 1), 1)  # ★추천 제목
+            guard()
+            mod.produce(d.name, n)
+            log_cost("produce", f"{d.name} {n}")
+            _reset_spent()
+            done.append(d.name)
+        except Exception as ex:  # 하나가 실패해도 나머지는 계속
+            print(f"자동 글 실패: {kw}: {ex}")
+            _reset_spent()
+            bad.append(kw)
+        save(mark, {"status": "진행중", "at": load(mark, {}).get("at"), "aside": aside, "picks": picks, "done": done, "failed": bad})
+    save(mark, {"status": "완료" if done else "실패", "at": load(mark, {}).get("at"), "end": datetime.now(KST).strftime("%H:%M"),
+                "aside": aside, "picks": picks, "done": done, "failed": bad})
+    if not done:
+        raise SystemExit("자동 글이 모두 실패했어요: " + ", ".join(bad))
+
+
+def _reset_spent() -> None:
+    for k in SPENT:
+        SPENT[k] = 0.0
 
 
 # ---------------------------------------------------------------- 2단계: 제목 후보 (후킹 로직)
@@ -677,7 +752,7 @@ def gemini_bust(en: str) -> Image.Image | None:
 
 def main() -> None:
     cmd = sys.argv[1] if len(sys.argv) > 1 else "keywords"
-    if cmd != "add":
+    if cmd not in ("add", "aside"):
         guard()
     try:
         _run(cmd)
@@ -691,6 +766,11 @@ def _run(cmd: str) -> None:
         keywords()
     elif cmd == "add":
         add(sys.argv[2])
+    elif cmd == "aside":  # 어사이드 목록 → 넣고 다시 채점 → 바로 자동 글 (대표 결정 2026-10-07)
+        add(sys.argv[2], aside=True)
+        auto()
+    elif cmd == "auto":  # 10시 자동 글 (어사이드가 안 온 날), 도우미 '다시 돌리기'는 force
+        auto(force=len(sys.argv) > 2 and sys.argv[2] == "force")
     elif cmd == "titles":  # 경제 = 쿠니네 방식, 연예·패션 = 강사 연예·패션 프롬프트 (대표 결정 2026-10-05)
         mod = __import__("content.kunine" if BLOG["id"] == "econ" else "content.celeb", fromlist=["titles"])
         kws = [k.strip() for k in re.split(r"\s+/\s+|\n", sys.argv[2]) if k.strip()][:5]  # 여러 개는 ' / '로 (대표 지시 2026-10-06)

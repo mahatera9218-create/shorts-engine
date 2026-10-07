@@ -55,27 +55,32 @@ def gather(grok_items: list[dict], mine: list[dict]) -> list[tuple[str, str, str
     cfg = F.load(CFG(), {})
     rows: list[tuple[str, str, str]] = []
     for i, it in enumerate(mine, 1):
-        rows.append((f"D{i}", "캡처" if str(it.get("why", "")).startswith("📷") else "대표", it["kw"]))
+        src = "어사이드" if it.get("naver_rank") else ("캡처" if str(it.get("why", "")).startswith("📷") else "대표")
+        rows.append((f"D{i}", src, it["kw"]))
     for i, it in enumerate(grok_items, 1):
         rows.append((f"G{i}", "Grok", f"{it['kw']} — {it.get('why', '')}"))
     refs = F.load(ROOT / "econ" / "ref" / "rss" / f"{F.today()}.yaml", {}) if F.BLOG["id"] == "econ" else {}
-    main = F.load(ROOT / "config" / "econ_refs.yaml", {}).get("main", "")
+    skip = set(cfg.get("skip_bloggers", []))  # 키워드 조사에서 뺄 블로거 (대표 지시 2026-10-07 "쿠니네는 조사할 필요 없다")
     n = 0
     for b in refs.get("bloggers", []):
+        if b["id"] in skip:
+            continue
         for t in b.get("recent", []):
             n += 1
-            rows.append((f"B{n}", b["id"] if b["id"] == main else "블로거", f"[{b.get('name', b['id'])}] {t}"))
+            rows.append((f"B{n}", "블로거", f"[{b.get('name', b['id'])}] {t}"))
     # 참고 블로거 RSS (econ 말고 블로그별 설정 ref_bloggers, 2026-10-06): 최근 36시간 새 글 제목
     if F.BLOG["id"] != "econ" and cfg.get("ref_bloggers"):
         from .econ_refs import feed
         now = datetime.now(F.KST)
         since, fresh = now - timedelta(hours=36), now - timedelta(hours=12)
         for bid, name in cfg["ref_bloggers"].items():
+            if bid in skip:
+                continue
             try:
                 for x in feed(bid):
                     if x["at"] >= since and x["title"]:
                         n += 1  # 12시간 안 새 글은 '블로거새글'(점수 더), 요약 앞부분도 같이 — 브랜드·가격을 뽑게 (2026-10-06)
-                        rows.append((f"B{n}", "쿠니네패션" if bid == cfg.get("main_blogger") else ("블로거새글" if x["at"] >= fresh else "블로거"),
+                        rows.append((f"B{n}", "블로거새글" if x["at"] >= fresh else "블로거",
                                      f"[{name}] {x['title']} — {x.get('summary', '')[:160]}"))
             except Exception as e:  # noqa: BLE001
                 print(f"블로거 RSS 실패 {bid}: {type(e).__name__}")
@@ -206,10 +211,19 @@ def _volumes(kws: list[str]) -> dict[str, float]:
     return out
 
 
-def score(items: list[dict], src_rows: dict[str, str]) -> list[dict]:
-    """items: {kw, core, rows[...]} → score·parts·sources를 채워 점수순으로.
-    100점 = 출처 겹침 40(그날 1등 = 40, 나머지는 비율) + 뉴스량 25(24시간 기사 100건 = 25) + 검색량 35(월 100만 = 35, 10만 ≈ 26, 1만 ≈ 17).
-    '오늘 블로그 빈자리'는 인기 주제일수록 늘 0이라 점수에서 뺐다(2026-10-05 대표 지적 '점수가 너무 낮다'). 숫자는 참고로만 보여 준다."""
+def naver_part(rank: int | None) -> float:
+    """어사이드 순위 → 네이버 인기 비율: 1~3위 100%, 4~6위 75%, 7~10위 50% (대표 결정 2026-10-07)."""
+    if not rank:
+        return 0.0
+    return 1.0 if rank <= 3 else 0.75 if rank <= 6 else 0.5 if rank <= 10 else 0.0
+
+
+def score(items: list[dict], src_rows: dict[str, str] | None) -> list[dict]:
+    """items: {kw, core, rows[...], naver_rank?} → score·parts·sources를 채워 점수순으로.
+    100점 = 블로그 설정 weights (2026-10-07 대표 결정: 네이버 인기(어사이드) 35 > 최신 25 > 출처 겹침 20 > 뉴스량 10 = 검색량 10).
+    "네이버에서 가장 최근·가장 핫한 키워드인데, X·블로거·뉴스에서도 나오는 것"이 위로 오게.
+    src_rows가 None이면 줄 번호 대신 이미 센 it['sources']로 다시 매긴다 (어사이드·대표 키워드를 넣을 때 그날 목록 전체를 다시 채점).
+    어사이드가 없는 날은 네이버 인기를 뺀 나머지를 100점으로 환산한다(점수 미달로 숨겨지지 않게)."""
     cfg = F.load(CFG(), {})
     pts, caps = cfg.get("source_points", {}), cfg.get("caps", {})
     hub = _hub()
@@ -218,7 +232,9 @@ def score(items: list[dict], src_rows: dict[str, str]) -> list[dict]:
     raw = {}
     for it in items:
         cnt: dict[str, int] = {}
-        for rid in it.get("rows", []):
+        if src_rows is None:
+            cnt = dict(it.get("sources") or {})
+        for rid in it.get("rows", []) if src_rows is not None else []:
             s = src_rows.get(rid)
             if s:
                 cnt[s] = cnt.get(s, 0) + 1
@@ -229,6 +245,9 @@ def score(items: list[dict], src_rows: dict[str, str]) -> list[dict]:
         raw[it["kw"]] = src_pts
         it["sources"] = cnt
     top = max(raw.values() or [1]) or 1
+    w = {"출처": 40, "뉴스": 25, "검색": 35, "최신": 0, "네이버": 0, **cfg.get("weights", {})}  # 블로그마다 나눔
+    aside = any(it.get("naver_rank") for it in items)
+    scale = 100 / (100 - w["네이버"]) if (w["네이버"] and not aside and w["네이버"] < 100) else 1
     for it in items:
         news = blog = None
         if hub:
@@ -240,14 +259,14 @@ def score(items: list[dict], src_rows: dict[str, str]) -> list[dict]:
         vol = vols.get(q[it["kw"]])
         # 만점 기준은 블로그마다 (패션은 검색량·기사가 경제보다 훨씬 적어 경제 기준이면 다 낮게 나옴, 2026-10-06)
         nf, vf = cfg.get("news_full", 100), cfg.get("vol_full", 1_000_000)
-        w = {"출처": 40, "뉴스": 25, "검색": 35, "최신": 0, **cfg.get("weights", {})}  # 블로그마다 나눔 (2026-10-06)
         n6 = FRESH.get(q[it["kw"]])
         ff = cfg.get("fresh_full", 10)  # 최신: 최근 6시간 기사 이 수면 만점 (대표 지시 2026-10-06 "따끈할수록 가점")
-        parts = {"최신": round(w["최신"] * min(n6, ff) / ff) if (n6 is not None and w["최신"]) else 0,
+        parts = {"네이버": round(w["네이버"] * naver_part(it.get("naver_rank"))),
+                 "최신": round(w["최신"] * min(n6, ff) / ff) if (n6 is not None and w["최신"]) else 0,
                  "출처": round(w["출처"] * raw[it["kw"]] / top),
                  "뉴스": round(w["뉴스"] * min(news, nf) / nf) if news is not None else 0,
                  "검색": round(min(w["검색"], max(0.0, (math.log10(vol) - 2) / (math.log10(vf) - 2) * w["검색"]))) if vol else 0}
-        it.update(score=sum(parts.values()), parts=parts,
+        it.update(score=min(100, round(sum(parts.values()) * scale)), parts=parts,
                   stats={"뉴스24h": news, "뉴스6h": n6, "블로그24h": blog, "월검색": int(vol) if vol else None})
     return sorted(items, key=lambda x: -x["score"])
 
@@ -270,4 +289,10 @@ def run(grok_items: list[dict], mine: list[dict]) -> list[dict]:
     for rid, src, t in rows:
         if rid.startswith("D") and rid not in have:
             items.append({"kw": t, "area": "", "why": "대표가 넣음", "person": "", "rows": [rid], "src": src})
+    # 어사이드 순위는 다시 모아도 이어지게 (D 줄 번호 = mine 순서)
+    rank = {f"D{i}": it["naver_rank"] for i, it in enumerate(mine, 1) if it.get("naver_rank")}
+    for it in items:
+        r = [rank[x] for x in it["rows"] if x in rank]
+        if r:
+            it["naver_rank"] = min(r)
     return score(items, src_rows)
