@@ -104,7 +104,7 @@ ALL_HEAD = {  # 한 번에 붙여넣을 그림 요청 머리말 (원문 사진 �
 }
 
 
-def all_prompt(items: list[dict]) -> str:
+def all_prompt(items: list[dict], title: str = "") -> str:
     """이 글 사진 전부를 한 번에 요청하는 프롬프트 하나 (대표 지시 2026-10-06: 구분 없이 '사진 프롬프트' 하나로)."""
     draw = [it for it in items if not it.get("person") and it.get("desc")]
     find = [it for it in items if it.get("person")]
@@ -112,8 +112,9 @@ def all_prompt(items: list[dict]) -> str:
     for it in draw:
         shape = "정사각형 1:1" if it.get("size") == "1024x1024" else "가로 3:2"
         brand = f" — {it['brand']} 실제 건물, 진짜 로고·간판" if it.get("brand") else ""
-        hook = (" — 썸네일이라 자극적으로: 홈피드에서 손이 멈추게 극적인 조명·강한 명암·높은 채도·대상을 화면 가득"
-                if it["n"] == 1 and BID == "econ" else "")  # 경제 썸네일은 자극적으로 (대표 지시 2026-10-06)
+        hook = ((f" — 이 글의 대표사진. 글 제목 「{title}」을 보자마자 떠오르는 한 장면으로" if title else " — 이 글의 대표사진")
+                + ", 홈피드에서 손이 멈추게 대상을 화면 가득·강한 명암·높은 채도. 다른 번호 사진과 겹치지 않게"
+                if it["n"] == 1 and BID == "econ" else "")  # 경제 썸네일 = 제목 한 장 요약 (대표 지적 2026-10-07 "대표사진이 애매")
         lines.append(f"{it['n']}번 ({shape}, {it['label']}{brand}{hook}): {it['desc']}")
     if find:  # 실제 인물 사진은 그리지 않는다 — 발행 도우미의 '인물 사진 자리'에서 원본을 바로 받는다 (2026-10-06)
         lines += ["", "※ " + ", ".join(f"{it['n']}번" for it in find) + "은 실제 인물 사진을 따로 넣을 자리라 만들지 않습니다."]
@@ -153,7 +154,8 @@ def prompts_card(p: dict) -> str:
     if not f.exists():
         return ""
     items = json.loads(f.read_text(encoding="utf-8"))
-    text = all_prompt(items)
+    best = next((t["text"] for t in p.get("titles", []) if t.get("best")), "")
+    text = all_prompt(items, best)  # 대표사진이 제목을 담도록 제목을 같이 (2026-10-07)
     # 인물 사진 자리: 대표가 직접 실제 사진을 넣는다 (대표 결정 2026-10-06, 출처 표기).
     # 네이버 검색 화면은 휴대폰에서 저장이 안 돼서, 이미지 검색 API의 원본 주소를 바로 연다 (photo_find)
     used = p.get("status", {}).get("status") == "used"
