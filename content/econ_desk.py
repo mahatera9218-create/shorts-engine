@@ -120,12 +120,12 @@ def all_prompt(items: list[dict]) -> str:
     return "\n".join(lines)
 
 
-def person_row(it: dict, used: bool) -> str:
+def person_row(it: dict, used: bool, context: set[str] | None = None, skip: set[str] | None = None) -> str:
     """인물 사진 한 자리: 후보 사진(누르면 원본) + 출처 복사. 발행 끝난 글은 검색하지 않는다."""
     from .photo_find import find
     e = html.escape
     q = it.get("find") or it["label"]
-    cands = [] if used else find(q)
+    cands = [] if used else find(q, 3, context, skip)
     # 크기가 제각각이면 어수선해서 (대표 지적 2026-10-06) 3칸 정사각형 격자로 맞춤, 사이트·크기는 한 줄로 자름
     size = lambda c: f" · {c['w']}×{c['h']}" if c["w"] else ""
     cap = "font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px"
@@ -157,7 +157,11 @@ def prompts_card(p: dict) -> str:
     # 인물 사진 자리: 대표가 직접 실제 사진을 넣는다 (대표 결정 2026-10-06, 출처 표기).
     # 네이버 검색 화면은 휴대폰에서 저장이 안 돼서, 이미지 검색 API의 원본 주소를 바로 연다 (photo_find)
     used = p.get("status", {}).get("status") == "used"
-    people = "".join(person_row(it, used) for it in items if it.get("person"))
+    # 같은 검색어 자리는 한 번만 찾고, 글 안의 다른 검색어 단어를 '이번 주제'로 써서 예전 사진을 거름 (2026-10-07)
+    slots = [it for it in items if it.get("person")]
+    context = {w for it in slots for w in (it.get("find") or "").split()[1:]}
+    skip: set[str] = set()
+    people = "".join(person_row(it, used, context, skip) for it in slots)
     people = (f'<div style="margin-top:10px"><b>인물 사진 자리 (직접 넣기)</b>'
               '<div class="muted">사진을 누르면 원본이 열려요 → 길게 눌러 「사진 앱에 저장」 → 「출처 복사」를 본문 끝 사진 출처 줄에 붙이기</div>'
               f'{people}</div>') if people else ""

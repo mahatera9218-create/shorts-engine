@@ -29,29 +29,48 @@ def host(url: str) -> str:
     return h[4:] if h.startswith("www.") else h
 
 
-def find(query: str, n: int = 6) -> list[dict]:
-    """[{link(원본), thumb(미리보기), title, host, w, h}] — 큰 사진 먼저. 키가 없거나 실패하면 []."""
+def _search(url: str, headers: dict, query: str, sort: str) -> list[dict]:
+    try:
+        return request_json("GET", url, headers=headers,
+                            params={"query": query, "display": 50, "sort": sort, "filter": "large"}).get("items", [])
+    except Exception as e:  # 사진 후보는 없어도 도우미는 떠야 한다
+        print(f"  사진 후보 실패 ({query}): {str(e)[:260]}")
+        return []
+
+
+def find(query: str, n: int = 3, context: set[str] | None = None, skip: set[str] | None = None) -> list[dict]:
+    """[{link(원본), thumb(미리보기), title, host, w, h}] — 최신 사진 먼저, 주제와 맞는 것만. 키가 없거나 실패하면 [].
+
+    대표 지적 2026-10-07 "예전 사진·주제와 관련 없는 것까지 너무 많다":
+    - 한 자리에 n장(기본 3)만, 같은 글 안에서 이미 보여 준 사진(skip)은 빼기
+    - 사진이 실린 글 제목에 인물 이름(검색어 첫 단어)과 이번 주제 단어(검색어 나머지 + 같은 글의 다른 검색어 단어)가 함께 있어야 함
+    - 최신순으로 먼저 찾고, 모자라면 정확도순으로 채움
+    """
     hub = _hub()
     if not hub or not query:
         return []
     url, headers = hub
-    try:
-        data = request_json("GET", url, headers=headers,
-                            params={"query": query, "display": 30, "sort": "sim", "filter": "large"})
-    except Exception as e:  # 사진 후보는 없어도 도우미는 떠야 한다
-        print(f"  사진 후보 실패 ({query}): {str(e)[:260]}")
-        return []
-    out, seen = [], set()
-    for it in data.get("items", []):
-        link = it.get("link") or ""
-        if not link.startswith("http") or link in seen:
-            continue
-        w, h = int(it.get("sizewidth") or 0), int(it.get("sizeheight") or 0)
-        if w and w < MIN_W:
-            continue
-        seen.add(link)
-        out.append({"link": link, "thumb": it.get("thumbnail") or link, "w": w, "h": h, "host": host(link),
-                    "title": html.unescape(TAG.sub("", it.get("title", ""))).strip()[:60]})
+    words = query.split()
+    name, topic = words[0], (set(words[1:]) | (context or set())) - {words[0]}
+    topic = {w for w in topic if len(w) >= 2}
+    skip = skip if skip is not None else set()
+    out = []
+    for sort in ("date", "sim"):
+        for it in _search(url, headers, query, sort):
+            link = it.get("link") or ""
+            title = html.unescape(TAG.sub("", it.get("title", ""))).strip()
+            if not link.startswith("http") or link in skip:
+                continue
+            if name not in title or (topic and not any(w in title for w in topic)):
+                continue
+            w, h = int(it.get("sizewidth") or 0), int(it.get("sizeheight") or 0)
+            if w and w < MIN_W:
+                continue
+            skip.add(link)
+            out.append({"link": link, "thumb": it.get("thumbnail") or link, "w": w, "h": h, "host": host(link),
+                        "title": title[:60]})
+            if len(out) >= n:
+                break
         if len(out) >= n:
             break
     print(f"  사진 후보 {len(out)}장: {query}")
