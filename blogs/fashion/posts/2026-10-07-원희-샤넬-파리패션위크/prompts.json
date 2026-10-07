@@ -1,0 +1,123 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · 파리 샤넬 쇼에 참석한 원희",
+  "make": true,
+  "file": "",
+  "size": "1024x1024",
+  "person": true,
+  "desc": "",
+  "find": "원희 샤넬 파리패션위크",
+  "prompt": "[실제 사진 찾기] 원희 샤넬 파리패션위크 — 파리 샤넬 쇼에 참석한 원희"
+ },
+ {
+  "n": 2,
+  "label": "샤넬 쇼장에 들어선 원희의 전신 모습",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "원희 샤넬 파리패션위크",
+  "prompt": "[실제 사진 찾기] 원희 샤넬 파리패션위크 — 샤넬 쇼장에 들어선 원희의 전신 모습"
+ },
+ {
+  "n": 3,
+  "label": "그랑 팔레 앞에서 포즈를 취한 원희",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "원희 아일릿 샤넬 쇼 포토콜",
+  "prompt": "[실제 사진 찾기] 원희 아일릿 샤넬 쇼 포토콜 — 그랑 팔레 앞에서 포즈를 취한 원희"
+ },
+ {
+  "n": 4,
+  "label": "스트라이프 재킷과 스커트 세트를 입은 원희",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "원희 샤넬 스트라이프 재킷",
+  "prompt": "[실제 사진 찾기] 원희 샤넬 스트라이프 재킷 — 스트라이프 재킷과 스커트 세트를 입은 원희"
+ },
+ {
+  "n": 5,
+  "label": "스트라이프 코튼 재킷과 스커트 세트의 소재감",
+  "make": true,
+  "file": "img5.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Editorial still life of a tailored striped cotton jacket with a matching top and skirt, soft pastel stripes, fine weave texture, neatly folded on a pale linen surface with dried flowers, soft natural window light, no logos, no text, no people",
+  "find": "샤넬 스트라이프 코튼 재킷",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Editorial still life of a tailored striped cotton jacket with a matching top and skirt, soft pastel stripes, fine weave texture, neatly folded on a pale linen surface with dried flowers, soft natural window light, no logos, no text, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 6,
+  "label": "파리에서 스트라이프 세트로 걸어가는 원희",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "원희 샤넬 스트라이프 세트 파리",
+  "prompt": "[실제 사진 찾기] 원희 샤넬 스트라이프 세트 파리 — 파리에서 스트라이프 세트로 걸어가는 원희"
+ },
+ {
+  "n": 7,
+  "label": "스트라이프 코튼 소재의 결과 스티치 디테일",
+  "make": true,
+  "file": "img7.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Close-up editorial still life of a striped cotton skirt hem and matching fitted top, crisp vertical and horizontal stripe alignment, fine stitching detail, laid on cream stone with a small silk ribbon, soft diffused light, no logos, no text, no people",
+  "find": "샤넬 스트라이프 스커트",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Close-up editorial still life of a striped cotton skirt hem and matching fitted top, crisp vertical and horizontal stripe alignment, fine stitching detail, laid on cream stone with a small silk ribbon, soft diffused light, no logos, no text, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 8,
+  "label": "부드러운 램스킨 호보 백의 실루엣",
+  "make": true,
+  "file": "img8.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Editorial still life of a soft lambskin hobo bag in a muted neutral tone, slouchy curved silhouette, supple leather grain, subtle metal hardware, resting on a pale marble surface beside a folded silk scarf, soft natural light, no logos, no text, no people",
+  "find": "샤넬 램스킨 호보 백",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Editorial still life of a soft lambskin hobo bag in a muted neutral tone, slouchy curved silhouette, supple leather grain, subtle metal hardware, resting on a pale marble surface beside a folded silk scarf, soft natural light, no logos, no text, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 9,
+  "label": "메탈 이어링의 광택 디테일",
+  "make": true,
+  "file": "img9.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Macro editorial still life of polished metal earrings with a refined sculpted shape, soft highlights on the metal surface, placed on a cream velvet tray with a small pearl, soft diffused light, no logos, no text, no people",
+  "find": "메탈 이어링 클래식",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Macro editorial still life of polished metal earrings with a refined sculpted shape, soft highlights on the metal surface, placed on a cream velvet tray with a small pearl, soft diffused light, no logos, no text, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 10,
+  "label": "클래식한 펌프스 제품 이미지",
+  "make": true,
+  "file": "img10.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Editorial still life of a pair of classic leather pumps, elegant pointed toe, smooth leather finish, slim heel, placed on pale stone floor with soft shadow, no logos, no text, no people",
+  "find": "샤넬 펌프스",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Editorial still life of a pair of classic leather pumps, elegant pointed toe, smooth leather finish, slim heel, placed on pale stone floor with soft shadow, no logos, no text, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 11,
+  "label": "스트라이프 재킷과 스커트 셋업 스타일링 예시",
+  "make": true,
+  "file": "img11.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Editorial still life of a women's matching striped jacket and skirt set on a wooden hanger against a soft beige wall, delicate cotton texture, clean tailoring, a small leather bag on the floor beside it, soft natural light, no logos, no text, no people",
+  "find": "스트라이프 재킷 스커트 셋업",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Editorial still life of a women's matching striped jacket and skirt set on a wooden hanger against a soft beige wall, delicate cotton texture, clean tailoring, a small leather bag on the floor beside it, soft natural light, no logos, no text, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ }
+]
