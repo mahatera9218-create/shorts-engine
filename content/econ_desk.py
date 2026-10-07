@@ -293,9 +293,12 @@ def flow_html() -> str:
     _kcfg = (yaml.safe_load(_kc.read_text(encoding="utf-8")) or {}) if _kc.exists() else {}
     W = {"출처": 40, "뉴스": 25, "검색": 35, "최신": 0, **_kcfg.get("weights", {})}
     MIN = _kcfg.get("min_score", MIN_SCORE)  # 블로그마다 (패션은 30, 2026-10-06)
-    rows, hidden = [], 0
-    for it in kw.get("items", [])[:20]:
+    rows, hidden, shown = [], 0, 0
+    for it in kw.get("items", []):
         mine = it.get("src") in ("대표", "캡처") or any(k in (it.get("sources") or {}) for k in ("대표", "캡처"))
+        if shown >= 20 and not mine:  # 20개까지만, 대표가 넣은 건(어사이드 포함) 점수가 낮아도 늘 보이게 (2026-10-07)
+            continue
+        shown += not mine
         if "score" in it and it["score"] < MIN and not mine:  # 50점 미만은 안 보여 줌 (대표 지시 2026-10-05), 대표가 넣은 건 예외
             hidden += 1
             continue
