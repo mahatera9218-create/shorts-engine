@@ -62,14 +62,14 @@ def gather(grok_items: list[dict], mine: list[dict]) -> list[tuple[str, str, str
     refs = F.load(ROOT / "econ" / "ref" / "rss" / f"{F.today()}.yaml", {}) if F.BLOG["id"] == "econ" else {}
     skip = set(cfg.get("skip_bloggers", []))  # 키워드 조사에서 뺄 블로거 (대표 지시 2026-10-07 "쿠니네는 조사할 필요 없다")
     n = 0
-    for b in refs.get("bloggers", []):
+    for b in refs.get("bloggers", []) if cfg.get("blogger_keywords", True) else []:  # 경제는 끔 (2026-10-07)
         if b["id"] in skip:
             continue
         for t in b.get("recent", []):
             n += 1
             rows.append((f"B{n}", "블로거", f"[{b.get('name', b['id'])}] {t}"))
     # 참고 블로거 RSS (econ 말고 블로그별 설정 ref_bloggers, 2026-10-06): 최근 36시간 새 글 제목
-    if F.BLOG["id"] != "econ" and cfg.get("ref_bloggers"):
+    if F.BLOG["id"] != "econ" and cfg.get("ref_bloggers") and cfg.get("blogger_keywords", True):
         from .econ_refs import feed
         now = datetime.now(F.KST)
         since, fresh = now - timedelta(hours=36), now - timedelta(hours=12)
