@@ -220,11 +220,7 @@ async function saveEdits(b){
   location.href=url}
 // 아이폰 네이버 앱은 HTML 클립보드를 안 읽어서 서식이 빠짐 (대표 확인 2026-10-06) → 화면에 그린 글을 선택해 복사하면
 // 사파리가 서식 있는 글(웹 아카이브·RTF)로 넣어 줘서 앱이 굵게·밑줄을 살린다. 안 되면 예전 방식
-function copySel(b,html){const d=document.createElement('div');d.innerHTML=html;d.contentEditable='true';
-  d.style.cssText='position:fixed;left:0;top:0;width:1px;height:1px;overflow:hidden;opacity:0.01;background:#fff;color:#000';
-  document.body.appendChild(d);const r=document.createRange();r.selectNodeContents(d);const s=window.getSelection();s.removeAllRanges();s.addRange(r);
-  let ok=false;try{ok=document.execCommand('copy')}catch(e){}s.removeAllRanges();d.remove();if(ok)flash(b,'복사됨 ✓');return ok}
-async function copyBody(b){if(!copySel(b,bodyHtml()))copyRich(b,bodyHtml(),bodyText())}
+async function copyBody(b){copyText(b,bodyText())}  // 글자만 복사: 서식 붙여넣기는 네이버 앱에서 안 되고(2026-10-06 포기), 복사한 글자색·글꼴이 묻어 글이 회색처럼 보일 수 있어서 (대표 지적 2026-10-07)
 async function saveClip(b,name){
   name=name||'clip.mp4';
   try{
