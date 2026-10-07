@@ -1,0 +1,172 @@
+keyword: 신민아 루이비통
+person: 신민아
+mode: 연예패션
+made: '17:11'
+items:
+- title: '"역시 하우스 앰버서더네" 신민아 루이비통 쇼'
+  type: 그룹 2
+  rank: 1
+  best: true
+  chars: 25
+  flags: []
+- title: '"루브르에서 이렇게 웃는다고?" 뜻밖의 앰버서더'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 26
+  flags: []
+- title: '"우아한데 상큼하기까지" 파리 쇼장에 등장한 배우'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 27
+  flags: []
+- title: '"긴 웨이브가 이렇게 어울리네" 루이비통 쇼 룩'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 26
+  flags: []
+- title: '"어디서 본 분위기인데?" 마침내 파리에 나타난 앰버서더'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 31
+  flags:
+  - 31자(30자 넘음)
+- title: '"플러팅 같은 미소였네" 루이비통 쇼장 화제의 배우'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: '"43세라고?" 신민아 루이비통 파리 패션위크'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 25
+  flags: []
+- title: 신민아 루브르 루이비통 쇼 "우아한 시크함 그대로"
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: '"웃음이 다 했네" 신민아 루이비통 2027 S/S'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: '"긴 웨이브가 포인트네" 신민아 루이비통 룩'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 24
+  flags: []
+- title: '"리사 옆자리도 어울리겠네" 루이비통 앰버서더 룩'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 27
+  flags: []
+- title: '"필릭스와 같은 하우스 얼굴이네" 파리 쇼장 배우'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 27
+  flags: []
+- title: '"김우빈 아내" 하면 떠오르는 파리 쇼 미소'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 24
+  flags: []
+- title: '"리사와 나란히 서도 밀리지 않네" 루이비통 쇼 룩'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: '"필릭스도 반가워할 얼굴" 루브르 쇼장 앰버서더'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 26
+  flags: []
+- title: '"이 장면 뭐야?" 결국 루브르에 등장한 여배우'
+  type: 쿠니네패션식 방식
+  rank: null
+  best: false
+  chars: 26
+  flags: []
+- title: '"파리에서 이렇게 웃는다고?" 신민아 루이비통 패션쇼'
+  type: 쿠니네패션식 방식
+  rank: null
+  best: false
+  chars: 29
+  flags: []
+- title: 신민아 루이비통 쇼 룩 "우아한데 상큼하네"
+  type: 쿠니네패션식 방식
+  rank: null
+  best: false
+  chars: 24
+  flags: []
+- title: 와... 현지에서 난리난 신민아 파리 패션위크 근황 ft.루이비통
+  type: ohye1991식 방식
+  rank: null
+  best: false
+  chars: 36
+  flags:
+  - 36자(30자 넘음)
+- title: 오늘자 루브르 앞 신민아 루이비통 쇼 룩이 더 예쁘다는...
+  type: ohye1991식 방식
+  rank: null
+  best: false
+  chars: 33
+  flags:
+  - 33자(30자 넘음)
+- title: 43살 맞아?... 긴 웨이브로 파리 접수한 신민아 ft.루이비통
+  type: ohye1991식 방식
+  rank: null
+  best: false
+  chars: 36
+  flags:
+  - 36자(30자 넘음)
+groups:
+- type: 그룹 1 주인공 숨김
+  idx:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  best: null
+- type: 그룹 2 이름 노출
+  idx:
+  - 0
+  - 6
+  - 7
+  - 8
+  - 9
+  best: null
+- type: 그룹 3 관련 인물
+  idx:
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  best: null
+- type: 쿠니네패션식
+  idx:
+  - 15
+  - 16
+  - 17
+  best: null
+- type: ohye1991식
+  idx:
+  - 18
+  - 19
+  - 20
+  best: null
