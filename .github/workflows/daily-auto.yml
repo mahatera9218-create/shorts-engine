@@ -1,0 +1,25 @@
+# 매일 자동 글 (대표 결정 2026-10-07, reports/2026-10-07-자동화-운영안.md)
+# - 06:00 경제·패션 키워드 모으기·채점
+# - 어사이드가 키워드를 올리면 desk-button.yml이 바로 자동 글(aside)
+# - 10:00 어사이드가 안 온 날: 그날 점수 1~3위로 자동 글 (이미 끝났으면 건너뜀)
+name: 매일 자동 글
+
+on:
+  schedule:
+    - cron: "0 21 * * *"   # UTC 21:00 = 한국 06:00 키워드 모으기
+    - cron: "0 1 * * *"    # UTC 01:00 = 한국 10:00 자동 글 (어사이드 없을 때)
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    strategy:
+      fail-fast: false
+      matrix:
+        blog: [econ, fashion]
+    uses: ./.github/workflows/econ-flow.yml
+    with:
+      cmd: ${{ github.event.schedule == '0 21 * * *' && 'keywords' || 'auto' }}
+      blog: ${{ matrix.blog }}
+    secrets: inherit

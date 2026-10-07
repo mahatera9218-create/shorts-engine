@@ -18,7 +18,7 @@ import re
 import shutil
 import urllib.parse
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -243,6 +243,8 @@ def blog_section(b: dict, posts: list[dict]) -> str:
     def row(p, muted=False):
         t = next((x["text"] for x in p["titles"] if x["best"]), p["folder"])
         mark = "발행함" if muted else ("" if p["ok"] else "확인 필요 · ")
+        if not muted and b["id"] == "econ" and (datetime.now(KST).date() - datetime.strptime(p["date"], "%Y-%m-%d").date()).days >= 2:
+            mark = "⏰ 오래됨(숫자 확인) · " + mark  # 경제 글은 이틀 지나면 숫자가 낡음 (2026-10-07)
         style = "text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" + (";opacity:.55" if muted else "")
         return f'<a class="btn" style="{style}" href="p/{b["id"]}-{desk.slug(p["folder"])}/">{mark}{e(p["date"])} · {e(t)}</a>'
 
@@ -282,6 +284,33 @@ REF_MAIN = _REFS.get("main", "")
 REF_NAMES = _REFS.get("bloggers", {}) if isinstance(_REFS.get("bloggers"), dict) else {}
 
 
+def auto_html(day: Path, today: str) -> str:
+    """오늘 자동 글 상태 (대표 결정 2026-10-07): 어사이드가 오면 바로, 안 오면 10시. 실패·멈춤이면 다시 돌리기 버튼."""
+    e = html.escape
+    st = (yaml.safe_load((day / "auto.yaml").read_text(encoding="utf-8")) or {}) if (day / "auto.yaml").exists() else {}
+    again = desk.issue_link(f"{LABEL}자동", today, "오늘 자동 글을 다시 만들어 주세요.")
+    btn = f'<a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(again, quote=True)}">🔁 자동 글 다시 돌리기</a>'
+    done, picks = st.get("done", []), st.get("picks", [])
+    how = "어사이드 반영" if st.get("aside") else "어사이드 없이"
+    if st.get("status") == "완료":
+        msg = f'✅ 오늘 자동 글 {len(done)}편 완료 ({e(st.get("at", ""))} 시작 · {how}) — ③ 올릴 글에 있어요: {e(" · ".join(picks))}'
+        msg += f' <span class="badge warn">실패 {len(st.get("failed", []))}</span>' if st.get("failed") else ""
+        return f'<div class="card" style="margin:0 0 10px">{msg}</div>'
+    if st.get("status") == "진행중":
+        started = datetime.strptime(f"{today} {st.get('at', '00:00')}", "%Y-%m-%d %H:%M").replace(tzinfo=KST)
+        if datetime.now(KST) - started < timedelta(minutes=90):
+            return (f'<div class="card" style="margin:0 0 10px">⏳ 오늘 자동 글 만드는 중 ({e(st.get("at", ""))} 시작 · {how}) — '
+                    f'{len(done)}/{len(picks)}편: {e(" · ".join(picks))}</div>')
+        return f'<div class="card" style="margin:0 0 10px;border:2px solid var(--warn)">⚠️ 오늘 자동 글이 멈춘 것 같아요 ({len(done)}/{len(picks)}편).{btn}</div>'
+    if st.get("status") == "실패":
+        return f'<div class="card" style="margin:0 0 10px;border:2px solid var(--warn)">⚠️ 오늘 자동 글이 실패했어요.{btn}</div>'
+    late = datetime.now(KST).hour >= 11  # 10시 자동이 1시간 넘게 안 돌았으면 (GitHub 멈춤 등)
+    if late:
+        return f'<div class="card" style="margin:0 0 10px;border:2px solid var(--warn)">⚠️ 오늘 자동 글이 아직 안 돌았어요.{btn}</div>'
+    return ('<div class="card muted" style="margin:0 0 10px">🕙 오늘 자동 글 대기 중 — 어사이드가 키워드를 올리면 바로, '
+            '안 오면 10시에 점수 1~3위로 글을 만들어요.</div>')
+
+
 def flow_html() -> str:
     """① 오늘의 키워드 → ② 제목 고르기 (대표 결정 2026-10-05: 대표가 키워드·제목을 고른 뒤에 전체 제작)."""
     e = html.escape
@@ -291,11 +320,11 @@ def flow_html() -> str:
     from .blogs import get as _bget
     _kc = ROOT / _bget(BID).get("keywords", "config/econ_keywords.yaml")
     _kcfg = (yaml.safe_load(_kc.read_text(encoding="utf-8")) or {}) if _kc.exists() else {}
-    W = {"출처": 40, "뉴스": 25, "검색": 35, "최신": 0, **_kcfg.get("weights", {})}
+    W = {"출처": 40, "뉴스": 25, "검색": 35, "최신": 0, "네이버": 0, **_kcfg.get("weights", {})}
     MIN = _kcfg.get("min_score", MIN_SCORE)  # 블로그마다 (패션은 30, 2026-10-06)
     rows, hidden, shown = [], 0, 0
     for it in kw.get("items", []):
-        mine = it.get("src") in ("대표", "캡처") or any(k in (it.get("sources") or {}) for k in ("대표", "캡처"))
+        mine = it.get("src") in ("대표", "캡처", "어사이드") or any(k in (it.get("sources") or {}) for k in ("대표", "캡처", "어사이드"))
         if shown >= 20 and not mine:  # 20개까지만, 대표가 넣은 건(어사이드 포함) 점수가 낮아도 늘 보이게 (2026-10-07)
             continue
         shown += not mine
@@ -313,7 +342,10 @@ def flow_html() -> str:
         pt = it.get("parts") or {}
         sc = f' <span class="seal">{it["score"]}점</span>' if "score" in it else ""
         st = it.get("stats") or {}
-        bar = (f'<span class="muted">{"최신 " + str(pt.get("최신", 0)) + "/" + str(W["최신"]) + " · " if W.get("최신") else ""}'
+        naver = ((f"네이버 {pt.get('네이버', 0)}/{W['네이버']}" + (f"(어사이드 {it['naver_rank']}위)" if it.get("naver_rank") else "") + " · ")
+                 if W.get("네이버") else "")  # 어사이드(네이버 홈판·인기글) 점수, 대표 결정 2026-10-07
+        bar = (f'<span class="muted">{naver}'
+               f'{"최신 " + str(pt.get("최신", 0)) + "/" + str(W["최신"]) + " · " if W.get("최신") else ""}'
                f'출처 {pt.get("출처", 0)}/{W["출처"]} · 뉴스 {pt.get("뉴스", 0)}/{W["뉴스"]} · 검색 {pt.get("검색", 0)}/{W["검색"]}'
                f'{" · 월검색 " + format(st["월검색"], ",") if st.get("월검색") else ""}</span><br>') if pt else ""
         rows.append(f'<div style="display:flex;gap:8px;align-items:stretch"><label style="display:flex;align-items:center;padding:0 4px">'
@@ -336,7 +368,7 @@ def flow_html() -> str:
                  '<div class="muted">왼쪽 네모로 여러 개(최대 5개) 고르면 한 번에 제목 후보를 만들어요. 1개에 약 3~5분, 비용 약 150원.</div>') if rows else ""
     refresh = desk.issue_link(f"{LABEL}키워드새로", today, "여러 출처에서 키워드를 모아 점수를 매겨 주세요.")
     kw_html = f"""<details class="card fold" data-k="f1-{BID}" open style="border:2px solid var(--accent)"><summary><h2><span><span class="step">1</span>오늘의 키워드 고르기</span></h2></summary>
-<div class="muted">점수순이에요(100점 = {"최신(6시간 기사) " + str(W["최신"]) + " + " if W.get("최신") else ""}출처 겹침 {W["출처"]} + 네이버 뉴스량 {W["뉴스"]} + 검색량 {W["검색"]}, {MIN}점 이상만{f" · {hidden}개 숨김" if hidden else ""}). 누르면 그 키워드로 <b>제목 후보</b>를 만들어요 (약 3~5분). {e(kw.get("updated", ""))} 기준</div>
+{auto_html(day, today)}<div class="muted">점수순이에요(100점 = {"네이버 인기(어사이드) " + str(W["네이버"]) + " + " if W.get("네이버") else ""}{"최신(6시간 기사) " + str(W["최신"]) + " + " if W.get("최신") else ""}출처 겹침 {W["출처"]} + 네이버 뉴스량 {W["뉴스"]} + 검색량 {W["검색"]}, {MIN}점 이상만{f" · {hidden}개 숨김" if hidden else ""}). 누르면 그 키워드로 <b>제목 후보</b>를 만들어요 (약 3~5분). {e(kw.get("updated", ""))} 기준</div>
 {''.join(rows)}{multi_btn}{'' if rows else '<p class="muted">아직 없어요. 아래 <b>🔄 키워드 모으기</b>를 누르면 여러 출처에서 모아 점수를 매겨요(약 3분).</p>'}
 <textarea id="kwin-{BID}" rows="3" style="width:100%;min-height:84px;font:inherit;line-height:1.6;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:6px 0;background:var(--card);color:var(--ink);resize:vertical" placeholder="{'어드바이저·뉴스 랭킹·트렌드에서 찾은 키워드' if BID == 'econ' else '눈에 띈 연예인 + 아이템 (예: 윤아 코트)'} (한 줄에 하나)"></textarea>
 <button onclick="addKw_{BID}()">➕ 내 키워드 넣기</button>
