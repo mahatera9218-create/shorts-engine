@@ -1,13 +1,13 @@
 [
  {
   "n": 1,
-  "label": "썸네일 · 삼성전자 간판이 보이는 사옥 정면",
+  "label": "썸네일 · 삼성전자 사옥 간판 클로즈업",
   "make": true,
   "file": "thumb.jpg",
-  "desc": "Square close-up of the large blue SAMSUNG logo sign on a Samsung Electronics building centered in frame, split lighting with one half bright sunlight and one half deep shadow to suggest mixed reactions, high contrast saturated colors, cinematic, no other text",
+  "desc": "Square close-up of the large blue SAMSUNG logo sign on the Samsung Electronics headquarters building facade, centered, half the frame bright sunlit and half in cool shadow to suggest mixed reactions, high contrast, cinematic, realistic news photo",
   "brand": "Samsung Electronics",
   "size": "1024x1024",
-  "prompt": "Square 1:1 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Square close-up of the large blue SAMSUNG logo sign on a Samsung Electronics building centered in frame, split lighting with one half bright sunlight and one half deep shadow to suggest mixed reactions, high contrast saturated colors, cinematic, no other text This must clearly be Samsung Electronics: show its real, accurate corporate signage — the actual Samsung Electronics logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+  "prompt": "Square 1:1 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Square close-up of the large blue SAMSUNG logo sign on the Samsung Electronics headquarters building facade, centered, half the frame bright sunlit and half in cool shadow to suggest mixed reactions, high contrast, cinematic, realistic news photo This must clearly be Samsung Electronics: show its real, accurate corporate signage — the actual Samsung Electronics logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
  },
  {
   "n": 2,
@@ -24,49 +24,49 @@
   "label": "삼성전자 기흥 반도체 캠퍼스 전경",
   "make": true,
   "file": "img3.jpg",
-  "desc": "Aerial view of the Samsung Electronics Giheung semiconductor campus, large grey fab building with the blue SAMSUNG logo, clear daylight, press photo composition",
+  "desc": "Aerial view of the Samsung Electronics Giheung semiconductor campus, large grey fab building with the blue SAMSUNG logo, clear sky, documentary news photo",
   "brand": "Samsung Electronics",
   "size": "1536x1024",
-  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Aerial view of the Samsung Electronics Giheung semiconductor campus, large grey fab building with the blue SAMSUNG logo, clear daylight, press photo composition This must clearly be Samsung Electronics: show its real, accurate corporate signage — the actual Samsung Electronics logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Aerial view of the Samsung Electronics Giheung semiconductor campus, large grey fab building with the blue SAMSUNG logo, clear sky, documentary news photo This must clearly be Samsung Electronics: show its real, accurate corporate signage — the actual Samsung Electronics logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
  },
  {
   "n": 4,
-  "label": "반도체 웨이퍼 클로즈업",
+  "label": "반도체 웨이퍼 위 메모리 칩 클로즈업",
   "make": true,
   "file": "img4.jpg",
-  "desc": "Close-up of a semiconductor wafer with memory chips on a cleanroom tray, cool blue light, realistic photo, no text",
+  "desc": "Close-up of advanced memory chips on a semiconductor wafer under bright clean-room light, realistic documentary photo, no text",
   "brand": "",
   "size": "1536x1024",
-  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Close-up of a semiconductor wafer with memory chips on a cleanroom tray, cool blue light, realistic photo, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Close-up of advanced memory chips on a semiconductor wafer under bright clean-room light, realistic documentary photo, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
  },
  {
   "n": 5,
-  "label": "서울 여의도 증권가 야경",
+  "label": "증시 전광판을 바라보는 투자자들의 뒷모습",
   "make": true,
   "file": "img5.jpg",
-  "desc": "Evening view of the Yeouido financial district in Seoul with lit office towers and the Han river, realistic news photo, no readable text",
+  "desc": "Anonymous office workers seen from behind watching a large stock market display board in Yeouido Seoul, evening light, no readable text",
   "brand": "",
   "size": "1536x1024",
-  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Evening view of the Yeouido financial district in Seoul with lit office towers and the Han river, realistic news photo, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Anonymous office workers seen from behind watching a large stock market display board in Yeouido Seoul, evening light, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
  },
  {
   "n": 6,
-  "label": "증시 전광판을 보는 직장인 뒷모습",
+  "label": "원화와 달러 지폐",
   "make": true,
   "file": "img6.jpg",
-  "desc": "Anonymous office worker seen from behind watching a large stock market display board in Seoul, soft natural light, realistic photo, no readable text",
+  "desc": "Stack of Korean won banknotes and a few US dollar bills on a desk in side light, realistic close-up, no readable numbers",
   "brand": "",
   "size": "1536x1024",
-  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Anonymous office worker seen from behind watching a large stock market display board in Seoul, soft natural light, realistic photo, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Stack of Korean won banknotes and a few US dollar bills on a desk in side light, realistic close-up, no readable numbers No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
  },
  {
   "n": 7,
-  "label": "고대역폭 메모리 반도체 모듈",
+  "label": "고대역폭 메모리 모듈 클로즈업",
   "make": true,
   "file": "img7.jpg",
-  "desc": "Stacked high bandwidth memory chip modules on a dark table, dramatic side light, realistic close-up photo, no text",
+  "desc": "High-bandwidth memory modules on a circuit board close-up, cinematic cool lighting, realistic photo, no text",
   "brand": "",
   "size": "1536x1024",
-  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Stacked high bandwidth memory chip modules on a dark table, dramatic side light, realistic close-up photo, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. High-bandwidth memory modules on a circuit board close-up, cinematic cool lighting, realistic photo, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
  }
 ]
