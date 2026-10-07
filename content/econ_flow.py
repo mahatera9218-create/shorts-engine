@@ -286,6 +286,8 @@ def add(text: str, aside: bool = False) -> None:
         from .econ_score import score
         data["items"] = score(items, None)
     data["updated"] = datetime.now(KST).strftime("%H:%M")
+    if aside:  # 도우미 ①에 "어사이드가 언제 몇 개 넣었는지" 보이게 (대표 지적 2026-10-07 "어사이드가 넣고 있는지 확인할 수가 없다")
+        data["aside"] = {"at": data["updated"], "n": len(lines), "list": lines[:10]}
     save(day / "keywords.yaml", data)
 
 
