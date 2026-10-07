@@ -1,0 +1,72 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · SK하이닉스 사옥과 역광 하늘",
+  "make": true,
+  "file": "thumb.jpg",
+  "desc": "Dramatic low-angle square photo of the SK hynix Icheon campus main building with the SK hynix logo, golden backlight breaking through clouds, high contrast, cinematic lighting, no other text",
+  "brand": "SK hynix",
+  "size": "1024x1024",
+  "prompt": "Square 1:1 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Dramatic low-angle square photo of the SK hynix Icheon campus main building with the SK hynix logo, golden backlight breaking through clouds, high contrast, cinematic lighting, no other text This must clearly be SK hynix: show its real, accurate corporate signage — the actual SK hynix logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 2,
+  "label": "SK하이닉스 이천 캠퍼스 전경",
+  "make": true,
+  "file": "img2.jpg",
+  "desc": "Wide aerial photograph of the SK hynix Icheon campus in Gyeonggi-do, South Korea, large grey semiconductor fab buildings with the SK hynix logo on the facade, clear sunny day, realistic press photo",
+  "brand": "SK hynix",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Wide aerial photograph of the SK hynix Icheon campus in Gyeonggi-do, South Korea, large grey semiconductor fab buildings with the SK hynix logo on the facade, clear sunny day, realistic press photo This must clearly be SK hynix: show its real, accurate corporate signage — the actual SK hynix logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 3,
+  "label": "AI 서버용 메모리 반도체 모듈 클로즈업",
+  "make": true,
+  "file": "img3.jpg",
+  "desc": "Close-up of a high bandwidth memory chip module on a clean laboratory table, soft natural light, shallow depth of field, realistic documentary photo, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Close-up of a high bandwidth memory chip module on a clean laboratory table, soft natural light, shallow depth of field, realistic documentary photo, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 4,
+  "label": "증권사 시세 화면을 바라보는 투자자 뒷모습",
+  "make": true,
+  "file": "img4.jpg",
+  "desc": "Anonymous office worker seen from behind watching a stock market display screen in a Seoul securities firm lobby, no readable text or numbers, natural light, realistic news photo",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Anonymous office worker seen from behind watching a stock market display screen in a Seoul securities firm lobby, no readable text or numbers, natural light, realistic news photo No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 5,
+  "label": "반도체 웨이퍼 생산 라인",
+  "make": true,
+  "file": "img5.jpg",
+  "desc": "Row of semiconductor wafers on a production line inside a clean room, cool blue lighting, realistic industrial photograph, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Row of semiconductor wafers on a production line inside a clean room, cool blue lighting, realistic industrial photograph, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 6,
+  "label": "원화 지폐 더미",
+  "make": true,
+  "file": "img6.jpg",
+  "desc": "Stack of Korean won banknotes beside a small potted plant on a wooden desk, warm natural window light, realistic photo, no readable text or numbers",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Stack of Korean won banknotes beside a small potted plant on a wooden desk, warm natural window light, realistic photo, no readable text or numbers No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 7,
+  "label": "서울 여의도 금융가 전경",
+  "make": true,
+  "file": "img7.jpg",
+  "desc": "Wide view of Yeouido financial district in Seoul with office towers and the Han river at dusk, realistic news photograph, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Wide view of Yeouido financial district in Seoul with office towers and the Han river at dusk, realistic news photograph, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ }
+]
