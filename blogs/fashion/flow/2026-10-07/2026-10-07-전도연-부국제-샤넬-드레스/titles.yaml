@@ -1,0 +1,174 @@
+keyword: 전도연 부국제 샤넬 드레스
+person: 전도연
+mode: 연예패션
+made: '11:21'
+items:
+- title: '"같은 블랙인데 분위기 다르네" 전도연 오프숄더 드레스'
+  type: 그룹 2
+  rank: 1
+  best: true
+  chars: 30
+  flags: []
+- title: '"같은 블랙인데 왜 다르지?" 뜻밖의 오프숄더 비교'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: '"어깨 라인이 이렇게 예뻤나?" 부국제 블랙 드레스'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: '"짧은 머리가 이렇게 어울리네" 레드카펫 오프숄더'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 27
+  flags: []
+- title: '"리본 디테일이 포인트였네" 결국 눈길 간 블랙룩'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 27
+  flags: []
+- title: '"비슷한 드레스인데 느낌이 다르네" 부국제 여배우'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 27
+  flags: []
+- title: '"역시 레드카펫이 어울리네" 전도연 부국제 블랙 드레스'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: '"어깨 라인 이렇게 살리는구나" 전도연 부국제 패션'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: '"짧은 머리라 더 예쁜데?" 전도연 오프숄더 드레스'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: '"조여정과 나란히 서니 다르네" 전도연 블랙 드레스'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: '"조여정 옆에서 더 눈에 띄네" 부국제 블랙 오프숄더'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 29
+  flags: []
+- title: '"설경구도 감탄했을 분위기" 가능한 사랑 레드카펫 드레스'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 31
+  flags:
+  - 31자(30자 넘음)
+- title: '"조인성 옆에서도 존재감 있네" 부국제 블랙 드레스'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: '"이창동 감독 작품 팀답네" 레드카펫 블랙 오프숄더'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: '"조여정과 같은 블랙인데?" 부국제 오프숄더 드레스'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: '"어깨 라인이 이렇게 예뻤나?" 전도연 부국제 블랙 드레스'
+  type: 쿠니네패션식 방식
+  rank: null
+  best: false
+  chars: 32
+  flags:
+  - 32자(30자 넘음)
+- title: '"같은 블랙인데 왜 다르지?" 결국 눈길 간 전도연 오프숄더'
+  type: 쿠니네패션식 방식
+  rank: null
+  best: false
+  chars: 33
+  flags:
+  - 33자(30자 넘음)
+- title: '"레드카펫에서 제일 편안해 보이네" 전도연 블랙 드레스'
+  type: 쿠니네패션식 방식
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: 와... 같은 블랙인데 분위기 다르다는 전도연 부국제 오프숄더 드레스 근황
+  type: ohye1991식 방식
+  rank: null
+  best: false
+  chars: 41
+  flags:
+  - 41자(30자 넘음)
+- title: 대박... 반응 갈린 전도연 조여정 블랙 드레스 부산국제영화제 패션스타일
+  type: ohye1991식 방식
+  rank: null
+  best: false
+  chars: 40
+  flags:
+  - 40자(30자 넘음)
+- title: 헐... 짧은 머리에 리본 디테일 전도연 부국제 레드카펫 드레스 근황
+  type: ohye1991식 방식
+  rank: null
+  best: false
+  chars: 38
+  flags:
+  - 38자(30자 넘음)
+groups:
+- type: 그룹 1 주인공 숨김
+  idx:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  best: null
+- type: 그룹 2 이름 노출
+  idx:
+  - 0
+  - 6
+  - 7
+  - 8
+  - 9
+  best: null
+- type: 그룹 3 관련 인물
+  idx:
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  best: null
+- type: 쿠니네패션식
+  idx:
+  - 15
+  - 16
+  - 17
+  best: null
+- type: ohye1991식
+  idx:
+  - 18
+  - 19
+  - 20
+  best: null
