@@ -70,10 +70,11 @@ class EconTest(unittest.TestCase):
             from content import econ_flow, celeb
             importlib.reload(econ_flow)
             importlib.reload(celeb)
-            a = {"greeting": "안녕하세요", "sections": [{"heading": "h", "images": [], "paragraphs": ["첨부한 사진을 보면 예뻐요"]}],
+            a = {"greeting": "캐시미어 다이어리의 캐다입니다.", "sections": [{"heading": "h", "images": [], "paragraphs": ["첨부한 사진을 보면 예뻐요"]},
+                                                                    {"heading": "끝", "images": [], "paragraphs": ["마무리"]}],
                  "summary": "세 가지가 좋았어요", "tags": ["t"] * 25}
             bad = " ".join(celeb.check(a))
-            for word in ("1,500자", "요약", "제작 과정", "해시태그", "캐다입니다"):
+            for word in ("1,500자", "요약", "제작 과정", "해시태그", "자기소개", "사진 2장 미만"):
                 self.assertIn(word, bad)
         finally:
             os.environ.pop("BLOG", None)

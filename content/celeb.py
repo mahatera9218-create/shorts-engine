@@ -116,7 +116,7 @@ BODY = {"type": "object", "additionalProperties": False,
         "required": ["greeting", "sections", "summary", "tags", "sources", "thumb", "area"],
         "properties": {
             "area": {"type": "string"},
-            "greeting": {"type": "string", "description": "블로그 인사말로 시작하는 첫 문단"},
+            "greeting": {"type": "string", "description": "첫 문단(도입). 블로그 설정의 인사말 규칙을 따름"},
             "sections": {"type": "array", "items": {"type": "object", "additionalProperties": False,
                                                     "required": ["heading", "images", "paragraphs"],
                                                     "properties": {"heading": {"type": "string"},
@@ -132,6 +132,9 @@ def text_of(a: dict) -> str:
     return re.sub(r"\*\*|__|(?<!\*)\*(?!\*)", "", "\n\n".join([a["greeting"]] + [p for s in a["sections"] for p in [s["heading"]] + s["paragraphs"]]))  # 글자 수는 강조 표시 빼고
 
 
+NO_INTRO = {"fashion": ["캐시미어 다이어리", "캐다입니다", "캐다예요", "캐다에요"]}  # 본문에 쓰면 안 되는 자기소개
+
+
 def check(a: dict) -> list[str]:
     t, bad = text_of(a), []
     if len(t) < 1500:
@@ -145,9 +148,13 @@ def check(a: dict) -> list[str]:
         bad.append("언론사명·링크 → 빼기")
     if len(a["tags"]) >= 20:
         bad.append(f"해시태그 {len(a['tags'])}개 → 19개 이하")
-    greet = {"fashion": "캐다입니다"}.get(F.BLOG["id"], "")
-    if greet and greet not in a["greeting"]:
-        bad.append(f"인사말 '{greet}'로 시작하기")
+    few = [s["heading"] for s in a["sections"][:-1] if len(s["images"]) < 2]  # 원문: 주요 구간마다 실제 사진 2장 이상 (마무리 구간 제외, 2026-10-07 점검)
+    if few:
+        bad.append("사진 2장 미만 구간 → 2~3장으로: " + ", ".join(few[:5]))
+    # 패션은 인사말·자기소개 없이 시작 (대표 지시 2026-10-07 "캐시미어 다이어리 캐다입니다. 이런 건 안 나오게")
+    intro = [w for w in NO_INTRO.get(F.BLOG["id"], []) if w in t]
+    if intro:
+        bad.append("블로그 이름·닉네임 자기소개 → 빼고 바로 이야기로 시작: " + ", ".join(intro))
     return bad
 
 
