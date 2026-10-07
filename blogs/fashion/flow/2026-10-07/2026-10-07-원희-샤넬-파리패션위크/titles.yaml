@@ -1,0 +1,174 @@
+keyword: 원희 샤넬 파리패션위크
+person: 원희
+mode: 연예패션
+made: '12:34'
+items:
+- title: '"샤넬 공주 맞네" 원희 파리 패션위크 스트라이프 룩'
+  type: 그룹 2
+  rank: 1
+  best: true
+  chars: 29
+  flags: []
+- title: '"트위드가 아니었어?" 결국 코튼으로 입은 샤넬 쇼 룩'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: '"이 재킷 어디 거야?" 뜻밖의 스트라이프 샤넬 세트'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 29
+  flags: []
+- title: '"파리에서 이렇게 입는구나" 샤넬 쇼 첫 참석한 아이돌'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: '"가방도 신발도 샤넬이네" 마침내 파리 쇼장 밟은 신예'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: '"가볍게 입어도 고급스럽네" 샤넬 코튼 스커트 세트 룩'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: '"트위드 대신 코튼이라고?" 원희 샤넬 재킷 스커트'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: 원희 샤넬 호보백 "이 조합 괜찮은데?"
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 22
+  flags: []
+- title: '"서울에 이어 파리까지" 원희 샤넬 쇼 첫 참석 룩'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: '"멀리서 봐도 눈에 들어오네" 원희 샤넬 펌프스 패션'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 29
+  flags: []
+- title: '"아일릿 멤버가 샤넬 쇼에?" 파리에서 먼저 눈에 띈 룩'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 31
+  flags:
+  - 31자(30자 넘음)
+- title: '"빌리프랩 막내라인이 파리에?" 샤넬 쇼 스트라이프 세트'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 31
+  flags:
+  - 31자(30자 넘음)
+- title: '"멤버들도 놀랐겠는데?" 샤넬 파리 쇼장 선 아일릿 룩'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: '"아일릿 센터 비주얼이네" 샤넬 그랑 팔레 코튼 세트'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 29
+  flags: []
+- title: '"하이브 레이블 출신이 샤넬 쇼에?" 파리 첫 참석 룩'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: '"샤넬 공주 별명 이유 알겠네" 원희 파리 패션위크 룩'
+  type: 쿠니네패션식 방식
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: '"트위드가 아니었어?" 결국 코튼으로 승부 본 샤넬 룩'
+  type: 쿠니네패션식 방식
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: 원희 샤넬 스트라이프 세트 "이렇게 가벼워도 고급스럽네"
+  type: 쿠니네패션식 방식
+  rank: null
+  best: false
+  chars: 31
+  flags:
+  - 31자(30자 넘음)
+- title: 와... 현지 반응 난리난 원희 샤넬 파리 패션위크 근황 ft.샤넬 호보백
+  type: ohye1991식 방식
+  rank: null
+  best: false
+  chars: 41
+  flags:
+  - 41자(30자 넘음)
+- title: 대박... 트위드 대신 스트라이프 코튼 입은 아일릿 원희 샤넬 쇼 패션스타일
+  type: ohye1991식 방식
+  rank: null
+  best: false
+  chars: 42
+  flags:
+  - 42자(30자 넘음)
+- title: 헐... 플래시 세례 받은 원희 그랑 팔레 샤넬 패션스타일 근황.jpg
+  type: ohye1991식 방식
+  rank: null
+  best: false
+  chars: 39
+  flags:
+  - 39자(30자 넘음)
+groups:
+- type: 그룹 1 주인공 숨김
+  idx:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  best: null
+- type: 그룹 2 이름 노출
+  idx:
+  - 0
+  - 6
+  - 7
+  - 8
+  - 9
+  best: null
+- type: 그룹 3 관련 인물
+  idx:
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  best: null
+- type: 쿠니네패션식
+  idx:
+  - 15
+  - 16
+  - 17
+  best: null
+- type: ohye1991식
+  idx:
+  - 18
+  - 19
+  - 20
+  best: null
