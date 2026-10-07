@@ -44,8 +44,20 @@ class EconTest(unittest.TestCase):
         src = {"B1": "zkfldb888", "B2": "블로거", "G1": "Grok", "N1": "국내뉴스", "G2": "Grok"}
         out = econ_score.score(items, src)
         self.assertEqual(out[0]["kw"], "청년미래적금")
-        self.assertEqual(out[0]["parts"]["출처"], 35)  # 그날 1등 = 출처 만점 (경제 35, 2026-10-06 최신성 15 추가)
-        self.assertEqual(out[1]["parts"]["출처"], round(35 * 6 / 22))
+        self.assertEqual(out[0]["parts"]["출처"], 20)  # 그날 1등 = 출처 만점 (경제 20, 2026-10-07 네이버 인기 35·최신 25)
+        self.assertEqual(out[1]["parts"]["출처"], round(20 * 6 / 12))  # 쿠니네(zkfldb888)는 키워드 점수에서 뺌 (2026-10-07)
+        self.assertEqual(out[0]["score"], round(20 * 100 / 65))  # 어사이드 없는 날은 나머지 65점을 100점으로 환산
+
+    def test_score_aside_rank(self):
+        from content import econ_score
+        items = [{"kw": "원달러 환율", "rows": [], "sources": {"Grok": 1}},
+                 {"kw": "금값", "rows": [], "sources": {"어사이드": 1}, "naver_rank": 2},
+                 {"kw": "코스피", "rows": [], "sources": {"어사이드": 1}, "naver_rank": 8}]
+        out = {x["kw"]: x for x in econ_score.score(items, None)}
+        self.assertEqual(out["금값"]["parts"]["네이버"], 35)   # 어사이드 1~3위 만점
+        self.assertEqual(out["코스피"]["parts"]["네이버"], round(35 * 0.5))  # 7~10위 절반
+        self.assertEqual(out["원달러 환율"]["score"], out["원달러 환율"]["parts"]["출처"])  # 어사이드 있는 날은 환산 없음
+        self.assertGreater(out["금값"]["score"], out["원달러 환율"]["score"])
 
     def test_kunine_check(self):
         from content import kunine
