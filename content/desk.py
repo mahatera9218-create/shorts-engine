@@ -43,7 +43,7 @@ POSTS = ROOT / "posts"
 REPO = os.environ.get("GITHUB_REPOSITORY", "mahatera9218-create/shorts-engine")
 IMG_LINE = re.compile(r"^\[이미지 (\d+)_([^:\]]*):\s*([^\]]+)\]$")
 TABLE_LINE = re.compile(r"^\[표 (\d+):\s*([^\]]+)\]$")  # 네이버 표 자리 (AI 브리핑 인용, 2026-10-01)
-TITLE_LINE = re.compile(r"^\d+\.\s+(★\s+)?(.+?)\s+—\s+(\S+)$")
+TITLE_LINE = re.compile(r"^\d+\.\s+(★\s+)?(.+)\s+—\s+([^—]+?)$")  # 유형에 띄어쓰기 허용 (패션 "그룹 2"·"쿠니네패션식 방식", 2026-10-07)
 
 
 def parse(folder: Path) -> dict | None:
