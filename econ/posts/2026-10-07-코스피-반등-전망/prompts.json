@@ -1,0 +1,72 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · 먹구름 낀 여의도 금융가 전경",
+  "make": true,
+  "file": "thumb.jpg",
+  "desc": "Dramatic cinematic close-up of a red downward arrow shaped glowing stock board reflection on dark glass, storm clouds over Seoul Yeouido financial district at dusk, strong contrast, red warning light tone, low angle, square composition, no text or numbers",
+  "brand": "",
+  "size": "1024x1024",
+  "prompt": "Square 1:1 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Dramatic cinematic close-up of a red downward arrow shaped glowing stock board reflection on dark glass, storm clouds over Seoul Yeouido financial district at dusk, strong contrast, red warning light tone, low angle, square composition, no text or numbers No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 2,
+  "label": "증시 시황 화면을 지켜보는 익명의 트레이더들",
+  "make": true,
+  "file": "img2.jpg",
+  "desc": "Realistic news photograph of a stock trading floor in Seoul, rows of monitors showing blurred red and blue market screens, anonymous traders seen from behind, dramatic low light, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic news photograph of a stock trading floor in Seoul, rows of monitors showing blurred red and blue market screens, anonymous traders seen from behind, dramatic low light, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 3,
+  "label": "해외 증시 전광판 야경",
+  "make": true,
+  "file": "img3.jpg",
+  "desc": "Realistic photo of Wall Street style electronic stock ticker board glowing at dusk, strong contrast, close-up, no readable letters or numbers",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photo of Wall Street style electronic stock ticker board glowing at dusk, strong contrast, close-up, no readable letters or numbers No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 4,
+  "label": "삼성전자 기흥 반도체 캠퍼스 전경",
+  "make": true,
+  "file": "img4.jpg",
+  "desc": "Aerial view of the Samsung Electronics Giheung semiconductor campus, large grey fab building with the blue SAMSUNG logo, sunny day, wide angle",
+  "brand": "Samsung Electronics",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Aerial view of the Samsung Electronics Giheung semiconductor campus, large grey fab building with the blue SAMSUNG logo, sunny day, wide angle This must clearly be Samsung Electronics: show its real, accurate corporate signage — the actual Samsung Electronics logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 5,
+  "label": "반도체 웨이퍼 생산 현장",
+  "make": true,
+  "file": "img5.jpg",
+  "desc": "Close-up of semiconductor wafers on a production line in a clean room, cool blue light, realistic documentary style, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Close-up of semiconductor wafers on a production line in a clean room, cool blue light, realistic documentary style, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 6,
+  "label": "일정을 확인하는 투자자의 책상",
+  "make": true,
+  "file": "img6.jpg",
+  "desc": "Realistic photo of a desk calendar and a smartphone showing a blurred market app next to a coffee cup, morning light, anonymous office worker's hand, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photo of a desk calendar and a smartphone showing a blurred market app next to a coffee cup, morning light, anonymous office worker's hand, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 7,
+  "label": "여의도 금융가 전경",
+  "make": true,
+  "file": "img7.jpg",
+  "desc": "Wide photo of Yeouido financial district Seoul skyline at sunrise with Han river, golden light, realistic news style",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Wide photo of Yeouido financial district Seoul skyline at sunrise with Han river, golden light, realistic news style No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ }
+]
