@@ -164,6 +164,7 @@ def prompts_card(p: dict) -> str:
     people = "".join(person_row(it, used, context, skip) for it in slots)
     people = (f'<div style="margin-top:10px"><b>인물 사진 자리 (직접 넣기)</b>'
               '<div class="muted">사진을 누르면 원본이 열려요 → 길게 눌러 「사진 앱에 저장」 → 「출처 복사」를 본문 끝 사진 출처 줄에 붙이기</div>'
+              '<a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="../../photo/">📐 저장한 사진 크기 맞추기</a>'
               f'{people}</div>') if people else ""
     return (f'<div class="card" style="border:2px solid var(--accent)"><h2>사진 프롬프트</h2>'
             f'<button onclick="copyText(this,{e(json.dumps(text), quote=True)})">📋 사진 프롬프트 복사</button>'
@@ -256,6 +257,72 @@ def blog_section(b: dict, posts: list[dict]) -> str:
 </div></div></section>"""
 
 
+def photo_page() -> str:
+    """📐 사진 크기 맞추기 (대표 요청 2026-10-07): 네이버·캡처로 저장한 사진을 같은 비율·크기로 맞춰 다시 저장.
+    전부 휴대폰 브라우저 안에서 처리 — 사진을 어디에도 올리지 않는다(저장소·서버에 남지 않음)."""
+    return head("사진 크기 맞추기", "../") + """
+<a href="../" class="muted">← 발행 도우미</a>
+<h1>📐 사진 크기 맞추기</h1>
+<div class="muted">네이버·캡처로 저장한 사진을 같은 크기로 맞춰요. 사진은 이 휴대폰 안에서만 처리되고 어디에도 올라가지 않아요.</div>
+<div class="card">
+<h2>1. 모양</h2>
+<div class="chips" id="ratio">
+<button class="ghost chip" data-r="4:5">세로 4:5</button><button class="ghost chip" data-r="1:1">정사각 1:1</button>
+<button class="ghost chip" data-r="3:4">세로 3:4</button><button class="ghost chip" data-r="3:2">가로 3:2</button></div>
+<h2 style="margin-top:14px">2. 맞추는 방법</h2>
+<div class="chips" id="mode">
+<button class="ghost chip" data-m="top">꽉 채우기 · 위쪽 기준 (인물)</button><button class="ghost chip" data-m="center">꽉 채우기 · 가운데</button>
+<button class="ghost chip" data-m="pad">자르지 않고 여백</button></div>
+<div class="muted" style="margin-top:6px">꽉 채우기는 넘치는 부분을 잘라요. 인물 사진은 얼굴이 잘리지 않게 <b>위쪽 기준</b>을 쓰세요. 여백은 흰색이에요.</div>
+<h2 style="margin-top:14px">3. 사진 고르기</h2>
+<input type="file" id="pick" accept="image/*" multiple style="width:100%;padding:12px 0">
+<div class="muted" id="info"></div>
+</div>
+<div id="out" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px"></div>
+<button id="saveAll" style="display:none;position:sticky;bottom:10px;box-shadow:0 4px 14px rgba(0,0,0,.18)">📥 전부 사진 앱에 저장</button>
+<div class="muted" id="hint" style="display:none">저장 창이 안 뜨면 사진을 하나씩 길게 눌러 「사진 앱에 저장」하세요.</div>
+<script>
+const W=1080, Q=.9; let R='4:5', M='top', files=[];
+function load(k,d){try{return localStorage.getItem(k)||d}catch(e){return d}}
+function keep(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+R=load('ph_r',R); M=load('ph_m',M);
+function mark(){document.querySelectorAll('#ratio button').forEach(b=>b.classList.toggle('done',b.dataset.r===R));
+  document.querySelectorAll('#mode button').forEach(b=>b.classList.toggle('done',b.dataset.m===M))}
+document.querySelectorAll('#ratio button').forEach(b=>b.onclick=()=>{R=b.dataset.r;keep('ph_r',R);mark();run()});
+document.querySelectorAll('#mode button').forEach(b=>b.onclick=()=>{M=b.dataset.m;keep('ph_m',M);mark();run()});
+mark();
+function img(f){return new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=URL.createObjectURL(f)})}
+async function fit(f,n){
+  const [a,b]=R.split(':').map(Number), H=Math.round(W*b/a), i=await img(f);
+  const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+  x.fillStyle='#fff';x.fillRect(0,0,W,H);x.imageSmoothingQuality='high';
+  const s=M==='pad'?Math.min(W/i.width,H/i.height):Math.max(W/i.width,H/i.height);
+  const w=i.width*s,h=i.height*s, dx=(W-w)/2, dy=(M==='top'&&h>H)?0:(H-h)/2;  // 인물은 위쪽(얼굴)부터
+  x.drawImage(i,dx,dy,w,h);
+  const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',Q));
+  return new File([blob],'photo-'+String(n).padStart(2,'0')+'.jpg',{type:'image/jpeg'});
+}
+let done=[];
+async function run(){
+  if(!files.length)return;
+  const out=document.getElementById('out');out.innerHTML='';done=[];
+  document.getElementById('info').textContent=files.length+'장 맞추는 중…';
+  for(let k=0;k<files.length;k++){
+    try{const f=await fit(files[k],k+1);done.push(f);
+      const im=document.createElement('img');im.src=URL.createObjectURL(f);im.style.cssText='width:100%;border-radius:8px;border:1px solid var(--line)';out.appendChild(im)}
+    catch(e){const d=document.createElement('div');d.className='card muted';d.textContent=(k+1)+'번 사진을 읽지 못했어요';out.appendChild(d)}
+  }
+  document.getElementById('info').textContent=done.length+'장 완성 · '+W+'×'+Math.round(W*R.split(':')[1]/R.split(':')[0])+' 크기';
+  document.getElementById('saveAll').style.display=done.length?'block':'none';
+  document.getElementById('hint').style.display=done.length?'block':'none';
+}
+document.getElementById('pick').onchange=e=>{files=[...e.target.files];run()};
+document.getElementById('saveAll').onclick=async()=>{
+  if(navigator.canShare&&navigator.canShare({files:done})){try{await navigator.share({files:done});return}catch(e){if(e.name==='AbortError')return}}
+  alert('이 브라우저는 한 번에 저장이 안 돼요. 사진을 하나씩 길게 눌러 저장해 주세요.')};
+</script></main></body></html>"""
+
+
 def index(by_blog: dict[str, list[dict]]) -> str:
     from .blogs import all_blogs
     blogs = all_blogs()
@@ -265,7 +332,7 @@ def index(by_blog: dict[str, list[dict]]) -> str:
     first = next(iter(blogs))
     return head(f"{NAME} 발행 도우미") + f"""
 <header class="brand"><img src="icon-180.png" alt=""><div><h1>발행 도우미</h1><p class="muted">{" · ".join(html.escape(b["label"]) for b in blogs.values())} · {now} 업데이트</p></div></header>
-<nav class="tabs">{tabs}<a href="#stats" data-t="stats">성과</a></nav>
+<nav class="tabs">{tabs}<a href="#stats" data-t="stats">성과</a><a href="photo/">📐 사진</a></nav>
 {secs}
 <section class="tab" id="stats" hidden>{compare_html(blogs, by_blog)}</section>
 <div class="card muted" style="margin-top:28px">홈 화면에 두기: 이 화면에서 브라우저 메뉴(⋮ 또는 공유 ↑) → <b>홈 화면에 추가</b>.</div>
@@ -641,6 +708,8 @@ def build(out: Path) -> list[dict]:
                     shutil.copy(src, d / x["file"])
             (d / "index.html").write_text(plain(page(p)), encoding="utf-8")
     (out / "index.html").write_text(plain(index(by_blog)), encoding="utf-8")
+    (out / "photo").mkdir(exist_ok=True)
+    (out / "photo" / "index.html").write_text(plain(photo_page()), encoding="utf-8")  # 사진 크기 맞추기 (2026-10-07)
     for s in (180, 192, 512):
         shutil.copy(BRAND / f"desk-icon-{s}.png", out / f"icon-{s}.png")
     (out / "manifest.webmanifest").write_text(json.dumps({
