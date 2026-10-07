@@ -1,0 +1,101 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · 루이비통 쇼에 참석한 신민아",
+  "make": true,
+  "file": "thumb.jpg",
+  "size": "1024x1024",
+  "person": true,
+  "desc": "",
+  "find": "신민아 루이비통",
+  "prompt": "[실제 사진 찾기] 신민아 루이비통 — 루이비통 쇼에 참석한 신민아"
+ },
+ {
+  "n": 2,
+  "label": "루이비통 2027 S/S 쇼에 참석한 신민아",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "신민아 루이비통 파리 패션위크",
+  "prompt": "[실제 사진 찾기] 신민아 루이비통 파리 패션위크 — 루이비통 2027 S/S 쇼에 참석한 신민아"
+ },
+ {
+  "n": 3,
+  "label": "루이비통 쇼장에서 포즈를 취한 신민아",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "신민아 루이비통 쇼 포토콜",
+  "prompt": "[실제 사진 찾기] 신민아 루이비통 쇼 포토콜 — 루이비통 쇼장에서 포즈를 취한 신민아"
+ },
+ {
+  "n": 4,
+  "label": "긴 웨이브 헤어의 신민아",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "신민아 긴 웨이브 헤어 파리",
+  "prompt": "[실제 사진 찾기] 신민아 긴 웨이브 헤어 파리 — 긴 웨이브 헤어의 신민아"
+ },
+ {
+  "n": 5,
+  "label": "밝게 웃는 신민아",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "신민아 루이비통 미소",
+  "prompt": "[실제 사진 찾기] 신민아 루이비통 미소 — 밝게 웃는 신민아"
+ },
+ {
+  "n": 6,
+  "label": "루이비통 앰버서더 신민아",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "신민아 루이비통 앰버서더",
+  "prompt": "[실제 사진 찾기] 신민아 루이비통 앰버서더 — 루이비통 앰버서더 신민아"
+ },
+ {
+  "n": 7,
+  "label": "루브르 앞의 신민아",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "신민아 파리 패션위크 루브르",
+  "prompt": "[실제 사진 찾기] 신민아 파리 패션위크 루브르 — 루브르 앞의 신민아"
+ },
+ {
+  "n": 8,
+  "label": "클래식한 데일리룩을 떠올리게 하는 소품 이미지",
+  "make": true,
+  "file": "img8.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Editorial still life of a minimal cream cashmere scarf folded beside a structured black leather handbag with gold hardware, soft natural light, neutral stone background, no logos, no people",
+  "find": "",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Editorial still life of a minimal cream cashmere scarf folded beside a structured black leather handbag with gold hardware, soft natural light, neutral stone background, no logos, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 9,
+  "label": "톤을 차분하게 맞춘 소재 디테일 이미지",
+  "make": true,
+  "file": "img9.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Close-up editorial still life of a soft ivory wool coat sleeve and a slim gold bracelet resting on a pale linen surface, warm diffused window light, fine texture visible, no logos, no people",
+  "find": "",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Close-up editorial still life of a soft ivory wool coat sleeve and a slim gold bracelet resting on a pale linen surface, warm diffused window light, fine texture visible, no logos, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ }
+]
