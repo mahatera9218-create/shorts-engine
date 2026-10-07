@@ -1,0 +1,112 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · 부산국제영화제 레드카펫에서 블랙 오프숄더 드레스를 입은 전도연",
+  "make": true,
+  "file": "",
+  "size": "1024x1024",
+  "person": true,
+  "desc": "",
+  "find": "전도연 부산국제영화제 레드카펫 블랙 드레스",
+  "prompt": "[실제 사진 찾기] 전도연 부산국제영화제 레드카펫 블랙 드레스 — 부산국제영화제 레드카펫에서 블랙 오프숄더 드레스를 입은 전도연"
+ },
+ {
+  "n": 2,
+  "label": "부산국제영화제 개막식 레드카펫에 선 전도연의 블랙 오프숄더 드레스 전신",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "전도연 부산국제영화제 레드카펫",
+  "prompt": "[실제 사진 찾기] 전도연 부산국제영화제 레드카펫 — 부산국제영화제 개막식 레드카펫에 선 전도연의 블랙 오프숄더 드레스 전신"
+ },
+ {
+  "n": 3,
+  "label": "영화 가능한 사랑 팀과 함께 포즈를 취한 전도연",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "전도연 부산국제영화제 가능한 사랑",
+  "prompt": "[실제 사진 찾기] 전도연 부산국제영화제 가능한 사랑 — 영화 가능한 사랑 팀과 함께 포즈를 취한 전도연"
+ },
+ {
+  "n": 4,
+  "label": "어깨선이 드러나는 블랙 드레스를 입은 전도연의 상반신",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "전도연 오프숄더 드레스",
+  "prompt": "[실제 사진 찾기] 전도연 오프숄더 드레스 — 어깨선이 드러나는 블랙 드레스를 입은 전도연의 상반신"
+ },
+ {
+  "n": 5,
+  "label": "개막식 현장에서 포즈를 취한 전도연의 옆모습",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "전도연 부국제 개막식",
+  "prompt": "[실제 사진 찾기] 전도연 부국제 개막식 — 개막식 현장에서 포즈를 취한 전도연의 옆모습"
+ },
+ {
+  "n": 6,
+  "label": "블랙 오프숄더 드레스를 입은 조여정의 레드카펫 모습",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "조여정 부산국제영화제 레드카펫",
+  "prompt": "[실제 사진 찾기] 조여정 부산국제영화제 레드카펫 — 블랙 오프숄더 드레스를 입은 조여정의 레드카펫 모습"
+ },
+ {
+  "n": 7,
+  "label": "같은 영화 팀으로 레드카펫에 선 전도연과 조여정",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "전도연 조여정 부국제",
+  "prompt": "[실제 사진 찾기] 전도연 조여정 부국제 — 같은 영화 팀으로 레드카펫에 선 전도연과 조여정"
+ },
+ {
+  "n": 8,
+  "label": "무광 크레이프 소재의 블랙 오프숄더 롱 드레스",
+  "make": true,
+  "file": "img8.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "A black off-shoulder evening gown in matte crepe fabric, softly draped neckline across the shoulders, fitted bodice flowing into a long column skirt, displayed on a neutral mannequin, beside a simple silver drop earring and a satin clutch on a pale grey studio backdrop, editorial still life, no logos, no people",
+  "find": "블랙 오프숄더 드레스",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. A black off-shoulder evening gown in matte crepe fabric, softly draped neckline across the shoulders, fitted bodice flowing into a long column skirt, displayed on a neutral mannequin, beside a simple silver drop earring and a satin clutch on a pale grey studio backdrop, editorial still life, no logos, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 9,
+  "label": "블랙 드레스에 어울리는 새틴 클러치와 진주 귀걸이",
+  "make": true,
+  "file": "img9.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "A black satin clutch bag with a slim metal clasp resting on folded ivory silk, a pair of pearl stud earrings beside it, soft diffused window light, high-end magazine still life, no logos, no people",
+  "find": "블랙 새틴 클러치",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. A black satin clutch bag with a slim metal clasp resting on folded ivory silk, a pair of pearl stud earrings beside it, soft diffused window light, high-end magazine still life, no logos, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 10,
+  "label": "행사장에서 미소 짓는 전도연의 모습",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "전도연",
+  "prompt": "[실제 사진 찾기] 전도연 — 행사장에서 미소 짓는 전도연의 모습"
+ }
+]
