@@ -1,0 +1,72 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · 달러와 원화 지폐 클로즈업",
+  "make": true,
+  "file": "thumb.jpg",
+  "desc": "Dramatic cinematic close-up of a US dollar banknote and a Korean won banknote side by side, golden backlight, high contrast, square composition, no text or numbers",
+  "brand": "",
+  "size": "1024x1024",
+  "prompt": "Square 1:1 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Dramatic cinematic close-up of a US dollar banknote and a Korean won banknote side by side, golden backlight, high contrast, square composition, no text or numbers No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 2,
+  "label": "원화와 달러 지폐가 놓인 환전 창구",
+  "make": true,
+  "file": "img2.jpg",
+  "desc": "Realistic news photograph of a currency exchange counter in Seoul with stacks of Korean won and US dollar banknotes under bright natural light, close-up, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic news photograph of a currency exchange counter in Seoul with stacks of Korean won and US dollar banknotes under bright natural light, close-up, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 3,
+  "label": "외환 딜링룸에서 화면을 보는 직원들",
+  "make": true,
+  "file": "img3.jpg",
+  "desc": "Realistic photograph of the Seoul foreign exchange dealing room from behind, anonymous traders watching multiple monitors, natural light, no readable text or numbers",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photograph of the Seoul foreign exchange dealing room from behind, anonymous traders watching multiple monitors, natural light, no readable text or numbers No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 4,
+  "label": "달러와 원화 지폐 비교",
+  "make": true,
+  "file": "img4.jpg",
+  "desc": "Realistic photograph of US dollar banknotes fanned out next to Korean won banknotes on a dark desk, strong contrast lighting, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photograph of US dollar banknotes fanned out next to Korean won banknotes on a dark desk, strong contrast lighting, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 5,
+  "label": "수출 물량을 싣는 부산항 컨테이너 터미널",
+  "make": true,
+  "file": "img5.jpg",
+  "desc": "Realistic wide photograph of container cranes and cargo ships at Busan port at sunrise, golden backlight, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic wide photograph of container cranes and cargo ships at Busan port at sunrise, golden backlight, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 6,
+  "label": "공항에서 달러를 환전하는 손",
+  "make": true,
+  "file": "img6.jpg",
+  "desc": "Realistic photograph of a traveler's hands holding US dollar bills and a passport at an airport exchange counter, shallow depth of field, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photograph of a traveler's hands holding US dollar bills and a passport at an airport exchange counter, shallow depth of field, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 7,
+  "label": "스마트폰으로 환전을 확인하는 모습",
+  "make": true,
+  "file": "img7.jpg",
+  "desc": "Realistic close-up of a person's hands holding a smartphone showing a generic banking app with blurred screen, office desk, natural light, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic close-up of a person's hands holding a smartphone showing a generic banking app with blurred screen, office desk, natural light, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ }
+]
