@@ -284,6 +284,18 @@ REF_MAIN = _REFS.get("main", "")
 REF_NAMES = _REFS.get("bloggers", {}) if isinstance(_REFS.get("bloggers"), dict) else {}
 
 
+def aside_html(kw: dict) -> str:
+    """오늘 어사이드가 넣은 키워드 (대표 지적 2026-10-07: 도우미에서 어사이드가 넣었는지 확인할 수가 없다)."""
+    e = html.escape
+    a = kw.get("aside")
+    if not a:
+        return ('<div class="card muted" style="margin:0 0 10px">🛰 어사이드: 오늘 아직 안 왔어요 '
+                '(PC 어사이드 루틴이 돌면 여기에 순위가 보여요)</div>')
+    li = "".join(f"<li>{e(x)}</li>" for x in a.get("list", []))
+    return (f'<details class="card" style="margin:0 0 10px"><summary>🛰 어사이드: 오늘 {e(a.get("at", ""))}에 {a.get("n", 0)}개 들어옴 '
+            f'{"(새 배점 전에 와서 점수 미반영 — 어사이드를 한 번 더 돌리면 반영)" if a.get("old") else "(네이버 인기 점수 반영)"} · 순위 보기</summary><ol style="margin:6px 0 0 18px">{li}</ol></details>')
+
+
 def auto_html(day: Path, today: str) -> str:
     """오늘 자동 글 상태 (대표 결정 2026-10-07): 어사이드가 오면 바로, 안 오면 10시. 실패·멈춤이면 다시 돌리기 버튼."""
     e = html.escape
@@ -368,7 +380,7 @@ def flow_html() -> str:
                  '<div class="muted">왼쪽 네모로 여러 개(최대 5개) 고르면 한 번에 제목 후보를 만들어요. 1개에 약 3~5분, 비용 약 150원.</div>') if rows else ""
     refresh = desk.issue_link(f"{LABEL}키워드새로", today, "여러 출처에서 키워드를 모아 점수를 매겨 주세요.")
     kw_html = f"""<details class="card fold" data-k="f1-{BID}" open style="border:2px solid var(--accent)"><summary><h2><span><span class="step">1</span>오늘의 키워드 고르기</span></h2></summary>
-{auto_html(day, today)}<div class="muted">점수순이에요(100점 = {"네이버 인기(어사이드) " + str(W["네이버"]) + " + " if W.get("네이버") else ""}{"최신(6시간 기사) " + str(W["최신"]) + " + " if W.get("최신") else ""}출처 겹침 {W["출처"]} + 네이버 뉴스량 {W["뉴스"]} + 검색량 {W["검색"]}, {MIN}점 이상만{f" · {hidden}개 숨김" if hidden else ""}). 누르면 그 키워드로 <b>제목 후보</b>를 만들어요 (약 3~5분). {e(kw.get("updated", ""))} 기준</div>
+{aside_html(kw)}{auto_html(day, today)}<div class="muted">점수순이에요(100점 = {"네이버 인기(어사이드) " + str(W["네이버"]) + " + " if W.get("네이버") else ""}{"최신(6시간 기사) " + str(W["최신"]) + " + " if W.get("최신") else ""}출처 겹침 {W["출처"]} + 네이버 뉴스량 {W["뉴스"]} + 검색량 {W["검색"]}, {MIN}점 이상만{f" · {hidden}개 숨김" if hidden else ""}). 누르면 그 키워드로 <b>제목 후보</b>를 만들어요 (약 3~5분). {e(kw.get("updated", ""))} 기준</div>
 {''.join(rows)}{multi_btn}{'' if rows else '<p class="muted">아직 없어요. 아래 <b>🔄 키워드 모으기</b>를 누르면 여러 출처에서 모아 점수를 매겨요(약 3분).</p>'}
 <textarea id="kwin-{BID}" rows="3" style="width:100%;min-height:84px;font:inherit;line-height:1.6;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:6px 0;background:var(--card);color:var(--ink);resize:vertical" placeholder="{'어드바이저·뉴스 랭킹·트렌드에서 찾은 키워드' if BID == 'econ' else '눈에 띈 연예인 + 아이템 (예: 윤아 코트)'} (한 줄에 하나)"></textarea>
 <button onclick="addKw_{BID}()">➕ 내 키워드 넣기</button>
