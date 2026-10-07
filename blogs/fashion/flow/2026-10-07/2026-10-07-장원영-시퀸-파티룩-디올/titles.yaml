@@ -1,0 +1,181 @@
+keyword: 장원영 시퀸 파티룩 디올
+person: 장원영
+mode: 연예패션
+made: '14:38'
+items:
+- title: '"파티걸 모드 제대로네" 장원영 디올 블랙 미니드레스'
+  type: 그룹 2
+  rank: 1
+  best: true
+  chars: 29
+  flags: []
+- title: '"쇼는 끝났다더니" 결국 파티걸 된 파리 디올 애프터파티룩'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 32
+  flags:
+  - 32자(30자 넘음)
+- title: '"이 분위기 뭐야?" 에펠탑 앞 블랙 시퀸 미니드레스'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 29
+  flags: []
+- title: '"공주님 어디 갔어?" 뜻밖에 과감해진 디올 파티룩'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: '"반짝이는 블랙은 이렇게 입는구나" 파리 밤 미니드레스'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: '"청순 이미지 맞아?" 마침내 벗어던진 아이돌의 디올 스타일'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 33
+  flags:
+  - 33자(30자 넘음)
+- title: '"에펠탑이 배경이라고?" 장원영 시퀸 파티룩'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 24
+  flags: []
+- title: '"디올이랑 찰떡이네" 장원영 파리 애프터파티 패션'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 27
+  flags: []
+- title: '"공주에서 파티걸로?" 장원영 반짝이는 블랙 드레스'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: '"주얼리랑 하이힐까지" 장원영 디올쇼 파티룩 이렇게 완성'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 31
+  flags:
+  - 31자(30자 넘음)
+- title: '"지수랑 인사 나눈 그날" 디올 쇼 끝나고 입은 블랙 미니드레스'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 35
+  flags:
+  - 35자(30자 넘음)
+- title: '"같은 앰버서더 맞아?" 지수와 함께한 디올쇼 뒤 파티룩'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 31
+  flags:
+  - 31자(30자 넘음)
+- title: '"지수 옆에서도 눈에 띄네" 파리 디올쇼 블랙 시퀸 드레스'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 32
+  flags:
+  - 32자(30자 넘음)
+- title: '"디올 앰버서더끼리 만났는데" 에펠탑 야경 속 파티걸 드레스'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 33
+  flags:
+  - 33자(30자 넘음)
+- title: '"지수도 반가워했다는데" 디올 SS27 쇼 끝나고 입은 미니드레스'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 36
+  flags:
+  - 36자(30자 넘음)
+- title: '"이 드레스 어디 거야?" 결국 파리서 파티걸 된 장원영 디올'
+  type: 쿠니네패션식 방식
+  rank: null
+  best: false
+  chars: 34
+  flags:
+  - 34자(30자 넘음)
+- title: '"공주 이미지 어디 갔어?" 뜻밖의 장원영 블랙 미니드레스'
+  type: 쿠니네패션식 방식
+  rank: null
+  best: false
+  chars: 32
+  flags:
+  - 32자(30자 넘음)
+- title: 장원영 디올 쇼 끝나고 입은 에펠탑 앞 시퀸 파티룩
+  type: 쿠니네패션식 방식
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: 와... 팬들 난리난 장원영 디올 SS27 애프터파티 파티룩 근황.jpg
+  type: ohye1991식 방식
+  rank: null
+  best: false
+  chars: 40
+  flags:
+  - 40자(30자 넘음)
+- title: 대박... 청순 이미지 벗고 파티걸 된 장원영 파리 블랙 미니드레스 근황
+  type: ohye1991식 방식
+  rank: null
+  best: false
+  chars: 40
+  flags:
+  - 40자(30자 넘음)
+- title: 헐... 에펠탑 야경에서 더 빛난 장원영 디올 시퀸 드레스 패션스타일
+  type: ohye1991식 방식
+  rank: null
+  best: false
+  chars: 38
+  flags:
+  - 38자(30자 넘음)
+groups:
+- type: 그룹 1 주인공 숨김
+  idx:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  best: null
+- type: 그룹 2 이름 노출
+  idx:
+  - 0
+  - 6
+  - 7
+  - 8
+  - 9
+  best: null
+- type: 그룹 3 관련 인물
+  idx:
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  best: null
+- type: 쿠니네패션식
+  idx:
+  - 15
+  - 16
+  - 17
+  best: null
+- type: ohye1991식
+  idx:
+  - 18
+  - 19
+  - 20
+  best: null
