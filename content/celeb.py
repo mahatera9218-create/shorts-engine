@@ -6,7 +6,7 @@
 → Pexels. SNS·방송 장면·언론사 사진은 자동으로 가져오지 않는다(저작권·초상권).
 
 titles <키워드>          : 그룹 1(주인공 숨김)·2(이름 노출)·3(관련 인물) 각 5개 + 최종 추천 1개
-produce <주제폴더> <번호> : 인사말 · 1,500자 이상 본문 · 숫자 없는 요약 · 해시태그 8개 안팎 · 구간마다 사진 1장 + 썸네일
+produce <주제폴더> <번호> : 2,800~3,600자 본문 · 숫자 없는 요약 · 해시태그 8개 안팎 · 구간마다 사진 1장 + 썸네일
 """
 from __future__ import annotations
 
@@ -26,6 +26,7 @@ UA = {"User-Agent": "shorts-engine/1.0 (blog image lookup; contact via GitHub)"}
 FREE = ("cc0", "public domain", "cc by", "cc-by", "pd")  # 위키미디어 자유 이용 라이선스만
 META = ("사용자가 제공", "첨부한", "첨부 자료", "캡처", "검색해보니", "확인해보니", "이번 글에서는", "이번 포스팅에서는",
         "제가 확인한 바로는", "자료를 기준으로", "제공된 정보", "검색 결과", "출처를 확인", "이미지 삽입", "사진 삽입", "사진 자리")
+NO_AUTO_PHOTOS = True  # 대표 결정 2026-10-08: 사진은 대표가 프롬프트로 직접 (자동 무료·AI·위키미디어 사진 안 넣음)
 HIGH_UPTO = 4  # 글 맨 앞부터 이 번호까지 고화질 (1 = 썸네일)
 MAX_IMAGES = 8  # 썸네일 + 소제목 구간마다 1장(마무리 제외 7) — 대표 결정 2026-10-08 "사진 갯수 줄이자" (전에는 16)
 
@@ -46,12 +47,48 @@ def research(kw: str) -> str:
     return memo
 
 
+def link_facts(urls: list[str]) -> str:
+    """대표가 찾은 상품 링크를 Claude 웹 가져오기(web_fetch, 공식 도구)로 열어 제품 정보를 정리 (대표 지시 2026-10-08 '링크로 글').
+    대표가 직접 고른 페이지만 연다(검색·크롤링 아님). 페이지에 없는 건 '확인 안 됨'."""
+    if not urls:
+        return ""
+    import anthropic
+    c = anthropic.Anthropic()
+    msg = c.messages.create(
+        model="claude-sonnet-5-5", max_tokens=3000,
+        tools=[{"type": "web_fetch_20260209", "name": "web_fetch", "max_uses": len(urls) + 2}],
+        messages=[{"role": "user", "content": (
+            "아래 상품 페이지를 하나씩 열어서, 페이지에 실제로 적힌 것만 정리해 주세요. 지어내지 말고, 없으면 '확인 안 됨'.\n"
+            "제품마다 한 줄씩 정확히 이 모양으로:\n"
+            "[제품] 브랜드 | 제품명(모델명·품번까지) | 가격(원, 정가·할인가 구분, 해외 통화면 원래 통화도) | 소재 | 색 | 판매처\n"
+            "그 아래에 제품마다 디자인 특징(실루엣·디테일·핏) 2~3줄. 맨 끝에 '출처:' 아래 각 링크.\n\n" + "\n".join(urls))}])
+    u = msg.usage
+    F.SPENT["claude"] += (u.input_tokens * 3.0 + u.output_tokens * 15.0) / 1_000_000
+    return "".join(b.text for b in msg.content if getattr(b, "type", "") == "text").strip()
+
+
+def from_links(text: str) -> Path:
+    """'[패션링크]' 이슈: 첫 줄 = 인물 아이템, 다음 줄들 = 상품 링크 → 조사 + 링크 제품 정보 → 제목 → ★추천 제목으로 초안."""
+    lines = [l.strip() for l in text.splitlines() if l.strip()]
+    urls = [l for l in lines if l.startswith("http")]
+    kw = next((l for l in lines if not l.startswith("http")), "")[:40]
+    if not kw or not urls:
+        raise SystemExit("첫 줄에 '인물 아이템', 다음 줄에 상품 링크가 필요해요.")
+    facts = link_facts(urls)
+    memo = (research(kw) or F.claude_research(kw)) + "\n\n[대표가 준 상품 링크에서 확인한 제품 정보 — 가장 믿을 만한 자료]\n" + facts
+    d = titles(kw, memo)
+    T = F.load(d / "titles.yaml", {})
+    n = next((i for i, t in enumerate(T.get("items", []), 1) if t.get("rank") == 1), 1)
+    produce(d.name, n)
+    return d
+
+
 def _grok_research(kw: str) -> str:
     return F.grok(
         f"오늘은 {F.today()}(한국 시간)입니다. 블로그 글을 쓰기 위한 조사 메모를 만들어 주세요. 키워드(주어): {kw}\n"
         "웹과 X에서 어제·오늘 나온 기사·공식 SNS·브랜드 공식 사이트를 확인하고 교차검증하세요. 아래 순서로 짧게:\n"
         "1) 무슨 일인지 (방송·행사·공항·SNS·작품, 날짜)\n"
-        "2) 착용·사용 제품: 제품마다 한 줄씩 정확히 이 모양으로 — [제품] 브랜드 | 제품명(모델명·라인명까지) | 가격(원, 공식 판매가와 기준 시점, 모르면 '확인 안 됨')."
+        "2) 착용·사용 제품: 제품마다 한 줄씩 정확히 이 모양으로 — [제품] 브랜드(한글·영문) | 제품명(영문 원어·모델명·라인명까지) | 가격(원, 공식 판매가와 기준 시점, 모르면 '확인 안 됨') | 품번·상품코드 | 가격 자세히(정가·할인가·판매처별 가격, 해외가는 원래 통화와 원화 환산)."
         " 브랜드나 제품명을 모르면 그 칸에 '확인 안 됨'. 세트 상품인지 각각 판매인지도 적기\n"
         "3) 스타일링 포인트(색·소재·실루엣)\n"
         "4) 관련 인물(같은 그룹·작품·가족·출연자) — 실제 관련 있는 사람만\n"
@@ -158,10 +195,13 @@ NO_INTRO = {"fashion": ["캐시미어 다이어리", "캐다입니다", "캐다�
 
 def check(a: dict) -> list[str]:
     t, bad = text_of(a), []
-    if len(t) < 1500:
-        bad.append(f"본문 {len(t)}자 → 1,500자 이상(1,800~2,500자)")
+    if len(t) < 2500:  # 쿠니네 2,800~3,600자 (블로그 글 조사 2026-10-08)
+        bad.append(f"본문 {len(t)}자 → 2,800~3,600자")
     if re.search(r"\d|첫째|둘째|셋째|두 가지|세 가지", a["summary"]):
         bad.append("요약에 숫자·순서 말 → 빼기")
+    raw = "\n".join(p for s in a["sections"] for p in s["paragraphs"])
+    if len(re.findall(r"\*\*|__", raw)) // 2 > 2:  # 쿠니네는 강조 거의 없음 (조사 2026-10-08)
+        bad.append("굵게·밑줄 강조 → 글 전체 2곳 이내로")
     hit = [m for m in META if m in t]
     if hit:
         bad.append("제작 과정 문장 → 빼기: " + ", ".join(hit[:5]))
@@ -170,7 +210,7 @@ def check(a: dict) -> list[str]:
     if not 6 <= len(a["tags"]) <= 10:  # 쿠니네처럼 8개 안팎 (대표 결정 2026-10-08, 원문 '20개 미만' 안)
         bad.append(f"해시태그 {len(a['tags'])}개 → 8개 안팎(6~10개)")
     if not 7 <= len(a["sections"]) <= 9:  # 원문 추천 흐름 8구간 (대표 지적 2026-10-07)
-        bad.append(f"소제목 구간 {len(a['sections'])}개 → 원문 추천 흐름대로 8개(전체 착장 → 눈에 띈 제품 → 브랜드·제품명 → 가격 → 디자인·소재 → 실루엣·어울리는 이유 → 따라 입기 → 마무리)")
+        bad.append(f"소제목 구간 {len(a['sections'])}개 → 8개(전체 착장 → 눈에 띈 제품 → 브랜드·제품명 → 디자인·소재 → 가격 → 실루엣·어울리는 이유 → 따라 입기 → 마무리)")
     if re.search(r"알려진 바가 없|확인되지 않아|확인되지 않았|정보가 없어", t):
         bad.append("'가격이 알려지지 않았다' 같은 조사 과정 문장 → 빼고, 같은 라인 공식가나 가격대 고르는 기준으로")
     few = [s["heading"] for s in a["sections"][:-1] if len(s["images"]) < 1]  # 구간마다 사진 1장 (마무리 제외, 대표 결정 2026-10-08 사진 줄이기)
@@ -265,6 +305,8 @@ FASHION_LEAD = ("Luxury fashion magazine editorial still-life photograph, soft n
                 "hardware, true-to-life colors, shallow depth of field, high-end catalog quality. ")  # 고화질 (2026-10-06)
 
 def image(spec: dict, stem: Path, size: str, credits: list[str], used: set, quality: str = "high") -> str | None:
+    if NO_AUTO_PHOTOS:  # 본문 사진은 프롬프트만, 자동으로 구하지 않음 (대표 결정 2026-10-08: 엉뚱한 무료 사진·위키미디어 동명 사진 문제)
+        return None
     if spec["kind"] == "person":
         got = commons(spec.get("query_en") or spec["query"], spec["query"], stem, used)
         if got:

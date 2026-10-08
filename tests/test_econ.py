@@ -86,7 +86,7 @@ class EconTest(unittest.TestCase):
                                                                     {"heading": "끝", "images": [], "paragraphs": ["마무리"]}],
                  "summary": "세 가지가 좋았어요", "tags": ["t"] * 25}
             bad = " ".join(celeb.check(a))
-            for word in ("1,500자", "요약", "제작 과정", "해시태그", "자기소개", "사진 없는 구간"):
+            for word in ("2,800~3,600자", "요약", "제작 과정", "해시태그", "자기소개", "사진 없는 구간"):
                 self.assertIn(word, bad)
         finally:
             os.environ.pop("BLOG", None)
