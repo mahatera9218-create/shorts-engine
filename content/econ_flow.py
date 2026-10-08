@@ -292,6 +292,7 @@ def add(text: str, aside: bool = False) -> None:
 
 
 AUTO_N = 3  # 블로그마다 하루 자동 글 수 (대표 결정 2026-10-07)
+AUTO_SCAN = 8  # 패션: 가격·브랜드 확인된 주제를 찾을 때까지 점수순으로 최대 몇 개 조사할지 (건너뛴 주제마다 조사 비용 약 90원)
 
 
 def auto(force: bool = False) -> None:
@@ -311,15 +312,29 @@ def auto(force: bool = False) -> None:
     if not (day / "keywords.yaml").exists():
         keywords()
     items = sorted(load(day / "keywords.yaml", {}).get("items", []), key=lambda x: -x.get("score", 0))
-    picks = [it["kw"] for it in items[:AUTO_N]]
+    fashion = BLOG["id"] != "econ"
+    # 패션은 조사해서 가격·브랜드가 확인된 주제만 (대표 결정 2026-10-08, 쿠니네 방식) → 점수순으로 최대 AUTO_SCAN개까지 훑음
+    picks = [it["kw"] for it in items[:AUTO_SCAN if fashion else AUTO_N]]
     aside = any(it.get("naver_rank") for it in items)
     save(mark, {"status": "진행중", "at": datetime.now(KST).strftime("%H:%M"), "aside": aside, "picks": picks, "done": []})
     mod = __import__("content.kunine" if BLOG["id"] == "econ" else "content.celeb", fromlist=["titles", "produce"])
-    done, bad = [], []
+    done, bad, skipped = [], [], []
     for kw in picks:
+        if len(done) >= AUTO_N:
+            break
         try:
             guard()
-            d = mod.titles(kw)
+            if fashion:
+                memo = mod.research(kw) or claude_research(kw)
+                if not mod.has_product(memo):
+                    print(f"건너뜀(가격·브랜드 확인 안 됨): {kw}")
+                    skipped.append(kw)
+                    log_cost("research", f"건너뜀 {kw}")
+                    _reset_spent()
+                    continue
+                d = mod.titles(kw, memo)
+            else:
+                d = mod.titles(kw)
             log_cost("titles", kw)
             _reset_spent()
             T = load(d / "titles.yaml", {})
@@ -333,9 +348,10 @@ def auto(force: bool = False) -> None:
             print(f"자동 글 실패: {kw}: {ex}")
             _reset_spent()
             bad.append(kw)
-        save(mark, {"status": "진행중", "at": load(mark, {}).get("at"), "aside": aside, "picks": picks, "done": done, "failed": bad})
+        save(mark, {"status": "진행중", "at": load(mark, {}).get("at"), "aside": aside, "picks": picks, "done": done, "failed": bad,
+                    "skipped": skipped})
     save(mark, {"status": "완료" if done else "실패", "at": load(mark, {}).get("at"), "end": datetime.now(KST).strftime("%H:%M"),
-                "aside": aside, "picks": picks, "done": done, "failed": bad})
+                "aside": aside, "picks": picks, "done": done, "failed": bad, "skipped": skipped})
     if not done:
         raise SystemExit("자동 글이 모두 실패했어요: " + ", ".join(bad))
 

@@ -6,7 +6,7 @@
 → Pexels. SNS·방송 장면·언론사 사진은 자동으로 가져오지 않는다(저작권·초상권).
 
 titles <키워드>          : 그룹 1(주인공 숨김)·2(이름 노출)·3(관련 인물) 각 5개 + 최종 추천 1개
-produce <주제폴더> <번호> : 인사말 · 1,500자 이상 본문 · 숫자 없는 요약 · 해시태그 19개 이하 · 구간마다 사진 2장 + 썸네일
+produce <주제폴더> <번호> : 인사말 · 1,500자 이상 본문 · 숫자 없는 요약 · 해시태그 8개 안팎 · 구간마다 사진 1장 + 썸네일
 """
 from __future__ import annotations
 
@@ -27,7 +27,7 @@ FREE = ("cc0", "public domain", "cc by", "cc-by", "pd")  # 위키미디어 자�
 META = ("사용자가 제공", "첨부한", "첨부 자료", "캡처", "검색해보니", "확인해보니", "이번 글에서는", "이번 포스팅에서는",
         "제가 확인한 바로는", "자료를 기준으로", "제공된 정보", "검색 결과", "출처를 확인", "이미지 삽입", "사진 삽입", "사진 자리")
 HIGH_UPTO = 4  # 글 맨 앞부터 이 번호까지 고화질 (1 = 썸네일)
-MAX_IMAGES = 16  # 원문 "최대한 많이" — 소제목 8구간 × 2장 (대표 지시 2026-10-06 "패션은 사진에 힘주고", 2026-10-07 구간 8개로)
+MAX_IMAGES = 8  # 썸네일 + 소제목 구간마다 1장(마무리 제외 7) — 대표 결정 2026-10-08 "사진 갯수 줄이자" (전에는 16)
 
 
 def prompt() -> list[str]:
@@ -70,10 +70,20 @@ def title_guide() -> str:
     return guide_text(F.BLOG["id"])
 
 
-def titles(kw: str) -> Path:
+PRICE = re.compile(r"\d[\d,.]*\s*(만|억)?\s*원")
+
+
+def has_product(memo: str) -> bool:
+    """조사 메모에 확인된 가격(=브랜드·제품이 특정됨)이 있는지. '확인 안 됨' 줄은 빼고 본다 (대표 결정 2026-10-08:
+    쿠니네처럼 '한 인물 + 한 아이템 + 가격·브랜드 반전'이 되는 주제만 자동으로 쓴다)."""
+    body = memo.split("출처:")[0]
+    return any(PRICE.search(l) for l in body.splitlines() if "확인 안" not in l and "확인되지" not in l and "미확인" not in l)
+
+
+def titles(kw: str, memo: str | None = None) -> Path:
     d = F.FLOW / F.today() / F.topic_slug(kw)
     d.mkdir(parents=True, exist_ok=True)
-    memo = research(kw) or F.claude_research(kw)
+    memo = memo or research(kw) or F.claude_research(kw)
     (d / "research.md").write_text(f"# 조사 메모: {kw}\n\n{memo}\n", encoding="utf-8")
     out = F.claude_json(prompt() + [g for g in [title_guide()] if g], (
         f"키워드(주어): {kw}\n\n[조사 메모]\n{memo[:10000]}\n\n이번 단계는 **제목만** 만듭니다. 원문의 제목 규칙대로 그룹 1·2·3 각 5개와 "
@@ -123,7 +133,7 @@ BODY = {"type": "object", "additionalProperties": False,
                                                                    "images": {"type": "array", "items": IMG},
                                                                    "paragraphs": {"type": "array", "items": {"type": "string"}}}}},
             "summary": {"type": "string", "description": "숫자·순서 말 없는 짧은 전체 요약"},
-            "tags": {"type": "array", "items": {"type": "string"}, "description": "19개 이하"},
+            "tags": {"type": "array", "items": {"type": "string"}, "description": "8개 안팎(6~10개): 인물 → 인물+아이템 → 브랜드 → 브랜드+아이템 → 일반 키워드 순"},
             "sources": {"type": "array", "items": {"type": "string"}},
             "thumb": IMG}}
 
@@ -146,15 +156,18 @@ def check(a: dict) -> list[str]:
         bad.append("제작 과정 문장 → 빼기: " + ", ".join(hit[:5]))
     if F.PRESS.search(t):
         bad.append("언론사명·링크 → 빼기")
-    if len(a["tags"]) >= 20:
-        bad.append(f"해시태그 {len(a['tags'])}개 → 19개 이하")
+    if not 6 <= len(a["tags"]) <= 10:  # 쿠니네처럼 8개 안팎 (대표 결정 2026-10-08, 원문 '20개 미만' 안)
+        bad.append(f"해시태그 {len(a['tags'])}개 → 8개 안팎(6~10개)")
     if not 7 <= len(a["sections"]) <= 9:  # 원문 추천 흐름 8구간 (대표 지적 2026-10-07)
         bad.append(f"소제목 구간 {len(a['sections'])}개 → 원문 추천 흐름대로 8개(전체 착장 → 눈에 띈 제품 → 브랜드·제품명 → 가격 → 디자인·소재 → 실루엣·어울리는 이유 → 따라 입기 → 마무리)")
     if re.search(r"알려진 바가 없|확인되지 않아|확인되지 않았|정보가 없어", t):
         bad.append("'가격이 알려지지 않았다' 같은 조사 과정 문장 → 빼고, 같은 라인 공식가나 가격대 고르는 기준으로")
-    few = [s["heading"] for s in a["sections"][:-1] if len(s["images"]) < 2]  # 원문: 주요 구간마다 실제 사진 2장 이상 (마무리 구간 제외, 2026-10-07 점검)
+    few = [s["heading"] for s in a["sections"][:-1] if len(s["images"]) < 1]  # 구간마다 사진 1장 (마무리 제외, 대표 결정 2026-10-08 사진 줄이기)
     if few:
-        bad.append("사진 2장 미만 구간 → 2~3장으로: " + ", ".join(few[:5]))
+        bad.append("사진 없는 구간 → 1장씩: " + ", ".join(few[:5]))
+    many = [s["heading"] for s in a["sections"] if len(s["images"]) > 1]
+    if many:
+        bad.append("사진 2장 이상 구간 → 1장으로 줄이기: " + ", ".join(many[:5]))
     # 패션은 인사말·자기소개 없이 시작 (대표 지시 2026-10-07 "캐시미어 다이어리 캐다입니다. 이런 건 안 나오게")
     intro = [w for w in NO_INTRO.get(F.BLOG["id"], []) if w in t]
     if intro:
