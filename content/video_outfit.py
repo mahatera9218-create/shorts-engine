@@ -23,6 +23,9 @@ ROOT = Path(__file__).resolve().parent.parent
 CFG = ROOT / "config" / "video_outfit.yaml"
 GEM_MODEL = "gemini-2.5-flash"
 GEM_PRICE = (0.30, 2.50)  # 달러/100만 토큰 (입력·출력). 공식 단가표로 다시 확인할 것 (2026-10-08 집계 사이트 기준)
+SKIP = re.compile(r"예고|티저|teaser|trailer|스틸|메이킹 필름", re.I)
+GOOD = re.compile(r"패션|코디|착장|룩|공항|출국|입국|브이로그|vlog|쇼핑|화보|아울렛|가방|재킷|코트|원피스|드레스|사복|데일리|OOTD|출근", re.I)
+TIME = re.compile(r"(?<![\d:])(\d{1,2}):(\d{2})(?![\d:])")
 DUR = re.compile(r"PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?")
 
 
@@ -56,10 +59,15 @@ def clips(name: str, days: int, max_sec: int, n: int) -> list[dict]:
             continue
         if name.replace(" ", "") not in (it["snippet"]["title"] + it["snippet"].get("description", "")).replace(" ", ""):
             continue  # 이름이 제목·설명에 없으면 다른 사람 영상일 수 있음
-        out.append({"id": it["id"], "title": it["snippet"]["title"], "channel": it["snippet"]["channelTitle"],
-                    "at": it["snippet"]["publishedAt"][:10], "sec": sec,
-                    "views": int(it.get("statistics", {}).get("viewCount", 0))})
-    return sorted(out, key=lambda x: -x["views"])[:n]
+        title = it["snippet"]["title"]
+        if SKIP.search(title):  # 예고편·티저는 극 중 의상이라 브랜드 정보가 없음 (2026-10-08 시험에서 확인)
+            continue
+        th = it["snippet"].get("thumbnails", {})
+        out.append({"id": it["id"], "title": title, "channel": it["snippet"]["channelTitle"],
+                    "at": it["snippet"]["publishedAt"][:10], "sec": sec, "fashion": bool(GOOD.search(title)),
+                    "views": int(it.get("statistics", {}).get("viewCount", 0)),
+                    "thumb": (th.get("maxres") or th.get("high") or th.get("medium") or {}).get("url", "")})
+    return sorted(out, key=lambda x: (not x["fashion"], -x["views"]))[:n]  # 패션·일상 클립 먼저
 
 
 ASK = """이 영상에 나오는 '{name}'의 착장을 머리부터 발끝까지 정리해 주세요. {name}이 안 나오거나 누군지 확실하지 않으면 "확인 불가"라고만 쓰세요.
@@ -101,7 +109,9 @@ def main() -> None:
         notes.append(f"[{c['title']}]\n{text}")
         md += [f"## {c['title']}", f"- {c['channel']} · {c['at']} · {c['sec'] // 60}분 {c['sec'] % 60}초 · 조회 {c['views']:,} · {url}",
                f"- Gemini 토큰: 입력 {u.get('promptTokenCount', 0):,} / 출력 {u.get('candidatesTokenCount', 0) + u.get('thoughtsTokenCount', 0):,}", "",
-               "### Gemini가 본 착장", "", text, ""]
+               f"- 유튜브 공식 썸네일(보기만, 저장 안 함): {c['thumb']}" if c.get("thumb") else "", "",
+               "### Gemini가 본 착장 (시각을 누르면 그 장면부터 재생 → 직접 화면 캡처)", "",
+               TIME.sub(lambda m: f"[{m.group(1)}:{m.group(2)}](https://youtu.be/{c['id']}?t={int(m.group(1)) * 60 + int(m.group(2))})", text), ""]
     if notes:
         before = sum(F.SPENT.values())
         g = F.grok(f"오늘은 {F.today()}(한국 시간)입니다. 아래는 '{name}'이 최근 방송 클립에서 입은 착장을 영상으로 정리한 메모입니다.\n"
@@ -119,6 +129,10 @@ def main() -> None:
            f"- Grok: 약 ${grok_usd:.4f} (약 {grok_usd * 1400:,.0f}원)",
            f"- 합계: 약 {(gem_usd + grok_usd) * 1400:,.0f}원 (클립 {len(found)}개)", ""]
     out = ROOT / "reports" / f"{F.today()}-{name}-방송착장-시험.md"
+    k = 2
+    while out.exists():  # 같은 날 다시 돌리면 덮어쓰지 않고 -2, -3
+        out = ROOT / "reports" / f"{F.today()}-{name}-방송착장-시험-{k}.md"
+        k += 1
     out.write_text("\n".join(md), encoding="utf-8")
     print("\n".join(md)[:3000])
 
