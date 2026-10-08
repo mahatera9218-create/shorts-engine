@@ -1,233 +1,233 @@
 keyword: 비트코인 8만달러 하락
 person: ''
 mode: 쿠니네
-made: '13:04'
+made: '15:59'
 items:
-- title: 비트코인 8만달러 하락, 정말 8만달러까지 내려갈까?
-  type: 궁금형
+- title: 비트코인 8만달러 하락 VS 8만 3천달러 방어, 갈림길은 어디?
+  type: 비교형
   rank: 1
   best: true
-  chars: 29
+  chars: 36
   flags: []
-- title: 비트코인 8만달러 하락인데 ETF는 오히려 순유입이었다
-  type: 반전형
+- title: 비트코인 8만달러 하락, 진짜 8만까지 가는 걸까?
+  type: 궁금형
   rank: 2
   best: true
-  chars: 30
+  chars: 28
   flags: []
-- title: 비트코인 8만달러 하락장에서 놓치기 쉬운 레버리지 청산가
-  type: 위협형
+- title: 비트코인 8만달러 하락 우려인데 ETF에는 돈이 들어왔다
+  type: 반전형
   rank: 3
   best: true
   chars: 31
   flags: []
-- title: 비트코인 8만달러 하락 전 확인할 것, 청산 지도와 FOMC 의사록
+- title: 비트코인 8만달러 하락 전 확인할 3가지, 청산·ETF·국채금리
   type: 실행형
   rank: 4
   best: true
+  chars: 35
+  flags: []
+- title: 비트코인 8만달러 하락 때 롱 포지션이 더 취약했던 이유
+  type: 위협형
+  rank: 5
+  best: true
+  chars: 31
+  flags: []
+- title: 비트코인 8만달러 하락 직전, 고점 8만 6천 vs 저점 8만 2천
+  type: 비교형
+  rank: null
+  best: false
   chars: 37
   flags: []
-- title: 비트코인 8만달러 하락 속 ETF 순유입 VS 청산 5.5억달러
+- title: 비트코인 8만달러 하락 우려 롱 청산 88% VS ETF 1억 유입
   type: 비교형
-  rank: 5
+  rank: null
+  best: false
+  chars: 37
+  flags: []
+- title: 비트코인 8만달러 하락론 VS 일시 조정론, 근거 비교
+  type: 비교형
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: 비트코인 8만달러 하락 시 21일선 VS 50일선, 지지는 어디?
+  type: 비교형
+  rank: null
+  best: false
+  chars: 36
+  flags: []
+- title: 비트코인 8만달러 하락 구간, 8만 278달러 50일선부터 보세요
+  type: 실행형
+  rank: null
+  best: false
+  chars: 36
+  flags: []
+- title: 비트코인 8만달러 하락 불안하면 레버리지 비중부터 점검하세요
+  type: 실행형
+  rank: null
+  best: false
+  chars: 33
+  flags: []
+- title: 비트코인 8만달러 하락 뉴스 볼 때 CoinGlass 청산 수치 확인법
+  type: 실행형
+  rank: null
+  best: false
+  chars: 39
+  flags: []
+- title: 비트코인 8만달러 하락 전 FOMC 의사록과 고용지표 일정 체크
+  type: 실행형
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: 비트코인 8만달러 하락, 레버리지 안 쓴 사람이 덜 흔들린 이유
+  type: 이득형
+  rank: null
   best: true
   chars: 35
   flags: []
-- title: 비트코인 8만달러 하락, 8만4천달러 이탈과 8만1천달러 지지 비교
-  type: 비교형
-  rank: null
-  best: false
-  chars: 37
-  flags: []
-- title: 비트코인 8만달러 하락 VS 고점 8만7천달러, 낙폭 얼마나?
-  type: 비교형
-  rank: null
-  best: false
-  chars: 34
-  flags: []
-- title: 비트코인 8만달러 하락 우려 건강한 조정 VS 약세 전환
-  type: 비교형
-  rank: null
-  best: false
-  chars: 31
-  flags: []
-- title: 비트코인 8만달러 하락, 현물 매수자와 레버리지 롱 처지 비교
-  type: 비교형
-  rank: null
-  best: false
-  chars: 34
-  flags: []
-- title: 비트코인 8만달러 하락설에 흔들리기 전 내 평단부터 점검
-  type: 실행형
-  rank: null
-  best: false
-  chars: 31
-  flags: []
-- title: 비트코인 8만달러 하락 시나리오, 8만4천달러 지지부터 체크
-  type: 실행형
-  rank: null
-  best: false
-  chars: 33
-  flags: []
-- title: 비트코인 8만달러 하락 뉴스 볼 때 레버리지 비중 먼저 보세요
-  type: 실행형
-  rank: null
-  best: false
-  chars: 34
-  flags: []
-- title: 비트코인 8만달러 하락 대비, 금리·달러·유가 3가지 확인법
-  type: 실행형
-  rank: null
-  best: false
-  chars: 33
-  flags: []
-- title: 비트코인 8만달러 하락 때 한꺼번에 안 사는 사람들의 이유
-  type: 이득형
-  rank: null
-  best: false
-  chars: 32
-  flags: []
-- title: 비트코인 8만달러 하락 구간, 손실 줄이는 청산가 점검법
-  type: 이득형
-  rank: null
-  best: false
-  chars: 31
-  flags: []
-- title: 비트코인 8만달러 하락 이슈, 레버리지 안 쓴 쪽이 덜 흔들린 이유
-  type: 이득형
-  rank: null
-  best: true
-  chars: 37
-  flags: []
-- title: 비트코인 8만달러 하락에도 ETF 1.19억달러 순유입
+- title: 비트코인 8만달러 하락장에서 청산 피하는 현실적인 기준
   type: 이득형
   rank: null
   best: false
   chars: 30
   flags: []
-- title: 비트코인 8만달러 하락, 평단 낮추려는 사람이 먼저 볼 지지선
+- title: 비트코인 8만달러 하락 때 평단 아래 구간을 보는 사람들
+  type: 이득형
+  rank: null
+  best: false
+  chars: 31
+  flags: []
+- title: 비트코인 8만달러 하락 와중에 ETF 1억 1,900만달러 들어온 까닭
+  type: 이득형
+  rank: null
+  best: false
+  chars: 39
+  flags: []
+- title: 비트코인 8만달러 하락 국면, 지지선 알면 손실 폭이 달라진다
   type: 이득형
   rank: null
   best: false
   chars: 34
   flags: []
-- title: 비트코인 8만달러 하락 신호, 8만1천달러에서 멈출 수 있을까
-  type: 궁금형
-  rank: null
-  best: false
-  chars: 34
-  flags: []
-- title: 비트코인 8만달러 하락 원인은 유가일까 국채금리일까?
-  type: 궁금형
-  rank: null
-  best: false
-  chars: 29
-  flags: []
-- title: 비트코인 8만달러 하락 중 5.5억달러 청산, 누가 잃었나
+- title: 비트코인 8만달러 하락 왜 갑자기? 청산 5.5억달러 배경
   type: 궁금형
   rank: null
   best: false
   chars: 32
   flags: []
-- title: 비트코인 8만달러 하락 후 FOMC 의사록, 반등 변수 될까?
+- title: 비트코인 8만달러 하락, 83k 지지선이 뚫리면 어떻게 될까?
   type: 궁금형
   rank: null
   best: false
   chars: 34
   flags: []
-- title: 비트코인 8만달러 하락, 20분에 2천달러 빠질 때 생기는 일
-  type: 위협형
-  rank: null
-  best: false
-  chars: 34
-  flags: []
-- title: 비트코인 8만달러 하락 우려, 8만4천달러 이탈이 부담인 이유
-  type: 위협형
-  rank: null
-  best: false
-  chars: 34
-  flags: []
-- title: 비트코인 8만달러 하락 가능성, 롱 포지션이 위험한 조건
-  type: 위협형
-  rank: null
-  best: false
-  chars: 31
-  flags: []
-- title: 비트코인 8만달러 하락 시 시장가 주문이 불리할 수 있는 이유
-  type: 위협형
-  rank: null
-  best: false
-  chars: 34
-  flags: []
-- title: 비트코인 8만달러 하락 공포 속에서도 고래는 3만 BTC 샀다
-  type: 반전형
-  rank: null
-  best: false
-  chars: 34
-  flags: []
-- title: 비트코인 8만달러 하락, 추세 꺾임 아닌 레버리지 정리라는 시각
-  type: 반전형
-  rank: null
-  best: false
-  chars: 35
-  flags: []
-- title: 비트코인 8만달러 하락 원인은 코인이 아니라 국채금리였나
-  type: 반전형
-  rank: null
-  best: false
-  chars: 31
-  flags: []
-- title: 비트코인 8만달러 하락 얘기 나왔지만 실제 최저는 8만2천달러대
-  type: 반전형
-  rank: null
-  best: false
-  chars: 35
-  flags: []
-- title: 비트코인 8만달러 하락 '또 레버리지 청산' 이번엔 다를까?
-  type: 경제토르식
-  rank: null
-  best: false
-  chars: 33
-  flags: []
-- title: 비트코인 8만달러 하락 '지금이 기회인가 함정인가' 갈리는 이유
-  type: 경제토르식
-  rank: null
-  best: false
-  chars: 35
-  flags: []
-- title: 비트코인 8만달러 하락 '평단 아래 오면 어쩌지' 다들 고민하는데
-  type: 경제토르식
-  rank: null
-  best: false
-  chars: 36
-  flags: []
-- title: 비트코인 8만달러 하락 '이 가격대' 지지선으로 본다는데?
-  type: 유미식
+- title: 비트코인 8만달러 하락 뉴스, 지금 실제 가격은 얼마일까?
+  type: 궁금형
   rank: null
   best: false
   chars: 32
   flags: []
-- title: 비트코인 8만달러 하락 '5.5억달러 청산' 누가 털렸나 봤더니
-  type: 유미식
-  rank: null
-  best: false
-  chars: 35
-  flags: []
-- title: 비트코인 8만달러 하락 '이 때' 변수라는데? FOMC 의사록 떴다!
-  type: 유미식
+- title: 비트코인 8만달러 하락론, 고래 1만 4천 BTC 매수는 뭘 뜻할까?
+  type: 궁금형
   rank: null
   best: false
   chars: 38
   flags: []
+- title: 비트코인 8만달러 하락, 83k 이탈 시 놓치기 쉬운 청산 구간
+  type: 위협형
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: 비트코인 8만달러 하락 속 국채금리 24년 고점 변수
+  type: 위협형
+  rank: null
+  best: false
+  chars: 29
+  flags: []
+- title: 비트코인 8만달러 하락 국면에서 레버리지가 불리한 조건
+  type: 위협형
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: 비트코인 8만달러 하락 가능성, 단기 차익실현 압력도 변수
+  type: 위협형
+  rank: null
+  best: false
+  chars: 32
+  flags: []
+- title: 비트코인 8만달러 하락 얘기에 가격은 8만 2천대, 아직 안 갔다
+  type: 반전형
+  rank: null
+  best: false
+  chars: 36
+  flags: []
+- title: 비트코인 8만달러 하락 소식에 의외로 청산 대부분은 롱이었다
+  type: 반전형
+  rank: null
+  best: false
+  chars: 33
+  flags: []
+- title: 비트코인 8만달러 하락 원인이 코인이 아닌 국채금리였다니
+  type: 반전형
+  rank: null
+  best: false
+  chars: 31
+  flags: []
+- title: 비트코인 8만달러 하락 걱정 속 고래는 오히려 담고 있었다
+  type: 반전형
+  rank: null
+  best: false
+  chars: 32
+  flags: []
+- title: 비트코인 8만달러 하락 '83k 방어' 롱 청산 5.5억달러의 의미
+  type: 경제토르식
+  rank: null
+  best: false
+  chars: 37
+  flags: []
+- title: 비트코인 8만달러 하락 '평단 아래면 기회' vs '추가 조정' 어느 쪽?
+  type: 경제토르식
+  rank: null
+  best: false
+  chars: 41
+  flags: []
+- title: 비트코인 8만달러 하락 '이란 변수에 국채금리까지' 흔들린 이유
+  type: 경제토르식
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: 비트코인 8만달러 하락 '5.5억달러 청산' 8만 밑으로 간다는데?
+  type: 유미식
+  rank: null
+  best: false
+  chars: 37
+  flags: []
+- title: 비트코인 8만달러 하락 '고래는 사고 있다'는데 '이 가격' 지켜보는 이유
+  type: 유미식
+  rank: null
+  best: false
+  chars: 41
+  flags: []
+- title: 비트코인 8만달러 하락 '롱 94% 청산' 온체인에서 나온 '이 신호' 떴다!
+  type: 유미식
+  rank: null
+  best: false
+  chars: 43
+  flags: []
 groups:
 - type: 비교형
   idx:
+  - 0
   - 5
   - 6
   - 7
-  - 4
   - 8
-  best: 4
+  best: 0
 - type: 실행형
   idx:
   - 3
@@ -243,31 +243,31 @@ groups:
   - 15
   - 16
   - 17
-  best: 15
+  best: 13
 - type: 궁금형
   idx:
-  - 0
+  - 1
   - 18
   - 19
   - 20
   - 21
-  best: 0
+  best: 1
 - type: 위협형
   idx:
-  - 2
+  - 4
   - 22
   - 23
   - 24
   - 25
-  best: 2
+  best: 4
 - type: 반전형
   idx:
-  - 1
   - 26
+  - 2
   - 27
   - 28
   - 29
-  best: 1
+  best: 2
 - type: 경제토르식
   idx:
   - 30

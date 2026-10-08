@@ -1,48 +1,50 @@
 # 조사 메모: 비트코인 8만달러 하락
 
-**1) 검색 의도 순서**  
-- 현재 BTC 가격 및 실시간 하락 폭 확인  
-- 8만 달러 도달 가능성·지지선·청산 규모 등 기술적 분석  
-- 하락 원인(매크로·지정학·레버리지)과 향후 전망  
-- ETF 유입/유출, 기관 동향, 투자 기회·리스크 판단  
+**1) 이 키워드를 검색한 사람이 무엇부터 찾는지 (검색 의도 순서)**  
+- 현재 비트코인 가격이 실제로 8만 달러까지 하락했는지·하락 중인지 실시간 확인.  
+- 하락 이유(청산 규모, 거시 요인 등)와 배경.  
+- 8만 달러 지지선 의미·기술적 분석·향후 전망(반등 가능성 vs 추가 하락).  
+- 투자 기회(저점 매수) vs 위험(추가 조정) 판단 자료.  
+- ETF 유입·기관 동향 등 수급 정보.
 
-**2) 가장 최신 뉴스와 반복 핵심 이슈 (2026-10-07 중심)**  
-- 10월 7일: BTC가 $84,000 아래로 하락하며 $83,600~83,000 부근까지 밀림. 24시간 롱 청산 규모 $550M 수준 (CoinGlass 데이터 다수 인용).[[1]](https://news.futunn.com/hk/post/1000653590/live-updates-bitcoin-slides-under-84000-as-550-million-in)[[2]](https://www.coindesk.com/ko/business/2026/10/07/live-updates-bitcoin-slides-under-usd84-000-as-usd550-million-in-bets-get-liquidated)[[3]](https://cointelegraph.com/markets/crypto-liquidations-hit-550m-as-bitcoin-price-dips-below-84k)  
-- 반복 이슈: 레버리지 플러시(leverage flush) 성격이 강하며, 근본적 하락 추세는 아니라는 분석 우세. 지정학(이란 호르무즈 해협 관련 유가 상승) + 미 국채금리 급등(24년래 고점) + 달러 강세가 위험자산 압박.[[4]](https://cointelegraph.com/markets/bitcoin-price-drops-to-827k-october-low-as-bond-sell-off-resumes-on-iran-nerves)[[5]](https://x.com/ludixter/status/2107856173349421150)  
-- 9월 말부터 CryptoQuant 등 “단기 조정 시 $80K 첫 지지선” 경고가 반복 언급됨.[[6]](https://forklog.com/en/analysts-warn-of-bitcoin-correction-risks-to-80000/)  
+**2) 가장 최신 뉴스와 반복해서 나오는 핵심 이슈 (날짜 포함)**  
+2026년 10월 7일(수) 주요 이슈: 비트코인이 8만 4천 달러 아래로 하락하며 레버리지 롱 청산이 대거 발생. 10월 7일 장중 고점 8만 6,600~8만 6,700달러에서 시작해 저점 8만 2,700~8만 3,000달러대까지 밀림(약 3~3.5% 하락).[[1]](https://www.cryptotimes.io/2026/10/07/bitcoin-price-crashes-to-83000-as-94-longs-liquidated/)[[2]](https://cointelegraph.com/markets/crypto-liquidations-hit-550m-as-bitcoin-price-dips-below-84k)[[3]](https://cointelegraph.com/markets/bitcoin-price-drops-to-827k-october-low-as-bond-sell-off-resumes-on-iran-nerves)  
+반복 이슈: 대규모 롱 청산(레버리지 flush), 미 국채 수익률 상승(24년래 고점), 유가 급등(이란 관련 긴장), 위험자산 압박. 8만 3천 달러 지지선 방어 여부와 8만 달러 심리적·기술적 지지선 주목.[[4]](https://news.futunn.com/hk/post/1000653590/live-updates-bitcoin-slides-under-84000-as-550-million-in)[[5]](https://forklog.com/en/bitcoin-falls-below-84000-amid-long-liquidations/)
 
-**3) 확인된 숫자·금액·날짜·조건**  
-- 2026-10-07: BTC 최저 $82,700~83,600 부근 (Bitstamp 등, CoinDesk·Cointelegraph 등 교차 확인).[[4]](https://cointelegraph.com/markets/bitcoin-price-drops-to-827k-october-low-as-bond-sell-off-resumes-on-iran-nerves)[[7]](https://www.cointribune.com/en/bitcoin-faces-a-key-test-near-81300/)  
-- 청산: 24시간 $550M (롱 중심, 일부 보도 $360M~$487M 단기 집계).[[1]](https://news.futunn.com/hk/post/1000653590/live-updates-bitcoin-slides-under-84000-as-550-million-in)[[3]](https://cointelegraph.com/markets/crypto-liquidations-hit-550m-as-bitcoin-price-dips-below-84k)  
-- 최근 고점: $87,400 부근 (9월 말~10월 초).[[6]](https://forklog.com/en/analysts-warn-of-bitcoin-correction-risks-to-80000/)  
-- $84,000 돌파 시 $80,000 지지선 테스트 가능 (FxPro 분석, 10월 6~7일 반복 인용).[[8]](https://www.coindesk.com/ko/markets/2026/10/06/live-updates-a-drop-below-usd84-000-could-put-usd80-000-in-play-for-bitcoin)[[9]](https://phemex.com/de/news/article/bitcoin-faces-80000-test-if-84000-support-breaks-amid-bond-market-relief-98945)  
-- BTC 현물 ETF: 10월 6일 거래분 $119M 순유입 (하락 중에도 유입 확인).[[10]](https://www.rttnews.com/3697256/cryptos-plunge-bitcoin-drops-below-83k.aspx)  
+**3) 확인된 숫자·금액·날짜·조건 (기준 시점과 출처를 함께)**  
+- 10월 7일: BTC 8만 4천 달러 하회 → 최저 8만 2,700~8만 3,280달러대(다수 출처 교차 확인). 이전 고점 8만 6,600달러대.[[1]](https://www.cryptotimes.io/2026/10/07/bitcoin-price-crashes-to-83000-as-94-longs-liquidated/)[[3]](https://cointelegraph.com/markets/bitcoin-price-drops-to-827k-october-low-as-bond-sell-off-resumes-on-iran-nerves)  
+- 청산: 24시간 약 5억 5천만 달러(롱 4억 7,960만~5억 달러, 전체의 88~94%). CoinGlass 데이터 기준.[[4]](https://news.futunn.com/hk/post/1000653590/live-updates-bitcoin-slides-under-84000-as-550-million-in)[[2]](https://cointelegraph.com/markets/crypto-liquidations-hit-550m-as-bitcoin-price-dips-below-84k)  
+- 50일 이동평균 ≈ 8만 278달러(추가 하락 시 주목).[[1]](https://www.cryptotimes.io/2026/10/07/bitcoin-price-crashes-to-83000-as-94-longs-liquidated/)  
+- 10월 6일(화) BTC 현물 ETF 순유입 1억 1,900만 달러(BlackRock IBIT 중심).[[6]](https://www.tokenpost.com/news/investing/27358)[[7]](https://www.rttnews.com/3697256/cryptos-plunge-bitcoin-drops-below-83k.aspx)  
+- 10월 7일 장중 거래량 증가(현물·선물). 21일 이동평균 ≈ 8만 3,850달러 부근 지지 확인.[[2]](https://cointelegraph.com/markets/crypto-liquidations-hit-550m-as-bitcoin-price-dips-below-84k)  
+(8만 달러 실제 도달 뉴스는 10월 7~8일 확인되지 않음. 9월 하락 시 8만 달러 언급 있었으나 별도.)
 
-**4) 해석 엇갈림·X 반응**  
-- 찬반: “건강한 조정·유동성 확보 후 재상승” vs “$84K 이탈 = 약세 전환, $80K·$77K 추가 하락 우려”.[[11]](https://www.fxempire.com/forecasts/article/bitcoin-price-prediction-btcs-pullback-to-80k-accelerates-ahead-of-fomc-minutes-1636507)[[7]](https://www.cointribune.com/en/bitcoin-faces-a-key-test-near-81300/)  
-- 이해관계: 레버리지 트레이더 대량 손실 vs 현물·웨일 매수 기회.  
-- X 반응 (10월 7~8일 Latest): 급락 속도에 놀람(“20분 만에 $2,000 하락”), 레버리지 청산 연쇄 지적, “$81K~$80K 조정 가능성” 언급 다수. 일부 “평단 아래 오면 매수 기회”, Hyperliquid 40x 숏 포지션 소문(‘소문’ 표시).[[12]](https://x.com/hanlgaram/status/2107991537200267350)[[13]](https://x.com/novasikorea/status/2107984582280953927)[[14]](https://x.com/afterwork2604/status/2107826479895838749)  
-- 기대·억울: FOMC 의사록(10월 7일 공개) 후 금리·달러 방향에 따른 반등 기대 vs 과도한 레버리지 피해 억울함.  
+**4) 해석이 엇갈리는 점, 찬반·이해관계, 사람들이 놀라거나 억울해하거나 기대하는 점 (X 반응 포함, 소문은 '소문' 표시)**  
+- 해석 차이: “레버리지 청산(flush)으로 인한 일시적 조정” vs “매도 압력 강화 신호” (FxPro 등은 8만 3천 달러 하회 시 8만 달러 가속 가능성 지적).[[4]](https://news.futunn.com/hk/post/1000653590/live-updates-bitcoin-slides-under-84000-as-550-million-in)[[5]](https://forklog.com/en/bitcoin-falls-below-84000-amid-long-liquidations/)  
+- X 반응(10월 7~8일 Latest): “83k 방어 여부가 단기 향방 결정”, “웨일 매수 지속·ETF 유입 둔화 속 Uptober 기대 vs 조정 우려”, “8만까지 조정 가능성 있지만 평단 아래면 기회”, “롱 청산 후 OI 반등” 등. 일부 “강세장 유지되나 균열 조짐” 언급.[[8]](https://x.com/novasikorea/status/2107984582280953927)[[9]](https://x.com/ilpyung98/status/2107964835732541624)  
+- 사람들 반응: 레버리지 투자자 청산으로 인한 ‘억울’ 또는 ‘기회’ 인식 혼재. 거시(유가·금리) 요인에 놀라는 반응. “추세 하락 아님” 기대 vs “추가 하락 대비” 경계. 소문: 특정 플랫폼(예: Hyperliquid) 대량 숏 포지션 관련 언급(확인된 on-chain 분석 결과로 보도).
 
-**5) 기관·증권가 전망**  
-- FxPro: $84K 이하 = 매도세 우위, $80K 신속 도달 가능.[[8]](https://www.coindesk.com/ko/markets/2026/10/06/live-updates-a-drop-below-usd84-000-could-put-usd80-000-in-play-for-bitcoin)  
-- FXEmpire: $81K까지 조정 후 $90K 재상승 시나리오. 웨일 10월 3만 BTC 매수 확인.[[11]](https://www.fxempire.com/forecasts/article/bitcoin-price-prediction-btcs-pullback-to-80k-accelerates-ahead-of-fomc-minutes-1636507)  
-- CryptoQuant (9월 말): 단기 홀더 미실현 수익 고점, $80K 첫 지지.  
-- LVRG Research: “레버리지 플러시, 하락 추세 아님”.[[1]](https://news.futunn.com/hk/post/1000653590/live-updates-bitcoin-slides-under-84000-as-550-million-in)  
-- Bitfinex 등: $81,300 주요 테스트 구간.[[7]](https://www.cointribune.com/en/bitcoin-faces-a-key-test-near-81300/)  
+**5) 기관·증권가 전망 (누가 어떻게)**  
+- FxPro: 8만 4천 달러 하회 시 매도세 주도권, 8만 3천 → 8만 달러 테스트 가능성.[[4]](https://news.futunn.com/hk/post/1000653590/live-updates-bitcoin-slides-under-84000-as-550-million-in)[[5]](https://forklog.com/en/bitcoin-falls-below-84000-amid-long-liquidations/)  
+- CoinDesk·Cointelegraph 등: 단기 레버리지 flush 강조, 8만 3천~8만 2천 지지선 주목. 8만 달러는 심리적·기술적 중요 지지.[[3]](https://cointelegraph.com/markets/bitcoin-price-drops-to-827k-october-low-as-bond-sell-off-resumes-on-iran-nerves)  
+- Glassnode·CryptoQuant 등 온체인: 단기 보유자 미실현 이익 고점, 차익실현 압력 언급(9월 말~10월 초 분석).  
+- Bitfinex·Glassnode: 10월 초 고래 1만 4천 BTC 이상 누적 매수 관찰.  
+특정 증권사(예: Goldman 등) 공식 전망은 확인된 최신 결과에서 두드러지지 않음.
 
 **6) 앞으로 일정**  
-- 2026-10-07 저녁~08: 9월 FOMC 의사록 공개 (금리 인상 기대 영향 주시).  
-- 미 국채 입찰(10년물 등) 및 금리·유가·지정학 상황 지속 모니터링.  
-- BTC $83K 방어 여부·ETF 흐름이 단기 방향 결정 요인으로 반복 언급.  
+- 10월 내 미국 고용·인플레이션 지표(거시 이벤트로 BTC 변동성 요인).  
+- FOMC 의사록(10월 7일 언급, 공개 예정).  
+- ETF 유입·청산 동향 지속 관찰.  
+(구체적 날짜·공식 발표는 확인된 최신 자료에서 추가 상세 없음.)
 
 **출처:**  
-- Analysts Warn of Bitcoin Correction Risks to $80,000 | ForkLog (https://forklog.com/en/analysts-warn-of-bitcoin-correction-risks-to-80000/)  
-- Live Updates: Bitcoin Slides Under $84,000 as $550 Million in Bets Get Liquidated | CoinDesk/Futunn (https://news.futunn.com/hk/post/1000653590/...)  
-- Bitcoin Price Prediction: BTC’s Pullback to $80K Accelerates Ahead of FOMC Minutes | FXEmpire (https://www.fxempire.com/forecasts/article/bitcoin-price-prediction-btcs-pullback-to-80k-accelerates-ahead-of-fomc-minutes-1636507)  
-- Bitcoin Faces A Key Test Near $81,300 | CoinTribune (https://www.cointribune.com/en/bitcoin-faces-a-key-test-near-81300/)  
-- Cryptos Plunge; Bitcoin Drops Below $83k | RTTNews (https://www.rttnews.com/3697256/...)  
-- Bitcoin Drops to 21-Day Moving Average With $84,000 at Risk | Cointelegraph (https://cointelegraph.com/markets/crypto-liquidations-hit-550m-as-bitcoin-price-dips-below-84k)  
-- X posts (2026-10-07~08, @hanlgaram, @novasikorea, @ilpyung98 등 Latest 검색 결과).  
+- Bitcoin Price Crashes to $83,000 as 94% Longs Liquidated - https://www.cryptotimes.io/2026/10/07/bitcoin-price-crashes-to-83000-as-94-longs-liquidated/  
+- 實時更新：比特幣跌破8.4萬美元，價值5.5億美元的押注被強制平倉 - https://news.futunn.com/hk/post/1000653590/live-updates-bitcoin-slides-under-84000-as-550-million-in  
+- Bitcoin Drops to 21-Day Moving Average With $84,000 at Risk - https://cointelegraph.com/markets/crypto-liquidations-hit-550m-as-bitcoin-price-dips-below-84k  
+- Bitcoin Falls Below $84,000 Amid Long Liquidations - https://forklog.com/en/bitcoin-falls-below-84000-amid-long-liquidations/  
+- Bitcoin Price Downside Pressure Intensifies With Drop Below $83,000 - https://cointelegraph.com/markets/bitcoin-price-drops-to-827k-october-low-as-bond-sell-off-resumes-on-iran-nerves  
+- Bitcoin Falls Below $84,000 as Broad Crypto Selloff Deepens - https://www.tokenpost.com/news/investing/27358  
+- Cryptos Plunge; Bitcoin Drops Below $83k - https://www.rttnews.com/3697256/cryptos-plunge-bitcoin-drops-below-83k.aspx  
+- 기타 CoinDesk·FXStreet 등 교차 인용 기사 (상세 URL은 검색 결과 참조).  
 
-(모든 숫자·사건은 2026-10-07~08 웹·X 결과 교차 확인된 내용만 정리. 10월 8일 한국시간 최신 실시간 가격·추가 공시는 도구 결과상 미확인.)
+(확인되지 않은 내용: 구체적 10월 8일 추가 하락 뉴스, 공식 기관 발표·공시, 정확한 FOMC 의사록 공개 일정 등은 모름.)
