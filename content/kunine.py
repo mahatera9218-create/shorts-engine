@@ -29,6 +29,7 @@ REF_LINE = "참조문헌: 뉴스, 언론보도 및 공식자료"  # 강사 지�
 AI_NOTE = "※ 일부 이미지는 AI로 만든 이미지입니다. 이 글은 정보 제공용이며 투자 권유가 아닙니다."
 MAX_IMAGES = 6           # 본문 사진 최대 (소제목 구간마다 2장)
 IMG_QUALITY = "medium"   # 1장 약 $0.06 (가로) — 비용 때문에 medium. 실사풍은 medium도 거칠지 않음(첫 주 확인)
+NO_AUTO_PHOTOS = True  # 대표 결정 2026-10-08: 사진은 대표가 프롬프트로 직접 (자동 무료·AI·위키미디어 사진 안 넣음)
 AI_IMAGES = False        # 사진 자동 그리기(API) 끔 — 대표가 ChatGPT·제미나이 구독으로 직접 (대표 결정 2026-10-06). 다시 켜려면 True
 HIGH_UPTO = 2            # 글 맨 앞부터 이 번호까지 고화질 AI (1 = 썸네일, 2 = 본문 첫 장), 나머지는 무료 사진
 BRAND_QUALITY = "high"   # 회사(간판) 사진은 고화질 (대표 지시 2026-10-06: GPT 대화창 결과와 퀄이 다르다)
@@ -269,6 +270,8 @@ def produce(slug: str, n: int) -> Path:
 def image(spec: dict, out: Path, size: str, credits: list[str], used: set, tier: str = "high") -> str | None:
     """경제 사진 (대표 결정 2026-10-06): 글 맨 앞 2장(썸네일·본문 첫 장)은 고화질 AI, 나머지는 무료 사진만.
     회사가 나오면 진짜 간판·로고가 보이게(같은 날 "삼성전자인데 동네 창고처럼"), 위키미디어 실제 사진은 비상용."""
+    if NO_AUTO_PHOTOS:  # 본문 사진은 프롬프트만, 자동으로 구하지 않음 (대표 결정 2026-10-08: 엉뚱한 무료 사진·위키미디어 동명 사진 문제)
+        return None
     brand, real = spec.get("brand", "").strip(), spec.get("real_query", "").strip()
     if tier == "high" and ai_photo(spec["prompt"], out, size, brand, quality=BRAND_QUALITY):
         credits.append(f"{out.name}: AI 생성(GPT Image, 고화질) — {spec['alt']}")

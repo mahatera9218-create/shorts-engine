@@ -203,7 +203,8 @@ function tableHtml(x){const t=document.getElementById('nt'+x.table);return t?t.o
 function plainT(t){return t.replace(/\\*\\*|__/g,'').replace(/(^|[^*])\\*([^*\\n]+)\\*/g,'$1$2')}
 function fmt(t){return esc(t).replace(/\\*\\*(.+?)\\*\\*/g,'<b>$1</b>').replace(/__(.+?)__/g,'<u>$1</u>').replace(/(^|[^*])\\*([^*\\n]+)\\*/g,'$1<i>$2</i>').replace(/\\n/g,'<br>')}
 function para(t){return /^■ /.test(t)?'<p><b><span style="font-size:20px">'+esc(plainT(t.slice(2)))+'</span></b></p>':'<p>'+fmt(t)+'</p>'}
-function bodyText(){return POST.blocks.map((x,i)=>x.text!==undefined?plainT(val('b'+i)||x.text):x.table?tableText(x):x.shop?'🛒 상품 자리 (상품 카드를 넣고 이 줄은 지우기)':'📷 사진 '+x.n+' ('+x.label+')').join('\\n\\n')}
+function para2(t){t=plainT(t);return /^■ /.test(t)?'\\n'+t.slice(2).trim()+'\\n':t}  // 소제목: ■ 빼고 앞뒤 빈 줄 2칸 (대표 지시 2026-10-08)
+function bodyText(){const tg=(POST.tags||[]).length?'\\n\\n'+POST.tags.map(t=>'#'+t.replace(/\\s+/g,'')).join(' '):'';return POST.blocks.map((x,i)=>x.text!==undefined?para2(val('b'+i)||x.text):x.table?tableText(x):x.shop?'🛒 상품 자리 (상품 카드를 넣고 이 줄은 지우기)':'📷 사진 '+x.n+' ('+x.label+')').join('\\n\\n')+tg}  // 해시태그는 맨 끝 (2026-10-08)
 function bodyHtml(){return POST.blocks.map((x,i)=>x.text!==undefined?para(val('b'+i)||x.text):x.table?tableHtml(x):x.shop?'<p>🛒 상품 자리 (상품 카드를 넣고 이 줄은 지우기)</p>':'<p>📷 사진 '+x.n+' ('+esc(x.label)+')</p>').join('')}
 async function copyRich(b,html,text){  // 표가 표로 붙게 HTML과 글자를 같이 넣는다 (안 되는 브라우저는 글자만)
   try{await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([text],{type:'text/plain'})})]);flash(b,'복사됨 ✓')}
