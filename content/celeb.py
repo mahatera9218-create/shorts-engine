@@ -6,7 +6,7 @@
 → Pexels. SNS·방송 장면·언론사 사진은 자동으로 가져오지 않는다(저작권·초상권).
 
 titles <키워드>          : 그룹 1(주인공 숨김)·2(이름 노출)·3(관련 인물) 각 5개 + 최종 추천 1개
-produce <주제폴더> <번호> : 2,800~3,600자 본문 · 숫자 없는 요약 · 해시태그 8개 안팎 · 구간마다 사진 1장 + 썸네일
+produce <주제폴더> <번호> : 2,800~3,600자 본문 · 숫자 없는 요약 · 해시태그 18~19개 · 구간마다 사진 1장 + 썸네일
 """
 from __future__ import annotations
 
@@ -48,22 +48,27 @@ def research(kw: str) -> str:
 
 
 def link_facts(urls: list[str]) -> str:
-    """대표가 찾은 상품 링크를 Claude 웹 가져오기(web_fetch, 공식 도구)로 열어 제품 정보를 정리 (대표 지시 2026-10-08 '링크로 글').
-    대표가 직접 고른 페이지만 연다(검색·크롤링 아님). 페이지에 없는 건 '확인 안 됨'."""
+    """대표가 찾은 상품 링크를 Claude 웹 가져오기(web_fetch)로 열고, 빠진 항목은 웹 검색(web_search, 공식 도구)으로 채움
+    (대표 지시 2026-10-08 '링크로 글': 정가·할인가·판매처별·해외가 원화 환산·품번까지 다 채우기, 못 찾은 항목은 줄째 빼기)."""
     if not urls:
         return ""
     import anthropic
     c = anthropic.Anthropic()
     msg = c.messages.create(
-        model="claude-sonnet-5-5", max_tokens=3000,
-        tools=[{"type": "web_fetch_20260209", "name": "web_fetch", "max_uses": len(urls) + 2}],
+        model="claude-sonnet-5-5", max_tokens=4000,
+        tools=[{"type": "web_fetch_20260209", "name": "web_fetch", "max_uses": len(urls) + 4},
+               {"type": "web_search_20260209", "name": "web_search", "max_uses": 6}],
         messages=[{"role": "user", "content": (
-            "아래 상품 페이지를 하나씩 열어서, 페이지에 실제로 적힌 것만 정리해 주세요. 지어내지 말고, 없으면 '확인 안 됨'.\n"
-            "제품마다 한 줄씩 정확히 이 모양으로:\n"
-            "[제품] 브랜드 | 제품명(모델명·품번까지) | 가격(원, 정가·할인가 구분, 해외 통화면 원래 통화도) | 소재 | 색 | 판매처\n"
-            "그 아래에 제품마다 디자인 특징(실루엣·디테일·핏) 2~3줄. 맨 끝에 '출처:' 아래 각 링크.\n\n" + "\n".join(urls))}])
+            f"오늘은 {F.today()}입니다. 아래 상품 링크를 하나씩 열어 제품 정보를 정리해 주세요. 링크 페이지가 가장 믿을 만한 자료이고, "
+            "링크에 없는 항목(정가·할인가·다른 판매처 가격·해외 가격·품번 등)은 웹 검색으로 브랜드 공식몰·판매처 페이지를 찾아 채우세요. "
+            "직접 확인한 것만 쓰고 지어내지 마세요. 못 찾은 항목은 '확인 안 됨'이라고 쓰지 말고 그 줄을 아예 빼세요.\n"
+            "제품마다 이 모양으로 (값이 있는 줄만):\n"
+            "[제품] 브랜드(한글·영문) | 제품명(영문 원어) | 가격(원)\n"
+            "브랜드 : \n제품명 : \n품번 : \n정가 : \n할인가 : (판매처, 확인한 날)\n판매처별 가격 : 판매처 가격, 판매처 가격\n"
+            "해외 가격 : 원래 통화 금액 (약 ○○원, 오늘 환율 기준)\n소재 : \n색 : \n"
+            "그 아래 디자인 특징(실루엣·디테일·핏) 2~3줄. 맨 끝에 '출처:' 아래 확인한 주소.\n\n" + "\n".join(urls))}])
     u = msg.usage
-    F.SPENT["claude"] += (u.input_tokens * 3.0 + u.output_tokens * 15.0) / 1_000_000
+    F.SPENT["claude"] += (u.input_tokens * 3.0 + u.output_tokens * 15.0) / 1_000_000 + 0.01 * 6
     return "".join(b.text for b in msg.content if getattr(b, "type", "") == "text").strip()
 
 
@@ -135,7 +140,7 @@ def titles(kw: str, memo: str | None = None) -> Path:
     (d / "research.md").write_text(f"# 조사 메모: {kw}\n\n{memo}\n", encoding="utf-8")
     out = F.claude_json(prompt() + [g for g in [title_guide()] if g], (
         f"키워드(주어): {kw}\n\n[조사 메모]\n{memo[:10000]}\n\n이번 단계는 **제목만** 만듭니다. 원문의 제목 규칙대로 그룹 1·2·3 각 5개와 "
-        "최종 추천 1개를 JSON으로 주세요.\n\n" + versions_ask(F.BLOG["id"]) + __import__("content.blog_stats", fromlist=["x"]).title_hint(F.BLOG["id"])), TITLES, stage="제목(연예·패션)")
+        "최종 추천 1개를 JSON으로 주세요.\n\n" + versions_ask(F.BLOG["id"]) + __import__("content.blog_stats", fromlist=["x"]).title_hint(F.BLOG["id"]) + __import__("content.good_rules", fromlist=["x"]).title_hint(F.BLOG["id"])), TITLES, stage="제목(연예·패션)")
     person = out.get("person", "")
     items, groups = [], []
 
@@ -207,8 +212,8 @@ def check(a: dict) -> list[str]:
         bad.append("제작 과정 문장 → 빼기: " + ", ".join(hit[:5]))
     if F.PRESS.search(t):
         bad.append("언론사명·링크 → 빼기")
-    if not 6 <= len(a["tags"]) <= 10:  # 쿠니네처럼 8개 안팎 (대표 결정 2026-10-08, 원문 '20개 미만' 안)
-        bad.append(f"해시태그 {len(a['tags'])}개 → 8개 안팎(6~10개)")
+    if not 17 <= len(a["tags"]) <= 19:  # 쿠니네 실제 18~19개 (대표 결정 2026-10-08 블로그 글 조사 후, 원문 '20개 미만' 안)
+        bad.append(f"해시태그 {len(a['tags'])}개 → 18~19개")
     if not 7 <= len(a["sections"]) <= 9:  # 원문 추천 흐름 8구간 (대표 지적 2026-10-07)
         bad.append(f"소제목 구간 {len(a['sections'])}개 → 8개(전체 착장 → 눈에 띈 제품 → 브랜드·제품명 → 디자인·소재 → 가격 → 실루엣·어울리는 이유 → 따라 입기 → 마무리)")
     if re.search(r"알려진 바가 없|확인되지 않아|확인되지 않았|정보가 없어", t):
@@ -247,13 +252,11 @@ def produce(slug: str, n: int) -> Path:
     credits, used, prompts = [], set(), []
 
     def ask(spec: dict, size: str) -> str:  # ChatGPT·제미나이에 붙여넣을 글 (인물 사진은 실제 사진을 찾을 검색어 안내)
-        if spec["kind"] == "person":
-            return f"[실제 사진 찾기] {spec['query']} — {spec['alt']}"
-        return photo_prompt(spec["prompt"] + " Product only, no people, no hands, no face.", size, lead=FASHION_LEAD)
+        return f"[실제 사진 찾기] {spec.get('query') or spec['alt']} — {spec['alt']}"  # 패션은 실사만 (대표 결정 2026-10-08)
 
     thumb = image(a["thumb"], post / "thumb", "1024x1024", credits, used)
     prompts.append({"n": 1, "label": "썸네일 · " + a["thumb"]["alt"], "make": True, "file": thumb or "", "size": "1024x1024",
-                    "person": a["thumb"]["kind"] == "person", "desc": a["thumb"].get("prompt", ""), "find": a["thumb"].get("query", ""),
+                    "person": True, "desc": a["thumb"].get("prompt", ""), "find": a["thumb"].get("query", ""),
                     "prompt": ask(a["thumb"], "1024x1024")})
     lines = [f"[이미지 1_썸네일: {thumb or '-'}]"]
     lines.append(a["greeting"])
@@ -267,15 +270,13 @@ def produce(slug: str, n: int) -> Path:
             label = re.sub(r"[:\[\]]", " ", im["alt"])[:30].strip()
             lines.append(f"[이미지 {k}_{label}: {f or '-'}]")
             prompts.append({"n": k, "label": im["alt"], "make": True, "file": f or "", "size": "1536x1024",
-                            "person": im["kind"] == "person", "desc": im.get("prompt", ""), "find": im.get("query", ""),
+                            "person": True, "desc": im.get("prompt", ""), "find": im.get("query", ""),
                             "prompt": ask(im, "1536x1024")})
             k += 1
         lines.append(f"■ {sec['heading']}")
         lines += sec["paragraphs"]
     lines.append(a["summary"])
-    lines.append("※ 일부 이미지는 AI로 만든 제품 이미지입니다. 협찬·광고가 아닌 정보 글입니다.")
-    if any(x.get("person") for x in prompts):  # 대표가 넣을 실제 인물 사진의 출처 자리 (대표 결정 2026-10-06)
-        lines.append("사진 출처: (넣은 인물 사진의 출처를 적어 주세요 — 예: OOO 인스타그램, OO일보)")
+    # AI 사진 안내·사진 출처 줄 없음 (대표 결정 2026-10-08: 패션은 실사만, 쿠니네처럼 출처 안 적음)
     (post / "body.txt").write_text("\n\n".join(lines) + "\n", encoding="utf-8")
     (post / "prompts.json").write_text(json.dumps(prompts, ensure_ascii=False, indent=1), encoding="utf-8")
     others = [t for t in T["items"] if t is not pick][:4]
