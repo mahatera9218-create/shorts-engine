@@ -121,13 +121,14 @@ def gather(grok_items: list[dict], mine: list[dict]) -> list[tuple[str, str, str
 CLUSTER = {"type": "object", "additionalProperties": False, "required": ["keywords"],
            "properties": {"keywords": {"type": "array", "items": {
                "type": "object", "additionalProperties": False,
-               "required": ["kw", "core", "area", "why", "person", "rows"],
+               "required": ["kw", "core", "area", "why", "person", "product", "rows"],
                "properties": {
                    "kw": {"type": "string", "description": "네이버에서 사람들이 실제로 칠 검색어 (2~4단어, 한국어)"},
                    "core": {"type": "string", "description": "검색량·뉴스량을 잴 핵심 검색어 1~2단어 (예: '원달러 환율', '비트코인', '청년미래적금')"},
                    "area": {"type": "string", "enum": F.load(CFG(), {}).get("areas") or F.AREAS},
                    "why": {"type": "string", "description": "왜 오늘 쓸 만한지 한 줄"},
                    "person": {"type": "string", "description": "관련 인물이 있으면 회사+이름(예: 삼성 이재용), 없으면 빈칸"},
+                   "product": {"type": "string", "description": "줄에 브랜드·제품명·가격이 나왔으면 그대로(예: '샤넬 라지 버킷백 1,238만원'), 없으면 빈칸. 지어내지 않음"},
                    "rows": {"type": "array", "items": {"type": "string"}, "description": "이 키워드가 나온 줄 번호 전부 (예: G2, B5, N13)"}}}}}}
 
 
@@ -266,6 +267,9 @@ def score(items: list[dict], src_rows: dict[str, str] | None) -> list[dict]:
                  "출처": round(w["출처"] * raw[it["kw"]] / top),
                  "뉴스": round(w["뉴스"] * min(news, nf) / nf) if news is not None else 0,
                  "검색": round(min(w["검색"], max(0.0, (math.log10(vol) - 2) / (math.log10(vf) - 2) * w["검색"]))) if vol else 0}
+        pb = cfg.get("product_bonus", 0)  # 패션: 브랜드·가격이 이미 나온 주제 가점 (대표 결정 2026-10-08 '주제 고르기 강화')
+        if pb and (it.get("product") or "").strip():
+            parts["제품"] = pb
         it.update(score=min(100, round(sum(parts.values()) * scale)), parts=parts,
                   stats={"뉴스24h": news, "뉴스6h": n6, "블로그24h": blog, "월검색": int(vol) if vol else None})
     return sorted(items, key=lambda x: -x["score"])
