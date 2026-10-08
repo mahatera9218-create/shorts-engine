@@ -1,0 +1,5 @@
+# 방송 클립 착장 조사 시험 (대표 요청 2026-10-08). 이 파일을 바꾸면 GitHub이 한 번 돌린다 (.github/workflows/video-outfit.yml)
+name: 류혜영
+days: 3        # 최근 며칠 클립 (없으면 2주까지 넓힘)
+max_sec: 600   # 10분 이하 클립만 (Gemini 비용 아끼기)
+clips: 2       # 몇 개 볼지
