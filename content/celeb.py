@@ -56,11 +56,12 @@ def link_facts(urls: list[str]) -> str:
     c = anthropic.Anthropic()
     msg = c.messages.create(
         model="claude-sonnet-5-5", max_tokens=4000,
-        tools=[{"type": "web_fetch_20260209", "name": "web_fetch", "max_uses": len(urls) + 4},
-               {"type": "web_search_20260209", "name": "web_search", "max_uses": 6}],
+        # 비용 줄이기 (대표 지적 2026-10-08 "링크 정보 가져오는 게 1,400원?"): 페이지마다 읽는 글 양 상한, 검색·추가로 여는 페이지 수 줄임
+        tools=[{"type": "web_fetch_20260209", "name": "web_fetch", "max_uses": len(urls) + 2, "max_content_tokens": 6000},
+               {"type": "web_search_20260209", "name": "web_search", "max_uses": 2}],
         messages=[{"role": "user", "content": (
             f"오늘은 {F.today()}입니다. 아래 상품 링크를 하나씩 열어 제품 정보를 정리해 주세요. 링크 페이지가 가장 믿을 만한 자료이고, "
-            "링크에 없는 항목(정가·할인가·다른 판매처 가격·해외 가격·품번 등)은 웹 검색으로 브랜드 공식몰·판매처 페이지를 찾아 채우세요. "
+            "링크에 없는 항목(정가·할인가·다른 판매처 가격·해외 가격·품번 등)만 웹 검색 1~2번으로 브랜드 공식몰·판매처를 찾아 채우세요(검색 결과 요약에 값이 보이면 페이지를 더 열지 말고 그대로 쓰기). "
             "직접 확인한 것만 쓰고 지어내지 마세요. 못 찾은 항목은 '확인 안 됨'이라고 쓰지 말고 그 줄을 아예 빼세요.\n"
             "제품마다 이 모양으로 (값이 있는 줄만):\n"
             "[제품] 브랜드(한글·영문) | 제품명(영문 원어) | 가격(원)\n"
@@ -68,7 +69,7 @@ def link_facts(urls: list[str]) -> str:
             "해외 가격 : 원래 통화 금액 (약 ○○원, 오늘 환율 기준)\n소재 : \n색 : \n"
             "그 아래 디자인 특징(실루엣·디테일·핏) 2~3줄. 맨 끝에 '출처:' 아래 확인한 주소.\n\n" + "\n".join(urls))}])
     u = msg.usage
-    F.SPENT["claude"] += (u.input_tokens * 3.0 + u.output_tokens * 15.0) / 1_000_000 + 0.01 * 6
+    F.SPENT["claude"] += (u.input_tokens * 3.0 + u.output_tokens * 15.0) / 1_000_000 + 0.01 * 2
     return "".join(b.text for b in msg.content if getattr(b, "type", "") == "text").strip()
 
 
