@@ -26,7 +26,9 @@ def _hub() -> tuple[str, dict] | None:
     if not (secret("NCP_APIGW_API_KEY_ID") and secret("NCP_APIGW_API_KEY")):
         return None
     ep = load_yaml("global.yaml")["endpoints"]["naver_hub"]
-    return ep["base"].rstrip("/") + ep.get("shop_search", "/search/v1/shop"), {
+    if not ep.get("shop_search"):  # API HUB에 쇼핑 검색이 없어 꺼 둠 (2026-10-08) — 조사 메모만 쓴다
+        return None
+    return ep["base"].rstrip("/") + ep["shop_search"], {
         "X-NCP-APIGW-API-KEY-ID": secret("NCP_APIGW_API_KEY_ID"), "X-NCP-APIGW-API-KEY": secret("NCP_APIGW_API_KEY")}
 
 
@@ -102,8 +104,8 @@ def main() -> None:
     from market.common import ROOT
     qs = [("샤넬", "라지 버킷백"), ("미우미우", "스웨이드 재킷"), ("버버리", "트렌치코트")]
     hub = _hub()
-    md = [f"# 네이버 쇼핑 검색 점검 ({F.today()})", "", f"- 주소: {hub[0] if hub else '키 없음'}", ""]
-    if hub:  # 주소 찾기: 공식 문서를 못 열어 후보를 직접 불러 봄 (404 = 주소 없음, 401·403 = 주소는 있고 권한 없음, 200 = 됨)
+    md = [f"# 네이버 쇼핑 검색 점검 ({F.today()})", "", f"- 주소: {hub[0] if hub else '쇼핑 검색 꺼짐 (API HUB에 없음, 2026-10-08)'}", ""]
+    if hub and False:  # 주소 찾기 (2026-10-08 끝남: 전부 404): 공식 문서를 못 열어 후보를 직접 불러 봄 (404 = 주소 없음, 401·403 = 주소는 있고 권한 없음, 200 = 됨)
         import requests
         base = load_yaml("global.yaml")["endpoints"]["naver_hub"]["base"].rstrip("/")
         md += ["## 주소 후보 응답", ""]
