@@ -98,7 +98,7 @@ def titles(kw: str, memo: str | None = None) -> Path:
     (d / "research.md").write_text(f"# 조사 메모: {kw}\n\n{memo}\n", encoding="utf-8")
     out = F.claude_json(prompt() + [g for g in [title_guide()] if g], (
         f"키워드(주어): {kw}\n\n[조사 메모]\n{memo[:10000]}\n\n이번 단계는 **제목만** 만듭니다. 원문의 제목 규칙대로 그룹 1·2·3 각 5개와 "
-        "최종 추천 1개를 JSON으로 주세요.\n\n" + versions_ask(F.BLOG["id"])), TITLES, stage="제목(연예·패션)")
+        "최종 추천 1개를 JSON으로 주세요.\n\n" + versions_ask(F.BLOG["id"]) + __import__("content.blog_stats", fromlist=["x"]).title_hint(F.BLOG["id"])), TITLES, stage="제목(연예·패션)")
     person = out.get("person", "")
     items, groups = [], []
 
