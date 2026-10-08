@@ -115,6 +115,10 @@ def titles(kw: str) -> Path:
     for v in out.get("versions", []):  # 제목 고수 방식 3개씩 (따로 묶음)
         typ = f"{v['who']}식"
         groups.append({"type": typ, "idx": [add(t, typ, None, False) for t in v["titles"][:3]], "best": None})
+    from .good_rules import ensure  # 반응굿 유형이 하나도 없으면 3개 보충 (대표 지시 2026-10-08)
+    extra = ensure(items, F.BLOG["id"], kw, memo, prompt(), 45)
+    if extra:
+        groups.insert(0, {"type": "반응굿 유형", "idx": [add(t, "반응굿 유형", None, False) for t in extra], "best": None})
     (d / "chosen.yaml").unlink(missing_ok=True)
     F.save(d / "titles.yaml", {"keyword": kw, "person": out.get("person", ""), "mode": "쿠니네",
                                "made": datetime.now(F.KST).strftime("%H:%M"), "items": items, "groups": groups})

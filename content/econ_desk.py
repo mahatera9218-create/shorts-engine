@@ -172,7 +172,7 @@ def page(p: dict) -> str:
     best = next((t for t in p["titles"] if t["best"]), p["titles"][0] if p["titles"] else {"text": p["folder"], "type": ""})
     probs = "".join(f"<li>{e(x)}</li>" for x in p["problems"])
     rest = "".join(f'<button class="ghost" onclick="setEd(\'title\',{e(json.dumps(t["text"]), quote=True)})">{e(t["text"])}'
-                   f' <span class="muted">· {e(t["type"])}</span></button>' for t in p["titles"] if t is not best)
+                   f' <span class="muted">· {e(t["type"])}</span>{badge(t["text"], t["type"])}</button>' for t in p["titles"] if t is not best)
     body = "".join(
         f'<textarea class="ed" data-k="b{i}" rows="3">{e(b["text"])}</textarea>' if "text" in b else
         f'<div class="muted" style="padding:6px 0">📷 사진 {b["n"]} · {e(b["label"])}</div>'
@@ -183,13 +183,21 @@ def page(p: dict) -> str:
 <a href="../../" class="muted">← 목록</a>
 <h1>{e(best["text"])}</h1>
 {f'<div class="card" style="border:2px solid var(--warn)"><b>⚠️ 확인 필요</b><ul>{probs}</ul></div>' if not p["ok"] else ""}
-<div class="card"><h2>제목</h2>{desk.edit_box("title", best["text"], "제목 복사", one_line=True)}
+<div class="card"><h2>제목{badge(best["text"], best.get("type", ""))}</h2>{desk.edit_box("title", best["text"], "제목 복사", one_line=True)}
 {f'<details><summary class="muted">다른 제목 {len(p["titles"]) - 1}개</summary>{rest}</details>' if rest else ''}{rules_html()}</div>
 {prompts_card(p)}
 <div class="card"><h2>본문</h2>
 <button onclick="copyBody(this)">📋 본문 복사</button>
 <details><summary class="muted">본문 보기·고치기</summary>{body}</details></div>
 </main><script>const POST={data};{desk.JS}</script></body></html>"""
+
+
+def badge(title: str, typ: str = "") -> str:
+    """👍 반응굿 단추 — 반응 좋은 제목 유형이면 (content/good_rules.py, 대표 지시 2026-10-08)."""
+    from .good_rules import good
+    g = good(title, BID, typ)
+    return (f' <span style="display:inline-block;font-size:11px;font-weight:700;padding:1px 7px;border-radius:999px;'
+            f'background:#e7f6ec;color:#17733a;white-space:nowrap">👍 반응굿 · {html.escape(" · ".join(g[:2]))}</span>' if g else "")
 
 
 def rules_html() -> str:
@@ -364,7 +372,7 @@ def flow_html() -> str:
         def btn(i: int, it: dict, label: str) -> str:
             link = desk.issue_link(f"{LABEL}제목", f"{t.parent.name} {i}", "이 제목으로 글을 만들어 주세요.")
             return (f'<a class="btn" style="text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
-                    f'href="{e(link, quote=True)}">{label}{e(it["title"])}</a>')
+                    f'href="{e(link, quote=True)}">{label}{e(it["title"])}{badge(it["title"], it.get("type", ""))}</a>')
 
         items_t = T.get("items", [])
         if T.get("groups"):
