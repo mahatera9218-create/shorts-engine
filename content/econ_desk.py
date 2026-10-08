@@ -374,14 +374,18 @@ def auto_html(day: Path, today: str) -> str:
     done, picks = st.get("done", []), st.get("picks", [])
     how = "어사이드 반영" if st.get("aside") else "어사이드 없이"
     if st.get("status") == "완료":
-        msg = f'✅ 오늘 자동 글 {len(done)}편 완료 ({e(st.get("at", ""))} 시작 · {how}) — ③ 올릴 글에 있어요: {e(" · ".join(picks))}'
+        names = [d[11:].replace("-", " ") for d in done]  # 폴더 이름에서 날짜 빼고
+        skip = st.get("skipped", [])
+        msg = (f'✅ 오늘 자동 글 {len(done)}편 완료 ({e(st.get("at", ""))} 시작 · {how}) — ③ 올릴 글에 있어요: {e(" · ".join(names))}'
+               + (f'<br><span class="muted">가격·브랜드가 확인 안 돼 건너뛴 키워드 {len(skip)}개: {e(" · ".join(skip))}</span>' if skip else ""))
         msg += f' <span class="badge warn">실패 {len(st.get("failed", []))}</span>' if st.get("failed") else ""
         return f'<div class="card" style="margin:0 0 10px">{msg}</div>'
+    skipped = f" · 건너뜀 {len(st['skipped'])}개" if st.get("skipped") else ""  # 패션: 가격·브랜드 확인 안 된 키워드
     if st.get("status") == "진행중":
         started = datetime.strptime(f"{today} {st.get('at', '00:00')}", "%Y-%m-%d %H:%M").replace(tzinfo=KST)
         if datetime.now(KST) - started < timedelta(minutes=90):
             return (f'<div class="card" style="margin:0 0 10px">⏳ 오늘 자동 글 만드는 중 ({e(st.get("at", ""))} 시작 · {how}) — '
-                    f'{len(done)}/{len(picks)}편: {e(" · ".join(picks))}</div>')
+                    f'{len(done)}/3편{skipped}</div>')
         return f'<div class="card" style="margin:0 0 10px;border:2px solid var(--warn)">⚠️ 오늘 자동 글이 멈춘 것 같아요 ({len(done)}/{len(picks)}편).{btn}</div>'
     if st.get("status") == "실패":
         return f'<div class="card" style="margin:0 0 10px;border:2px solid var(--warn)">⚠️ 오늘 자동 글이 실패했어요.{btn}</div>'
