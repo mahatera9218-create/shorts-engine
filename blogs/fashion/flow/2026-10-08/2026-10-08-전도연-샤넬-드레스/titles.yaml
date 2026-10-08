@@ -1,0 +1,187 @@
+keyword: 전도연 샤넬 드레스
+person: 전도연
+mode: 연예패션
+made: '16:00'
+items:
+- title: '"블랙 드레스 이렇게 입는구나" 전도연 샤넬 공방 컬렉션'
+  type: 그룹 2
+  rank: 1
+  best: true
+  chars: 31
+  flags:
+  - 31자(30자 넘음)
+- title: '"블랙이 이렇게 우아했나?" 결국 눈에 들어온 샤넬 공방 드레스'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 35
+  flags:
+  - 35자(30자 넘음)
+- title: '"과하지 않은데 왜 고급스럽지?" 뜻밖의 오프숄더 레드카펫 룩'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 34
+  flags:
+  - 34자(30자 넘음)
+- title: '"주얼리가 더 눈에 들어오네" 플륌 드 샤넬 이어링 낀 여배우'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 34
+  flags:
+  - 34자(30자 넘음)
+- title: '"꾸민 듯 안 꾸민 듯" 마침내 베일 벗은 샤넬 블랙 드레스'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 33
+  flags:
+  - 33자(30자 넘음)
+- title: '"멀리서 볼 땐 몰랐는데" 부산 레드카펫 영화 주연 배우의 샤넬'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 35
+  flags:
+  - 35자(30자 넘음)
+- title: '"이게 샤넬 룩 17번이라고?" 전도연 부산 레드카펫 드레스'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 33
+  flags:
+  - 33자(30자 넘음)
+- title: '"과하지 않아서 더 예쁘네" 전도연 오프숄더 샤넬 드레스'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 31
+  flags:
+  - 31자(30자 넘음)
+- title: '"역시 아우라가 다르네" 전도연 플륌 드 샤넬 주얼리'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 29
+  flags: []
+- title: '"드레스만 본 게 아니었네" 전도연 샤넬 레드카펫 룩'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 29
+  flags: []
+- title: '"조여정과 분위기가 이렇게 다르다고?" 샤넬 블랙 오프숄더 드레스'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 36
+  flags:
+  - 36자(30자 넘음)
+- title: '"이창동 감독 작품 레드카펫" 샤넬 블랙 드레스가 눈에 띄네'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 33
+  flags:
+  - 33자(30자 넘음)
+- title: '"같은 영화 주연인데 느낌이 달라" 조여정 옆 샤넬 드레스'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 32
+  flags:
+  - 32자(30자 넘음)
+- title: '"김민하 룩과 나란히 보고 싶네" 부산 레드카펫 샤넬 드레스'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 33
+  flags:
+  - 33자(30자 넘음)
+- title: '"가능한 사랑 레드카펫" 블랙 드레스 두 벌 분위기 비교'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 31
+  flags:
+  - 31자(30자 넘음)
+- title: '"샤넬 드레스가 이렇게 우아해?" 결국 부산 레드카펫 전도연'
+  type: 쿠니네패션식 방식
+  rank: null
+  best: false
+  chars: 33
+  flags:
+  - 33자(30자 넘음)
+- title: '"과하지 않은데 눈에 띄네" 뜻밖의 전도연 샤넬 블랙 드레스'
+  type: 쿠니네패션식 방식
+  rank: null
+  best: false
+  chars: 33
+  flags:
+  - 33자(30자 넘음)
+- title: '"플륌 드 샤넬 주얼리 맞아?" 마침내 공개된 전도연 룩'
+  type: 쿠니네패션식 방식
+  rank: null
+  best: false
+  chars: 31
+  flags:
+  - 31자(30자 넘음)
+- title: 부국제 레드카펫 전도연 샤넬 공방 컬렉션 드레스 룩 보니
+  type: ohye1991식 방식
+  rank: null
+  best: false
+  chars: 31
+  flags:
+  - 31자(30자 넘음)
+- title: 여유로운 아우라 제대로 보여준 전도연 샤넬 오프숄더 드레스
+  type: ohye1991식 방식
+  rank: null
+  best: false
+  chars: 32
+  flags:
+  - 32자(30자 넘음)
+- title: 전도연 조여정 블랙 드레스 분위기 차이 부국제 레드카펫 패션
+  type: ohye1991식 방식
+  rank: null
+  best: false
+  chars: 33
+  flags:
+  - 33자(30자 넘음)
+groups:
+- type: 그룹 1 주인공 숨김
+  idx:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  best: null
+- type: 그룹 2 이름 노출
+  idx:
+  - 0
+  - 6
+  - 7
+  - 8
+  - 9
+  best: null
+- type: 그룹 3 관련 인물
+  idx:
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  best: null
+- type: 쿠니네패션식
+  idx:
+  - 15
+  - 16
+  - 17
+  best: null
+- type: ohye1991식
+  idx:
+  - 18
+  - 19
+  - 20
+  best: null
