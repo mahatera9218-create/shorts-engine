@@ -1,0 +1,72 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · 붉은 경고등 톤 아래 놓인 비트코인 모형",
+  "make": true,
+  "file": "thumb.jpg",
+  "desc": "Square photograph, a single gold bitcoin coin model filling the frame, tilted on a dark surface under low dark storm clouds mood, cold blue and red warning light tones, strong contrast, cinematic, no text",
+  "brand": "",
+  "size": "1024x1024",
+  "prompt": "Square 1:1 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Square photograph, a single gold bitcoin coin model filling the frame, tilted on a dark surface under low dark storm clouds mood, cold blue and red warning light tones, strong contrast, cinematic, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 2,
+  "label": "붉은 조명 아래 놓인 비트코인 모형",
+  "make": true,
+  "file": "img2.jpg",
+  "desc": "Realistic news-style photograph of a bitcoin coin model lying on a dark desk, red warning light glowing on its surface, low dark clouds mood through a window, close-up, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic news-style photograph of a bitcoin coin model lying on a dark desk, red warning light glowing on its surface, low dark clouds mood through a window, close-up, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 3,
+  "label": "어두운 사무실에서 화면을 지켜보는 투자자의 뒷모습",
+  "make": true,
+  "file": "img3.jpg",
+  "desc": "Photograph of an anonymous office worker seen from behind watching several dim monitors with red glowing screens in a dark trading room, no readable text or numbers",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Photograph of an anonymous office worker seen from behind watching several dim monitors with red glowing screens in a dark trading room, no readable text or numbers No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 4,
+  "label": "명암이 갈리는 비트코인 토큰",
+  "make": true,
+  "file": "img4.jpg",
+  "desc": "Photograph of a stack of gold-colored bitcoin tokens split by strong light and shadow, half bright half dark, close-up, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Photograph of a stack of gold-colored bitcoin tokens split by strong light and shadow, half bright half dark, close-up, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 5,
+  "label": "호르무즈 해협을 연상시키는 유조선",
+  "make": true,
+  "file": "img5.jpg",
+  "desc": "Photograph of an oil tanker at sea near a strait at dusk, dramatic sky, realistic news style, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Photograph of an oil tanker at sea near a strait at dusk, dramatic sky, realistic news style, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 6,
+  "label": "미국 연방준비제도 건물 전경",
+  "make": true,
+  "file": "img6.jpg",
+  "desc": "Photograph of the exterior of the US Federal Reserve Marriner S. Eccles building in Washington, daylight, wide shot, no people faces",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Photograph of the exterior of the US Federal Reserve Marriner S. Eccles building in Washington, daylight, wide shot, no people faces No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 7,
+  "label": "어두운 배경 위의 금색 비트코인 모형",
+  "make": true,
+  "file": "img7.jpg",
+  "desc": "Close-up photograph of a gold-colored bitcoin coin model on a dark surface with warm light from below, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Close-up photograph of a gold-colored bitcoin coin model on a dark surface with warm light from below, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ }
+]
