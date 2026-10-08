@@ -38,11 +38,21 @@ def prompt() -> list[str]:
 
 
 def research(kw: str) -> str:
+    """Grok 조사 메모 + 네이버 쇼핑 판매가(공식 쇼핑 검색 API, 대표 결정 2026-10-08 '가격 찾기 강화')."""
+    memo = _grok_research(kw)
+    if memo:
+        from .shop_price import note
+        memo += note(memo)
+    return memo
+
+
+def _grok_research(kw: str) -> str:
     return F.grok(
         f"오늘은 {F.today()}(한국 시간)입니다. 블로그 글을 쓰기 위한 조사 메모를 만들어 주세요. 키워드(주어): {kw}\n"
         "웹과 X에서 어제·오늘 나온 기사·공식 SNS·브랜드 공식 사이트를 확인하고 교차검증하세요. 아래 순서로 짧게:\n"
         "1) 무슨 일인지 (방송·행사·공항·SNS·작품, 날짜)\n"
-        "2) 착용·사용 제품: 제품명·브랜드·가격(원, 공식 판매가와 기준 시점). 제품마다 따로. 세트 상품인지 각각 판매인지\n"
+        "2) 착용·사용 제품: 제품마다 한 줄씩 정확히 이 모양으로 — [제품] 브랜드 | 제품명(모델명·라인명까지) | 가격(원, 공식 판매가와 기준 시점, 모르면 '확인 안 됨')."
+        " 브랜드나 제품명을 모르면 그 칸에 '확인 안 됨'. 세트 상품인지 각각 판매인지도 적기\n"
         "3) 스타일링 포인트(색·소재·실루엣)\n"
         "4) 관련 인물(같은 그룹·작품·가족·출연자) — 실제 관련 있는 사람만\n"
         "5) 사람들 반응(X), 소문은 '소문' 표시\n"
@@ -76,8 +86,9 @@ PRICE = re.compile(r"\d[\d,.]*\s*(만|억)?\s*원")
 def has_product(memo: str) -> bool:
     """조사 메모에 확인된 가격(=브랜드·제품이 특정됨)이 있는지. '확인 안 됨' 줄은 빼고 본다 (대표 결정 2026-10-08:
     쿠니네처럼 '한 인물 + 한 아이템 + 가격·브랜드 반전'이 되는 주제만 자동으로 쓴다)."""
-    body = memo.split("출처:")[0]
-    return any(PRICE.search(l) for l in body.splitlines() if "확인 안" not in l and "확인되지" not in l and "미확인" not in l)
+    body = memo.split("출처:")[0] + "\n" + "\n".join(l for l in memo.split("\n") if l.startswith("- ") and "네이버 쇼핑 판매가" in l)
+    return any(PRICE.search(l) for l in body.splitlines()
+               if "확인 안" not in l and "확인되지" not in l and "미확인" not in l and not l.startswith("- 비슷한"))
 
 
 def titles(kw: str, memo: str | None = None) -> Path:

@@ -70,6 +70,7 @@ endpoints:
     verified: true   # 2026-09-29 첫 실행에서 블로그 검색·검색어 트렌드 정상 응답 확인 (쇼핑 인사이트는 미확인)
     base: https://naverapihub.apigw.ntruss.com
     blog_search: /search/v1/blog
+    shop_search: /search/v1/shop   # 쇼핑 검색 (2026-10-08 추가, 블로그·뉴스·이미지와 같은 규칙으로 추정 — 첫 실행에서 확인)
     news_search: /search/v1/news   # 블로그 검색과 같은 규칙으로 추정 (첫 실행에서 확인 필요)
     search_trend: /search-trend/v1/search
     # 쇼핑 인사이트 분야별 트렌드. HUB 경로 미확인(추정). seeds.yaml에 카테고리 코드가 있을 때만 호출한다.
