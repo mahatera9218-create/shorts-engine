@@ -4,7 +4,7 @@
 프롬프트: prompts/kunine-blog.md(강사 원문, 그대로) + prompts/kunine-addon.md(우리 자동화용 덧붙임).
 
 titles <키워드>        : Grok 조사 메모 → Claude가 6유형 × 5개 = 30개 + 유형별 BEST 6 + 최종 BEST 5
-produce <주제폴더> <번호>: 고른 제목으로 본문(3,000자 안팎) · 표 · Q&A · 해시태그 20 → 정보 이득·사실 대조·형식 검사
+produce <주제폴더> <번호>: 고른 제목으로 본문(1,500자) · 표 · Q&A · 해시태그 20 → 정보 이득·사실 대조·형식 검사
                          → 소제목 구간마다 그 아래 글과 이어지는 사진 2장 + 썸네일 → econ/posts/<글>/ (발행 도우미)
 억선생 자료(그림 창고·캐릭터·쇼츠)는 클립용으로 남겨 두고 블로그에는 쓰지 않는다.
 """
@@ -137,12 +137,12 @@ BODY = {"type": "object", "additionalProperties": False,
         "properties": {
             "area": {"type": "string", "enum": F.AREAS},
             "intro": {"type": "array", "items": {"type": "string"}, "description": "도입부 문단들"},
-            "sections": {"type": "array", "description": "소제목 구간 5~7개",
+            "sections": {"type": "array", "description": "소제목 구간 2~4개",
                          "items": {"type": "object", "additionalProperties": False,
                                    "required": ["heading", "images", "paragraphs"],
                                    "properties": {"heading": {"type": "string"},
                                                   "images": {"type": "array", "items": IMG,
-                                                             "description": "이 구간 맨 위에 놓을 사진 1장 (아래 문단과 강하게 이어지게)"},
+                                                             "description": "이 구간 맨 위에 놓을 사진 2장 (아래 문단과 강하게 이어지게)"},
                                                   "paragraphs": {"type": "array", "items": {"type": "string"}}}}},
             "closing": {"type": "array", "items": {"type": "string"}, "description": "마무리 문단들"},
             "table": {"type": "object", "additionalProperties": False, "required": ["title", "header", "rows", "after"],
@@ -161,13 +161,11 @@ def text_of(a: dict) -> str:
 
 
 def check(a: dict, kw: str) -> list[str]:
-    """형식 검사(코드): 2,700~4,000자 · 소제목 5~7개 · 언론사명/링크 없음 · 핵심키워드 20회 이내 · Q&A 3개 · 해시태그 20개."""
+    """형식 검사(코드): 1,500자 이내 · 언론사명/링크 없음 · 핵심키워드 20회 이내 · Q&A 3개 · 해시태그 20개."""
     t = text_of(a)
     bad, core = [], kw.split()[0]
-    if not 2700 <= len(t) <= 4000:  # 쿠니네 실제 글 2,955~5,306자 (대표 결정 2026-10-08, 원문 1,500자 이내 대신)
-        bad.append(f"본문 {len(t)}자 → 3,000자 안팎(2,700~4,000자)")
-    if not 5 <= len(a["sections"]) <= 7:
-        bad.append(f"소제목 구간 {len(a['sections'])}개 → 5~7개")
+    if len(t) > 1550:  # 글자 수는 원문 프롬프트 기준 (대표 결정 2026-10-08)
+        bad.append(f"본문 {len(t)}자 → 공백 포함 1,500자 안으로")
     m = F.PRESS.findall(t + " ".join(x["q"] + x["a"] for x in a["qa"]) + " ".join(a["tags"]))
     if m:
         bad.append(f"언론사명·링크 {len(m)}곳 → 빼고 사실만 (공식 발표는 기관 이름만)")
@@ -223,7 +221,7 @@ def produce(slug: str, n: int) -> Path:
     lines += a["intro"]
     k, used = 2, set()
     for si, sec in enumerate(a["sections"], 1):
-        for im in sec["images"][:1]:  # 구간마다 1장 (쿠니네 실제 글 사진 2~8장, 2026-10-08)
+        for im in sec["images"][:2]:
             if k - 1 > MAX_IMAGES:
                 break
             # 맨 앞 2장(썸네일 + 본문 첫 장)은 대표가 ChatGPT·제미나이로 직접(고화질), 나머지는 무료 사진 (대표 결정 2026-10-06)

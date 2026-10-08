@@ -6,7 +6,7 @@
 → Pexels. SNS·방송 장면·언론사 사진은 자동으로 가져오지 않는다(저작권·초상권).
 
 titles <키워드>          : 그룹 1(주인공 숨김)·2(이름 노출)·3(관련 인물) 각 5개 + 최종 추천 1개
-produce <주제폴더> <번호> : 2,800~3,600자 본문 · 숫자 없는 요약 · 해시태그 18~19개 · 구간마다 사진 1장 + 썸네일
+produce <주제폴더> <번호> : 1,500자 이상 본문 · 숫자 없는 요약 · 해시태그 18~19개 · 구간마다 사진 1장 + 썸네일
 """
 from __future__ import annotations
 
@@ -205,8 +205,8 @@ NO_INTRO = {"fashion": ["캐시미어 다이어리", "캐다입니다", "캐다�
 
 def check(a: dict) -> list[str]:
     t, bad = text_of(a), []
-    if len(t) < 2500:  # 쿠니네 2,800~3,600자 (블로그 글 조사 2026-10-08)
-        bad.append(f"본문 {len(t)}자 → 2,800~3,600자")
+    if len(t) < 1500:  # 글자 수는 원문 프롬프트 기준 (대표 결정 2026-10-08)
+        bad.append(f"본문 {len(t)}자 → 1,500자 이상(1,800~2,500자)")
     if re.search(r"\d|첫째|둘째|셋째|두 가지|세 가지", a["summary"]):
         bad.append("요약에 숫자·순서 말 → 빼기")
     raw = "\n".join(p for s in a["sections"] for p in s["paragraphs"])
