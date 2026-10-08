@@ -569,10 +569,10 @@ def compare_html(blogs: dict, by_blog: dict[str, list[dict]]) -> str:
 
 
 def stats_html(blogs: dict) -> str:
-    """어제 블로그 성과 (어사이드가 읽은 네이버 블로그 통계, 대표 결정 2026-10-08). 없으면 안내만."""
+    """지난주 블로그 성과 (어사이드가 매주 월요일 읽은 네이버 블로그 통계, 대표 결정 2026-10-08). 없으면 한 줄만."""
     from .blog_stats import recent
     e = html.escape
-    rs = recent(7)
+    rs = recent(8)
     if not rs:
         return '<div class="card muted">블로그 통계 없음</div>'
     last = rs[0]
@@ -589,12 +589,12 @@ def stats_html(blogs: dict) -> str:
                         for r in d.get("posts", [])[:5])
         qs = " · ".join(f'{e(q["q"])}{" " + str(q["n"]) if q.get("n") else ""}' for q in d.get("queries", [])[:8])
         ps = " · ".join(f'{e(x["path"])} {e(x.get("share", ""))}' for x in d.get("paths", [])[:5])
-        cols.append(f'<div class="card"><h2>{e(b["label"])} · {e(last.get("date", ""))}</h2>'
+        cols.append(f'<div class="card"><h2>{e(b["label"])} · {e(d.get("period") or last.get("date", ""))}</h2>'
                     f'<p style="font-size:22px;margin:4px 0">조회 <b>{tot.get("조회", 0):,}</b>{diff} · 방문 <b>{tot.get("방문", 0):,}</b></p>'
                     f'{"<b>많이 본 글</b><ol style=margin:4px 0 8px 18px>" + posts + "</ol>" if posts else ""}'
                     f'{"<b>유입 검색어</b><div class=muted>" + qs + "</div>" if qs else ""}'
                     f'{"<b style=display:block;margin-top:6px>유입 경로</b><div class=muted>" + ps + "</div>" if ps else ""}</div>')
-    return (f'<h2 style="margin:8px 0">어제 블로그 성과</h2><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px">'
+    return (f'<h2 style="margin:8px 0">지난주 블로그 성과</h2><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px">'
             f'{"".join(cols)}</div>') if cols else ""
 
 
