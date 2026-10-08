@@ -1,0 +1,189 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · 부산국제영화제 개막식 레드카펫의 김민하",
+  "make": true,
+  "file": "",
+  "size": "1024x1024",
+  "person": true,
+  "desc": "",
+  "find": "김민하 부산국제영화제 샤넬 드레스",
+  "prompt": "[실제 사진 찾기] 김민하 부산국제영화제 샤넬 드레스 — 부산국제영화제 개막식 레드카펫의 김민하"
+ },
+ {
+  "n": 2,
+  "label": "부산국제영화제 개막식 레드카펫에 선 김민하",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "김민하 부산국제영화제 레드카펫",
+  "prompt": "[실제 사진 찾기] 김민하 부산국제영화제 레드카펫 — 부산국제영화제 개막식 레드카펫에 선 김민하"
+ },
+ {
+  "n": 3,
+  "label": "개막식 사회를 맡은 김민하의 전신 모습",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "김민하 부산국제영화제 개막식 사회",
+  "prompt": "[실제 사진 찾기] 김민하 부산국제영화제 개막식 사회 — 개막식 사회를 맡은 김민하의 전신 모습"
+ },
+ {
+  "n": 4,
+  "label": "샤넬 드레스를 입은 김민하의 레드카펫 전신 사진",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "김민하 샤넬 드레스",
+  "prompt": "[실제 사진 찾기] 김민하 샤넬 드레스 — 샤넬 드레스를 입은 김민하의 레드카펫 전신 사진"
+ },
+ {
+  "n": 5,
+  "label": "블랙 메리 제인 힐을 신은 김민하",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "김민하 샤넬 메리제인",
+  "prompt": "[실제 사진 찾기] 김민하 샤넬 메리제인 — 블랙 메리 제인 힐을 신은 김민하"
+ },
+ {
+  "n": 6,
+  "label": "롱 드레스 실루엣을 보여 주는 정물 이미지",
+  "make": true,
+  "file": "img6.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Elegant long evening dress from a luxury fashion house, soft draped fabric, floor-length silhouette, hanging on a minimalist rail against a warm beige studio wall, soft natural light, no logos, no text, no people",
+  "find": "",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Elegant long evening dress from a luxury fashion house, soft draped fabric, floor-length silhouette, hanging on a minimalist rail against a warm beige studio wall, soft natural light, no logos, no text, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 7,
+  "label": "블랙 메리 제인 힐의 디테일 정물 이미지",
+  "make": true,
+  "file": "img7.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Black leather Mary Jane heels with a rounded toe and a single strap, placed on a cream marble surface with a dried flower stem, soft editorial lighting, close-up detail of stitching, no logos, no text, no people",
+  "find": "",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Black leather Mary Jane heels with a rounded toe and a single strap, placed on a cream marble surface with a dried flower stem, soft editorial lighting, close-up detail of stitching, no logos, no text, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 8,
+  "label": "이어링과 브레이슬릿, 링 주얼리 정물 이미지",
+  "make": true,
+  "file": "img8.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Fine jewelry flat lay with elegant drop earrings, a delicate bracelet and a ring on ivory silk fabric, soft diffused light, shallow depth of field, no logos, no text, no people",
+  "find": "",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Fine jewelry flat lay with elegant drop earrings, a delicate bracelet and a ring on ivory silk fabric, soft diffused light, shallow depth of field, no logos, no text, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 9,
+  "label": "고급 드레스 소재의 클로즈업 정물 이미지",
+  "make": true,
+  "file": "img9.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Luxury evening dress fabric close-up, fine textured weave with subtle sheen, neatly folded beside a pair of black heels on a neutral stone surface, no logos, no text, no people",
+  "find": "",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Luxury evening dress fabric close-up, fine textured weave with subtle sheen, neatly folded beside a pair of black heels on a neutral stone surface, no logos, no text, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 10,
+  "label": "드레스 디테일이 보이는 김민하의 레드카펫 포즈",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "김민하 레드카펫 드레스 포즈",
+  "prompt": "[실제 사진 찾기] 김민하 레드카펫 드레스 포즈 — 드레스 디테일이 보이는 김민하의 레드카펫 포즈"
+ },
+ {
+  "n": 11,
+  "label": "하이 주얼리를 착용한 김민하의 상반신",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "김민하 루반 주얼리",
+  "prompt": "[실제 사진 찾기] 김민하 루반 주얼리 — 하이 주얼리를 착용한 김민하의 상반신"
+ },
+ {
+  "n": 12,
+  "label": "부산국제영화제 레드카펫에서 샤넬 룩을 입은 김민하",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "김민하 부산국제영화제 샤넬",
+  "prompt": "[실제 사진 찾기] 김민하 부산국제영화제 샤넬 — 부산국제영화제 레드카펫에서 샤넬 룩을 입은 김민하"
+ },
+ {
+  "n": 13,
+  "label": "개막식 포토월 앞에 선 김민하",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "김민하 개막식 포토월",
+  "prompt": "[실제 사진 찾기] 김민하 개막식 포토월 — 개막식 포토월 앞에 선 김민하"
+ },
+ {
+  "n": 14,
+  "label": "단정한 롱 원피스와 메리 제인 슈즈 코디 정물 이미지",
+  "make": true,
+  "file": "img14.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Simple black long dress in matte crepe fabric on a wooden hanger beside black Mary Jane flats and a small pearl earring, warm minimalist interior, soft window light, no logos, no text, no people",
+  "find": "",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Simple black long dress in matte crepe fabric on a wooden hanger beside black Mary Jane flats and a small pearl earring, warm minimalist interior, soft window light, no logos, no text, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 15,
+  "label": "가벼운 주얼리와 캐시미어 스카프의 정물 이미지",
+  "make": true,
+  "file": "img15.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Delicate gold hoop earrings and a thin bracelet laid on a folded cream cashmere scarf, soft side light, elegant still life, no logos, no text, no people",
+  "find": "",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Delicate gold hoop earrings and a thin bracelet laid on a folded cream cashmere scarf, soft side light, elegant still life, no logos, no text, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 16,
+  "label": "행사장에서 미소 짓는 김민하",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "김민하",
+  "prompt": "[실제 사진 찾기] 김민하 — 행사장에서 미소 짓는 김민하"
+ },
+ {
+  "n": 17,
+  "label": "샤넬 레드카펫 룩을 입은 김민하의 다른 각도 사진",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "김민하 샤넬 레드카펫 룩",
+  "prompt": "[실제 사진 찾기] 김민하 샤넬 레드카펫 룩 — 샤넬 레드카펫 룩을 입은 김민하의 다른 각도 사진"
+ }
+]

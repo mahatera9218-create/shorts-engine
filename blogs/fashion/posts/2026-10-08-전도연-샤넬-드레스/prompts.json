@@ -1,0 +1,189 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · 부산국제영화제 레드카펫에서 샤넬 블랙 드레스를 입은 전도연",
+  "make": true,
+  "file": "thumb.jpg",
+  "size": "1024x1024",
+  "person": true,
+  "desc": "",
+  "find": "전도연 샤넬 블랙 드레스 부산국제영화제",
+  "prompt": "[실제 사진 찾기] 전도연 샤넬 블랙 드레스 부산국제영화제 — 부산국제영화제 레드카펫에서 샤넬 블랙 드레스를 입은 전도연"
+ },
+ {
+  "n": 2,
+  "label": "부산국제영화제 개막식 레드카펫에 선 전도연의 블랙 드레스 전신 모습",
+  "make": true,
+  "file": "img2.jpg",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "전도연 부산국제영화제 레드카펫",
+  "prompt": "[실제 사진 찾기] 전도연 부산국제영화제 레드카펫 — 부산국제영화제 개막식 레드카펫에 선 전도연의 블랙 드레스 전신 모습"
+ },
+ {
+  "n": 3,
+  "label": "영화 가능한 사랑 주연으로 참석한 전도연의 레드카펫 포즈",
+  "make": true,
+  "file": "img3.jpg",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "전도연 가능한 사랑 부산국제영화제",
+  "prompt": "[실제 사진 찾기] 전도연 가능한 사랑 부산국제영화제 — 영화 가능한 사랑 주연으로 참석한 전도연의 레드카펫 포즈"
+ },
+ {
+  "n": 4,
+  "label": "오프숄더 라인이 돋보이는 전도연의 샤넬 블랙 드레스 측면 모습",
+  "make": true,
+  "file": "img4.jpg",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "전도연 샤넬 블랙 드레스 오프숄더",
+  "prompt": "[실제 사진 찾기] 전도연 샤넬 블랙 드레스 오프숄더 — 오프숄더 라인이 돋보이는 전도연의 샤넬 블랙 드레스 측면 모습"
+ },
+ {
+  "n": 5,
+  "label": "오프숄더 블랙 이브닝 드레스의 부드러운 곡선을 보여주는 연출 사진",
+  "make": true,
+  "file": "img5.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Editorial still life of a black off-shoulder evening gown draped on an elegant mannequin, soft flowing fabric with fine pleats, matte silk texture, neutral stone backdrop, soft window light, no logos, no text, no people",
+  "find": "",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Editorial still life of a black off-shoulder evening gown draped on an elegant mannequin, soft flowing fabric with fine pleats, matte silk texture, neutral stone backdrop, soft window light, no logos, no text, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 6,
+  "label": "샤넬 공방 컬렉션 룩을 입고 포즈를 취한 전도연",
+  "make": true,
+  "file": "img6.jpg",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "샤넬 2026 공방 컬렉션 전도연",
+  "prompt": "[실제 사진 찾기] 샤넬 2026 공방 컬렉션 전도연 — 샤넬 공방 컬렉션 룩을 입고 포즈를 취한 전도연"
+ },
+ {
+  "n": 7,
+  "label": "오트 쿠튀르 느낌의 블랙 원단 디테일 클로즈업",
+  "make": true,
+  "file": "img7.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Editorial still life of fine black couture fabric with hand-finished edges and delicate pleating, folded on a pale marble surface, beside a small silk ribbon, soft natural light, no logos, no text, no people",
+  "find": "",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Editorial still life of fine black couture fabric with hand-finished edges and delicate pleating, folded on a pale marble surface, beside a small silk ribbon, soft natural light, no logos, no text, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 8,
+  "label": "고급 블랙 이브닝 드레스와 벨벳 트레이를 함께 연출한 정물 사진",
+  "make": true,
+  "file": "img8.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Editorial still life of an elegant black evening dress on a hanger beside a small velvet jewelry tray, polished wooden table, soft warm light, quiet luxury mood, no logos, no text, no people",
+  "find": "",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Editorial still life of an elegant black evening dress on a hanger beside a small velvet jewelry tray, polished wooden table, soft warm light, quiet luxury mood, no logos, no text, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 9,
+  "label": "실크 드레스 밑단과 블랙 힐을 담은 클로즈업 정물 사진",
+  "make": true,
+  "file": "img9.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Close-up still life of a silk black evening dress hem with soft folds, beside a pair of black satin heels, light grey studio background, no logos, no text, no people",
+  "find": "",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Close-up still life of a silk black evening dress hem with soft folds, beside a pair of black satin heels, light grey studio background, no logos, no text, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 10,
+  "label": "플륌 드 샤넬 하이 주얼리 이어링을 착용한 전도연의 얼굴 가까이 사진",
+  "make": true,
+  "file": "img10.jpg",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "전도연 플륌 드 샤넬 이어링",
+  "prompt": "[실제 사진 찾기] 전도연 플륌 드 샤넬 이어링 — 플륌 드 샤넬 하이 주얼리 이어링을 착용한 전도연의 얼굴 가까이 사진"
+ },
+ {
+  "n": 11,
+  "label": "깃털 모티프의 다이아몬드 이어링과 링을 담은 하이 주얼리 정물",
+  "make": true,
+  "file": "img11.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Macro still life of delicate feather-shaped diamond earrings and a ring on a black velvet cushion, sparkling facets, soft focus background, no logos, no text, no people",
+  "find": "",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Macro still life of delicate feather-shaped diamond earrings and a ring on a black velvet cushion, sparkling facets, soft focus background, no logos, no text, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 12,
+  "label": "드레스의 긴 실루엣이 드러난 전도연의 레드카펫 전신 사진",
+  "make": true,
+  "file": "img12.jpg",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "전도연 레드카펫 전신 실루엣",
+  "prompt": "[실제 사진 찾기] 전도연 레드카펫 전신 실루엣 — 드레스의 긴 실루엣이 드러난 전도연의 레드카펫 전신 사진"
+ },
+ {
+  "n": 13,
+  "label": "영화 가능한 사랑 레드카펫에서 함께한 조여정과 전도연",
+  "make": true,
+  "file": "img13.jpg",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "조여정 전도연 가능한 사랑 레드카펫",
+  "prompt": "[실제 사진 찾기] 조여정 전도연 가능한 사랑 레드카펫 — 영화 가능한 사랑 레드카펫에서 함께한 조여정과 전도연"
+ },
+ {
+  "n": 14,
+  "label": "블랙 오프숄더 니트 드레스와 진주 이어링을 함께 둔 스타일링 정물",
+  "make": true,
+  "file": "img14.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Editorial still life of a black wool-blend off-shoulder knit dress laid flat with a slim leather belt and small pearl drop earrings, cream linen background, soft daylight, no logos, no text, no people",
+  "find": "",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Editorial still life of a black wool-blend off-shoulder knit dress laid flat with a slim leather belt and small pearl drop earrings, cream linen background, soft daylight, no logos, no text, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 15,
+  "label": "블랙 캐시미어 카디건과 펌프스, 작은 가방을 모은 데일리 스타일링",
+  "make": true,
+  "file": "img15.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Still life of a tailored black cashmere cardigan folded beside black pointed pumps and a small structured bag, warm grey backdrop, soft light, no logos, no text, no people",
+  "find": "",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Still life of a tailored black cashmere cardigan folded beside black pointed pumps and a small structured bag, warm grey backdrop, soft light, no logos, no text, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 16,
+  "label": "부산국제영화제 개막식에서 미소 짓는 전도연의 상반신 사진",
+  "make": true,
+  "file": "img16.jpg",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "전도연 부산국제영화제 개막식 포토콜",
+  "prompt": "[실제 사진 찾기] 전도연 부산국제영화제 개막식 포토콜 — 부산국제영화제 개막식에서 미소 짓는 전도연의 상반신 사진"
+ },
+ {
+  "n": 17,
+  "label": "이창동 감독과 영화 가능한 사랑으로 함께한 전도연",
+  "make": true,
+  "file": "img17.jpg",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "전도연 이창동 가능한 사랑",
+  "prompt": "[실제 사진 찾기] 전도연 이창동 가능한 사랑 — 이창동 감독과 영화 가능한 사랑으로 함께한 전도연"
+ }
+]

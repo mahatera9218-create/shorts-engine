@@ -1,0 +1,189 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · 블랙 레더 숄더백을 멘 카리나",
+  "make": true,
+  "file": "thumb.jpg",
+  "size": "1024x1024",
+  "person": true,
+  "desc": "",
+  "find": "카리나",
+  "prompt": "[실제 사진 찾기] 카리나 — 블랙 레더 숄더백을 멘 카리나"
+ },
+ {
+  "n": 2,
+  "label": "블랙 숄더백을 멘 카리나의 일상 스타일",
+  "make": true,
+  "file": "img2.jpg",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "카리나",
+  "prompt": "[실제 사진 찾기] 카리나 — 블랙 숄더백을 멘 카리나의 일상 스타일"
+ },
+ {
+  "n": 3,
+  "label": "볼캡과 스카프를 매치한 카리나의 캐주얼 룩",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "카리나 인스타그램 일상",
+  "prompt": "[실제 사진 찾기] 카리나 인스타그램 일상 — 볼캡과 스카프를 매치한 카리나의 캐주얼 룩"
+ },
+ {
+  "n": 4,
+  "label": "어깨에 숄더백을 멘 카리나",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "카리나 가방",
+  "prompt": "[실제 사진 찾기] 카리나 가방 — 어깨에 숄더백을 멘 카리나"
+ },
+ {
+  "n": 5,
+  "label": "블랙 레더 숄더백 제품 이미지",
+  "make": true,
+  "file": "img5.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Black leather shoulder bag with a soft structured shape, smooth matte leather, slim top handle, minimal silver hardware, clean stitching, placed on a light gray linen surface beside a folded cashmere scarf, soft natural window light, editorial still life, no logo, no text, no people",
+  "find": "",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Black leather shoulder bag with a soft structured shape, smooth matte leather, slim top handle, minimal silver hardware, clean stitching, placed on a light gray linen surface beside a folded cashmere scarf, soft natural window light, editorial still life, no logo, no text, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 6,
+  "label": "블랙 레더 숄더백 디테일 컷",
+  "make": true,
+  "file": "img6.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Close view of a black leather shoulder bag on a pale stone shelf, fine grain leather texture, adjustable strap folded neatly, polished silver zipper pull, subtle shadow, warm neutral background, magazine still life, no logo, no text, no people",
+  "find": "",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Close view of a black leather shoulder bag on a pale stone shelf, fine grain leather texture, adjustable strap folded neatly, polished silver zipper pull, subtle shadow, warm neutral background, magazine still life, no logo, no text, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 7,
+  "label": "가방을 들고 있는 카리나의 스타일링",
+  "make": true,
+  "file": "img7.jpg",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "카리나",
+  "prompt": "[실제 사진 찾기] 카리나 — 가방을 들고 있는 카리나의 스타일링"
+ },
+ {
+  "n": 8,
+  "label": "데일리 블랙 숄더백 연출 컷",
+  "make": true,
+  "file": "img8.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Black leather shoulder bag standing upright on a cream marble table, small leather wallet and simple gold-toned pen beside it, soft diffused light, clean minimal composition, editorial still life, no logo, no text, no people",
+  "find": "",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Black leather shoulder bag standing upright on a cream marble table, small leather wallet and simple gold-toned pen beside it, soft diffused light, clean minimal composition, editorial still life, no logo, no text, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 9,
+  "label": "블랙 레더 가방 안감과 소품",
+  "make": true,
+  "file": "img9.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Black leather shoulder bag opened slightly to show a smooth fabric lining, beside a small card holder and a folded silk scarf, on a pale oak table, soft side light, minimal editorial still life, no logo, no text, no people",
+  "find": "",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Black leather shoulder bag opened slightly to show a smooth fabric lining, beside a small card holder and a folded silk scarf, on a pale oak table, soft side light, minimal editorial still life, no logo, no text, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 10,
+  "label": "어깨끈과 금속 장식 디테일",
+  "make": true,
+  "file": "img10.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Close detail of a black leather shoulder bag strap and metal buckle with neat stitching, resting on a soft gray wool fabric, gentle natural light, magazine still life, no logo, no text, no people",
+  "find": "",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Close detail of a black leather shoulder bag strap and metal buckle with neat stitching, resting on a soft gray wool fabric, gentle natural light, magazine still life, no logo, no text, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 11,
+  "label": "블랙 레더 질감 클로즈업",
+  "make": true,
+  "file": "img11.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Macro of smooth black leather with fine natural grain and tight tonal stitching, edge painting visible, a hint of silver hardware at the corner, soft side light, luxury editorial still life, no logo, no text, no people",
+  "find": "",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Macro of smooth black leather with fine natural grain and tight tonal stitching, edge painting visible, a hint of silver hardware at the corner, soft side light, luxury editorial still life, no logo, no text, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 12,
+  "label": "블랙 숄더백 옆모습",
+  "make": true,
+  "file": "img12.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Black leather shoulder bag seen from the side, compact rectangular silhouette with softly curved top, slim strap lying in a gentle loop, on a warm beige fabric background, editorial still life, no logo, no text, no people",
+  "find": "",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Black leather shoulder bag seen from the side, compact rectangular silhouette with softly curved top, slim strap lying in a gentle loop, on a warm beige fabric background, editorial still life, no logo, no text, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 13,
+  "label": "스카프와 볼캡을 한 카리나의 전체 실루엣",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "카리나 스카프",
+  "prompt": "[실제 사진 찾기] 카리나 스카프 — 스카프와 볼캡을 한 카리나의 전체 실루엣"
+ },
+ {
+  "n": 14,
+  "label": "블랙 가방으로 포인트를 준 카리나 룩",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "카리나 패션",
+  "prompt": "[실제 사진 찾기] 카리나 패션 — 블랙 가방으로 포인트를 준 카리나 룩"
+ },
+ {
+  "n": 15,
+  "label": "볼캡·스카프·블랙 가방 코디 아이템",
+  "make": true,
+  "file": "img15.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Flat lay of a black leather shoulder bag, a soft gray cashmere scarf, a navy baseball cap and a pair of simple sunglasses on an ivory background, neat arrangement, soft daylight, editorial still life, no logo, no text, no people",
+  "find": "",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Flat lay of a black leather shoulder bag, a soft gray cashmere scarf, a navy baseball cap and a pair of simple sunglasses on an ivory background, neat arrangement, soft daylight, editorial still life, no logo, no text, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 16,
+  "label": "데님 재킷과 니트에 블랙 가방을 올린 코디",
+  "make": true,
+  "file": "img16.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Folded light blue denim jacket and a cream knit cardigan stacked on a bench with a black leather shoulder bag on top, soft daylight, tidy casual layering, editorial still life, no logo, no text, no people",
+  "find": "",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Folded light blue denim jacket and a cream knit cardigan stacked on a bench with a black leather shoulder bag on top, soft daylight, tidy casual layering, editorial still life, no logo, no text, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 17,
+  "label": "카리나의 일상 사진 속 블랙 숄더백 룩",
+  "make": true,
+  "file": "img17.jpg",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "카리나",
+  "prompt": "[실제 사진 찾기] 카리나 — 카리나의 일상 사진 속 블랙 숄더백 룩"
+ }
+]

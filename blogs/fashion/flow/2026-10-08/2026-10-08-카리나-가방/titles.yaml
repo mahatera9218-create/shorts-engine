@@ -1,0 +1,173 @@
+keyword: 카리나 가방
+person: 카리나
+mode: 연예패션
+made: '15:58'
+items:
+- title: '"가방이 더 의젓하네" 카리나 블랙 레더 숄더백'
+  type: 그룹 2
+  rank: 1
+  best: true
+  chars: 26
+  flags: []
+- title: '"가방이 더 의젓해 보이네" 뜻밖의 블랙 레더 숄더백'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 29
+  flags: []
+- title: '"저 가방 어디 거야?" 볼캡과 스카프에 매치한 데일리백'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 31
+  flags:
+  - 31자(30자 넘음)
+- title: '"캐주얼에 이렇게 드는구나" 결국 눈에 들어온 여자 가방 추천'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 34
+  flags:
+  - 34자(30자 넘음)
+- title: '"심플한데 왜 자꾸 보이지?" 베일 벗은 블랙 숄더백'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 29
+  flags: []
+- title: '"사주고 싶다는 말이 나오네" 팬들이 먼저 알아본 가방'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: '"저 가방 어디 거야?" 카리나 GLOWNY 숄더백'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: 카리나 가방 볼캡에 스카프까지 이 조합 괜찮은데
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 26
+  flags: []
+- title: '"캐주얼에 이렇게 드는구나" 카리나 데일리백'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 24
+  flags: []
+- title: '"사주고 싶다는 반응 이해되네" 카리나 연예인 가방'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: '"에스파 멤버들도 탐낼 만한데?" 블랙 숄더백'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 25
+  flags: []
+- title: '"윈터가 들어도 어울리겠네" 심플한 데일리백'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 24
+  flags: []
+- title: '"지젤이랑 같이 들면 예쁘겠는데?" 블랙 레더 가방'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: '"닝닝도 하나쯤 갖고 싶겠네" 캐주얼 숄더백'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 24
+  flags: []
+- title: '"에스파 멤버들 사이에서도 눈에 띄겠네" 블랙 가방'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: '"가방이 더 의젓해 보이네" 결국 카리나 블랙 숄더백'
+  type: 쿠니네패션식 방식
+  rank: null
+  best: false
+  chars: 29
+  flags: []
+- title: '"볼캡에 이 가방이 어울려?" 뜻밖의 카리나 데일리룩'
+  type: 쿠니네패션식 방식
+  rank: null
+  best: false
+  chars: 29
+  flags: []
+- title: '"저 가방 어디 거야?" 마침내 정체 드러난 카리나 GLOWNY'
+  type: 쿠니네패션식 방식
+  rank: null
+  best: false
+  chars: 35
+  flags:
+  - 35자(30자 넘음)
+- title: 오늘자 카리나 인스타 모자에 스카프 매치한 블랙 가방 데일리룩
+  type: ohye1991식 방식
+  rank: null
+  best: false
+  chars: 34
+  flags:
+  - 34자(30자 넘음)
+- title: 현재 팬들 반응 좋은 카리나 GLOWNY 숄더백 근황
+  type: ohye1991식 방식
+  rank: null
+  best: false
+  chars: 29
+  flags: []
+- title: 응?... 캐주얼한데 의외로 단정한 에스파 카리나 가방 스타일
+  type: ohye1991식 방식
+  rank: null
+  best: false
+  chars: 34
+  flags:
+  - 34자(30자 넘음)
+groups:
+- type: 그룹 1 주인공 숨김
+  idx:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  best: null
+- type: 그룹 2 이름 노출
+  idx:
+  - 0
+  - 6
+  - 7
+  - 8
+  - 9
+  best: null
+- type: 그룹 3 관련 인물
+  idx:
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  best: null
+- type: 쿠니네패션식
+  idx:
+  - 15
+  - 16
+  - 17
+  best: null
+- type: ohye1991식
+  idx:
+  - 18
+  - 19
+  - 20
+  best: null

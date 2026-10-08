@@ -1,0 +1,174 @@
+keyword: 김민하 샤넬 원피스
+person: 김민하
+mode: 연예패션
+made: '16:02'
+items:
+- title: '"사회 맡은 날 이 드레스?" 김민하 샤넬 원피스'
+  type: 그룹 2
+  rank: 1
+  best: true
+  chars: 27
+  flags: []
+- title: '"사회 보는 날 이 룩이라고?" 뜻밖의 샤넬 원피스'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: '"같은 샤넬인데 느낌이 왜 다르지?" 부국제 레드카펫'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 29
+  flags: []
+- title: '"메리 제인 힐 이렇게 신는구나" 개막식 사회자 룩'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: '"주얼리까지 하나하나 눈에 띄네" 샤넬 프리 컬렉션'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: '"단정한데 분위기 있네" 결국 레드카펫 빛낸 롱 드레스'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: 김민하 샤넬 원피스 "우아함이 다르네" 부국제 레드카펫
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: '"블랙 메리 제인 힐 괜찮은데?" 김민하 샤넬 룩'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 27
+  flags: []
+- title: '"루반 주얼리까지 챙겼네" 마침내 김민하 레드카펫'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 27
+  flags: []
+- title: 김민하 부국제 개막식 "이 드레스 어디 거야?"
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 26
+  flags: []
+- title: '"전도연 옆에서도 눈에 띄네" 부국제 샤넬 원피스'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 27
+  flags: []
+- title: '"김도연과는 또 다른 분위기" 샤넬 레드카펫 룩'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 26
+  flags: []
+- title: '"같은 샤넬인데 이렇게 다르네" 전도연 김도연 그리고'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 29
+  flags: []
+- title: '"세 사람 샤넬 중에 누가 제일?" 부국제 개막식'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 27
+  flags: []
+- title: '"공방 컬렉션 옆에서도 밀리지 않네" 샤넬 프리 컬렉션'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: '"같은 샤넬인데 느낌이 다르네?" 김민하 부국제 원피스'
+  type: 쿠니네패션식 방식
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: '"사회 보면서 이 룩이라고?" 뜻밖의 김민하 샤넬 원피스'
+  type: 쿠니네패션식 방식
+  rank: null
+  best: false
+  chars: 31
+  flags:
+  - 31자(30자 넘음)
+- title: 김민하 샤넬 원피스 "블랙 메리 제인까지 이렇게 맞췄네"
+  type: 쿠니네패션식 방식
+  rank: null
+  best: false
+  chars: 31
+  flags:
+  - 31자(30자 넘음)
+- title: 와... 반응 좋았던 김민하 샤넬 원피스 부국제 개막식 사회 룩
+  type: ohye1991식 방식
+  rank: null
+  best: false
+  chars: 35
+  flags:
+  - 35자(30자 넘음)
+- title: 부국제 레드카펫 김민하 샤넬 드레스 근황 (ft.루반 주얼리)
+  type: ohye1991식 방식
+  rank: null
+  best: false
+  chars: 34
+  flags:
+  - 34자(30자 넘음)
+  - 괄호
+- title: 오늘자 김민하 샤넬 2026 프리 컬렉션 원피스 메리 제인 힐 패션
+  type: ohye1991식 방식
+  rank: null
+  best: false
+  chars: 37
+  flags:
+  - 37자(30자 넘음)
+groups:
+- type: 그룹 1 주인공 숨김
+  idx:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  best: null
+- type: 그룹 2 이름 노출
+  idx:
+  - 0
+  - 6
+  - 7
+  - 8
+  - 9
+  best: null
+- type: 그룹 3 관련 인물
+  idx:
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  best: null
+- type: 쿠니네패션식
+  idx:
+  - 15
+  - 16
+  - 17
+  best: null
+- type: ohye1991식
+  idx:
+  - 18
+  - 19
+  - 20
+  best: null
