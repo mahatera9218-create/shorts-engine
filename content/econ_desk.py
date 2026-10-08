@@ -286,6 +286,8 @@ def status_html(kw: dict, day: Path, today: str) -> str:
     e = html.escape
     a = kw.get("aside")
     chips = [f'🛰 어사이드 {e(a.get("at", ""))} · {a.get("n", 0)}개' if a else "🛰 어사이드 아직"]
+    if BID != "econ":  # 패션은 자동 글 없음 (대표 결정 2026-10-08)
+        return f'<div class="muted" style="margin:4px 0 10px">{chips[0]}</div>'
     st = (yaml.safe_load((day / "auto.yaml").read_text(encoding="utf-8")) or {}) if (day / "auto.yaml").exists() else {}
     again = desk.issue_link(f"{LABEL}자동", today, "오늘 자동 글을 다시 만들어 주세요.")
     retry = f' <a href="{e(again, quote=True)}">다시 돌리기</a>'
@@ -344,6 +346,10 @@ def flow_html() -> str:
         href = f"p/{BID}-{desk.slug(slug)}/" if slug and (POSTS / slug).exists() else \
             desk.issue_link(f"{LABEL}키워드", it["kw"], "이 키워드로 제목 후보를 만들어 주세요.")
         sc = f' <span class="seal">{it["score"]}</span>' if "score" in it else ""
+        if BID != "econ" and not slug:  # 패션: 키워드를 누르면 아래 링크 칸 첫 줄에 들어감 → 대표가 구글 렌즈 링크를 붙여넣음 (2026-10-08)
+            rows.append(f'<button class="ghost" style="text-align:left;width:100%" '
+                        f'onclick="pickKw_{BID}({e(json.dumps(it["kw"]), quote=True)})"><b>{e(it["kw"])}</b>{sc}</button>')
+            continue
         rows.append(f'<a class="btn" style="text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
                     f'href="{e(href, quote=True)}">{"✅ " if slug else ""}<b>{e(it["kw"])}</b>{sc}</a>')
     add_js = (f"function addKw_{BID}(){{const v=document.getElementById('kwin-{BID}').value.trim();if(!v)return;"
@@ -354,9 +360,11 @@ def flow_html() -> str:
         add_js += (f"function addLink_{BID}(){{const v=document.getElementById('lkin-{BID}').value.trim();if(!v)return;"
                    f"location.href='https://github.com/{desk.REPO}/issues/new?title='+encodeURIComponent('[{LABEL}링크] {today}')"
                    "+'&body='+encodeURIComponent(v)}")
-        link_box = (f'<div class="card"><h2>상품 링크로 글</h2><textarea id="lkin-{BID}" rows="3" style="{TA}" '
-                    f'placeholder="첫 줄: 인물 아이템 (예: 원희 버킷백)&#10;다음 줄: 상품 링크"></textarea>'
-                    f'<button onclick="addLink_{BID}()">🔗 글 만들기</button></div>')
+        add_js += (f"function pickKw_{BID}(k){{const t=document.getElementById('lkin-{BID}');"
+                   "t.value=k+'\\n';t.scrollIntoView({behavior:'smooth',block:'center'});t.focus()}")
+        link_box = (f'<div class="card"><h2>상품 링크로 글</h2><textarea id="lkin-{BID}" rows="4" style="{TA}" '
+                    f'placeholder="첫 줄: 인물 아이템 (예: 원희 버킷백)&#10;다음 줄: 구글 렌즈로 찾은 상품 링크"></textarea>'
+                    f'<button onclick="addLink_{BID}()">🔗 제목 추천 + 글 만들기</button></div>')
     refresh = desk.issue_link(f"{LABEL}키워드새로", today, "키워드를 다시 모아 주세요.")
     kw_html = (f'<div class="card"><h2>키워드</h2>{status_html(kw, day, today)}{"".join(rows) or "<p class=muted>없음</p>"}'
                f'<textarea id="kwin-{BID}" rows="2" style="{TA}" placeholder="키워드 직접 넣기 (한 줄에 하나)"></textarea>'
