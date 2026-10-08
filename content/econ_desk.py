@@ -674,7 +674,38 @@ def compare_html(blogs: dict, by_blog: dict[str, list[dict]]) -> str:
     grid = f'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px">{"".join(cols)}</div>'
     note = ('<div class="card muted" style="font-size:14px">글 1편 어림 = 제목 후보 1번 + 글·사진 1번 + 키워드 모으기 비용을 만든 글 수로 나눈 몫. '
             '제목을 다시 뽑거나 고른 키워드로 글을 안 만들면 그만큼 더 들어요.</div>')
-    return head_ + table + note + grid
+    return stats_html(blogs) + head_ + table + note + grid
+
+
+def stats_html(blogs: dict) -> str:
+    """어제 블로그 성과 (어사이드가 읽은 네이버 블로그 통계, 대표 결정 2026-10-08). 없으면 안내만."""
+    from .blog_stats import recent
+    e = html.escape
+    rs = recent(7)
+    if not rs:
+        return ('<div class="card muted">블로그 통계가 아직 없어요. 어사이드 아침 루틴이 네이버 블로그 통계를 읽어 오면 '
+                '여기에 글별 조회수·유입 검색어·유입 경로가 보여요.</div>')
+    last = rs[0]
+    cols = []
+    for bid, b in blogs.items():
+        d = (last.get("blogs") or {}).get(bid)
+        if not d:
+            continue
+        prev = next(((r.get("blogs") or {}).get(bid, {}).get("total", {}).get("조회") for r in rs[1:] if (r.get("blogs") or {}).get(bid)), None)
+        tot = d.get("total", {})
+        diff = (f' <span class="muted">(전날 {prev:,})</span>' if prev else "")
+        posts = "".join(f'<li>{e(r["title"])} <b>{r.get("조회", 0):,}</b>'
+                        f'<span class="muted">{" · 공감 " + str(r["공감"]) if r.get("공감") else ""}{" · 댓글 " + str(r["댓글"]) if r.get("댓글") else ""}</span></li>'
+                        for r in d.get("posts", [])[:5])
+        qs = " · ".join(f'{e(q["q"])}{" " + str(q["n"]) if q.get("n") else ""}' for q in d.get("queries", [])[:8])
+        ps = " · ".join(f'{e(x["path"])} {e(x.get("share", ""))}' for x in d.get("paths", [])[:5])
+        cols.append(f'<div class="card"><h2>{e(b["label"])} · {e(last.get("date", ""))}</h2>'
+                    f'<p style="font-size:22px;margin:4px 0">조회 <b>{tot.get("조회", 0):,}</b>{diff} · 방문 <b>{tot.get("방문", 0):,}</b></p>'
+                    f'{"<b>많이 본 글</b><ol style=margin:4px 0 8px 18px>" + posts + "</ol>" if posts else ""}'
+                    f'{"<b>유입 검색어</b><div class=muted>" + qs + "</div>" if qs else ""}'
+                    f'{"<b style=display:block;margin-top:6px>유입 경로</b><div class=muted>" + ps + "</div>" if ps else ""}</div>')
+    return (f'<h2 style="margin:8px 0">어제 블로그 성과</h2><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px">'
+            f'{"".join(cols)}</div>') if cols else ""
 
 
 def load() -> list[dict]:
