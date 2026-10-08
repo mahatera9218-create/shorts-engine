@@ -158,7 +158,7 @@ jobs:
       github.event.issue.user.login == github.repository_owner &&
       (startsWith(github.event.issue.title, '[경제캡처]') || startsWith(github.event.issue.title, '[경제참고]') ||
        startsWith(github.event.issue.title, '[경제수정]') || startsWith(github.event.issue.title, '[연예수정]') ||
-       startsWith(github.event.issue.title, '[패션수정]'))
+       startsWith(github.event.issue.title, '[패션수정]') || startsWith(github.event.issue.title, '[블로그통계]'))
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -183,6 +183,7 @@ jobs:
           case "$TITLE" in
             "[경제캡처]"*) python -m content.econ_inbox capture "$NUM" ;;
             "[경제참고]"*) python -m content.econ_inbox ref "$RUNNER_TEMP/body.txt" ;;
+            "[블로그통계]"*) python -m content.blog_stats "$RUNNER_TEMP/body.txt" ;;   # 어사이드가 읽은 네이버 블로그 통계 (2026-10-08)
             *) python -m content.econ_inbox edit "$TITLE" "$RUNNER_TEMP/body.txt" ;;   # [경제|연예|패션수정]
           esac
       - name: 저장 (econ/ 커밋)
