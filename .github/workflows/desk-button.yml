@@ -247,6 +247,8 @@ jobs:
               cmd, arg1 = "add", "\n".join(l.strip() for l in b.splitlines() if l.strip() and "Create" not in l)[:800]
               if "어사이드" in t:   # 어사이드가 올린 홈판·인기글 목록 → 네이버 인기 점수 + 바로 자동 글 (대표 결정 2026-10-07)
                   cmd = "aside"
+          elif t.startswith("[경제링크점검]") and blog == "fashion":   # 링크가 읽히는지만 점검 → reports/ (2026-10-08)
+              cmd, arg1 = "linkcheck", " ".join(l.strip() for l in b.splitlines() if l.strip().startswith("http"))[:2000]
           elif t.startswith("[경제링크]") and blog == "fashion":   # 패션: 상품 링크로 초안 (2026-10-08)
               cmd, arg1 = "link", "\n".join(l.strip() for l in b.splitlines() if l.strip())[:2000]
           elif t.startswith("[경제자동]"):   # 도우미 '자동 글 다시 돌리기'
@@ -275,6 +277,7 @@ jobs:
             add) msg="키워드를 도우미에 넣었어요 (1~2분).";;
             aside) msg="어사이드 키워드를 넣고 다시 채점했어요. 오늘 자동 글이 아직이면 1~3위로 바로 글을 만들어요 (약 30~40분).";;
             auto) msg="오늘 자동 글을 다시 만들고 있어요 (약 30~40분). 도우미 ③에 올라와요.";;
+            linkcheck) msg="링크가 읽히는지 점검하고 있어요 (약 3분). 결과는 reports/에 남겨요.";;
             link) msg="링크의 상품 정보로 조사하고 초안을 만들고 있어요 (약 10분). 도우미 '오늘 글'에 올라와요.";;
             keywords) msg="Grok과 코드로 키워드를 다시 모으고 있어요 (약 3분).";;
             *) msg="형식이 맞지 않아 처리하지 못했어요. Claude에게 알려 주세요.";;
