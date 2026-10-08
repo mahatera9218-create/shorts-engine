@@ -1,8 +1,8 @@
-"""내 블로그 통계 받기 (대표 결정 2026-10-08: 어사이드가 매일 아침 네이버 블로그 통계를 읽어 [블로그통계] 이슈로 올림).
+"""내 블로그 통계 받기 (대표 결정 2026-10-08: 어사이드가 매주 월요일 아침 지난주 7일 네이버 블로그 통계를 읽어 [블로그통계] 이슈로 올림).
 
 네이버 블로그 통계는 공식 API가 없어 대표 계정으로 로그인한 어사이드가 화면을 읽는다(대표 본인 데이터).
 이슈 본문은 한 줄에 하나, 아래 모양 (블로그 = 경제 | 패션):
-  [통계] 경제 | 2026-10-08 | 조회 1234 | 방문 567
+  [통계] 경제 | 2026-10-05~2026-10-11 | 조회 1234 | 방문 567   (지난주 월~일, 하루치 날짜 하나도 됨)
   [글] 경제 | 글 제목 | 조회 120 | 공감 3 | 댓글 1
   [검색어] 경제 | 원달러 환율 | 45
   [경로] 경제 | 네이버 검색 | 60%
@@ -30,7 +30,7 @@ def _n(s: str) -> int:
 
 
 def parse(text: str) -> tuple[str, dict]:
-    day, out = "", {}
+    day, period, out = "", "", {}
     for raw in text.splitlines():
         m = re.match(r"^\s*[-*]?\s*\[(통계|글|검색어|경로)\]\s*(.+)$", raw.strip())
         if not m:
@@ -43,6 +43,7 @@ def parse(text: str) -> tuple[str, dict]:
         if kind == "통계":
             if re.match(r"\d{4}-\d{2}-\d{2}", parts[1]):
                 day = day or parts[1][:10]
+                period = period or parts[1].replace(" ", "")
             for p in parts[1:]:
                 if "조회" in p:
                     b["total"]["조회"] = _n(p)
@@ -61,7 +62,9 @@ def parse(text: str) -> tuple[str, dict]:
             b["paths"].append({"path": parts[1], "share": parts[2] if len(parts) > 2 else ""})
     for b in out.values():
         b["posts"].sort(key=lambda r: -r.get("조회", 0))
-    return day or (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d"), out
+    for b in out.values():
+        b["period"] = period
+    return day or (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d"), out
 
 
 def save(text: str) -> str:
@@ -71,17 +74,17 @@ def save(text: str) -> str:
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / f"{day}.yaml").write_text(yaml.safe_dump({"date": day, "blogs": data}, allow_unicode=True, sort_keys=False),
                                     encoding="utf-8")
-    return f"{day} 블로그 통계 저장: " + ", ".join(f"{k} 글 {len(v['posts'])}개·검색어 {len(v['queries'])}개" for k, v in data.items())
+    return f"{day} 주 블로그 통계 저장: " + ", ".join(f"{k} 글 {len(v['posts'])}개·검색어 {len(v['queries'])}개" for k, v in data.items())
 
 
-def recent(days: int = 14) -> list[dict]:
-    """최근 통계 파일들 (새것부터)."""
-    files = sorted(OUT.glob("*.yaml"), reverse=True)[:days] if OUT.exists() else []
+def recent(n: int = 8) -> list[dict]:
+    """최근 통계 파일들 (새것부터, 한 주에 하나)."""
+    files = sorted(OUT.glob("*.yaml"), reverse=True)[:n] if OUT.exists() else []
     return [yaml.safe_load(f.read_text(encoding="utf-8")) or {} for f in files]
 
 
-def top_titles(bid: str, n: int = 5, days: int = 14) -> list[tuple[str, int]]:
-    """최근 days일 동안 조회수 높은 우리 글 제목 (제목별 최고 조회수)."""
+def top_titles(bid: str, n: int = 5, days: int = 2) -> list[tuple[str, int]]:
+    """최근 days주 동안 조회수 높은 우리 글 제목 (제목별 최고 조회수)."""
     best: dict[str, int] = {}
     for d in recent(days):
         for r in (d.get("blogs", {}).get(bid) or {}).get("posts", []):
