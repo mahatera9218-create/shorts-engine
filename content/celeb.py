@@ -149,7 +149,7 @@ def titles(kw: str, memo: str | None = None) -> Path:
             if x["title"] == t:
                 return i
         n = len(t)
-        flags = ([f"{n}자(30자 넘음)"] if n > 30 else []) + (["괄호"] if re.search(r"[\[\]()]", t) else [])
+        flags = ([f"{n}자(35자 넘음)"] if n > 35 else []) + (["괄호"] if re.search(r"[\[\]()]", t) else [])
         if g.startswith("그룹 1") and person and person in t:
             flags.append("주인공 이름 들어감")
         items.append({"title": t, "type": g.split()[0] + " " + g.split()[1], "rank": rank, "best": rank == 1,
@@ -162,6 +162,10 @@ def titles(kw: str, memo: str | None = None) -> Path:
     for v in out.get("versions", []):  # 제목 고수 방식 3개씩
         typ = f"{v['who']}식"
         groups.append({"type": typ, "idx": [add(t, typ + " 방식", None) for t in v["titles"][:3]], "best": None})
+    from .good_rules import ensure  # 반응굿 유형이 하나도 없으면 3개 보충 (대표 지시 2026-10-08)
+    extra = ensure(items, F.BLOG["id"], kw, memo, prompt(), 35)
+    if extra:
+        groups.insert(0, {"type": "반응굿 유형", "idx": [add(t, "반응굿 유형", None) for t in extra], "best": None})
     (d / "chosen.yaml").unlink(missing_ok=True)
     F.save(d / "titles.yaml", {"keyword": kw, "person": person, "mode": "연예패션",
                                "made": datetime.now(F.KST).strftime("%H:%M"), "items": items, "groups": groups})
