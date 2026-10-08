@@ -193,15 +193,14 @@ def page(p: dict) -> str:
 
 
 def rules_html() -> str:
-    """👍 잘 된 글 규칙 (어사이드 블로거 조사의 '반응 좋은 글에만 있는 것', 대표 지시 2026-10-08) — 제목 칸 안에 접어서."""
+    """👍 잘 된 제목 규칙 (어사이드 블로거 조사의 '반응 좋은 글에만 있는 것', 대표 지시 2026-10-08) — 제목 칸 안에 접어서."""
     from .good_rules import rules
     e, r = html.escape, rules(BID)
     li = lambda xs: "".join(f"<li>{e(x)}</li>" for x in xs)
-    if not (r.get("title") or r.get("body")):
+    if not r.get("title"):  # 제목 규칙만 (글 작성은 쿠니네식으로만, 대표 원칙 2026-10-08)
         return ""
-    return (f'<details style="margin-top:8px"><summary class="muted">👍 잘 된 글 규칙</summary>'
-            + (f'<b>제목</b><ul style="margin:4px 0 8px;padding-left:18px">{li(r["title"])}</ul>' if r.get("title") else "")
-            + (f'<b>본문</b><ul style="margin:4px 0;padding-left:18px">{li(r["body"])}</ul>' if r.get("body") else "")
+    return (f'<details style="margin-top:8px"><summary class="muted">👍 잘 된 제목 규칙</summary>'
+            + f'<ul style="margin:4px 0;padding-left:18px">{li(r["title"])}</ul>'
             + '</details>')
 
 
