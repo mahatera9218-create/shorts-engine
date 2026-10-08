@@ -128,13 +128,12 @@ def person_row(it: dict, used: bool, context: set[str] | None = None, skip: set[
     q = it.get("find") or it["label"]
     cands = [] if used else find(q, 3, context, skip)
     cap = "font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px"
-    btn = "min-height:30px;margin:2px 0 0;padding:4px;font-size:12px;font-weight:600;text-align:center"
     pics = "".join(
         f'<div style="min-width:0"><a href="{e(c["link"], quote=True)}" target="_blank" rel="noopener noreferrer">'
         f'<img src="{e(c["thumb"], quote=True)}" referrerpolicy="no-referrer" loading="lazy" alt="" '
         f'style="width:100%;aspect-ratio:1/1;object-fit:cover;object-position:top;border-radius:8px;background:var(--bg)"></a>'
         f'<div class="muted" style="{cap}">{e(c["host"])}</div>'
-        f'<button class="ghost" style="{btn}" onclick="copyText(this,{e(json.dumps("사진 출처: " + c["host"]), quote=True)})">출처 복사</button></div>'
+        f'</div>'  # 출처 복사 없음 (대표 결정 2026-10-08: 사진 출처 안 적음)
         for c in cands)
     naver = f'https://search.naver.com/search.naver?where=image&query={urllib.parse.quote(q)}'
     return (f'<div style="padding:8px 0;border-top:1px solid var(--line)"><b>{it["n"]}번</b> {e(it["label"])} '
@@ -156,11 +155,13 @@ def prompts_card(p: dict) -> str:
     context = {w for it in slots for w in (it.get("find") or "").split()[1:]}
     skip: set[str] = set()
     people = "".join(person_row(it, used, context, skip) for it in slots)
+    draw = any(not it.get("person") and it.get("desc") for it in items)  # 패션은 실사만이라 그릴 사진 없음 (2026-10-08)
     return (f'<div class="card"><h2>사진</h2>'
-            f'<button onclick="copyText(this,{e(json.dumps(text), quote=True)})">📋 사진 프롬프트 복사</button>'
-            f'<details><summary class="muted">프롬프트 보기</summary><div style="font-size:13px;white-space:pre-wrap;word-break:break-word;'
-            f'background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:8px">{e(text)}</div></details>'
-            f'{f"<details open><summary><b>인물 사진</b></summary>{people}</details>" if people else ""}'
+            + (f'<button onclick="copyText(this,{e(json.dumps(text), quote=True)})">📋 사진 프롬프트 복사</button>'
+               f'<details><summary class="muted">프롬프트 보기</summary><div style="font-size:13px;white-space:pre-wrap;word-break:break-word;'
+               f'background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:8px">{e(text)}</div></details>'
+               if draw else "")
+            + f'{f"<details open><summary><b>실제 사진</b></summary>{people}</details>" if people else ""}'
             f'<a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="../../photo/">📐 사진 800×800 맞추기</a></div>')
 
 
@@ -183,12 +184,25 @@ def page(p: dict) -> str:
 <h1>{e(best["text"])}</h1>
 {f'<div class="card" style="border:2px solid var(--warn)"><b>⚠️ 확인 필요</b><ul>{probs}</ul></div>' if not p["ok"] else ""}
 <div class="card"><h2>제목</h2>{desk.edit_box("title", best["text"], "제목 복사", one_line=True)}
-{f'<details><summary class="muted">다른 제목 {len(p["titles"]) - 1}개</summary>{rest}</details>' if rest else ''}</div>
+{f'<details><summary class="muted">다른 제목 {len(p["titles"]) - 1}개</summary>{rest}</details>' if rest else ''}{rules_html()}</div>
 {prompts_card(p)}
 <div class="card"><h2>본문</h2>
 <button onclick="copyBody(this)">📋 본문 복사</button>
 <details><summary class="muted">본문 보기·고치기</summary>{body}</details></div>
 </main><script>const POST={data};{desk.JS}</script></body></html>"""
+
+
+def rules_html() -> str:
+    """👍 잘 된 글 규칙 (어사이드 블로거 조사의 '반응 좋은 글에만 있는 것', 대표 지시 2026-10-08) — 제목 칸 안에 접어서."""
+    from .good_rules import rules
+    e, r = html.escape, rules(BID)
+    li = lambda xs: "".join(f"<li>{e(x)}</li>" for x in xs)
+    if not (r.get("title") or r.get("body")):
+        return ""
+    return (f'<details style="margin-top:8px"><summary class="muted">👍 잘 된 글 규칙</summary>'
+            + (f'<b>제목</b><ul style="margin:4px 0 8px;padding-left:18px">{li(r["title"])}</ul>' if r.get("title") else "")
+            + (f'<b>본문</b><ul style="margin:4px 0;padding-left:18px">{li(r["body"])}</ul>' if r.get("body") else "")
+            + '</details>')
 
 
 def blog_section(b: dict, posts: list[dict]) -> str:
@@ -364,7 +378,7 @@ def flow_html() -> str:
             btns = [btn(i, it, "") for i, it in enumerate(items_t, 1)]
         again = desk.issue_link(f"{LABEL}제목새로", T.get("keyword", ""), "다시 조사해서 새로 뽑아 주세요.")
         topics.append(f'<div class="card"><h2>제목 · {e(T.get("keyword", ""))}</h2>{"".join(btns)}'
-                      f'<a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(again, quote=True)}">🔄 다시 뽑기</a></div>')
+                      f'<a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(again, quote=True)}">🔄 다시 뽑기</a>{rules_html()}</div>')
     return kw_html + "".join(topics)
 
 

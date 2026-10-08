@@ -90,7 +90,7 @@ def titles(kw: str) -> Path:
     out = F.claude_json(prompt() + [g for g in [title_guide()] if g], (
         f"핵심키워드: {kw}\n\n[조사 메모]\n{memo[:10000]}\n\n"
         "이번 단계는 **제목만** 만듭니다(본문은 다음 단계). 원문의 '제목 후보 생성 규칙'대로 6유형 × 5개, 유형별 BEST, "
-        "최종 BEST 5를 JSON으로 주세요(45자 이내).\n\n" + versions_ask(F.BLOG["id"]) + __import__("content.blog_stats", fromlist=["x"]).title_hint(F.BLOG["id"])),
+        "최종 BEST 5를 JSON으로 주세요(45자 이내).\n\n" + versions_ask(F.BLOG["id"]) + __import__("content.blog_stats", fromlist=["x"]).title_hint(F.BLOG["id"]) + __import__("content.good_rules", fromlist=["x"]).title_hint(F.BLOG["id"])),
         TITLES, stage="제목(쿠니네)")
     core = kw.split()[0]
     items, seen = [], set()
