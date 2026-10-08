@@ -1,0 +1,72 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · 삼성전자 간판 로고 클로즈업",
+  "make": true,
+  "file": "thumb.jpg",
+  "desc": "Square close-up of the large blue SAMSUNG logo sign on a Samsung Electronics building, centered, half of the scene bright sunlight and half in deep shadow with strong contrast, high saturation, cinematic lighting, no other text or numbers",
+  "brand": "Samsung Electronics",
+  "size": "1024x1024",
+  "prompt": "Square 1:1 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Square close-up of the large blue SAMSUNG logo sign on a Samsung Electronics building, centered, half of the scene bright sunlight and half in deep shadow with strong contrast, high saturation, cinematic lighting, no other text or numbers This must clearly be Samsung Electronics: show its real, accurate corporate signage — the actual Samsung Electronics logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 2,
+  "label": "서울 서초동 삼성전자 사옥 전경",
+  "make": true,
+  "file": "img2.jpg",
+  "desc": "Wide aerial photograph of the Samsung Electronics Seocho office tower in Gangnam, Seoul, tall blue glass skyscraper with the SAMSUNG logo near the top, sunny day, city and Han river in the background",
+  "brand": "Samsung Electronics",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Wide aerial photograph of the Samsung Electronics Seocho office tower in Gangnam, Seoul, tall blue glass skyscraper with the SAMSUNG logo near the top, sunny day, city and Han river in the background This must clearly be Samsung Electronics: show its real, accurate corporate signage — the actual Samsung Electronics logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 3,
+  "label": "삼성전자 기흥 반도체 캠퍼스 전경",
+  "make": true,
+  "file": "img3.jpg",
+  "desc": "Aerial view of the Samsung Electronics Giheung semiconductor campus, large grey fab building with the blue SAMSUNG logo, clear daylight, press photo style",
+  "brand": "Samsung Electronics",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Aerial view of the Samsung Electronics Giheung semiconductor campus, large grey fab building with the blue SAMSUNG logo, clear daylight, press photo style This must clearly be Samsung Electronics: show its real, accurate corporate signage — the actual Samsung Electronics logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 4,
+  "label": "여의도 증권가 시세 전광판 앞 투자자들의 뒷모습",
+  "make": true,
+  "file": "img4.jpg",
+  "desc": "Photojournalism style shot of a stock trading floor with large electronic quote boards glowing red and blue in Yeouido, Seoul, anonymous office workers seen from behind, no readable text or numbers",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Photojournalism style shot of a stock trading floor with large electronic quote boards glowing red and blue in Yeouido, Seoul, anonymous office workers seen from behind, no readable text or numbers No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 5,
+  "label": "스마트폰으로 주식 시세를 확인하는 투자자의 손",
+  "make": true,
+  "file": "img5.jpg",
+  "desc": "Close-up of a hand holding a smartphone showing a blurred stock app in a Seoul cafe, natural window light, anonymous person, no readable text or numbers",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Close-up of a hand holding a smartphone showing a blurred stock app in a Seoul cafe, natural window light, anonymous person, no readable text or numbers No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 6,
+  "label": "삼성전자 건물 외벽의 로고 간판",
+  "make": true,
+  "file": "img6.jpg",
+  "desc": "Close-up of the blue SAMSUNG logo sign on a Samsung Electronics building facade in Korea, centered, bright daylight, photojournalism style",
+  "brand": "Samsung Electronics",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Close-up of the blue SAMSUNG logo sign on a Samsung Electronics building facade in Korea, centered, bright daylight, photojournalism style This must clearly be Samsung Electronics: show its real, accurate corporate signage — the actual Samsung Electronics logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 7,
+  "label": "서버용 메모리 반도체 모듈 클로즈업",
+  "make": true,
+  "file": "img7.jpg",
+  "desc": "Macro photograph of a memory chip module on a dark circuit board, sharp focus, cool industrial lighting, no text or logos",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Macro photograph of a memory chip module on a dark circuit board, sharp focus, cool industrial lighting, no text or logos No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ }
+]
