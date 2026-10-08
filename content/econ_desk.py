@@ -432,6 +432,7 @@ def flow_html() -> str:
         bar = (f'<span class="muted">{naver}'
                f'{"최신 " + str(pt.get("최신", 0)) + "/" + str(W["최신"]) + " · " if W.get("최신") else ""}'
                f'출처 {pt.get("출처", 0)}/{W["출처"]} · 뉴스 {pt.get("뉴스", 0)}/{W["뉴스"]} · 검색 {pt.get("검색", 0)}/{W["검색"]}'
+               f'{" · 제품정보 +" + str(pt["제품"]) if pt.get("제품") else ""}'
                f'{" · 월검색 " + format(st["월검색"], ",") if st.get("월검색") else ""}</span><br>') if pt else ""
         rows.append(f'<div style="display:flex;gap:8px;align-items:stretch"><label style="display:flex;align-items:center;padding:0 4px">'
                     f'<input type="checkbox" class="kwpick-{BID}" value="{e(it["kw"], quote=True)}" onchange="pick_{BID}()" style="width:22px;height:22px"></label>'
