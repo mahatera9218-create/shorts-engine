@@ -77,3 +77,4 @@ date,time,cmd,item,claude_usd,gpt_usd,grok_usd,image_usd,total_usd,blog
 2026-10-08,16:03,produce,2026-10-08-김민하-샤넬-원피스 1,0.0550,0.0000,0.0000,0.0000,0.0550,fashion
 2026-10-08,16:07,titles,카리나 가방,0.0463,0.0000,0.0663,0.0000,0.1126,fashion
 2026-10-08,21:00,linkcheck,https://m.ssfshop.com/FILA/GRMNA26081879,0.9931,0.0000,0.0000,0.0000,0.9931,fashion
+2026-10-08,21:19,linkcheck,https://m.ssfshop.com/FILA/GRMNA26081879,0.3656,0.0000,0.0000,0.0000,0.3656,fashion
