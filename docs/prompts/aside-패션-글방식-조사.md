@@ -10,7 +10,7 @@
 
 [대상]
 1순위 (가장 자세히): 쿠니네패션 https://blog.naver.com/qkrrnfjqm — 최근 글 중 조회수·공감·댓글이 많아 보이는 글 5편
-나머지 (블로거마다 최근 인기 글 2편): https://blog.naver.com/ohye1991 , https://blog.naver.com/jayuyu , https://blog.naver.com/lub_hong , https://blog.naver.com/goodface0863 , https://blog.naver.com/cocoleenice , https://blog.naver.com/semingg , https://blog.naver.com/djdjdj8206 , https://blog.naver.com/by-nyong , https://blog.naver.com/merryeeun , https://blog.naver.com/wlstjs9754
+나머지 (블로거마다 최근 인기 글 2편): https://blog.naver.com/ohye1991 , https://blog.naver.com/jayuyu , https://blog.naver.com/lub_hong , https://blog.naver.com/goodface0863 , https://blog.naver.com/cocoleenice , https://blog.naver.com/semingg , https://blog.naver.com/djdjdj8206 , https://blog.naver.com/by-nyong , https://blog.naver.com/merryeeun , https://blog.naver.com/wlstjs9754 , https://blog.naver.com/tjthdus94
 
 [글마다 볼 것]
 1. 제목: 글자 수, 인물 이름 위치(앞/뒤), 따옴표·말줄임·물음표·감탄 같은 장치, 브랜드·가격을 넣는지
