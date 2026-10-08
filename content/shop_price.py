@@ -103,6 +103,18 @@ def main() -> None:
     qs = [("샤넬", "라지 버킷백"), ("미우미우", "스웨이드 재킷"), ("버버리", "트렌치코트")]
     hub = _hub()
     md = [f"# 네이버 쇼핑 검색 점검 ({F.today()})", "", f"- 주소: {hub[0] if hub else '키 없음'}", ""]
+    if hub:  # 주소 찾기: 공식 문서를 못 열어 후보를 직접 불러 봄 (404 = 주소 없음, 401·403 = 주소는 있고 권한 없음, 200 = 됨)
+        import requests
+        base = load_yaml("global.yaml")["endpoints"]["naver_hub"]["base"].rstrip("/")
+        md += ["## 주소 후보 응답", ""]
+        for path in ("/search/v1/shop", "/search/v1/shopping", "/search/v1/shop.json", "/shopping/v1/search",
+                     "/search/v1/product", "/v1/search/shop", "/v1/search/shop.json", "/search/v1/blog"):
+            try:
+                r = requests.get(base + path, headers=hub[1], params={"query": "트렌치코트", "display": 1}, timeout=20)
+                md.append(f"- {path} → HTTP {r.status_code} {r.text[:120].strip()}")
+            except Exception as e:  # noqa: BLE001
+                md.append(f"- {path} → 실패 {type(e).__name__}")
+        md.append("")
     for b, n in qs:
         items = search(f"{b} {n}")
         md += [f"## {b} {n}", f"- 받은 상품 {len(items)}개",
