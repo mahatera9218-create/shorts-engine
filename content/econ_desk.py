@@ -121,48 +121,64 @@ def all_prompt(items: list[dict], title: str = "") -> str:
     return "\n".join(lines)
 
 
-def person_row(it: dict, used: bool, context: set[str] | None = None, skip: set[str] | None = None) -> str:
-    """인물 사진 한 자리: 후보 3장(누르면 원본) + 출처 복사. 설명 글 없음 (대표 지시 2026-10-08)."""
-    from .photo_find import find
-    e = html.escape
-    q = it.get("find") or it["label"]
-    cands = [] if used else find(q, 3, context, skip)
-    cap = "font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px"
-    pics = "".join(
-        f'<div style="min-width:0"><a href="{e(c["link"], quote=True)}" target="_blank" rel="noopener noreferrer">'
-        f'<img src="{e(c["thumb"], quote=True)}" referrerpolicy="no-referrer" loading="lazy" alt="" '
-        f'style="width:100%;aspect-ratio:1/1;object-fit:cover;object-position:top;border-radius:8px;background:var(--bg)"></a>'
-        f'<div class="muted" style="{cap}">{e(c["host"])}</div>'
-        f'</div>'  # 출처 복사 없음 (대표 결정 2026-10-08: 사진 출처 안 적음)
-        for c in cands)
-    naver = f'https://search.naver.com/search.naver?where=image&query={urllib.parse.quote(q)}'
-    return (f'<div style="padding:8px 0;border-top:1px solid var(--line)"><b>{it["n"]}번</b> {e(it["label"])} '
-            f'<a href="{e(naver, quote=True)}" target="_blank" rel="noopener" class="muted">더 찾기</a>'
-            + (f'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px">{pics}</div>' if pics else "") + '</div>')
-
-
 def prompts_card(p: dict) -> str:
-    """사진: 프롬프트 복사 + (패션) 인물 사진 후보 + 크기 맞추기. 설명 글 없음 (대표 지시 2026-10-08)."""
+    """사진: 프롬프트만 (대표 결정 2026-10-09: 실제 사진 후보는 글과 안 맞는 게 많아 안 보여 줌). 경제 = 그릴 사진 프롬프트,
+    패션 = 찾을 실제 사진 목록(번호·검색어·설명)."""
     e = html.escape
     f = POSTS / p["folder"] / "prompts.json"
     if not f.exists():
         return ""
     items = json.loads(f.read_text(encoding="utf-8"))
     best = next((t["text"] for t in p.get("titles", []) if t.get("best")), "")
-    text = all_prompt(items, best)  # 대표사진이 제목을 담도록 제목을 같이 (2026-10-07)
-    used = p.get("status", {}).get("status") == "used"
-    slots = [it for it in items if it.get("person")]
-    context = {w for it in slots for w in (it.get("find") or "").split()[1:]}
-    skip: set[str] = set()
-    people = "".join(person_row(it, used, context, skip) for it in slots)
-    draw = any(not it.get("person") and it.get("desc") for it in items)  # 패션은 실사만이라 그릴 사진 없음 (2026-10-08)
+    draw = [it for it in items if not it.get("person") and it.get("desc")]
+    find = [it for it in items if it.get("person")]
+    parts = []
+    if draw:
+        parts.append(all_prompt(items, best))  # 대표사진이 제목을 담도록 제목을 같이 (2026-10-07)
+    if find:
+        parts.append("\n".join(f"{it['n']}번 · {it['label']}" + (f" — 검색어: {it['find']}" if it.get("find") else "") for it in find))
+    text = "\n\n".join(parts)
+    if not text:
+        return ""
     return (f'<div class="card"><h2>사진</h2>'
-            + (f'<button onclick="copyText(this,{e(json.dumps(text), quote=True)})">📋 사진 프롬프트 복사</button>'
-               f'<details><summary class="muted">프롬프트 보기</summary><div style="font-size:13px;white-space:pre-wrap;word-break:break-word;'
-               f'background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:8px">{e(text)}</div></details>'
-               if draw else "")
-            + f'{f"<details open><summary><b>실제 사진</b></summary>{people}</details>" if people else ""}'
+            f'<button onclick="copyText(this,{e(json.dumps(text), quote=True)})">📋 사진 프롬프트 복사</button>'
+            f'<details><summary class="muted">프롬프트 보기</summary><div style="font-size:13px;white-space:pre-wrap;word-break:break-word;'
+            f'background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:8px">{e(text)}</div></details>'
             f'<a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="../../photo/">📐 사진 800×800 맞추기</a></div>')
+
+
+def topic_titles(folder: str) -> dict:
+    """글 폴더의 제목 후보 전체 (flow/<날짜>/<폴더>/titles.yaml)."""
+    f = FLOW / folder[:10] / folder / "titles.yaml"
+    return (yaml.safe_load(f.read_text(encoding="utf-8")) or {}) if f.exists() else {}
+
+
+def title_groups(T: dict) -> list[tuple[str, list[tuple[int, dict]]]]:
+    """프롬프트 기준 제목 묶음 [(묶음 이름, [(번호, 제목)])]. 제목 고수 방식(…식) 묶음은 빼고 (대표 결정 2026-10-09: 프롬프트 기준).
+    경제 = 최종 BEST 5 + 6유형 × 5, 패션 = 최종 추천 1 + 그룹 1·2·3 × 5."""
+    items = T.get("items", [])
+    out = [("최종 추천", [(i, it) for i, it in enumerate(items, 1) if it.get("rank")])]
+    for g in T.get("groups", []):
+        if g["type"].endswith("식"):
+            continue
+        out.append((g["type"], [(j + 1, items[j]) for j in g["idx"] if j < len(items)]))
+    return [(n, xs) for n, xs in out if xs]
+
+
+def blog_links(kw: str, n: int = 3) -> str:
+    """같은 키워드 네이버 블로그 글 3개 (공식 블로그 검색 API, 대표 요청 2026-10-09: 사진 후보 대신)."""
+    e = html.escape
+    from .econ_flow import top10
+    try:
+        rows = [r for r in top10(kw) if r.get("link")][:n] if kw else []
+    except Exception:  # noqa: BLE001  (도우미는 링크 없이도 그린다)
+        rows = []
+    if not rows:
+        return ""
+    return ('<div style="margin-top:8px"><b style="font-size:13px">같은 키워드 블로그</b>'
+            + "".join(f'<a href="{e(r["link"], quote=True)}" target="_blank" rel="noopener" style="display:block;font-size:13px;'
+                      f'padding:4px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{e(r["title"])}</a>' for r in rows)
+            + '</div>')
 
 
 def page(p: dict) -> str:
@@ -171,8 +187,17 @@ def page(p: dict) -> str:
     e = html.escape
     best = next((t for t in p["titles"] if t["best"]), p["titles"][0] if p["titles"] else {"text": p["folder"], "type": ""})
     probs = "".join(f"<li>{e(x)}</li>" for x in p["problems"])
-    rest = "".join(f'<button class="ghost" onclick="setEd(\'title\',{e(json.dumps(t["text"]), quote=True)})">{e(t["text"])}'
-                   f' <span class="muted">· {e(t["type"])}</span>{badge(t["text"], t["type"])}</button>' for t in p["titles"] if t is not best)
+    T = topic_titles(p["folder"])
+    pick_btn = lambda t, typ: (f'<button class="ghost" onclick="setEd(\'title\',{e(json.dumps(t), quote=True)})">{e(t)}'  # noqa: E731
+                               f'{badge(t, typ)}</button>')
+    if T:  # 프롬프트대로 만든 제목 전부 (대표 지시 2026-10-09 "다른 제목이 너무 적다")
+        groups = title_groups(T)
+        n_all = sum(len(xs) for _, xs in groups)
+        rest = "".join(f'<div class="muted" style="margin:8px 0 2px;font-size:13px">{e(name)}</div>'
+                       + "".join(pick_btn(it["title"], it.get("type", "")) for _, it in xs) for name, xs in groups)
+    else:
+        n_all = len(p["titles"])
+        rest = "".join(pick_btn(t["text"], t["type"]) for t in p["titles"] if t is not best)
     body = "".join(
         f'<textarea class="ed" data-k="b{i}" rows="3">{e(b["text"])}</textarea>' if "text" in b else
         f'<div class="muted" style="padding:6px 0">📷 사진 {b["n"]} · {e(b["label"])}</div>'
@@ -184,7 +209,7 @@ def page(p: dict) -> str:
 <h1>{e(best["text"])}</h1>
 {f'<div class="card" style="border:2px solid var(--warn)"><b>⚠️ 확인 필요</b><ul>{probs}</ul></div>' if not p["ok"] else ""}
 <div class="card"><h2>제목{badge(best["text"], best.get("type", ""))}</h2>{desk.edit_box("title", best["text"], "제목 복사", one_line=True)}
-{f'<details><summary class="muted">다른 제목 {len(p["titles"]) - 1}개</summary>{rest}</details>' if rest else ''}{rules_html()}</div>
+{f'<details><summary class="muted">다른 제목 {n_all}개</summary>{rest}</details>' if rest else ''}{rules_html()}{blog_links(T.get("keyword", "")) if BID != "econ" and T else ""}</div>
 {prompts_card(p)}
 <div class="card"><h2>본문</h2>
 <button onclick="copyBody(this)">📋 본문 복사</button>
@@ -218,11 +243,27 @@ def blog_section(b: dict, posts: list[dict]) -> str:
     use(b)
     today = datetime.now(KST).strftime("%Y-%m-%d")
     live = sorted((p for p in posts if p["date"] == today), key=lambda p: p["folder"], reverse=True)
-    rows = "".join(f'<a class="btn" style="text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
-                   f'href="p/{b["id"]}-{desk.slug(p["folder"])}/">{"" if p["ok"] else "⚠️ "}'
-                   f'{e(next((x["text"] for x in p["titles"] if x["best"]), p["folder"]))}</a>' for p in live)
-    return (f'<section class="tab" id="{b["id"]}" hidden><div class="cols"><div>'
-            f'<div class="card"><h2>오늘 글</h2>{rows or "<p class=muted>없음</p>"}</div>'
+    bid = b["id"]
+    rows = "".join(
+        f'<div class="today-{bid}" data-f="{e(p["folder"], quote=True)}" style="display:flex;gap:6px;align-items:stretch">'
+        f'<a class="btn" style="flex:1;margin:4px 0;text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
+        f'href="p/{bid}-{desk.slug(p["folder"])}/">{"" if p["ok"] else "⚠️ "}'
+        f'{e(next((x["text"] for x in p["titles"] if x["best"]), p["folder"]))}</a>'
+        f'<button class="ghost" style="width:44px;margin:4px 0;padding:0" onclick="hideToday(\'{bid}\',this)">✕</button></div>' for p in live)
+    # 오늘 글 숨기기 (대표 요청 2026-10-09) — 이 휴대폰에만 기억 (localStorage), '숨긴 글 보기'로 다시
+    js = ("function hideKey(b){return 'hide-'+b}"
+          "function hidden_(b){try{return JSON.parse(localStorage.getItem(hideKey(b))||'[]')}catch(e){return []}}"
+          "function hideToday(b,el){const f=el.parentNode.dataset.f;const h=hidden_(b);if(!h.includes(f))h.push(f);"
+          "try{localStorage.setItem(hideKey(b),JSON.stringify(h))}catch(e){}applyHide(b)}"
+          "function applyHide(b,show){const h=hidden_(b);let n=0;document.querySelectorAll('.today-'+b).forEach(d=>{"
+          "const x=h.includes(d.dataset.f);if(x)n++;d.style.display=(x&&!show)?'none':'flex'});"
+          "const s=document.getElementById('hid-'+b);if(s){s.style.display=n?'block':'none';s.textContent=show?'숨긴 글 다시 숨기기':'숨긴 글 '+n+'개 보기';"
+          "s.onclick=()=>applyHide(b,!show)}}"
+          "function showAllHidden(b){try{localStorage.removeItem(hideKey(b))}catch(e){}applyHide(b)}")
+    return (f'<section class="tab" id="{bid}" hidden><div class="cols"><div>'
+            f'<div class="card"><h2>오늘 글</h2>{rows or "<p class=muted>없음</p>"}'
+            f'<a id="hid-{bid}" class="muted" style="display:none;margin-top:6px;font-size:13px;cursor:pointer"></a></div>'
+            f'<script>{js}applyHide("{bid}")</script>'
             f'</div><div>{flow_html()}</div></div></section>')
 
 
@@ -330,69 +371,102 @@ def written_today(day: Path) -> dict[str, str]:
     return out
 
 
+def score_table(items: list[dict]) -> str:
+    """키워드 점수표 (대표 요청 2026-10-09 '점수표 살려 줘') — 접어서."""
+    e = html.escape
+    keys = list(dict.fromkeys(k for it in items for k in (it.get("parts") or {})))
+    if not items or not keys:
+        return ""
+    th = "".join(f"<th>{e(k)}</th>" for k in keys)
+    tr = "".join(f'<tr><td style="text-align:left">{e(it["kw"])}</td><td><b>{it.get("score", "")}</b></td>'
+                 + "".join(f'<td>{(it.get("parts") or {}).get(k, "")}</td>' for k in keys) + "</tr>" for it in items)
+    return (f'<details style="margin-top:6px"><summary class="muted">점수표</summary><div style="overflow-x:auto">'
+            f'<table style="font-size:12px;border-collapse:collapse;width:100%;text-align:center"><tr><th style="text-align:left">키워드</th>'
+            f'<th>합계</th>{th}</tr>{tr}</table></div></details>')
+
+
+def kw_row(it: dict, done: dict[str, str]) -> str:
+    """키워드 한 줄: 글이 됐으면 ✅ + 글로, 아니면 누르면 제목 후보 만들기 (대표 결정 2026-10-09: 키워드는 대표가 고름)."""
+    e = html.escape
+    slug = done.get(it["kw"])
+    href = f"p/{BID}-{desk.slug(slug)}/" if slug and (POSTS / slug).exists() else \
+        desk.issue_link(f"{LABEL}키워드", it["kw"], "이 키워드로 제목 후보를 만들어 주세요.")
+    sc = f' <span class="seal">{it["score"]}</span>' if "score" in it else ""
+    return (f'<a class="btn" style="text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
+            f'href="{e(href, quote=True)}">{"✅ " if slug else ""}<b>{e(it["kw"])}</b>{sc}</a>')
+
+
 def flow_html() -> str:
-    """키워드(점수 상위 5개, 패션은 제품 정보 있는 것만) → 제목 고르기 (대표 지시 2026-10-08: 설명 글 없이)."""
+    """키워드(대표가 고름) → 제목 후보(프롬프트 기준) → 대표가 제목 고름(패션은 상품 링크도) → 글 (대표 결정 2026-10-09 역할 정리).
+    경제 키워드 = 국내주식·해외주식·금·비트코인 섹션마다 3개, 75점 이상만 / 패션 = 점수 상위 5개."""
+    from .econ_sections import pick
     e = html.escape
     today = datetime.now(KST).strftime("%Y-%m-%d")
     day = FLOW / today
     kw = (yaml.safe_load((day / "keywords.yaml").read_text(encoding="utf-8")) or {}) if (day / "keywords.yaml").exists() else {}
     done = written_today(day)
     items = sorted(kw.get("items", []), key=lambda x: -x.get("score", 0))
-    if BID != "econ":  # 패션: 정확한 정보가 있는 것만, 0~5개 (억지로 채우지 않음)
-        items = [it for it in items if has_info(it)]
-    rows = []
-    for it in items[:5]:
-        slug = done.get(it["kw"])
-        href = f"p/{BID}-{desk.slug(slug)}/" if slug and (POSTS / slug).exists() else \
-            desk.issue_link(f"{LABEL}키워드", it["kw"], "이 키워드로 제목 후보를 만들어 주세요.")
-        sc = f' <span class="seal">{it["score"]}</span>' if "score" in it else ""
-        if BID != "econ" and not slug:  # 패션: 키워드를 누르면 아래 링크 칸 첫 줄에 들어감 → 대표가 구글 렌즈 링크를 붙여넣음 (2026-10-08)
-            rows.append(f'<button class="ghost" style="text-align:left;width:100%" '
-                        f'onclick="pickKw_{BID}({e(json.dumps(it["kw"]), quote=True)})"><b>{e(it["kw"])}</b>{sc}</button>')
-            continue
-        rows.append(f'<a class="btn" style="text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
-                    f'href="{e(href, quote=True)}">{"✅ " if slug else ""}<b>{e(it["kw"])}</b>{sc}</a>')
+    if BID == "econ":
+        from .econ_score import CFG as _kcfg
+        from .econ_flow import load as _load
+        c = _load(_kcfg(), {}) or {}
+        secs = pick(items, c.get("sections", ["국내주식", "해외주식", "금·비트코인"]), c.get("section_n", 3), c.get("min_show", 75))
+        shown = [it for xs in secs.values() for it in xs]
+        rows = "".join(f'<div class="muted" style="margin:10px 0 2px;font-weight:700">{e(name)}</div>'
+                       + ("".join(kw_row(it, done) for it in xs) or '<div class="muted" style="font-size:13px">없음</div>')
+                       for name, xs in secs.items())
+    else:
+        shown = items[:5]  # 패션: 점수 상위 5개 (대표 결정 2026-10-09: 렌즈로 대표가 찾으니 정보 없는 키워드도)
+        rows = "".join(kw_row(it, done) for it in shown) or "<p class=muted>없음</p>"
     add_js = (f"function addKw_{BID}(){{const v=document.getElementById('kwin-{BID}').value.trim();if(!v)return;"
               f"location.href='https://github.com/{desk.REPO}/issues/new?title='+encodeURIComponent('[{LABEL}키워드추가] {today}')"
               "+'&body='+encodeURIComponent(v)}")
-    link_box = ""
-    if BID != "econ":  # 상품 링크로 글 만들기 (대표 지시 2026-10-08 13번)
-        add_js += (f"function addLink_{BID}(){{const v=document.getElementById('lkin-{BID}').value.trim();if(!v)return;"
-                   f"location.href='https://github.com/{desk.REPO}/issues/new?title='+encodeURIComponent('[{LABEL}링크] {today}')"
-                   "+'&body='+encodeURIComponent(v)}")
-        add_js += (f"function pickKw_{BID}(k){{const t=document.getElementById('lkin-{BID}');"
-                   "t.value=k+'\\n';t.scrollIntoView({behavior:'smooth',block:'center'});t.focus()}")
-        link_box = (f'<div class="card"><h2>상품 링크로 글</h2><textarea id="lkin-{BID}" rows="4" style="{TA}" '
-                    f'placeholder="첫 줄: 인물 아이템 (예: 원희 버킷백)&#10;다음 줄: 구글 렌즈로 찾은 상품 링크"></textarea>'
-                    f'<button onclick="addLink_{BID}()">🔗 제목 추천 + 글 만들기</button></div>')
+    if BID != "econ":  # 패션: 고른 제목 번호 + 상품 링크 → 글 (대표 결정 2026-10-09)
+        add_js += (f"function write_{BID}(f){{const r=document.querySelector('input[name=\"t-'+f+'\"]:checked');"
+                   "if(!r){alert('제목을 골라 주세요');return}"
+                   "const v=document.getElementById('lk-'+f).value.trim();"
+                   f"location.href='https://github.com/{desk.REPO}/issues/new?title='+encodeURIComponent('[{LABEL}제목] '+f+' '+r.value)"
+                   "+'&body='+encodeURIComponent(v||'(링크 없음)')}")
     refresh = desk.issue_link(f"{LABEL}키워드새로", today, "키워드를 다시 모아 주세요.")
-    kw_html = (f'<div class="card"><h2>키워드</h2>{status_html(kw, day, today)}{"".join(rows) or "<p class=muted>없음</p>"}'
+    a = kw.get("aside")
+    aside = f'🛰 어사이드 {e(a.get("at", ""))} · {a.get("n", 0)}개' if a else "🛰 어사이드 아직"
+    kw_html = (f'<div class="card"><h2>키워드</h2><div class="muted" style="margin:4px 0 6px">{aside}</div>{rows}'
+               f'{score_table(shown)}'
                f'<textarea id="kwin-{BID}" rows="2" style="{TA}" placeholder="키워드 직접 넣기 (한 줄에 하나)"></textarea>'
                f'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button style="margin:0" onclick="addKw_{BID}()">➕ 넣기</button>'
                f'<a class="btn" style="margin:0;background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(refresh, quote=True)}">🔄 다시 모으기</a></div>'
-               f'<script>{add_js}</script></div>{link_box}')
+               f'<script>{add_js}</script></div>')
     topics = []
     for t in sorted(day.glob("*/titles.yaml")) if day.exists() else []:
         T = yaml.safe_load(t.read_text(encoding="utf-8")) or {}
         if (t.parent / "chosen.yaml").exists():
             continue  # 글이 된 주제는 안 보임
-
-        def btn(i: int, it: dict, label: str) -> str:
-            link = desk.issue_link(f"{LABEL}제목", f"{t.parent.name} {i}", "이 제목으로 글을 만들어 주세요.")
-            return (f'<a class="btn" style="text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
-                    f'href="{e(link, quote=True)}">{label}{e(it["title"])}{badge(it["title"], it.get("type", ""))}</a>')
-
-        items_t = T.get("items", [])
-        if T.get("groups"):
-            btns = [btn(i, it, "★ " if it.get("rank") == 1 else "") for i, it in enumerate(items_t, 1) if it.get("rank")]
-            for g in T.get("groups", []):
-                inner = "".join(btn(j + 1, items_t[j], "") for j in g["idx"] if j < len(items_t))
-                name = g["type"][:-1] + " 방식" if g["type"].endswith("식") else g["type"]
-                btns.append(f'<details><summary class="muted">{e(name)} {len(g["idx"])}개</summary>{inner}</details>')
-        else:
-            btns = [btn(i, it, "") for i, it in enumerate(items_t, 1)]
+        f = t.parent.name
+        groups = title_groups(T)
+        if BID == "econ":  # 경제: 제목을 누르면 글
+            def btn(i: int, it: dict) -> str:
+                link = desk.issue_link(f"{LABEL}제목", f"{f} {i}", "이 제목으로 글을 만들어 주세요.")
+                return (f'<a class="btn" style="text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
+                        f'href="{e(link, quote=True)}">{"★ " if it.get("rank") == 1 else ""}{e(it["title"])}{badge(it["title"], it.get("type", ""))}</a>')
+        else:  # 패션: 제목 고르기(라디오) + 상품 링크 칸 + 글 쓰기
+            def btn(i: int, it: dict) -> str:
+                return (f'<label style="display:flex;gap:8px;align-items:flex-start;padding:8px 4px;border-bottom:1px solid var(--line)">'
+                        f'<input type="radio" name="t-{e(f, quote=True)}" value="{i}"{" checked" if it.get("rank") == 1 else ""} style="margin-top:4px">'
+                        f'<span>{"★ " if it.get("rank") == 1 else ""}{e(it["title"])}{badge(it["title"], it.get("type", ""))}</span></label>')
+        head_g, rest_g = (groups[0], groups[1:]) if groups else (("", []), [])
+        n_rest = sum(len(xs) for _, xs in rest_g)
+        body = "".join(btn(i, it) for i, it in head_g[1])
+        if rest_g:
+            body += (f'<details><summary class="muted">다른 제목 {n_rest}개</summary>'
+                     + "".join(f'<div class="muted" style="margin:8px 0 2px;font-size:13px">{e(name)}</div>'
+                               + "".join(btn(i, it) for i, it in xs) for name, xs in rest_g) + '</details>')
         again = desk.issue_link(f"{LABEL}제목새로", T.get("keyword", ""), "다시 조사해서 새로 뽑아 주세요.")
-        topics.append(f'<div class="card"><h2>제목 · {e(T.get("keyword", ""))}</h2>{"".join(btns)}'
+        if BID != "econ":
+            body += (f'<textarea id="lk-{e(f, quote=True)}" rows="3" style="{TA};margin-top:10px" '
+                     f'placeholder="구글 렌즈로 찾은 상품 링크 (한 줄에 하나)"></textarea>'
+                     f'<button onclick="write_{BID}({e(json.dumps(f), quote=True)})">✍️ 이 제목 + 링크로 글 쓰기</button>'
+                     + blog_links(T.get("keyword", "")))
+        topics.append(f'<div class="card"><h2>제목 · {e(T.get("keyword", ""))}</h2>{body}'
                       f'<a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(again, quote=True)}">🔄 다시 뽑기</a>{rules_html()}</div>')
     return kw_html + "".join(topics)
 

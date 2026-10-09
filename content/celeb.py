@@ -73,6 +73,20 @@ def link_facts(urls: list[str]) -> str:
     return "".join(b.text for b in msg.content if getattr(b, "type", "") == "text").strip()
 
 
+def write_with_links(slug: str, n: int, urls: list[str]) -> Path:
+    """대표가 고른 제목(n번) + 구글 렌즈로 찾은 상품 링크 → 링크 제품 정보를 조사 메모 맨 앞에 넣고 원문 프롬프트대로 글 (대표 결정 2026-10-09)."""
+    tdir = next(F.FLOW.glob(f"*/{slug}"), None)
+    if not tdir:
+        raise SystemExit(f"주제 폴더 없음: {slug}")
+    if urls:
+        facts = link_facts(urls)
+        r = tdir / "research.md"
+        old = r.read_text(encoding="utf-8") if r.exists() else ""
+        r.write_text("[대표가 준 상품 링크에서 확인한 제품 정보 — 가장 믿을 만한 자료, 본문 제품 정보는 이걸 기준으로]\n"
+                     + facts + "\n\n" + old, encoding="utf-8")
+    return produce(slug, n)
+
+
 def from_links(text: str) -> Path:
     """'[패션링크]' 이슈: 첫 줄 = 인물 아이템, 다음 줄들 = 상품 링크 → 조사 + 링크 제품 정보 → 제목 → ★추천 제목으로 초안."""
     lines = [l.strip() for l in text.splitlines() if l.strip()]
@@ -106,9 +120,8 @@ def _grok_research(kw: str) -> str:
 # ---------------------------------------------------------------- 제목 (그룹 3 × 5 + 최종 1)
 
 GROUPS = ["그룹 1 주인공 숨김", "그룹 2 이름 노출", "그룹 3 관련 인물"]
-TITLES = {"type": "object", "additionalProperties": False, "required": ["groups", "final", "person", "versions"],
+TITLES = {"type": "object", "additionalProperties": False, "required": ["groups", "final", "person"],
           "properties": {
-              "versions": VERSION_SCHEMA,  # 제목 고수 방식 3개씩 (유미·경제토르, 대표 지시 2026-10-06)
               "person": {"type": "string", "description": "주인공 이름"},
               "groups": {"type": "array", "description": "그룹 1·2·3 순서로 3개",
                          "items": {"type": "object", "additionalProperties": False, "required": ["group", "titles"],
@@ -141,7 +154,7 @@ def titles(kw: str, memo: str | None = None) -> Path:
     (d / "research.md").write_text(f"# 조사 메모: {kw}\n\n{memo}\n", encoding="utf-8")
     out = F.claude_json(prompt() + [g for g in [title_guide()] if g], (
         f"키워드(주어): {kw}\n\n[조사 메모]\n{memo[:10000]}\n\n이번 단계는 **제목만** 만듭니다. 원문의 제목 규칙대로 그룹 1·2·3 각 5개와 "
-        "최종 추천 1개를 JSON으로 주세요.\n\n" + versions_ask(F.BLOG["id"]) + __import__("content.blog_stats", fromlist=["x"]).title_hint(F.BLOG["id"]) + __import__("content.good_rules", fromlist=["x"]).title_hint(F.BLOG["id"])), TITLES, stage="제목(연예·패션)")
+        "최종 추천 1개를 JSON으로 주세요.\n\n" + __import__("content.blog_stats", fromlist=["x"]).title_hint(F.BLOG["id"]) + __import__("content.good_rules", fromlist=["x"]).title_hint(F.BLOG["id"])), TITLES, stage="제목(연예·패션)")
     person = out.get("person", "")
     items, groups = [], []
 
@@ -160,9 +173,6 @@ def titles(kw: str, memo: str | None = None) -> Path:
     add(out["final"], next((g["group"] for g in out["groups"] if out["final"] in g["titles"]), GROUPS[0]), 1)
     for g in out["groups"]:
         groups.append({"type": g["group"], "idx": [add(t, g["group"], None) for t in g["titles"][:5]], "best": None})
-    for v in out.get("versions", []):  # 제목 고수 방식 3개씩
-        typ = f"{v['who']}식"
-        groups.append({"type": typ, "idx": [add(t, typ + " 방식", None) for t in v["titles"][:3]], "best": None})
     from .good_rules import ensure  # 반응굿 유형이 하나도 없으면 3개 보충 (대표 지시 2026-10-08)
     extra = ensure(items, F.BLOG["id"], kw, memo, prompt(), 35)
     if extra:
@@ -245,7 +255,7 @@ def produce(slug: str, n: int) -> Path:
     memo = (tdir / "research.md").read_text(encoding="utf-8")
     sys_prompt = prompt()
     ask = (f"키워드(주어): {kw}\n확정 제목: {pick['title']}\n주인공: {T.get('person', '')}\n\n[조사 메모]\n{memo[:10000]}\n\n"
-           "이번 단계는 **본문만** 씁니다(제목은 정해졌습니다). 원문 본문 규칙과 덧붙임·블로그 설정대로 JSON으로 주세요.")
+           "이번 단계는 **본문만** 씁니다(제목은 정해졌습니다). 원문 본문 규칙과 덧붙임·블로그 설정대로 JSON으로 주세요." "\n본문은 확정 제목이 약속한 것(숫자·질문·반전·비교)에 반드시 답하도록, 조사 메모에서 제목과 직접 관련된 사실을 먼저 씁니다(대표 확인 2026-10-09).")
     a = F.claude_json(sys_prompt, ask, BODY, stage="글쓰기(연예·패션)")
     bad = check(a)
     if bad:

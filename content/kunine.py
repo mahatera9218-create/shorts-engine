@@ -61,9 +61,8 @@ def research(kw: str) -> str:
 
 # ---------------------------------------------------------------- 제목 (6유형 × 5)
 
-TITLES = {"type": "object", "additionalProperties": False, "required": ["groups", "final", "person", "versions"],
+TITLES = {"type": "object", "additionalProperties": False, "required": ["groups", "final", "person"],
           "properties": {
-              "versions": VERSION_SCHEMA,  # 제목 고수 방식 3개씩 (경제토르·유미, 대표 지시 2026-10-06)
               "person": {"type": "string", "description": "글 주인공 인물이 있으면 '회사 이름', 없으면 빈칸"},
               "groups": {"type": "array", "description": "비교형·실행형·이득형·궁금형·위협형·반전형 순서로 6개",
                          "items": {"type": "object", "additionalProperties": False,
@@ -90,7 +89,7 @@ def titles(kw: str) -> Path:
     out = F.claude_json(prompt() + [g for g in [title_guide()] if g], (
         f"핵심키워드: {kw}\n\n[조사 메모]\n{memo[:10000]}\n\n"
         "이번 단계는 **제목만** 만듭니다(본문은 다음 단계). 원문의 '제목 후보 생성 규칙'대로 6유형 × 5개, 유형별 BEST, "
-        "최종 BEST 5를 JSON으로 주세요(45자 이내).\n\n" + versions_ask(F.BLOG["id"]) + __import__("content.blog_stats", fromlist=["x"]).title_hint(F.BLOG["id"]) + __import__("content.good_rules", fromlist=["x"]).title_hint(F.BLOG["id"])),
+        "최종 BEST 5를 JSON으로 주세요(45자 이내).\n\n" + __import__("content.blog_stats", fromlist=["x"]).title_hint(F.BLOG["id"]) + __import__("content.good_rules", fromlist=["x"]).title_hint(F.BLOG["id"])),
         TITLES, stage="제목(쿠니네)")
     core = kw.split()[0]
     items, seen = [], set()
@@ -112,9 +111,6 @@ def titles(kw: str) -> Path:
     for g in out["groups"]:
         idx = [add(t, g["type"], None, t == bests.get(g["type"])) for t in g["candidates"][:5]]
         groups.append({"type": g["type"], "idx": idx, "best": idx[g["best"]] if 0 <= g["best"] < len(idx) else None})
-    for v in out.get("versions", []):  # 제목 고수 방식 3개씩 (따로 묶음)
-        typ = f"{v['who']}식"
-        groups.append({"type": typ, "idx": [add(t, typ, None, False) for t in v["titles"][:3]], "best": None})
     from .good_rules import ensure  # 반응굿 유형이 하나도 없으면 3개 보충 (대표 지시 2026-10-08)
     extra = ensure(items, F.BLOG["id"], kw, memo, prompt(), 45)
     if extra:
@@ -199,7 +195,7 @@ def produce(slug: str, n: int) -> Path:
     memo = (tdir / "research.md").read_text(encoding="utf-8")
     sys_prompt = prompt() + F.learned()[:1]  # 대표가 고친 곳(있으면)만 덧붙임
     ask = (f"핵심키워드: {kw}\n확정 제목: {pick['title']} ({pick['type']})\n\n[조사 메모]\n{memo[:10000]}\n\n"
-           "이번 단계는 **본문만** 씁니다(제목은 정해졌습니다). 원문의 본문 규칙과 덧붙임 규칙대로 JSON으로 주세요.")
+           "이번 단계는 **본문만** 씁니다(제목은 정해졌습니다). 원문의 본문 규칙과 덧붙임 규칙대로 JSON으로 주세요." "\n본문은 확정 제목이 약속한 것(숫자·질문·반전·비교)에 반드시 답하도록, 조사 메모에서 제목과 직접 관련된 사실을 먼저 씁니다(대표 확인 2026-10-09).")
     a = F.claude_json(sys_prompt, ask, BODY, stage="글쓰기(쿠니네)")
     ok_gain, gain_note = True, "생략 (대표 결정 2026-10-05)"  # 정보 이득 검사 뺌 — gain()은 다시 켤 때를 위해 남김
     issues: list[dict] = []  # GPT 사실 대조는 뺐다 (대표 결정 2026-10-05: "검사는 필요 없을 것 같다"). 숫자는 Grok 조사 메모 안에서만 쓴다
