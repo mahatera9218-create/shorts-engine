@@ -298,8 +298,8 @@ AUTO_SCAN = 8  # 패션: 가격·브랜드 확인된 주제를 찾을 때까지 
 def auto(force: bool = False) -> None:
     """매일 자동 글 (대표 결정 2026-10-07): 그날 키워드 점수 1~3위 → 제목 후보 → ★추천 제목으로 글까지.
     "어사이드가 오면 바로, 안 오면 10시에" — 하루 한 번만(auto.yaml). 같은 주제가 며칠 이어 나와도 거르지 않는다(대표 지시)."""
-    if BLOG["id"] == "fashion":  # 패션은 자동 글 없음 — 대표가 키워드 고르고 구글 렌즈 링크를 주면 그걸로 (대표 결정 2026-10-08)
-        print("패션: 자동 글 없음 (상품 링크로 글만)")
+    if not force:  # 자동 글 없음 — 키워드·제목은 대표가 고른다 (대표 결정 2026-10-09 역할 정리: 경제·패션 모두)
+        print("자동 글 없음 (대표가 키워드·제목을 고름)")
         return
     day = FLOW / today()
     mark = day / "auto.yaml"
@@ -618,7 +618,8 @@ def top10(keyword: str) -> list[dict]:
     except Exception as e:  # noqa: BLE001
         print(f"네이버 검색 실패: {str(e)[:120]}")
         return []
-    return [{"title": clean(it.get("title")), "desc": clean(it.get("description")), "date": it.get("postdate", "")}
+    return [{"title": clean(it.get("title")), "desc": clean(it.get("description")), "date": it.get("postdate", ""),
+             "link": it.get("link", "")}
             for it in data.get("items", [])]
 
 
@@ -788,11 +789,15 @@ def _run(cmd: str) -> None:
     elif cmd == "add":
         add(sys.argv[2])
     elif cmd == "aside":  # 어사이드 목록 → 넣고 다시 채점 → 바로 자동 글 (대표 결정 2026-10-07)
-        add(sys.argv[2], aside=True)
-        auto()
+        add(sys.argv[2], aside=True)  # 넣고 다시 채점만 (자동 글 없음, 2026-10-09)
     elif cmd == "link":  # 패션: 대표가 찾은 상품 링크로 초안 (대표 지시 2026-10-08)
         from .celeb import from_links
         from_links(sys.argv[2])
+    elif cmd == "linkwrite":  # 패션: 대표가 고른 제목 + 상품 링크로 글 (대표 결정 2026-10-09). 첫 줄 "주제폴더 번호", 다음 줄들 링크
+        from .celeb import write_with_links
+        lines = [l.strip() for l in sys.argv[2].splitlines() if l.strip()]
+        slug, n = lines[0].rsplit(" ", 1)
+        write_with_links(slug, int(n), [u for u in lines[1:] if u.startswith("http")])
     elif cmd == "linkcheck":  # 상품 링크가 읽히는지만 점검 → reports/ (2026-10-08)
         from .celeb import link_facts
         urls = [u for u in sys.argv[2].split() if u.startswith("http")]
