@@ -1,0 +1,127 @@
+keyword: 문가영 빅백
+person: 문가영
+mode: 연예패션
+made: '10:23'
+items:
+- title: '"어디까지 내려가는 거예요?" 문가영 마리끌레르 포토월 패션'
+  type: 그룹 2
+  rank: 1
+  best: true
+  chars: 33
+  flags: []
+- title: '"어디까지 내려가는 거예요?" 마침내 눈길 끈 가을 시상식 스커트룩'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 37
+  flags:
+  - 37자(35자 넘음)
+- title: '"가방이 이렇게 컸나?" 돌연 시선 붙잡은 여배우의 빅백 스타일'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: '"그 배우 가방 어디 거야?" 뜻밖의 반응 부른 큼직한 데일리백'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: '"브이넥 베스트가 이렇게 예뻤나" 결국 다시 보게 된 포토월 룩'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: '"저 큰 가방이 안 무거워 보이네" 끝내 눈에 들어온 카키 빅백'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: '"이 가방 크기 실화야?" 문가영 카키 빅백 데일리룩 궁금한 이유'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 36
+  flags:
+  - 36자(35자 넘음)
+- title: '"블랙 플레어 스커트 이렇게 입네" 문가영 시상식 여자 가을 코디'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 36
+  flags:
+  - 36자(35자 넘음)
+- title: '"가방이 이렇게 컸었나?" 문가영 빅백 스타일링 다시 보게 되네'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: '"브이넥 베스트가 포인트였네" 문가영 부산 레드카펫 연예인 패션'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: '"마리끌레르 포토월에서 제일 튀었네" 아시아스타어워즈 브이넥 베스트룩'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 38
+  flags:
+  - 38자(35자 넘음)
+- title: '"부산 레드카펫에서 눈에 띄네" 블랙 플레어 스커트 시상식 코디'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: '"아시아스타어워즈 룩 중에 제일 독특한데?" 가을 여자 연예인 패션'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 37
+  flags:
+  - 37자(35자 넘음)
+- title: '"포토월 사진 보고 다시 찾아봤네" 브이넥 베스트 여자 가을 코디'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 36
+  flags:
+  - 36자(35자 넘음)
+- title: '"레드카펫에서 이렇게 입으니 다르네" 여배우 플레어 스커트 데일리룩'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 37
+  flags:
+  - 37자(35자 넘음)
+groups:
+- type: 그룹 1 주인공 숨김
+  idx:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  best: null
+- type: 그룹 2 이름 노출
+  idx:
+  - 0
+  - 6
+  - 7
+  - 8
+  - 9
+  best: null
+- type: 그룹 3 관련 인물
+  idx:
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  best: null
