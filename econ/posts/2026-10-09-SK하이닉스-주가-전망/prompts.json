@@ -1,0 +1,72 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · SK하이닉스 간판 클로즈업",
+  "make": true,
+  "file": "",
+  "desc": "Square close-up of the SK hynix company sign and logo on its building, shot from a low angle looking up, half bright golden light and half dark shadow splitting the frame to suggest diverging views, high saturation, cinematic lighting, no other text",
+  "brand": "SK hynix",
+  "size": "1024x1024",
+  "prompt": "Square 1:1 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Square close-up of the SK hynix company sign and logo on its building, shot from a low angle looking up, half bright golden light and half dark shadow splitting the frame to suggest diverging views, high saturation, cinematic lighting, no other text This must clearly be SK hynix: show its real, accurate corporate signage — the actual SK hynix logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 2,
+  "label": "SK하이닉스 이천 캠퍼스 전경",
+  "make": true,
+  "file": "",
+  "desc": "Wide aerial photograph of the SK hynix Icheon campus in Gyeonggi Province, Korea, large grey semiconductor fab buildings with the SK hynix logo visible, clear sunny day, news photo style",
+  "brand": "SK hynix",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Wide aerial photograph of the SK hynix Icheon campus in Gyeonggi Province, Korea, large grey semiconductor fab buildings with the SK hynix logo visible, clear sunny day, news photo style This must clearly be SK hynix: show its real, accurate corporate signage — the actual SK hynix logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 3,
+  "label": "AI 서버용 메모리 반도체 클로즈업",
+  "make": true,
+  "file": "",
+  "desc": "Close-up of a high bandwidth memory chip module on a clean laboratory table, soft natural light, realistic documentary photo, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Close-up of a high bandwidth memory chip module on a clean laboratory table, soft natural light, realistic documentary photo, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 4,
+  "label": "서울 여의도 증권가 야경",
+  "make": true,
+  "file": "",
+  "desc": "Evening view of Yeouido financial district in Seoul with illuminated office towers and stock exchange area, cool blue tones, realistic news photo, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Evening view of Yeouido financial district in Seoul with illuminated office towers and stock exchange area, cool blue tones, realistic news photo, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 5,
+  "label": "시세 전광판을 바라보는 투자자 뒷모습",
+  "make": true,
+  "file": "",
+  "desc": "Anonymous office worker seen from behind watching a large blank stock display board in a trading room, cool lighting, realistic photo, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Anonymous office worker seen from behind watching a large blank stock display board in a trading room, cool lighting, realistic photo, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 6,
+  "label": "SK하이닉스 본사 정면",
+  "make": true,
+  "file": "",
+  "desc": "Front view of the SK hynix headquarters building in Icheon with the SK hynix sign prominently visible, clear sky, press photo style",
+  "brand": "SK hynix",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Front view of the SK hynix headquarters building in Icheon with the SK hynix sign prominently visible, clear sky, press photo style This must clearly be SK hynix: show its real, accurate corporate signage — the actual SK hynix logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 7,
+  "label": "원화 지폐 클로즈업",
+  "make": true,
+  "file": "",
+  "desc": "Stack of Korean won banknotes close-up with shallow depth of field, natural light, no readable numbers",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Stack of Korean won banknotes close-up with shallow depth of field, natural light, no readable numbers No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ }
+]
