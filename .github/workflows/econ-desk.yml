@@ -9,7 +9,7 @@ on:
   workflow_call:
   push:
     branches: [main]
-    paths: ["econ/**", "blogs/**", "content/econ_desk.py", "content/desk.py", "content/photo_find.py", "assets/brand/desk-icon-*", ".github/workflows/econ-desk.yml"]
+    paths: ["econ/**", "blogs/**", "content/econ_desk.py", "content/desk.py", "content/photo_find.py", "content/econ_sections.py", "content/good_rules.py", "config/econ_keywords.yaml", "config/good_rules.yaml", "assets/brand/desk-icon-*", ".github/workflows/econ-desk.yml"]
 
 permissions:
   contents: read
