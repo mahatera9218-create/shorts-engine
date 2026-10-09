@@ -67,6 +67,7 @@ jobs:
           elif [ "$CMD" = "aside" ]; then python -m content.econ_flow aside "$ARG1"   # 어사이드 목록 → 바로 자동 글 (2026-10-07)
           elif [ "$CMD" = "auto" ]; then python -m content.econ_flow auto "$ARG1"     # 10시 자동 글 / 도우미 다시 돌리기(force)
           elif [ "$CMD" = "link" ]; then python -m content.econ_flow link "$ARG1"     # 패션: 상품 링크로 초안 (2026-10-08)
+          elif [ "$CMD" = "topicwrite" ]; then python -m content.econ_flow topicwrite "$ARG1"   # 직접 입력 주제로 바로 글 (2026-10-09)
           elif [ "$CMD" = "linkwrite" ]; then python -m content.econ_flow linkwrite "$ARG1"   # 패션: 제목 + 상품 링크로 글 (2026-10-09)
           elif [ "$CMD" = "linkcheck" ]; then python -m content.econ_flow linkcheck "$ARG1"   # 상품 링크가 읽히는지만 점검 (2026-10-08)
           elif [ "$CMD" = "titles" ]; then python -m content.econ_flow titles "$ARG1"

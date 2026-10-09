@@ -821,6 +821,21 @@ def _run(cmd: str) -> None:
                 bad.append(kw)
         if bad and len(bad) == len(kws):
             raise SystemExit("제목 만들기가 모두 실패했어요: " + ", ".join(bad))
+    elif cmd == "topicwrite":  # 대표가 직접 입력한 주제 → 조사 → 제목 → ★추천 제목으로 바로 글 (대표 요청 2026-10-09). 패션은 다음 줄 상품 링크도
+        lines = [l.strip() for l in sys.argv[2].splitlines() if l.strip()]
+        kw, urls = lines[0][:60], [u for u in lines[1:] if u.startswith("http")]
+        guard()
+        if BLOG["id"] == "econ":
+            from .kunine import produce as _produce, titles as _titles
+            d = _titles(kw)
+        else:
+            from .celeb import produce as _produce, research as _research, titles as _titles, link_facts
+            memo = _research(kw) or claude_research(kw)
+            if urls:
+                memo = "[대표가 준 상품 링크에서 확인한 제품 정보 — 가장 믿을 만한 자료]\n" + link_facts(urls) + "\n\n" + memo
+            d = _titles(kw, memo)
+        T = load(d / "titles.yaml", {})
+        _produce(d.name, next((i for i, t in enumerate(T.get("items", []), 1) if t.get("rank") == 1), 1))
     elif cmd == "produce":
         mod = __import__("content.kunine" if BLOG["id"] == "econ" else "content.celeb", fromlist=["produce"])
         mod.produce(sys.argv[2], int(sys.argv[3]))
