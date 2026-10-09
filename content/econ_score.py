@@ -17,6 +17,7 @@ from datetime import datetime, timedelta
 from email.utils import parsedate_to_datetime
 from xml.etree import ElementTree as ET
 
+import yaml
 import requests
 
 from market.common import ROOT, load_yaml, request_json, secret
@@ -219,6 +220,28 @@ def naver_part(rank: int | None) -> float:
     return 1.0 if rank <= 3 else 0.75 if rank <= 6 else 0.5 if rank <= 10 else 0.0
 
 
+def _recent_cores(days: int, topn: int) -> dict[str, int]:
+    """최근 days일(오늘 제외) 상위 topn개에 나온 core → 나온 날 수 (매일 반복되는 주제 감점용, 대표 지시 2026-10-10)."""
+    from datetime import datetime, timedelta
+    from . import econ_flow as F
+    today = F.today()
+    since = (datetime.strptime(today, "%Y-%m-%d") - timedelta(days=days)).strftime("%Y-%m-%d")
+    out: dict[str, int] = {}
+    for f in sorted(F.FLOW.glob("*/keywords.yaml")):
+        day = f.parent.name
+        if not (since <= day < today):
+            continue
+        try:
+            data = yaml.safe_load(f.read_text(encoding="utf-8")) or {}
+        except Exception:  # noqa: BLE001
+            continue
+        for it in sorted(data.get("items", []), key=lambda x: -x.get("score", 0))[:topn]:
+            c = (it.get("core") or it.get("kw") or "").strip()
+            if c:
+                out[c] = out.get(c, 0) + 1
+    return out
+
+
 def score(items: list[dict], src_rows: dict[str, str] | None) -> list[dict]:
     """items: {kw, core, rows[...], naver_rank?} → score·parts·sources를 채워 점수순으로.
     100점 = 블로그 설정 weights (2026-10-07 대표 결정: 네이버 인기(어사이드) 35 > 최신 25 > 출처 겹침 20 > 뉴스량 10 = 검색량 10).
@@ -227,6 +250,8 @@ def score(items: list[dict], src_rows: dict[str, str] | None) -> list[dict]:
     어사이드가 없는 날은 네이버 인기를 뺀 나머지를 100점으로 환산한다(점수 미달로 숨겨지지 않게)."""
     cfg = F.load(CFG(), {})
     pts, caps = cfg.get("source_points", {}), cfg.get("caps", {})
+    stale_pen, stale_cap = cfg.get("stale_penalty", 0), cfg.get("stale_cap", 25)
+    _recent = _recent_cores(cfg.get("stale_days", 3), cfg.get("stale_topn", 12)) if stale_pen else {}
     hub = _hub()
     q = {it["kw"]: (it.get("core") or it["kw"]) for it in items}  # 긴 키워드는 검색량이 0에 가까워 핵심어로 잰다
     vols = _volumes(list(dict.fromkeys(q.values())))
@@ -270,7 +295,10 @@ def score(items: list[dict], src_rows: dict[str, str] | None) -> list[dict]:
         pb = cfg.get("product_bonus", 0)  # 패션: 브랜드·가격이 이미 나온 주제 가점 (대표 결정 2026-10-08 '주제 고르기 강화')
         if pb and (it.get("product") or "").strip():
             parts["제품"] = pb
-        it.update(score=min(100, round(sum(parts.values()) * scale)), parts=parts,
+        rep = _recent.get((it.get("core") or it["kw"]).strip(), 0)  # 최근 며칠 반복된 주제 감점 (대표 지시 2026-10-10 "맨날 똑같다")
+        if rep and stale_pen:
+            parts["반복"] = -min(rep * stale_pen, stale_cap)
+        it.update(score=max(0, min(100, round(sum(parts.values()) * scale))), parts=parts,
                   stats={"뉴스24h": news, "뉴스6h": n6, "블로그24h": blog, "월검색": int(vol) if vol else None})
     return sorted(items, key=lambda x: -x["score"])
 
