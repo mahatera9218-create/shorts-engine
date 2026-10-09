@@ -1,0 +1,129 @@
+keyword: 지예은+런닝맨+세터(SATUR) 반팔티
+person: 지예은
+mode: 연예패션
+made: '21:02'
+items:
+- title: '"이 티셔츠가 세터였어?" 지예은 런닝맨 크림 반팔티 스타일링'
+  type: 그룹 2
+  rank: 1
+  best: true
+  chars: 34
+  flags: []
+- title: '"런닝맨에서 입은 저 티셔츠 뭐야?" 결국 크림색 반팔티가 눈에 들어온 이유'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 42
+  flags:
+  - 42자(35자 넘음)
+- title: '"그냥 흰 티인 줄 알았는데" 돌연 크림 컬러가 달라 보였던 예능 착장'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 39
+  flags:
+  - 39자(35자 넘음)
+- title: '"철원 꽃밭에서 입기 딱인데?" 뜻밖의 편안한 반팔티 스타일링'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: '"이 티셔츠 어디 거지?" 마침내 브랜드가 궁금해진 런닝맨 데일리룩'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 37
+  flags:
+  - 37자(35자 넘음)
+- title: '"게임하다 보니 더 눈에 띄네" 끝내 검색하게 만든 크림 반팔티'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: '"평범한 티인 줄 알았는데" 지예은 세터 I LOVE 슬럼 반팔티'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 36
+  flags:
+  - 36자(35자 넘음)
+- title: '"철원에서 입은 그 티셔츠" 지예은 런닝맨 세터 크림 착장'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 32
+  flags: []
+- title: '"크림색이라 더 편해 보이네" 지예은 예능 데일리룩 반팔티'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 32
+  flags: []
+- title: '"이 가격이라고?" 지예은이 런닝맨에서 입은 세터 반팔티 논란 아닌 화제'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 40
+  flags:
+  - 40자(35자 넘음)
+- title: '"허경환과 한 팀이었는데" 런닝맨 철원 편에서 눈에 띈 크림 반팔티'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 37
+  flags:
+  - 37자(35자 넘음)
+- title: '"유재석 옆에서도 편안해 보이네" 런닝맨 크림색 세터 반팔티 룩'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: '"송지효도 하나쯤 갖고 싶겠는데?" 런닝맨 철원 편 데일리 티셔츠'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 36
+  flags:
+  - 36자(35자 넘음)
+- title: '"양세찬 옆에서 더 환했네" 런닝맨 멤버가 입은 크림 반팔티 정체'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 36
+  flags:
+  - 36자(35자 넘음)
+- title: '"허경환 팀 의상 중 제일 궁금했다" 런닝맨 세터 반팔티 데일리룩'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 36
+  flags:
+  - 36자(35자 넘음)
+groups:
+- type: 그룹 1 주인공 숨김
+  idx:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  best: null
+- type: 그룹 2 이름 노출
+  idx:
+  - 0
+  - 6
+  - 7
+  - 8
+  - 9
+  best: null
+- type: 그룹 3 관련 인물
+  idx:
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  best: null
