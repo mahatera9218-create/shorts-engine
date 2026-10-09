@@ -1,93 +1,312 @@
 date: '2026-10-09'
+updated: 09:27
 items:
-- kw: 임지연 레드 새틴 롱드레스
-  area: ''
-  src: 어사이드
-  why: 어사이드 · 네이버 홈판·인기글
-  rows: []
+- kw: 리사 루이비통 드레스
+  core: 리사 루이비통
+  area: 드라마 패션
+  why: 리사 루이비통 러플 드레스·핫핑크 트위드 스타일링 화제
+  person: 블랙핑크 리사
+  product: ''
+  rows:
+  - D2
+  - B21
+  - B34
+  src: 블로거, 블로거새글, 어사이드
+  bloggers:
+  - cocoleenice
+  naver_rank: 2
   sources:
     어사이드: 1
+    블로거새글: 1
+    블로거: 1
+  score: 55
+  parts:
+    네이버: 35
+    최신: 6
+    출처: 9
+    뉴스: 2
+    검색: 3
+  stats:
+    뉴스24h: 4
+    뉴스6h: 1
+    블로그24h: 39
+    월검색: 880
+- kw: 임지연 레드 새틴 롱드레스
+  core: 임지연 드레스
+  area: 드라마 패션
+  why: 서울드라마어워즈 레드카펫 드레스 룩 (대표 지정 키워드)
+  person: 임지연
+  product: ''
+  rows:
+  - D1
+  - B1
+  src: 블로거새글, 어사이드
+  bloggers:
+  - jayuyu
   naver_rank: 1
-  score: 35
+  sources:
+    어사이드: 1
+    블로거새글: 1
+  score: 46
   parts:
     네이버: 35
     최신: 0
-    출처: 0
-    뉴스: 0
+    출처: 5
+    뉴스: 6
     검색: 0
+  stats:
+    뉴스24h: 11
+    뉴스6h: 0
+    블로그24h: 11
+    월검색: 45
+- kw: 최화정 프라다 니트
+  core: 최화정 패션
+  area: 데일리룩
+  why: 인천공항 데일리룩 프라다 니트·루이비통 가방·반클리프 목걸이, 두건은 동대문·벨트는 쿠팡이라는 반전
+  person: 최화정
+  product: 프라다 니트, 루이비통 가방, 반클리프 아펠 목걸이
+  rows:
+  - D7
+  - B68
+  - S2
+  - S3
+  src: 뉴스검색, 블로거새글, 어사이드
+  bloggers:
+  - tjthdus94
+  naver_rank: 7
+  sources:
+    어사이드: 1
+    블로거새글: 1
+    뉴스검색: 2
+  score: 45
+  parts:
+    네이버: 18
+    최신: 0
+    출처: 9
+    뉴스: 1
+    검색: 2
+    제품: 15
+  stats:
+    뉴스24h: 2
+    뉴스6h: 0
+    블로그24h: 2
+    월검색: 380
+- kw: 문가영 빅백
+  core: 문가영 가방
+  area: 가방
+  why: 빅백 26만 9천원 (대표 지정), 최신 근황룩·121만원 가디건 착용 화제
+  person: 문가영
+  product: 빅백 26만9천원
+  rows:
+  - D10
+  - B28
+  - B53
+  src: 블로거, 어사이드
+  bloggers:
+  - by-nyong
+  - cocoleenice
+  naver_rank: 10
+  sources:
+    어사이드: 1
+    블로거: 2
+  score: 45
+  parts:
+    네이버: 18
+    최신: 0
+    출처: 7
+    뉴스: 0
+    검색: 5
+    제품: 15
   stats:
     뉴스24h: 0
     뉴스6h: 0
-    블로그24h: 11
-    월검색: 10
-- kw: 리사 러플 드레스 루이비통
-  area: ''
-  src: 어사이드
-  why: 어사이드 · 네이버 홈판·인기글
-  rows: []
+    블로그24h: 1
+    월검색: 2530
+- kw: 장원영 로라로라 티셔츠
+  core: 장원영 티셔츠
+  area: 데일리룩
+  why: 그레이 티셔츠 3만 9,600원 (대표 지정), 파리 디올 패션도 화제
+  person: 아이브 장원영
+  product: 로라로라 그레이 티셔츠 39,600원
+  rows:
+  - D8
+  - B22
+  - B37
+  src: 블로거, 블로거새글, 어사이드
+  bloggers:
+  - cocoleenice
+  - semingg
+  naver_rank: 8
   sources:
     어사이드: 1
-  naver_rank: 2
-  score: 35
+    블로거: 1
+    블로거새글: 1
+  score: 43
   parts:
-    네이버: 35
+    네이버: 18
     최신: 0
-    출처: 0
+    출처: 9
     뉴스: 0
-    검색: 0
+    검색: 1
+    제품: 15
   stats:
     뉴스24h: 1
     뉴스6h: 0
-    블로그24h: 15
-    월검색: 10
-- kw: 젠데이아 커스텀 드레스 루이비통
-  area: ''
-  src: 어사이드
-  why: 어사이드 · 네이버 홈판·인기글
-  rows: []
+    블로그24h: 3
+    월검색: 170
+- kw: 수지 셀린느 플레어 진
+  core: 수지 셀린느
+  area: 드라마 패션
+  why: 셀린느 쇼 파리 패션위크 후 수지 파리 여행룩·플레어 진, 화이트 셔츠 올백 패션도 반응
+  person: 수지
+  product: ''
+  rows:
+  - D5
+  - B47
+  - B65
+  src: 블로거, 블로거새글, 어사이드
+  bloggers:
+  - by-nyong
+  - wlstjs9754
+  naver_rank: 5
   sources:
     어사이드: 1
-  naver_rank: 3
-  score: 35
-  parts:
-    네이버: 35
-    최신: 0
-    출처: 0
-    뉴스: 0
-    검색: 0
-  stats:
-    뉴스24h: 0
-    뉴스6h: 0
-    블로그24h: 4
-    월검색: 10
-- kw: 김지원 슬리브리스 와이드팬츠 펜디
-  area: ''
-  src: 어사이드
-  why: 어사이드 · 네이버 홈판·인기글
-  rows: []
-  sources:
-    어사이드: 1
-  naver_rank: 4
-  score: 26
+    블로거새글: 1
+    블로거: 1
+  score: 40
   parts:
     네이버: 26
     최신: 0
-    출처: 0
+    출처: 9
+    뉴스: 0
+    검색: 5
+  stats:
+    뉴스24h: 1
+    뉴스6h: 0
+    블로그24h: 8
+    월검색: 3480
+- kw: 젠데이아 루이비통 드레스
+  core: 젠데이아 드레스
+  area: 드라마 패션
+  why: 루이비통 쇼 젠데이아 커스텀 드레스로 화제 (해외 커뮤니티 반응)
+  person: 젠데이아
+  product: ''
+  rows:
+  - D3
+  - B5
+  src: 블로거, 어사이드
+  bloggers:
+  - jayuyu
+  naver_rank: 3
+  sources:
+    어사이드: 1
+    블로거: 1
+  score: 39
+  parts:
+    네이버: 35
+    최신: 0
+    출처: 4
     뉴스: 0
     검색: 0
   stats:
     뉴스24h: 0
     뉴스6h: 0
-    블로그24h: 3
-    월검색: 10
-- kw: 수지 플레어 진 셀린느
-  area: ''
-  src: 어사이드
-  why: 어사이드 · 네이버 홈판·인기글
-  rows: []
+    블로그24h: 32
+    월검색: 100
+- kw: 신혜선 이자벨마랑 파리패션위크
+  core: 신혜선 이자벨마랑
+  area: 드라마 패션
+  why: 이자벨마랑 쇼 보헤미안 룩, 노제와 투샷 화제
+  person: 신혜선
+  product: ''
+  rows:
+  - D6
+  - B2
+  src: 블로거, 어사이드
+  bloggers:
+  - jayuyu
+  naver_rank: 6
   sources:
     어사이드: 1
-  naver_rank: 5
+    블로거: 1
+  score: 30
+  parts:
+    네이버: 26
+    최신: 0
+    출처: 4
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 5
+    월검색: 45
+- kw: 신예은 페트레이 트렌치코트
+  core: 신예은 트렌치코트
+  area: 의류
+  why: 올블랙 공항패션 트렌치코트로 화제
+  person: 신예은
+  product: 페트레이 트렌치코트
+  rows:
+  - G1
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 28
+  parts:
+    네이버: 0
+    최신: 6
+    출처: 5
+    뉴스: 2
+    검색: 0
+    제품: 15
+  stats:
+    뉴스24h: 4
+    뉴스6h: 1
+    블로그24h: 5
+    월검색: 10
+- kw: 송혜교 쇼메 티아라
+  core: 송혜교 쇼메
+  area: 시계·주얼리
+  why: 쇼메 송혜교 3부작 디지털 캠페인 공개
+  person: 송혜교
+  product: 쇼메 티아라
+  rows:
+  - S26
+  - S27
+  - S28
+  - S29
+  src: 뉴스검색
+  bloggers: []
+  sources:
+    뉴스검색: 4
+  score: 27
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 7
+    뉴스: 4
+    검색: 1
+    제품: 15
+  stats:
+    뉴스24h: 9
+    뉴스6h: 0
+    블로그24h: 8
+    월검색: 200
+- kw: 김지원 펜디 와이드팬츠
+  core: 김지원 펜디
+  area: 드라마 패션
+  why: 펜디 슬리브리스 와이드팬츠 룩 (대표 지정 키워드)
+  person: 김지원
+  product: ''
+  rows:
+  - D4
+  src: 어사이드
+  bloggers: []
+  naver_rank: 4
+  sources:
+    어사이드: 1
   score: 26
   parts:
     네이버: 26
@@ -100,118 +319,284 @@ items:
     뉴스6h: 0
     블로그24h: 8
     월검색: 10
-- kw: 신혜선 이자벨마랑 파리패션위크 룩
-  area: ''
-  src: 어사이드
-  why: 어사이드 · 네이버 홈판·인기글
-  rows: []
+- kw: 부국제 샤넬 블랙 드레스
+  core: 부국제 샤넬
+  area: 드라마 패션
+  why: 부산국제영화제 레드카펫 샤넬 블랙 드레스 대결, 전도연 트위드자켓·김민하 원피스·김도연 드레스
+  person: 김민하
+  product: 샤넬 블랙 드레스, 샤넬 트위드자켓
+  rows:
+  - B9
+  - B12
+  - B16
+  - B30
+  - B38
+  - B40
+  - B45
+  - B51
+  src: 블로거
+  bloggers:
+  - by-nyong
+  - cocoleenice
+  - djdjdj8206
+  - goodface0863
+  - ohye1991
+  - semingg
   sources:
-    어사이드: 1
-  naver_rank: 6
+    블로거: 8
   score: 26
   parts:
-    네이버: 26
+    네이버: 0
     최신: 0
-    출처: 0
+    출처: 11
     뉴스: 0
     검색: 0
+    제품: 15
   stats:
-    뉴스24h: 0
+    뉴스24h: 1
     뉴스6h: 0
-    블로그24h: 4
-    월검색: 10
-- kw: 최화정 캐시미어 니트 프라다
-  area: ''
-  src: 어사이드
-  why: 어사이드 · 네이버 홈판·인기글
-  rows: []
+    블로그24h: 86
+    월검색: 25
+- kw: 푸마 로제 스피드캣
+  core: 로제 푸마
+  area: 신발
+  why: 푸마×로제 스피드캣 협업 스니커즈 오늘 출시
+  person: 블랙핑크 로제
+  product: 푸마×로제 스피드캣
+  rows:
+  - B59
+  src: 블로거
+  bloggers:
+  - merryeeun
   sources:
-    어사이드: 1
-  naver_rank: 7
-  score: 18
+    블로거: 1
+  score: 26
   parts:
-    네이버: 18
-    최신: 0
-    출처: 0
+    네이버: 0
+    최신: 6
+    출처: 4
     뉴스: 0
-    검색: 0
+    검색: 1
+    제품: 15
   stats:
-    뉴스24h: 0
-    뉴스6h: 0
-    블로그24h: 2
-    월검색: 10
-- kw: 장원영 그레이 티셔츠 로라로라 39600원
-  area: ''
-  src: 어사이드
-  why: 어사이드 · 네이버 홈판·인기글
-  rows: []
-  sources:
-    어사이드: 1
-  naver_rank: 8
-  score: 18
-  parts:
-    네이버: 18
-    최신: 0
-    출처: 0
-    뉴스: 0
-    검색: 0
-  stats:
-    뉴스24h: 0
-    뉴스6h: 0
-    블로그24h: 2
-    월검색: 10
+    뉴스24h: 1
+    뉴스6h: 1
+    블로그24h: 3
+    월검색: 180
 - kw: 김희애 셔츠 로퍼 코디
-  area: ''
-  src: 어사이드
-  why: 어사이드 · 네이버 홈판·인기글
-  rows: []
+  core: 김희애 패션
+  area: 데일리룩
+  why: 셔츠 로퍼 코디 (대표 지정), 단발 변신 후 세련된 스타일 반응
+  person: 김희애
+  product: ''
+  rows:
+  - D9
+  - B57
+  src: 블로거, 어사이드
+  bloggers:
+  - merryeeun
+  naver_rank: 9
   sources:
     어사이드: 1
-  naver_rank: 9
-  score: 18
+    블로거: 1
+  score: 25
   parts:
     네이버: 18
     최신: 0
-    출처: 0
+    출처: 4
+    뉴스: 1
+    검색: 2
+  stats:
+    뉴스24h: 2
+    뉴스6h: 0
+    블로그24h: 92
+    월검색: 460
+- kw: 카리나 글로니 레더백
+  core: 카리나 가방
+  area: 가방
+  why: 공항룩 글로니 레더백, 엠엘비 볼캡·지기첸 캐시미어스카프 착용도 화제
+  person: 에스파 카리나
+  product: 글로니 레더백, 엠엘비 볼캡, 지기첸 캐시미어스카프
+  rows:
+  - G4
+  - G5
+  - G12
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 3
+  score: 25
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 5
+    뉴스: 2
+    검색: 3
+    제품: 15
+  stats:
+    뉴스24h: 3
+    뉴스6h: 0
+    블로그24h: 1
+    월검색: 710
+- kw: 한고은 블랙 원피스
+  core: 한고은 원피스
+  area: 드라마 패션
+  why: 서울드라마어워즈 레드카펫 베스트 드레서 반응, 블랙 원피스 룩
+  person: 한고은
+  product: ''
+  rows:
+  - B1
+  - B7
+  - B43
+  - B48
+  src: 블로거, 블로거새글
+  bloggers:
+  - by-nyong
+  - djdjdj8206
+  - jayuyu
+  - ohye1991
+  sources:
+    블로거새글: 3
+    블로거: 1
+  score: 22
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 20
+    뉴스: 1
+    검색: 1
+  stats:
+    뉴스24h: 2
+    뉴스6h: 0
+    블로그24h: 8
+    월검색: 230
+- kw: 하츠투하츠 주은 유희 말리부백
+  core: 유희 말리부백
+  area: 가방
+  why: 주은 착용 말리부백 타임세일 화제, 비엔프롬 원피스·위드진 노바탑도 착용
+  person: 하츠투하츠 주은
+  product: 유희 말리부백, 비엔프롬 원피스, 위드진 노바탑
+  rows:
+  - G2
+  - G3
+  - G14
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 3
+  score: 20
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 5
     뉴스: 0
     검색: 0
+    제품: 15
   stats:
     뉴스24h: 0
     뉴스6h: 0
-    블로그24h: 90
-    월검색: 10
-- kw: 문가영 빅백 26만9천원
-  area: ''
-  src: 어사이드
-  why: 어사이드 · 네이버 홈판·인기글
-  rows: []
+    블로그24h: 0
+    월검색: 25
+- kw: 김채원 마뗑킴 볼링백
+  core: 김채원 가방
+  area: 가방
+  why: 공항패션 볼링백, 게이트리스 부츠·썬번프로젝트 볼캡도 주목
+  person: 르세라핌 김채원
+  product: 마뗑킴 볼링백, 게이트리스 부츠, 썬번프로젝트 볼캡
+  rows:
+  - G6
+  - G7
+  - G11
+  src: Grok
+  bloggers: []
   sources:
-    어사이드: 1
-  naver_rank: 10
-  score: 18
+    Grok: 3
+  score: 20
   parts:
-    네이버: 18
+    네이버: 0
     최신: 0
-    출처: 0
+    출처: 5
     뉴스: 0
     검색: 0
+    제품: 15
+  stats:
+    뉴스24h: 1
+    뉴스6h: 0
+    블로그24h: 0
+    월검색: 25
+- kw: 유하 포에티시 가죽자켓
+  core: 유하 가죽자켓
+  area: 의류
+  why: 포에티시 가죽자켓, 쓰리타임즈 니트드레스, 엘무드 라이더자켓 착용
+  person: 하츠투하츠 유하
+  product: 포에티시 가죽자켓, 쓰리타임즈 니트드레스, 엘무드 라이더자켓
+  rows:
+  - G8
+  - G9
+  - G13
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 3
+  score: 20
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 5
+    뉴스: 0
+    검색: 0
+    제품: 15
   stats:
     뉴스24h: 0
     뉴스6h: 0
     블로그24h: 0
     월검색: 10
-updated: 09:11
-aside:
-  at: 09:11
-  n: 10
-  list:
-  - 임지연 레드 새틴 롱드레스
-  - 리사 러플 드레스 루이비통
-  - 젠데이아 커스텀 드레스 루이비통
-  - 김지원 슬리브리스 와이드팬츠 펜디
-  - 수지 플레어 진 셀린느
-  - 신혜선 이자벨마랑 파리패션위크 룩
-  - 최화정 캐시미어 니트 프라다
-  - 장원영 그레이 티셔츠 로라로라 39600원
-  - 김희애 셔츠 로퍼 코디
-  - 문가영 빅백 26만9천원
+- kw: 카즈하 웬즈데이오아시스 코트
+  core: 카즈하 코트
+  area: 의류
+  why: 공항패션 코트로 트렌드
+  person: 르세라핌 카즈하
+  product: 웬즈데이오아시스 코트
+  rows:
+  - G10
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 20
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 5
+    뉴스: 0
+    검색: 0
+    제품: 15
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 2
+    월검색: 25
+- kw: 구교환 코트
+  core: 구교환 코트
+  area: 의류
+  why: 행사 착용 코트 화제
+  person: 구교환
+  product: ''
+  rows:
+  - G15
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 19
+  parts:
+    네이버: 0
+    최신: 6
+    출처: 5
+    뉴스: 8
+    검색: 0
+  stats:
+    뉴스24h: 16
+    뉴스6h: 1
+    블로그24h: 3
+    월검색: 25
