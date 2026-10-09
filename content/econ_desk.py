@@ -417,16 +417,35 @@ def flow_html() -> str:
                        for name, xs in secs.items())
     else:
         shown = items[:5]  # 패션: 점수 상위 5개 (대표 결정 2026-10-09: 렌즈로 대표가 찾으니 정보 없는 키워드도)
-        rows = "".join(kw_row(it, done) for it in shown) or "<p class=muted>없음</p>"
+        def frow(it: dict) -> str:  # 패션 키워드를 누르면 깃헙이 아니라 아래 '상품 링크로 글' 칸에 들어감 (대표 결정 2026-10-09: 어제 방식)
+            slug = done.get(it["kw"])
+            sc = f' <span class="seal">{it["score"]}</span>' if "score" in it else ""
+            if slug and (POSTS / slug).exists():
+                return (f'<a class="btn" style="text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
+                        f'href="p/{BID}-{desk.slug(slug)}/">✅ <b>{e(it["kw"])}</b>{sc}</a>')
+            return (f'<button class="ghost" style="text-align:left;width:100%" onclick="pick_{BID}({e(json.dumps(it["kw"]), quote=True)})">'
+                    f'<b>{e(it["kw"])}</b>{sc}</button>')
+        rows = "".join(frow(it) for it in shown) or "<p class=muted>없음</p>"
     add_js = (f"function addKw_{BID}(){{const v=document.getElementById('kwin-{BID}').value.split('\\n').filter(l=>!/^\\s*http/.test(l)).join('\\n').trim();if(!v)return;"
               f"location.href='https://github.com/{desk.REPO}/issues/new?title='+encodeURIComponent('[{LABEL}키워드추가] {today}')"
               "+'&body='+encodeURIComponent(v)}")
-    if BID != "econ":  # 패션: 고른 제목 번호 + 상품 링크 → 글 (대표 결정 2026-10-09)
-        add_js += (f"function write_{BID}(f){{const r=document.querySelector('input[name=\"t-'+f+'\"]:checked');"
-                   "if(!r){alert('제목을 골라 주세요');return}"
-                   "const v=document.getElementById('lk-'+f).value.trim();"
-                   f"location.href='https://github.com/{desk.REPO}/issues/new?title='+encodeURIComponent('[{LABEL}제목] '+f+' '+r.value)"
-                   "+'&body='+encodeURIComponent(v||'(링크 없음)')}")
+    link_box = ""
+    if BID != "econ":  # 패션: 키워드 누르면 링크 칸에 넣고, 링크 붙여 '글 만들기' → 조사+★추천 제목+글 한 번에 (대표 결정 2026-10-09: 어제 방식)
+        add_js += (f"function pick_{BID}(k){{const t=document.getElementById('lkin-{BID}');t.value=k+'\\n';"
+                   "t.scrollIntoView({behavior:'smooth',block:'center'});t.focus()}"
+                   f"function addLink_{BID}(){{const v=document.getElementById('lkin-{BID}').value.trim();if(!v)return;"
+                   f"location.href='https://github.com/{desk.REPO}/issues/new?title='+encodeURIComponent('[{LABEL}링크] {today}')"
+                   "+'&body='+encodeURIComponent(v)}")
+        link_box = (f'<div class="card"><h2>상품 링크로 글</h2><textarea id="lkin-{BID}" rows="4" style="{TA}" '
+                    f'placeholder="첫 줄: 인물 아이템 (위 키워드를 누르면 들어와요)&#10;다음 줄: 구글 렌즈로 찾은 상품 링크"></textarea>'
+                    f'<button onclick="addLink_{BID}()">🔗 조사 + 추천 제목 + 글 만들기</button></div>')
+        add_js += (f"function pickT_{BID}(tok){{const f=tok.slice(0,tok.lastIndexOf(' '));const t=document.getElementById('lkt-'+f);"
+                   "t.dataset.tok=tok;t.scrollIntoView({behavior:'smooth',block:'center'});t.focus();"
+                   "t.placeholder='제목 선택됨 · 상품 링크를 넣으세요'}"
+                   f"function writeT_{BID}(f){{const t=document.getElementById('lkt-'+f);const tok=t.dataset.tok;"
+                   "if(!tok){alert('위에서 제목을 먼저 눌러 주세요');return}"
+                   f"location.href='https://github.com/{desk.REPO}/issues/new?title='+encodeURIComponent('[{LABEL}제목] '+tok)"
+                   "+'&body='+encodeURIComponent(t.value.trim()||'(링크 없음)')}")
     refresh = desk.issue_link(f"{LABEL}키워드새로", today, "키워드를 다시 모아 주세요.")
     # 직접 입력한 주제 (대표 요청 2026-10-09): 제목 뽑기 = 제목 후보만 / 바로 글 = 조사 → 제목 → ★제목으로 글
     issue = f"https://github.com/{desk.REPO}/issues/new?title="
@@ -446,7 +465,7 @@ def flow_html() -> str:
     kw_html = (f'<div class="card"><h2>키워드</h2><div class="muted" style="margin:4px 0 6px">{aside}</div>{rows}'
                f'{score_table(shown)}'
                f'<a class="btn" style="margin-top:8px;background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(refresh, quote=True)}">🔄 다시 모으기</a>'
-               f'<script>{add_js}</script></div>{topic_box}')
+               f'<script>{add_js}</script></div>{link_box}{topic_box}')
     topics = []
     for t in sorted(day.glob("*/titles.yaml")) if day.exists() else []:
         T = yaml.safe_load(t.read_text(encoding="utf-8")) or {}
@@ -459,11 +478,11 @@ def flow_html() -> str:
                 link = desk.issue_link(f"{LABEL}제목", f"{f} {i}", "이 제목으로 글을 만들어 주세요.")
                 return (f'<a class="btn" style="text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
                         f'href="{e(link, quote=True)}">{"★ " if it.get("rank") == 1 else ""}{e(it["title"])}{badge(it["title"], it.get("type", ""))}</a>')
-        else:  # 패션: 제목 고르기(라디오) + 상품 링크 칸 + 글 쓰기
+        else:  # 패션(직접 주제로 제목만 뽑은 경우): 제목을 누르면 상품 링크 칸에 '폴더 번호'가 들어가고, 링크 붙여 글 쓰기
             def btn(i: int, it: dict) -> str:
-                return (f'<label style="display:flex;gap:8px;align-items:flex-start;padding:8px 4px;border-bottom:1px solid var(--line)">'
-                        f'<input type="radio" name="t-{e(f, quote=True)}" value="{i}"{" checked" if it.get("rank") == 1 else ""} style="margin-top:4px">'
-                        f'<span>{"★ " if it.get("rank") == 1 else ""}{e(it["title"])}{badge(it["title"], it.get("type", ""))}</span></label>')
+                tok = f"{f} {i}"
+                return (f'<button class="ghost" style="text-align:left;width:100%" onclick="pickT_{BID}({e(json.dumps(tok), quote=True)})">'
+                        f'{"★ " if it.get("rank") == 1 else ""}{e(it["title"])}{badge(it["title"], it.get("type", ""))}</button>')
         head_g, rest_g = (groups[0], groups[1:]) if groups else (("", []), [])
         n_rest = sum(len(xs) for _, xs in rest_g)
         body = "".join(btn(i, it) for i, it in head_g[1])
@@ -473,9 +492,9 @@ def flow_html() -> str:
                                + "".join(btn(i, it) for i, it in xs) for name, xs in rest_g) + '</details>')
         again = desk.issue_link(f"{LABEL}제목새로", T.get("keyword", ""), "다시 조사해서 새로 뽑아 주세요.")
         if BID != "econ":
-            body += (f'<textarea id="lk-{e(f, quote=True)}" rows="3" style="{TA};margin-top:10px" '
-                     f'placeholder="구글 렌즈로 찾은 상품 링크 (한 줄에 하나)"></textarea>'
-                     f'<button onclick="write_{BID}({e(json.dumps(f), quote=True)})">✍️ 이 제목 + 링크로 글 쓰기</button>'
+            body += (f'<textarea id="lkt-{e(f, quote=True)}" rows="3" style="{TA};margin-top:10px" '
+                     f'placeholder="위에서 제목을 누르고, 구글 렌즈로 찾은 상품 링크를 여기에 (한 줄에 하나)"></textarea>'
+                     f'<button onclick="writeT_{BID}({e(json.dumps(f), quote=True)})">✍️ 이 제목 + 링크로 글 쓰기</button>'
                      + blog_links(T.get("keyword", "")))
         topics.append(f'<div class="card"><h2>제목 · {e(T.get("keyword", ""))}</h2>{body}'
                       f'<a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(again, quote=True)}">🔄 다시 뽑기</a>{rules_html()}</div>')
