@@ -1,0 +1,134 @@
+keyword: 카즈하 + 대환장 기안장 시즌2
+person: 카즈하
+mode: 연예패션
+made: '16:02'
+items:
+- title: '"카즈하 너무 잘했어" 대환장 기안장2 종영 후 다시 보이는 레드 가디건'
+  type: 그룹 2
+  rank: 1
+  best: true
+  chars: 40
+  flags:
+  - 40자(35자 넘음)
+- title: '"예능 데뷔 축하해요" 팬들 반응 터진 겨울 민박 직원의 레드 니트 집업'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 40
+  flags:
+  - 40자(35자 넘음)
+- title: '"저 직원 누구야?" 대관령 민박에서 눈길 끈 붉은 니트 가디건'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: '"인간적인 모습 처음 봤네" 결국 PD도 놀랐다는 겨울 민박 막내 직원'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 39
+  flags:
+  - 39자(35자 넘음)
+- title: '"추운 날 입기 딱 좋겠네" 뜻밖에 눈에 들어온 레드 집업 가디건'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 36
+  flags:
+  - 36자(35자 넘음)
+- title: '"열심히 하는 모습 존경" 마침내 종영한 민박 예능 속 막내의 스타일'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 38
+  flags:
+  - 38자(35자 넘음)
+- title: '"예능 데뷔가 맞아?" 카즈하 기안장 직원 모습과 붉은 니트 스타일링'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 38
+  flags:
+  - 38자(35자 넘음)
+- title: 카즈하 vs 김연경 기안장 직원 대결, 겨울 민박에서 누가 더 눈길 끌었나?
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 42
+  flags:
+  - 42자(35자 넘음)
+- title: '"인간 카즈하 만났다" 뜻밖의 PD 한마디에 다시 보는 기안장 막내 모습'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 40
+  flags:
+  - 40자(35자 넘음)
+- title: '"붉은 니트가 이렇게 어울리나?" 카즈하 대환장 기안장2 겨울 코디'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 37
+  flags:
+  - 37자(35자 넘음)
+- title: '"기안84 옆에서도 눈에 띄네" 겨울 민박 직원 레드 집업 니트 스타일'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 39
+  flags:
+  - 39자(35자 넘음)
+- title: '"김연경도 탐낼 만한데?" 기안장 직원들 사이에서 돋보인 붉은 가디건'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 38
+  flags:
+  - 38자(35자 넘음)
+- title: '"이준호와 나란히 서도 안 묻히네" 결국 시선 모은 레드 니트 집업'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 37
+  flags:
+  - 37자(35자 넘음)
+- title: '"덱스 옆에서도 존재감 있네" 대관령 민박에서 빛난 오버사이즈 가디건'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 38
+  flags:
+  - 38자(35자 넘음)
+- title: '"르세라핌 막내 직원이 이렇게 입었다고?" 겨울 민박 레드 가디건 룩'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 38
+  flags:
+  - 38자(35자 넘음)
+groups:
+- type: 그룹 1 주인공 숨김
+  idx:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  best: null
+- type: 그룹 2 이름 노출
+  idx:
+  - 0
+  - 6
+  - 7
+  - 8
+  - 9
+  best: null
+- type: 그룹 3 관련 인물
+  idx:
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  best: null
