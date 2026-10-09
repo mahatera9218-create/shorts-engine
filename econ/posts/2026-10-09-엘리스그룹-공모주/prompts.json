@@ -1,0 +1,72 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · 청약 열기와 배정 물량의 엇갈림을 보여주는 증권가 전광판",
+  "make": true,
+  "file": "",
+  "desc": "Square cinematic photograph of a crowded Korean securities trading hall at night seen from low angle, glowing blurred stock display boards in half bright gold and half dark shadow, strong light-dark contrast, no readable text or numbers, no faces",
+  "brand": "",
+  "size": "1024x1024",
+  "prompt": "Square 1:1 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Square cinematic photograph of a crowded Korean securities trading hall at night seen from low angle, glowing blurred stock display boards in half bright gold and half dark shadow, strong light-dark contrast, no readable text or numbers, no faces No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 2,
+  "label": "공모주 청약을 받는 증권사 영업점 내부",
+  "make": true,
+  "file": "",
+  "desc": "Realistic news-style photograph of the interior of a Korean securities firm branch, rows of empty desks with monitors showing blurred stock screens, no readable text, natural daylight, no people faces",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic news-style photograph of the interior of a Korean securities firm branch, rows of empty desks with monitors showing blurred stock screens, no readable text, natural daylight, no people faces No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 3,
+  "label": "스마트폰으로 공모주 청약을 하는 모습",
+  "make": true,
+  "file": "",
+  "desc": "Close-up photograph of a person's hand holding a smartphone with a generic trading app interface, blurred background of a Korean office, no readable text or numbers, natural light",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Close-up photograph of a person's hand holding a smartphone with a generic trading app interface, blurred background of a Korean office, no readable text or numbers, natural light No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 4,
+  "label": "AI 클라우드 인프라를 상징하는 데이터센터 서버실",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photograph of a modern data center server room corridor with rows of server racks lit by cool blue light, no logos, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photograph of a modern data center server room corridor with rows of server racks lit by cool blue light, no logos, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 5,
+  "label": "AI 연산에 쓰이는 GPU 서버 장비",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photograph of GPU server hardware close-up with cables and cooling fans in a data center, no logos, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photograph of GPU server hardware close-up with cables and cooling fans in a data center, no logos, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 6,
+  "label": "코스닥이 열리는 서울 여의도 증권가 전경",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photograph of the Korea Exchange building exterior in Yeouido, Seoul, clear day, wide angle, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photograph of the Korea Exchange building exterior in Yeouido, Seoul, clear day, wide angle, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 7,
+  "label": "주가 전광판 불빛이 비치는 증권가",
+  "make": true,
+  "file": "",
+  "desc": "Photograph of a stock market electronic display board in a Korean securities hall, blurred glowing lights, no readable numbers or text, split between warm and cold tones",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Photograph of a stock market electronic display board in a Korean securities hall, blurred glowing lights, no readable numbers or text, split between warm and cold tones No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ }
+]
