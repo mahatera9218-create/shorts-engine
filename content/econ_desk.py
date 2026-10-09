@@ -418,7 +418,7 @@ def flow_html() -> str:
     else:
         shown = items[:5]  # 패션: 점수 상위 5개 (대표 결정 2026-10-09: 렌즈로 대표가 찾으니 정보 없는 키워드도)
         rows = "".join(kw_row(it, done) for it in shown) or "<p class=muted>없음</p>"
-    add_js = (f"function addKw_{BID}(){{const v=document.getElementById('kwin-{BID}').value.trim();if(!v)return;"
+    add_js = (f"function addKw_{BID}(){{const v=document.getElementById('kwin-{BID}').value.split('\\n').filter(l=>!/^\\s*http/.test(l)).join('\\n').trim();if(!v)return;"
               f"location.href='https://github.com/{desk.REPO}/issues/new?title='+encodeURIComponent('[{LABEL}키워드추가] {today}')"
               "+'&body='+encodeURIComponent(v)}")
     if BID != "econ":  # 패션: 고른 제목 번호 + 상품 링크 → 글 (대표 결정 2026-10-09)
@@ -428,14 +428,25 @@ def flow_html() -> str:
                    f"location.href='https://github.com/{desk.REPO}/issues/new?title='+encodeURIComponent('[{LABEL}제목] '+f+' '+r.value)"
                    "+'&body='+encodeURIComponent(v||'(링크 없음)')}")
     refresh = desk.issue_link(f"{LABEL}키워드새로", today, "키워드를 다시 모아 주세요.")
+    # 직접 입력한 주제 (대표 요청 2026-10-09): 제목 뽑기 = 제목 후보만 / 바로 글 = 조사 → 제목 → ★제목으로 글
+    issue = f"https://github.com/{desk.REPO}/issues/new?title="
+    add_js += (f"function tpv_{BID}(){{return document.getElementById('kwin-{BID}').value.trim()}}"
+               f"function tpTitles_{BID}(){{const v=tpv_{BID}().split('\\n')[0].trim();if(!v)return;"
+               f"location.href='{issue}'+encodeURIComponent('[{LABEL}키워드] '+v)+'&body='+encodeURIComponent('이 주제로 조사해서 제목 후보를 만들어 주세요.')}}"
+               f"function tpWrite_{BID}(){{const v=tpv_{BID}();if(!v)return;"
+               f"location.href='{issue}'+encodeURIComponent('[{LABEL}주제글] {today}')+'&body='+encodeURIComponent(v)}}")
+    tip = "주제 (예: 30대 순자산 평균)" if BID == "econ" else "주제 (예: 카리나 공항 가방)&#10;상품 링크 (있으면, 한 줄에 하나)"
+    topic_box = (f'<div class="card"><h2>직접 주제</h2><textarea id="kwin-{BID}" rows="{2 if BID == "econ" else 3}" style="{TA}" placeholder="{tip}"></textarea>'
+                 f'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">'
+                 f'<button class="ghost" style="margin:0;padding:10px 4px;font-size:14px" onclick="addKw_{BID}()">➕ 목록에</button>'
+                 f'<button style="margin:0;padding:10px 4px;font-size:14px" onclick="tpTitles_{BID}()">📝 제목 뽑기</button>'
+                 f'<button style="margin:0;padding:10px 4px;font-size:14px" onclick="tpWrite_{BID}()">✍️ 바로 글</button></div></div>')
     a = kw.get("aside")
     aside = f'🛰 어사이드 {e(a.get("at", ""))} · {a.get("n", 0)}개' if a else "🛰 어사이드 아직"
     kw_html = (f'<div class="card"><h2>키워드</h2><div class="muted" style="margin:4px 0 6px">{aside}</div>{rows}'
                f'{score_table(shown)}'
-               f'<textarea id="kwin-{BID}" rows="2" style="{TA}" placeholder="키워드 직접 넣기 (한 줄에 하나)"></textarea>'
-               f'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button style="margin:0" onclick="addKw_{BID}()">➕ 넣기</button>'
-               f'<a class="btn" style="margin:0;background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(refresh, quote=True)}">🔄 다시 모으기</a></div>'
-               f'<script>{add_js}</script></div>')
+               f'<a class="btn" style="margin-top:8px;background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(refresh, quote=True)}">🔄 다시 모으기</a>'
+               f'<script>{add_js}</script></div>{topic_box}')
     topics = []
     for t in sorted(day.glob("*/titles.yaml")) if day.exists() else []:
         T = yaml.safe_load(t.read_text(encoding="utf-8")) or {}
