@@ -1,0 +1,72 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · 먹구름 아래 현대자동차 간판",
+  "make": true,
+  "file": "",
+  "desc": "Square close-up photograph of the large HYUNDAI Motor logo sign on a building facade centered in frame, low heavy dark storm clouds above, cold blue tone with a thin gap of warm light on one side, high contrast, cinematic, split between dark and bright, no other text",
+  "brand": "Hyundai Motor Company",
+  "size": "1024x1024",
+  "prompt": "Square 1:1 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Square close-up photograph of the large HYUNDAI Motor logo sign on a building facade centered in frame, low heavy dark storm clouds above, cold blue tone with a thin gap of warm light on one side, high contrast, cinematic, split between dark and bright, no other text This must clearly be Hyundai Motor Company: show its real, accurate corporate signage — the actual Hyundai Motor Company logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 2,
+  "label": "서울 양재동 현대자동차 본사 사옥",
+  "make": true,
+  "file": "",
+  "desc": "Wide photograph of the Hyundai Motor Company headquarters building in Yangjae, Seoul, large glass tower with the HYUNDAI logo visible, overcast sky, realistic news photo style",
+  "brand": "Hyundai Motor Company",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Wide photograph of the Hyundai Motor Company headquarters building in Yangjae, Seoul, large glass tower with the HYUNDAI logo visible, overcast sky, realistic news photo style This must clearly be Hyundai Motor Company: show its real, accurate corporate signage — the actual Hyundai Motor Company logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 3,
+  "label": "울산 현대자동차 공장 전경",
+  "make": true,
+  "file": "",
+  "desc": "Aerial photograph of the Hyundai Motor Ulsan plant, long factory buildings with the HYUNDAI sign, finished cars parked in rows, daylight, realistic news photo",
+  "brand": "Hyundai Motor Company",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Aerial photograph of the Hyundai Motor Ulsan plant, long factory buildings with the HYUNDAI sign, finished cars parked in rows, daylight, realistic news photo This must clearly be Hyundai Motor Company: show its real, accurate corporate signage — the actual Hyundai Motor Company logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 4,
+  "label": "가동이 줄어든 자동차 생산 라인",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photograph of a car assembly line in a Korean factory, partly idle, empty workstations, cool blue lighting, no text, no logos",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photograph of a car assembly line in a Korean factory, partly idle, empty workstations, cool blue lighting, no text, no logos No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 5,
+  "label": "증권사 시세 전광판 불빛",
+  "make": true,
+  "file": "",
+  "desc": "Close-up photograph of a securities firm's electronic stock board in Yeouido at dusk, red and blue lights, no readable numbers or text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Close-up photograph of a securities firm's electronic stock board in Yeouido at dusk, red and blue lights, no readable numbers or text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 6,
+  "label": "현대차 매장과 신차",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photograph of a Hyundai Motor dealership exterior in Korea, HYUNDAI sign above the entrance, new hybrid cars parked in front, afternoon light",
+  "brand": "Hyundai Motor Company",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photograph of a Hyundai Motor dealership exterior in Korea, HYUNDAI sign above the entrance, new hybrid cars parked in front, afternoon light This must clearly be Hyundai Motor Company: show its real, accurate corporate signage — the actual Hyundai Motor Company logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 7,
+  "label": "미국 수출을 앞둔 차량들",
+  "make": true,
+  "file": "",
+  "desc": "Photograph of a row of hybrid cars at a US port parking lot, seen from behind, clear sky, no text or logos",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Photograph of a row of hybrid cars at a US port parking lot, seen from behind, clear sky, no text or logos No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ }
+]
