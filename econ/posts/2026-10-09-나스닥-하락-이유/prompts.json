@@ -1,0 +1,72 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · 붉은 불빛이 가득한 밤의 뉴욕 증시 전광판",
+  "make": true,
+  "file": "",
+  "desc": "Square cinematic photograph of a giant glowing stock ticker board in a New York street at night with red lights dominating, low dark storm clouds above, cold blue and red warning tones, a single bright chip-shaped neon sculpture dimming, no readable text or numbers, high contrast",
+  "brand": "",
+  "size": "1024x1024",
+  "prompt": "Square 1:1 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Square cinematic photograph of a giant glowing stock ticker board in a New York street at night with red lights dominating, low dark storm clouds above, cold blue and red warning tones, a single bright chip-shaped neon sculpture dimming, no readable text or numbers, high contrast No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 2,
+  "label": "뉴욕 증시 전광판 불빛이 비치는 저녁 거리",
+  "make": true,
+  "file": "",
+  "desc": "Realistic news-style photograph of a large electronic stock ticker board in a New York trading district at dusk, red and green lights reflecting on a wet street, no readable text or numbers, cool blue tones",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic news-style photograph of a large electronic stock ticker board in a New York trading district at dusk, red and green lights reflecting on a wet street, no readable text or numbers, cool blue tones No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 3,
+  "label": "스마트폰으로 시황을 확인하는 직장인의 손",
+  "make": true,
+  "file": "",
+  "desc": "Close-up documentary photograph of an anonymous office worker's hands holding a smartphone showing blurred red market screens, desk with coffee, natural window light, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Close-up documentary photograph of an anonymous office worker's hands holding a smartphone showing blurred red market screens, desk with coffee, natural window light, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 4,
+  "label": "반도체 웨이퍼를 다루는 클린룸 작업 장면",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photograph of a semiconductor wafer held by gloved hands in a clean room, cool blue lighting, sharp focus, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photograph of a semiconductor wafer held by gloved hands in a clean room, cool blue lighting, sharp focus, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 5,
+  "label": "AI 데이터센터의 서버 랙",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photograph of rows of server racks in a dark data center with blue indicator lights, low angle, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photograph of rows of server racks in a dark data center with blue indicator lights, low angle, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 6,
+  "label": "먹구름 아래 유전 설비와 정유 시설",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photograph of an oil refinery at dusk with storm clouds low over the horizon, cold blue and red warning-light tones, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photograph of an oil refinery at dusk with storm clouds low over the horizon, cold blue and red warning-light tones, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 7,
+  "label": "갈림길 앞에 선 사람의 실루엣",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photograph split by strong light and shadow of a empty city street with a lone silhouette walking at a crossroads, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photograph split by strong light and shadow of a empty city street with a lone silhouette walking at a crossroads, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ }
+]
