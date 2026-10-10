@@ -822,14 +822,6 @@ def _run(cmd: str) -> None:
         lines = [l.strip() for l in sys.argv[2].splitlines() if l.strip()]
         slug, n = lines[0].rsplit(" ", 1)
         write_with_links(slug, int(n), [u for u in lines[1:] if u.startswith("http")])
-    elif cmd == "linkcheck":  # 상품 링크가 읽히는지만 점검 → reports/ (2026-10-08)
-        from .celeb import link_facts
-        urls = [u for u in sys.argv[2].split() if u.startswith("http")]
-        facts = link_facts(urls)
-        out = ROOT / "reports" / f"{today()}-상품링크-점검.md"
-        out.write_text(f"# 상품 링크 점검 ({today()})\n\n" + "\n".join(f"- {u}" for u in urls) + f"\n\n## 읽은 정보\n\n{facts or '(못 읽음)'}\n"
-                       f"\n비용 약 {SPENT['claude']:.3f}달러\n", encoding="utf-8")
-        print(facts)
     elif cmd == "auto":  # 10시 자동 글 (어사이드가 안 온 날), 도우미 '다시 돌리기'는 force
         auto(force=len(sys.argv) > 2 and sys.argv[2] == "force")
     elif cmd == "titles":  # 경제 = 쿠니네 방식, 연예·패션 = 강사 연예·패션 프롬프트 (대표 결정 2026-10-05)
