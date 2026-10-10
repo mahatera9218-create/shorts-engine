@@ -792,6 +792,9 @@ def _run(cmd: str) -> None:
                 rank()
             except Exception as e:  # noqa: BLE001  (키워드 모으기는 살린다)
                 print(f"오늘 뜨는 연예인 실패: {str(e)[:200]}")
+    elif cmd == "rising":  # 네이버 급상승 탐지 (어사이드 없이 공식 API, 2026-10-10)
+        from .rising import run as rising_run
+        rising_run()
     elif cmd == "celebs":  # 착장 도우미: 오늘 뜨는 연예인만 다시
         from .outfit import rank
         rank()

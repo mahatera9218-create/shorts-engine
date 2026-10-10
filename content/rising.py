@@ -1,0 +1,71 @@
+"""네이버 급상승 탐지 — 어사이드 없이 공식 API로 (대표 요청 2026-10-10 "어사이드 안 쓰고 네이버 조사", "주기적으로 돌아서 보여 줘").
+
+1) 씨앗 키워드(config rising_seeds) → 네이버 검색광고 API 연관 키워드 + 월 검색량 (사람들이 실제로 치는 말)
+2) 검색어 트렌드(API HUB, 일 단위) → 최근 3일 검색이 그 전 11일 평균보다 얼마나 올랐나
+3) 블로그 검색 API → 지난 24시간 새 블로그 글 수 (지금 쓰이는 중인가)
+→ <flow>/<날짜>/rising.yaml, 도우미 '📈 네이버 급상승' 칸. AI 비용 없음.
+한계: 검색어 트렌드는 어제까지 데이터라 실시간 홈판보다 하루 늦다.
+"""
+from __future__ import annotations
+
+import math
+import re
+from datetime import datetime
+
+from . import econ_flow as F
+
+N_CAND, N_FRESH, N_SHOW = 80, 30, 15
+
+
+def run() -> None:
+    from .econ_score import CFG, _hub, _recent_count
+    from market.common import load_yaml, secret
+    from market.naver_ad import KeywordTool
+    cfg = F.load(CFG(), {}) or {}
+    seeds = cfg.get("rising_seeds") or []
+    min_vol = cfg.get("rising_min_volume", 2000)
+    if not seeds or not all(secret(k) for k in ("NAVER_AD_API_KEY", "NAVER_AD_SECRET_KEY", "NAVER_AD_CUSTOMER_ID")):
+        print("급상승: 씨앗이 없거나 검색광고 키가 없어 건너뜀")
+        return
+    # 1) 연관 키워드 + 월 검색량
+    tool = KeywordTool(load_yaml("global.yaml")["endpoints"]["naver_ad_base"])
+    rows = tool.related(seeds)
+    vol: dict[str, float] = {}
+    for r in rows:
+        k = (r.get("keyword") or "").strip()
+        if 2 <= len(k) <= 20 and r.get("volume", 0) >= min_vol and not re.fullmatch(r"[\d\W]+", k):
+            vol[k] = max(vol.get(k, 0), r["volume"])
+    cands = sorted(vol, key=lambda k: -vol[k])[:N_CAND]
+    hub = _hub()
+    if not hub or not cands:
+        print("급상승: 후보가 없거나 API HUB 키가 없음")
+        return
+    # 2) 최근 3일 상승률
+    rises = hub.rise(cands)
+    scored = []
+    for k in cands:
+        r = (rises.get(k) or {}).get("rise", 0.0)
+        if r < 1.2:  # 평소보다 20% 이상 오른 것만
+            continue
+        rise_pt = min(60, (r - 1) * 60)  # 평소의 2배면 60점
+        vol_pt = min(40, max(0.0, (math.log10(vol[k]) - 3) / 3 * 40))  # 1천 → 0점, 100만 → 40점
+        scored.append({"kw": k, "rise": r, "volume": int(vol[k]), "pt": rise_pt + vol_pt})
+    scored.sort(key=lambda x: -x["pt"])
+    # 3) 지난 24시간 새 블로그 글 수 (지금 쓰이는 중인가)
+    for it in scored[:N_FRESH]:
+        try:
+            it["blog24h"], _ = _recent_count(hub, "blog_search", it["kw"])
+        except Exception as e:  # noqa: BLE001
+            print(f"블로그 검색 실패 {it['kw']}: {str(e)[:80]}")
+            it["blog24h"] = None
+        it["pt"] += min(20, (it["blog24h"] or 0) / 5)  # 24시간 새 글 100개면 20점
+    items = sorted(scored[:N_FRESH], key=lambda x: -x["pt"])[:N_SHOW]
+    if F.BLOG["id"] == "econ":
+        from .econ_sections import section
+        for it in items:
+            it["section"] = section({"kw": it["kw"]})
+    for it in items:
+        it["score"] = round(it.pop("pt"))
+    out = F.FLOW / F.today() / "rising.yaml"
+    F.save(out, {"date": F.today(), "updated": datetime.now(F.KST).strftime("%H:%M"), "items": items})
+    print(f"급상승 {len(items)}개 → {out}" + (f" (1위 {items[0]['kw']} ×{items[0]['rise']})" if items else ""))
