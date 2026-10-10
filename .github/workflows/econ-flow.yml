@@ -19,6 +19,8 @@ on:
       arg2: {description: "제목 번호", required: false, default: ""}
       blog: {description: "econ | ent | fashion", required: false, default: econ}
   workflow_call:
+    outputs:
+      reason: {description: "실패 이유 (쉬운 말)", value: "${{ jobs.run.outputs.reason }}"}
     inputs:
       cmd: {type: string, required: true}
       arg1: {type: string, required: false, default: ""}
@@ -36,6 +38,8 @@ jobs:
   run:
     runs-on: ubuntu-24.04   # ubuntu-latest가 2026-10-06 새벽 서버 배정을 못 받아 15분 뒤 취소가 반복돼 고정 (Ubuntu 26 이전 중)
     timeout-minutes: 100   # 자동 글 3편(제목+본문)을 한 번에 (2026-10-07)
+    outputs:
+      reason: ${{ steps.why.outputs.reason }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -62,6 +66,7 @@ jobs:
           ARG1: ${{ inputs.arg1 }}
           ARG2: ${{ inputs.arg2 }}
         run: |
+          exec > >(tee -a run.log) 2>&1   # 실패 이유를 찾으려고 기록을 남김 (2026-10-10)
           if [ "$CMD" = "keywords" ]; then python -m content.econ_flow keywords
           elif [ "$CMD" = "add" ]; then python -m content.econ_flow add "$ARG1"
           elif [ "$CMD" = "aside" ]; then python -m content.econ_flow aside "$ARG1"   # 어사이드 목록 → 바로 자동 글 (2026-10-07)
@@ -83,7 +88,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          for d in econ blogs reports; do [ -e "$d" ] && git add "$d"; done   # 없는 폴더가 있어도 멈추지 않게
+          python -m content.run_error --clear "${{ inputs.cmd }}"   # 클로드 실행이 성공하면 도우미의 빨간 띠를 지움
+          for d in econ blogs reports status; do [ -e "$d" ] && git add -A "$d"; done   # 없는 폴더가 있어도 멈추지 않게
           git diff --cached --quiet && exit 0
           git commit -m "글 흐름(${{ inputs.blog || 'econ' }}): $(date +%F)"
           for i in 1 2 3; do
@@ -91,8 +97,26 @@ jobs:
             sleep $((i * 5))
           done
           exit 1
+      - name: 실패 이유 남기기 (도우미 빨간 띠 + 이슈 댓글, 대표 지적 2026-10-10)
+        id: why
+        if: failure()
+        env:
+          ARG1: ${{ inputs.arg1 }}
+        run: |
+          r=$(python -m content.run_error run.log "${{ inputs.cmd }}" "$ARG1" | tail -1)
+          echo "reason=$r" >> "$GITHUB_OUTPUT"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add status
+          git diff --cached --quiet && exit 0
+          git commit -m "도우미: 실행 실패 이유"
+          for i in 1 2 3; do
+            git pull --rebase --autostash -X theirs origin main && git push origin HEAD:main && exit 0
+            sleep $((i * 5))
+          done
 
   desk:
     needs: run
+    if: always()
     uses: ./.github/workflows/econ-desk.yml
     secrets: inherit
