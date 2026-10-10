@@ -1,612 +1,696 @@
 date: '2026-10-11'
-updated: 00:36
+updated: 07:35
 items:
-- kw: 금값 시세 전망
-  core: 금 시세
-  area: 금
-  why: COMEX 4,220달러 안전자산 수요, 금값 폭락 후 은행 판매 동향
-  person: ''
-  product: ''
-  rows:
-  - G8
-  - N33
-  - Y41
-  src: Grok, 국내뉴스, 해외뉴스
-  bloggers: []
-  sources:
-    Grok: 1
-    국내뉴스: 1
-    해외뉴스: 1
-  score: 65
-  parts:
-    네이버: 0
-    급상승: 1
-    출처: 4
-    뉴스: 2
-    검색: 33
-    유튜브: 8
-  new: true
-  surge: false
-  stats:
-    뉴스24h: 15
-    뉴스6h: 3
-    블로그24h: 8
-    월검색: 4065000
-    상승: 1.06
-    유튜브7일: 33332
-- kw: 코스피 코스닥 전망
-  core: 코스피
+- kw: 삼성전자 외국인 매도 주가
+  core: 삼성전자
   area: 국내주식
-  why: 코스피 부진, 코스닥 선방과 박스권 장세
+  why: 역대급 실적에도 외국인 지분이 46%대로 떨어지고 주가가 눌려 있어 투자자 관심이 큼
   person: ''
   product: ''
   rows:
-  - G1
-  - N1
-  - N4
-  - N50
-  - N52
-  src: Grok, 국내뉴스
-  bloggers: []
-  sources:
-    Grok: 1
-    국내뉴스: 4
-  score: 64
-  parts:
-    네이버: 0
-    급상승: 4
-    출처: 5
-    뉴스: 9
-    검색: 33
-    반복: -12
-    유튜브: 8
-  new: false
-  surge: false
-  stats:
-    뉴스24h: 73
-    뉴스6h: 10
-    블로그24h: 5
-    월검색: 6833400
-    상승: 1.22
-    유튜브7일: 96833
-- kw: 마이크로소프트 주가
-  core: 마이크로소프트 주가
-  area: 미국주식
-  why: AI 투자 부담 속 장기 성장세가 화제
-  person: ''
-  product: ''
-  rows:
-  - W8
-  - Y28
-  - Y78
-  src: 인기종목, 해외뉴스
-  bloggers: []
+  - W1
+  - B5
+  - B20
+  - B25
+  - N9
+  - N32
+  - N12
+  - N35
+  - N79
+  - N56
+  - N7
+  src: 국내뉴스, 블로거, 인기종목
+  bloggers:
+  - 달스
+  - 유미
+  - 한입재테크
   sources:
     인기종목: 1
-    해외뉴스: 2
-  score: 59
+    블로거: 3
+    국내뉴스: 7
+  score: 58
   parts:
-    네이버: 0
-    급상승: 4
-    출처: 4
-    뉴스: 6
-    검색: 22
-    유튜브: 8
-  new: true
-  surge: false
-  stats:
-    뉴스24h: 50
-    뉴스6h: 2
-    블로그24h: 7
-    월검색: 50520
-    상승: 1.24
-    유튜브7일: 13626
-- kw: 현대차 주가
-  core: 현대차
-  area: 국내주식
-  why: 인기 종목으로 기사가 많이 나옴
-  person: ''
-  product: ''
-  rows:
-  - W10
-  src: 인기종목
-  bloggers: []
-  sources:
-    인기종목: 1
-  score: 57
-  parts:
-    네이버: 0
     급상승: 6
-    출처: 3
-    뉴스: 5
-    검색: 32
-    반복: -12
+    출처: 8
+    뉴스: 16
+    검색: 25
+    최신: 25
+    반복: -30
     유튜브: 8
   new: false
   surge: false
   stats:
-    뉴스24h: 41
-    뉴스6h: 1
-    블로그24h: 11
-    월검색: 658600
-    상승: 1.35
-    유튜브7일: 101825
-- kw: 기름값 휘발유 가격
-  core: 기름값
-  area: 생활경제
-  why: 국내 기름값 21주째 하락하나 브렌트유는 고공행진
+    뉴스24h: 100
+    뉴스6h: 48
+    블로그24h: 100
+    월검색: 10080300
+    상승: 1.24
+    유튜브7일: 294924
+- kw: 엔화 환율 투자
+  core: 엔화 환율
+  area: 환율
+  why: 엔화 환율이 840원대까지 하락해 투자 시점 고민이 늘어남
   person: ''
-  product: 휘발유·경유 1천800원대
+  product: ''
   rows:
-  - G15
-  - N5
-  - N25
-  src: Grok, 국내뉴스
-  bloggers: []
+  - B4
+  - G13
+  src: Grok, 블로거
+  bloggers:
+  - 달스
   sources:
+    블로거: 1
     Grok: 1
-    국내뉴스: 2
   score: 57
   parts:
-    네이버: 0
-    급상승: 0
-    출처: 4
-    뉴스: 8
-    검색: 22
+    급상승: 12
+    출처: 3
+    뉴스: 1
+    검색: 25
+    최신: 8
     유튜브: 8
   new: true
   surge: false
   stats:
-    뉴스24h: 70
-    뉴스6h: 10
-    블로그24h: 3
-    월검색: 49770
-    상승: 0.84
-    유튜브7일: 44121
-- kw: XRP 리플 전망
-  core: XRP
-  area: 비트코인
-  why: 무단 발행 버그 긴급 패치 논란
+    뉴스24h: 8
+    뉴스6h: 4
+    블로그24h: 38
+    월검색: 5002600
+    상승: 1.51
+    유튜브7일: 11566
+- kw: 스페이스X 상장 주식
+  core: 스페이스X
+  area: 미국주식
+  why: 상장을 앞두고 매수 방법과 위험성에 대한 논의가 이어짐
   person: ''
   product: ''
   rows:
-  - N70
-  - N71
-  - N73
-  - N75
-  - Y54
-  src: 국내뉴스, 해외뉴스
+  - B23
+  - N49
+  - Y33
+  - Y35
+  - Y9
+  - Y36
+  - Y67
+  src: 국내뉴스, 블로거, 해외뉴스
+  bloggers:
+  - 유미
+  sources:
+    블로거: 1
+    국내뉴스: 1
+    해외뉴스: 5
+  score: 55
+  parts:
+    급상승: 5
+    출처: 5
+    뉴스: 7
+    검색: 22
+    최신: 8
+    유튜브: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 44
+    뉴스6h: 8
+    블로그24h: 15
+    월검색: 319800
+    상승: 1.22
+    유튜브7일: 86424
+- kw: 10·15 대책 1년 서울 아파트
+  core: 서울 아파트
+  area: 부동산
+  why: 대책 1년 뒤 공급 부족과 서울 지역별 변화가 정리됨
+  person: ''
+  product: ''
+  rows:
+  - N43
+  - N44
+  - B8
+  - G9
+  src: Grok, 국내뉴스, 블로거
+  bloggers:
+  - 은퇴연구소
+  sources:
+    국내뉴스: 2
+    블로거: 1
+    Grok: 1
+  score: 50
+  parts:
+    급상승: 0
+    출처: 5
+    뉴스: 16
+    검색: 13
+    최신: 8
+    유튜브: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 100
+    뉴스6h: 27
+    블로그24h: 100
+    월검색: 12560
+    상승: 1.01
+    유튜브7일: 76064
+- kw: 두산에너빌리티 주가
+  core: 두산에너빌리티
+  area: 국내주식
+  why: 인기 종목 상위에 올라 원전 이슈와 함께 관심이 큼
+  person: ''
+  product: ''
+  rows:
+  - W9
+  - N29
+  src: 국내뉴스, 인기종목
   bloggers: []
   sources:
-    국내뉴스: 4
-    해외뉴스: 1
-  score: 57
+    인기종목: 1
+    국내뉴스: 1
+  score: 47
   parts:
-    네이버: 0
-    급상승: 0
-    출처: 4
-    뉴스: 5
+    급상승: 3
+    출처: 5
+    뉴스: 6
     검색: 25
     유튜브: 8
   new: true
   surge: false
   stats:
-    뉴스24h: 44
-    뉴스6h: 6
-    블로그24h: 2
-    월검색: 109500
-    상승: 0.89
-    유튜브7일: 75657
-- kw: 테슬라 주가 급등
-  core: 테슬라
-  area: 미국주식
-  why: 최근 반등 배경과 유럽 FSD 명칭 철회가 함께 언급됨
+    뉴스24h: 38
+    뉴스6h: 2
+    블로그24h: 12
+    월검색: 2354000
+    상승: 1.12
+    유튜브7일: 35664
+- kw: 코스피 코스닥 약세 이유
+  core: 코스피
+  area: 국내주식
+  why: 일본·대만이 오르는 동안 코스피만 부진해 원인을 찾는 글이 많음
   person: ''
   product: ''
   rows:
-  - W9
-  - G4
-  - Y19
-  - Y98
-  src: Grok, 인기종목, 해외뉴스
+  - G1
+  - G6
+  - N17
+  - N58
+  - N68
+  - N12
+  - N35
+  src: Grok, 국내뉴스
   bloggers: []
   sources:
-    인기종목: 1
-    Grok: 1
-    해외뉴스: 2
-  score: 54
+    Grok: 2
+    국내뉴스: 5
+  score: 47
   parts:
-    네이버: 0
-    급상승: 0
+    급상승: 5
     출처: 7
-    뉴스: 5
-    검색: 32
+    뉴스: 14
+    검색: 25
     반복: -12
     유튜브: 8
   new: false
   surge: false
   stats:
-    뉴스24h: 44
-    뉴스6h: 6
-    블로그24h: 0
-    월검색: 847300
-    상승: 0.93
-    유튜브7일: 197987
-- kw: 이더리움 전망
+    뉴스24h: 86
+    뉴스6h: 28
+    블로그24h: 94
+    월검색: 6413400
+    상승: 1.22
+    유튜브7일: 94542
+- kw: 소부장 관련주 한미반도체
+  core: 소부장
+  area: 국내주식
+  why: 삼전닉스가 주춤한 사이 소부장이 선전하며 4분기 매력이 거론됨
+  person: ''
+  product: ''
+  rows:
+  - G2
+  - B26
+  - N7
+  - N56
+  - N66
+  src: Grok, 국내뉴스, 블로거
+  bloggers:
+  - 유미
+  sources:
+    Grok: 1
+    블로거: 1
+    국내뉴스: 3
+  score: 45
+  parts:
+    급상승: 4
+    출처: 6
+    뉴스: 8
+    검색: 11
+    최신: 8
+    유튜브: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 48
+    뉴스6h: 17
+    블로그24h: 44
+    월검색: 6900
+    상승: 1.18
+    유튜브7일: 48712
+- kw: 이더리움 시세 급락
   core: 이더리움
   area: 비트코인
-  why: 위기론과 강세론이 맞서고 ETF 자금 유출 소식도 나옴
+  why: 비트코인보다 더 하락하고 월가 자금도 빠져나가는 중
   person: ''
   product: ''
   rows:
   - W6
   - W7
-  - N69
-  - Y56
-  - Y66
-  - Y69
-  src: 국내뉴스, 인기종목, 해외뉴스
-  bloggers: []
+  - B3
+  - Y50
+  src: 블로거, 인기종목, 해외뉴스
+  bloggers:
+  - 달스
   sources:
     인기종목: 2
-    국내뉴스: 1
-    해외뉴스: 3
-  score: 52
+    블로거: 1
+    해외뉴스: 1
+  score: 41
   parts:
-    네이버: 0
     급상승: 0
-    출처: 6
-    뉴스: 7
-    검색: 30
+    출처: 5
+    뉴스: 9
+    검색: 23
+    최신: 8
     반복: -12
     유튜브: 8
   new: false
   surge: false
   stats:
-    뉴스24h: 60
-    뉴스6h: 15
+    뉴스24h: 54
+    뉴스6h: 9
     블로그24h: 3
-    월검색: 405100
+    월검색: 402400
     상승: 1.0
-    유튜브7일: 55752
-- kw: 단일종목 레버리지 ETF
-  core: 레버리지 ETF
+    유튜브7일: 55644
+- kw: 현대차 기아 영업이익
+  core: 현대차
   area: 국내주식
-  why: 도입 논란과 금융위원장 해명, 레버리지 ETF 판도 변화
+  why: 분기 영업이익이 기아에 역전될 수 있다는 전망이 나옴
   person: ''
   product: ''
   rows:
-  - N45
-  - N61
-  - N62
-  src: 국내뉴스
+  - W8
+  - N10
+  src: 국내뉴스, 인기종목
   bloggers: []
   sources:
-    국내뉴스: 3
-  score: 49
-  parts:
-    네이버: 0
-    급상승: 4
-    출처: 2
-    뉴스: 5
-    검색: 18
-    유튜브: 8
-  new: true
-  surge: false
-  stats:
-    뉴스24h: 41
-    뉴스6h: 7
-    블로그24h: 7
-    월검색: 15790
-    상승: 1.23
-    유튜브7일: 40838
-- kw: 서학개미 S&P500 ETF
-  core: S&P500 ETF
-  area: 미국주식
-  why: 서학개미 겨냥 ETF 출시와 미국 증시 불안
-  person: ''
-  product: ''
-  rows:
-  - N36
-  - G2
-  - Y3
-  - Y21
-  - N40
-  src: Grok, 국내뉴스, 해외뉴스
-  bloggers: []
-  sources:
-    국내뉴스: 2
-    Grok: 1
-    해외뉴스: 2
+    인기종목: 1
+    국내뉴스: 1
   score: 40
   parts:
-    네이버: 0
-    급상승: 2
+    급상승: 8
     출처: 5
-    뉴스: 3
-    검색: 18
-  new: true
-  surge: false
-  stats:
-    뉴스24h: 28
-    뉴스6h: 2
-    블로그24h: 3
-    월검색: 17290
-    상승: 1.1
-- kw: 원달러 환율
-  core: 원달러 환율
-  area: 환율
-  why: 1,342원대 유지로 직구 비용 부담
-  person: ''
-  product: ''
-  rows:
-  - G12
-  - G13
-  src: Grok
-  bloggers: []
-  sources:
-    Grok: 2
-  score: 39
-  parts:
-    네이버: 0
-    급상승: 3
-    출처: 2
-    뉴스: 4
-    검색: 30
-    반복: -12
-  new: false
-  surge: false
-  stats:
-    뉴스24h: 33
-    뉴스6h: 2
-    블로그24h: 45
-    월검색: 485800
-    상승: 1.17
-- kw: 비트코인 시세 전망
-  core: 비트코인
-  area: 비트코인
-  why: 8만 달러 안팎에서 등락하며 김치프리미엄과 하락 요인에 관심
-  person: ''
-  product: ''
-  rows:
-  - W2
-  - W3
-  - G7
-  - Y52
-  - Y59
-  - Y60
-  - Y65
-  - Y68
-  src: Grok, 인기종목, 해외뉴스
-  bloggers: []
-  sources:
-    인기종목: 2
-    Grok: 1
-    해외뉴스: 5
-  score: 36
-  parts:
-    네이버: 0
-    급상승: 2
-    출처: 8
-    뉴스: 12
-    검색: 33
-    반복: -30
-  new: false
-  surge: false
-  stats:
-    뉴스24h: 100
-    뉴스6h: 22
-    블로그24h: 10
-    월검색: 1289500
-    상승: 1.1
-- kw: 삼성전자 주가 전망
-  core: 삼성전자
-  area: 국내주식
-  why: 분기 영업이익 100조 시대인데 주가는 부진해 이유를 찾는 사람이 많음
-  person: ''
-  product: ''
-  rows:
-  - W1
-  - N41
-  - N63
-  src: 국내뉴스, 인기종목
-  bloggers: []
-  sources:
-    인기종목: 1
-    국내뉴스: 2
-  score: 33
-  parts:
-    네이버: 0
-    급상승: 4
-    출처: 4
-    뉴스: 12
-    검색: 33
-    반복: -30
-  new: false
-  surge: false
-  stats:
-    뉴스24h: 100
-    뉴스6h: 24
-    블로그24h: 82
-    월검색: 10584500
-    상승: 1.24
-- kw: 엔비디아 주가 전망
-  core: 엔비디아
-  area: 미국주식
-  why: 엔비디아 투자 AI 기업 IPO 무산 등 이슈가 이어짐
-  person: ''
-  product: ''
-  rows:
-  - W5
-  - N74
-  - Y38
-  - Y77
-  src: 국내뉴스, 인기종목, 해외뉴스
-  bloggers: []
-  sources:
-    인기종목: 1
-    국내뉴스: 1
-    해외뉴스: 2
-  score: 33
-  parts:
-    네이버: 0
-    급상승: 3
-    출처: 5
-    뉴스: 11
-    검색: 28
-    반복: -24
-  new: false
-  surge: false
-  stats:
-    뉴스24h: 95
-    뉴스6h: 13
-    블로그24h: 13
-    월검색: 218600
-    상승: 1.2
-- kw: SK하이닉스 주가 급락
-  core: SK하이닉스
-  area: 국내주식
-  why: 세 달 만에 33% 급락해 보유자 관심이 큼
-  person: ''
-  product: ''
-  rows:
-  - W4
-  - N58
-  src: 국내뉴스, 인기종목
-  bloggers: []
-  sources:
-    인기종목: 1
-    국내뉴스: 1
-  score: 31
-  parts:
-    네이버: 0
-    급상승: 3
-    출처: 4
-    뉴스: 12
-    검색: 33
-    반복: -30
-  new: false
-  surge: false
-  stats:
-    뉴스24h: 100
-    뉴스6h: 19
-    블로그24h: 32
-    월검색: 6424000
-    상승: 1.15
-- kw: 아파트 전세 대출
-  core: 아파트 전세
-  area: 부동산
-  why: 레버리지 매수 증가와 전세 시장 영향
-  person: ''
-  product: ''
-  rows:
-  - G9
-  - G10
-  - G11
-  - N26
-  src: Grok, 국내뉴스
-  bloggers: []
-  sources:
-    Grok: 3
-    국내뉴스: 1
-  score: 31
-  parts:
-    네이버: 0
-    급상승: 0
-    출처: 3
-    뉴스: 4
-    검색: 15
-  new: true
-  surge: false
-  stats:
-    뉴스24h: 36
-    뉴스6h: 7
-    블로그24h: 20
-    월검색: 7380
-    상승: 1.02
-- kw: 기준금리 예금금리
-  core: 기준금리
-  area: 생활경제
-  why: 한은 기준금리 3% 유지 속에 은행 예금금리가 3%대 후반으로 인상
-  person: ''
-  product: 1년 만기 예금 3%대 후반
-  rows:
-  - G14
-  - N29
-  src: Grok, 국내뉴스
-  bloggers: []
-  sources:
-    Grok: 1
-    국내뉴스: 1
-  score: 14
-  parts:
-    네이버: 0
-    급상승: 0
-    출처: 3
     뉴스: 7
-    검색: 0
-  new: true
+    검색: 24
+    반복: -12
+    유튜브: 8
+  new: false
   surge: false
   stats:
-    뉴스24h: 58
-    뉴스6h: 10
-    블로그24h: 19
-    월검색: 10
-    상승: 0.97
-- kw: 자문형 랩 수익률
-  core: 랩어카운트
-  area: 국내주식
-  why: 랩 수익률이 높아 전문가에게 맡기려는 수요가 늘고 있음
+    뉴스24h: 43
+    뉴스6h: 16
+    블로그24h: 63
+    월검색: 637700
+    상승: 1.35
+    유튜브7일: 103442
+- kw: 개인 해외주식 순매수
+  core: 서학개미
+  area: 미국주식
+  why: 하반기 개인이 국내 주식을 팔고 미국 주식을 10조 순매수함
   person: ''
   product: ''
   rows:
-  - N37
-  - N38
-  - N39
-  - N42
+  - N11
+  - N51
   src: 국내뉴스
   bloggers: []
   sources:
-    국내뉴스: 4
-  score: 11
+    국내뉴스: 2
+  score: 40
   parts:
-    네이버: 0
-    급상승: 0
-    출처: 3
+    급상승: 23
+    출처: 2
     뉴스: 0
-    검색: 5
+    검색: 7
+    유튜브: 8
+  new: true
+  surge: true
+  stats:
+    뉴스24h: 3
+    뉴스6h: 0
+    블로그24h: 100
+    월검색: 1290
+    상승: 2.01
+    유튜브7일: 19116
+- kw: 고향사랑기부제 연말정산
+  core: 고향사랑기부제
+  area: 생활경제
+  why: 연말정산 준비 시기에 10만원 기부로 13만원 혜택을 받는 방법
+  person: ''
+  product: 10만 원 기부하면 13만 원 혜택
+  rows:
+  - B17
+  src: 블로거
+  bloggers:
+  - 한입재테크
+  sources:
+    블로거: 1
+  score: 31
+  parts:
+    급상승: 3
+    출처: 0
+    뉴스: 1
+    검색: 19
+    최신: 8
   new: true
   surge: false
   stats:
     뉴스24h: 4
     뉴스6h: 0
     블로그24h: 4
-    월검색: 420
-    상승: 0.98
-- kw: 온라인 정기결제 피해
-  core: 정기결제 자동갱신
-  area: 생활경제
-  why: 피해구제 신청이 5년간 8.8배 증가
+    월검색: 99900
+    상승: 1.15
+- kw: CPI PPI 발표
+  core: CPI
+  area: 미국주식
+  why: 다음 주 인플레이션 지표 발표를 앞두고 시장 관심이 높음
   person: ''
   product: ''
   rows:
-  - N24
-  src: 국내뉴스
+  - G14
+  - G15
+  - N2
+  src: Grok, 국내뉴스
   bloggers: []
   sources:
+    Grok: 2
     국내뉴스: 1
-  score: 4
+  score: 30
   parts:
-    네이버: 0
+    급상승: 6
+    출처: 4
+    뉴스: 4
+    검색: 16
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 28
+    뉴스6h: 9
+    블로그24h: 31
+    월검색: 41860
+    상승: 1.27
+- kw: SK하이닉스 주가 급락
+  core: SK하이닉스
+  area: 국내주식
+  why: 고점 대비 33% 급락해 매수 시점을 고민하는 투자자가 많음
+  person: ''
+  product: ''
+  rows:
+  - W2
+  - B22
+  - N74
+  src: 국내뉴스, 블로거, 인기종목
+  bloggers:
+  - 유미
+  sources:
+    인기종목: 1
+    블로거: 1
+    국내뉴스: 1
+  score: 27
+  parts:
+    급상승: 3
+    출처: 5
+    뉴스: 16
+    검색: 25
+    최신: 8
+    반복: -30
+  new: false
+  surge: false
+  stats:
+    뉴스24h: 100
+    뉴스6h: 32
+    블로그24h: 100
+    월검색: 6024500
+    상승: 1.15
+- kw: 금값 폭락 금시세
+  core: 금값
+  area: 금
+  why: 금값이 27% 폭락한 뒤 은행 판매가 늘고 전망이 엇갈림
+  person: ''
+  product: ''
+  rows:
+  - B21
+  - N48
+  - Y40
+  - Y41
+  src: 국내뉴스, 블로거, 해외뉴스
+  bloggers:
+  - 유미
+  sources:
+    블로거: 1
+    국내뉴스: 1
+    해외뉴스: 2
+  score: 27
+  parts:
     급상승: 0
-    출처: 1
+    출처: 3
+    뉴스: 3
+    검색: 25
+    최신: 8
+    반복: -12
+  new: false
+  surge: false
+  stats:
+    뉴스24h: 18
+    뉴스6h: 1
+    블로그24h: 24
+    월검색: 871400
+    상승: 0.96
+- kw: 테슬라 주가 사이버캡
+  core: 테슬라
+  area: 미국주식
+  why: 사이버캡 운행 증가와 중국 판매 증가세가 화제
+  person: ''
+  product: ''
+  rows:
+  - W10
+  - G4
+  - Y24
+  src: Grok, 인기종목, 해외뉴스
+  bloggers: []
+  sources:
+    인기종목: 1
+    Grok: 1
+    해외뉴스: 1
+  score: 26
+  parts:
+    급상승: 0
+    출처: 7
+    뉴스: 6
+    검색: 25
+    반복: -12
+  new: false
+  surge: false
+  stats:
+    뉴스24h: 35
+    뉴스6h: 8
+    블로그24h: 3
+    월검색: 840500
+    상승: 0.93
+- kw: 토지대장 무료열람 방법
+  core: 토지대장
+  area: 부동산
+  why: 정부24에서 토지대장을 무료로 열람·발급하는 방법 안내
+  person: ''
+  product: ''
+  rows:
+  - B2
+  src: 블로거
+  bloggers:
+  - 달스
+  sources:
+    블로거: 1
+  score: 25
+  parts:
+    급상승: 1
+    출처: 0
+    뉴스: 1
+    검색: 15
+    최신: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 4
+    뉴스6h: 1
+    블로그24h: 19
+    월검색: 28670
+    상승: 1.06
+- kw: 비트코인 시세 전망
+  core: 비트코인
+  area: 비트코인
+  why: 8.3만달러선 공방과 ETF 자금 흐름, 규제 이슈가 겹침
+  person: ''
+  product: ''
+  rows:
+  - W3
+  - W4
+  - G7
+  - G8
+  - N85
+  - Y29
+  - Y49
+  - Y46
+  - Y52
+  - Y54
+  - Y55
+  - Y58
+  - Y59
+  - Y61
+  - Y64
+  - Y45
+  - Y57
+  src: Grok, 국내뉴스, 인기종목, 해외뉴스
+  bloggers: []
+  sources:
+    인기종목: 2
+    Grok: 2
+    국내뉴스: 1
+    해외뉴스: 12
+  score: 24
+  parts:
+    급상승: 2
+    출처: 11
+    뉴스: 16
+    검색: 25
+    반복: -30
+  new: false
+  surge: false
+  stats:
+    뉴스24h: 99
+    뉴스6h: 10
+    블로그24h: 73
+    월검색: 1274300
+    상승: 1.1
+- kw: 커버드콜 ETF 배당
+  core: 커버드콜 ETF
+  area: 국내주식
+  why: 원금보다 배당이 많다는 115% 커버드콜 ETF 사례가 공유됨
+  person: ''
+  product: ''
+  rows:
+  - B10
+  src: 블로거
+  bloggers:
+  - 은퇴연구소
+  sources:
+    블로거: 1
+  score: 22
+  parts:
+    급상승: 0
+    출처: 0
     뉴스: 2
-    검색: 0
+    검색: 12
+    최신: 8
   new: true
   surge: false
   stats:
     뉴스24h: 14
     뉴스6h: 1
-    블로그24h: 51
-    월검색: 10
-    상승: 1.0
+    블로그24h: 33
+    월검색: 9450
+    상승: 1.01
+- kw: 엔비디아 주가
+  core: 엔비디아
+  area: 미국주식
+  why: AI 실적 시즌을 앞두고 반도체주 흐름에 관심이 쏠림
+  person: ''
+  product: ''
+  rows:
+  - W5
+  - Y18
+  - Y72
+  - Y21
+  src: 인기종목, 해외뉴스
+  bloggers: []
+  sources:
+    인기종목: 1
+    해외뉴스: 3
+  score: 19
+  parts:
+    급상승: 5
+    출처: 6
+    뉴스: 11
+    검색: 21
+    반복: -24
+  new: false
+  surge: false
+  stats:
+    뉴스24h: 71
+    뉴스6h: 14
+    블로그24h: 100
+    월검색: 213800
+    상승: 1.2
+- kw: 발행어음 파킹형 ETF
+  core: 발행어음
+  area: 생활경제
+  why: 박스권 증시에서 4~5% 상품과 파킹형 ETF로 자금이 몰림
+  person: ''
+  product: ''
+  rows:
+  - N6
+  - N27
+  - N20
+  src: 국내뉴스
+  bloggers: []
+  sources:
+    국내뉴스: 3
+  score: 16
+  parts:
+    급상승: 0
+    출처: 3
+    뉴스: 1
+    검색: 12
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 6
+    뉴스6h: 2
+    블로그24h: 5
+    월검색: 8760
+    상승: 0.92
+- kw: 리츠 ETF 순매수
+  core: 리츠 ETF
+  area: 국내주식
+  why: 국채금리 급등에도 개인이 리츠 ETF를 늘려 사고 있음
+  person: ''
+  product: ''
+  rows:
+  - N8
+  - N30
+  - Y6
+  src: 국내뉴스, 해외뉴스
+  bloggers: []
+  sources:
+    국내뉴스: 2
+    해외뉴스: 1
+  score: 14
+  parts:
+    급상승: 0
+    출처: 3
+    뉴스: 1
+    검색: 10
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 4
+    뉴스6h: 4
+    블로그24h: 0
+    월검색: 3550
+    상승: 0.96
