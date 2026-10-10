@@ -14,7 +14,8 @@ from datetime import datetime
 
 from . import econ_flow as F
 
-N_CAND, N_FRESH, N_SHOW = 80, 30, 15
+N_CAND, N_FRESH, N_SHOW = 120, 30, 15
+NAME_PT, BROAD_PT = 20, -15  # 회사·연예인 이름이 든 키워드는 올리고, 이름 없는 넓은 말은 내림 (대표 요청 2026-10-10)
 
 
 def run() -> None:
@@ -35,7 +36,23 @@ def run() -> None:
         k = (r.get("keyword") or "").strip()
         if 2 <= len(k) <= 20 and r.get("volume", 0) >= min_vol and not re.fullmatch(r"[\d\W]+", k):
             vol[k] = max(vol.get(k, 0), r["volume"])
-    cands = sorted(vol, key=lambda k: -vol[k])[:N_CAND]
+    # 회사·연예인 명단 (config rising_entities): 그 자체도 후보로 넣고, 이름이 든 키워드에 가점
+    names = [n.strip() for n in cfg.get("rising_entities") or [] if n.strip()]
+    if F.BLOG["id"] == "fashion":  # 착장 도우미 '오늘 뜨는 연예인'도 후보로
+        from .outfit import OUT
+        cel = F.load(OUT / F.today() / "celebs.yaml", {}) or {}
+        names += [c["name"] for c in cel.get("items", []) if c.get("name")]
+    names = list(dict.fromkeys(names))
+    if names:
+        from .econ_score import _volumes
+        for n, v in _volumes(names).items():
+            vol[n.replace(" ", "")] = max(vol.get(n.replace(" ", ""), 0), v or 0)
+    keyed = [n.replace(" ", "") for n in names]
+    def has_name(k: str) -> bool:
+        return any(n and n in k for n in keyed)
+    ent = [k for k in vol if has_name(k)]
+    rest = [k for k in sorted(vol, key=lambda k: -vol[k]) if k not in ent]
+    cands = (sorted(ent, key=lambda k: -vol[k]) + rest)[:N_CAND]
     hub = _hub()
     if not hub or not cands:
         print("급상승: 후보가 없거나 API HUB 키가 없음")
@@ -48,8 +65,10 @@ def run() -> None:
         if r < 1.2:  # 평소보다 20% 이상 오른 것만
             continue
         rise_pt = min(60, (r - 1) * 60)  # 평소의 2배면 60점
-        vol_pt = min(40, max(0.0, (math.log10(vol[k]) - 3) / 3 * 40))  # 1천 → 0점, 100만 → 40점
-        scored.append({"kw": k, "rise": r, "volume": int(vol[k]), "pt": rise_pt + vol_pt})
+        vol_pt = min(40, max(0.0, (math.log10(vol[k]) - 3) / 3 * 40)) if vol[k] > 0 else 0  # 1천 → 0점, 100만 → 40점
+        named = has_name(k)
+        scored.append({"kw": k, "rise": r, "volume": int(vol[k]), "named": named,
+                       "pt": rise_pt + vol_pt + (NAME_PT if named else BROAD_PT)})
     scored.sort(key=lambda x: -x["pt"])
     # 3) 지난 24시간 새 블로그 글 수 (지금 쓰이는 중인가)
     for it in scored[:N_FRESH]:
