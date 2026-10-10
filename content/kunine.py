@@ -246,16 +246,20 @@ def produce(slug: str, n: int) -> Path:
     issues: list[dict] = []  # GPT 사실 대조는 뺐다 (대표 결정 2026-10-05: "검사는 필요 없을 것 같다"). 숫자는 Grok 조사 메모 안에서만 쓴다
     # 원문 체크 8/10 넘을 때까지 최대 2번만 고쳐쓰기 (대표 요청 2026-10-10). 실패 기록은 남긴다. 검사는 코드(무료), 고쳐쓰기만 1회 비용
     from .econ_score import CFG as _kcfg
-    ratio = (F.load(_kcfg(), {}) or {}).get("checklist_pass_ratio", 0.8)  # 원문 체크 통과율 목표 (대표 '8/10' → 80%)
+    cfg = F.load(_kcfg(), {}) or {}
+    ratio = cfg.get("checklist_pass_ratio", 0.8)  # 원문 체크 통과율 목표 (대표 '8/10' → 80%)
+    max_fix = cfg.get("max_rewrite", 1)  # 고쳐쓰기 횟수 (대표 결정 2026-10-10: 1회)
     fix_log: list[str] = []
-    for attempt in range(2):
+    for attempt in range(max_fix + 1):
         cl = checklist(a, kw, pick)
         fails = [txt for ok, txt in cl if not ok]
+        ed = F.editor_review(text_of(a), pick["title"], kw, human_check()) if cfg.get("strict_editor") else []
         need = int(len(cl) * ratio + 0.999)
-        if len(cl) - len(fails) >= need or not fails:
+        if (len(cl) - len(fails) >= need and not ed) or attempt >= max_fix:
             break
-        fix_log.append(f"{attempt + 1}차 부족({len(cl) - len(fails)}/{len(cl)}): " + " / ".join(fails))
-        a = F.claude_json(sys_prompt, ask + "\n\n[반드시 고칠 것 — 아래를 모두 충족]\n" + "\n".join(f"- {b}" for b in fails)
+        fix_log.append(f"{attempt + 1}차: 원문 {len(cl) - len(fails)}/{len(cl)}"
+                       + (" · 원문부족 " + " / ".join(fails) if fails else "") + (" · 편집장 " + " / ".join(ed) if ed else ""))
+        a = F.claude_json(sys_prompt, ask + "\n\n[반드시 고칠 것 — 아래를 모두 충족]\n" + "\n".join(f"- {b}" for b in fails + ed)
                           + "\n\n[지난 초안]\n" + json.dumps(a, ensure_ascii=False), BODY, stage=f"고쳐쓰기{attempt + 1}")
     left = check(a, kw)
     post = F.POSTS / slug
