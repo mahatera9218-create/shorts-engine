@@ -223,7 +223,7 @@ jobs:
        startsWith(github.event.issue.title, '[패션키워드') || startsWith(github.event.issue.title, '[패션제목') ||
        startsWith(github.event.issue.title, '[경제자동') || startsWith(github.event.issue.title, '[패션자동') ||
        startsWith(github.event.issue.title, '[패션링크') || startsWith(github.event.issue.title, '[경제주제') ||
-       startsWith(github.event.issue.title, '[패션주제'))
+       startsWith(github.event.issue.title, '[패션주제') || startsWith(github.event.issue.title, '[착장'))
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
@@ -242,9 +242,13 @@ jobs:
           import os, re
           t, b = os.environ["TITLE"].strip(), os.environ.get("BODY") or ""
           cmd = arg1 = arg2 = ""
-          blog = {"경제": "econ", "패션": "fashion"}.get(t[1:3], "econ")  # [경제…]·[패션…] (2026-10-05, 연예는 패션에 합침)
+          blog = {"경제": "econ", "패션": "fashion", "착장": "fashion"}.get(t[1:3], "econ")  # [경제…]·[패션…]·[착장…] (착장 도우미 2026-10-10)
           t = "[경제" + t[3:] if t[1:3] == "패션" else t  # 아래 판별은 경제 이름으로 통일
-          if t.startswith("[경제키워드추가]"):
+          if t.startswith("[착장글]"):   # 착장 도우미: 첫 줄 연예인, 다음 줄 인스타 게시물 주소·상품 링크 (2026-10-10)
+              cmd, arg1 = "outfit", "\n".join(l.strip() for l in b.splitlines() if l.strip())[:2000]
+          elif t.startswith("[착장새로]"):
+              cmd = "celebs"
+          elif t.startswith("[경제키워드추가]"):
               cmd, arg1 = "add", "\n".join(l.strip() for l in b.splitlines() if l.strip() and "Create" not in l)[:800]
               if "어사이드" in t:   # 어사이드가 올린 홈판·인기글 목록 → 네이버 인기 점수 + 바로 자동 글 (대표 결정 2026-10-07)
                   cmd = "aside"
@@ -282,6 +286,8 @@ jobs:
             produce) msg="이 제목으로 글·그림·쇼츠 대본을 만들고 있어요 (약 5~10분). 도우미 목록에 올라와요.";;
             add) msg="키워드를 도우미에 넣었어요 (1~2분).";;
             aside) msg="어사이드 키워드를 넣고 다시 채점했어요 (1~2분). 도우미 키워드에서 골라 주세요.";;
+            outfit) msg="연예인 착장 글을 만들고 있어요 (약 10분). 착장 도우미 '오늘 착장 글'에 올라와요.";;
+            celebs) msg="오늘 뜨는 연예인을 다시 뽑고 있어요 (약 2분).";;
             topicwrite) msg="입력한 주제로 조사하고 제목을 뽑아 추천 제목으로 글을 쓰고 있어요 (약 10~15분). 도우미 '오늘 글'에 올라와요.";;
             linkwrite) msg="고른 제목과 상품 링크로 글을 쓰고 있어요 (약 10분). 도우미 '오늘 글'에 올라와요.";;
             auto) msg="오늘 자동 글을 다시 만들고 있어요 (약 30~40분). 도우미 ③에 올라와요.";;
