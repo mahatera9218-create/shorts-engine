@@ -1,53 +1,99 @@
 date: '2026-10-11'
-updated: 08:11
+updated: 08:53
 items:
-- kw: 제니 위켄드 공연룩
-  core: 제니 패션
+- kw: 경량패딩 추천
+  core: 경량패딩
   area: 의류
-  why: 위켄드 내한 공연에 알라이아 1991 F/W 빈티지 바디수트를 입고 깜짝 등장
-  person: 블랙핑크 제니
-  product: 알라이아 1991 F/W 빈티지 바디수트
+  why: 8월 거래액 718% 급증, 신상 출시 경쟁에 네파 에어써밋 등 비교 후기
+  person: ''
+  product: 네파 에어써밋 여성 경량 다운자켓
   rows:
-  - B48
-  src: 블로거새글
+  - R9
+  - R12
+  - R13
+  - B50
+  - B56
+  - S15
+  - S16
+  src: 급상승, 뉴스검색, 블로거
   bloggers:
+  - mythya0730
   - tjthdus94
   sources:
-    블로거새글: 1
-  score: 48
+    급상승: 3
+    블로거: 2
+    뉴스검색: 2
+  score: 98
   parts:
-    급상승: 1
-    출처: 0
-    뉴스: 2
-    검색: 10
-    최신: 12
+    급상승: 9
+    출처: 11
+    뉴스: 5
+    검색: 25
+    최신: 25
     제품: 15
     유튜브: 8
   new: false
   surge: false
   stats:
-    뉴스24h: 2
-    뉴스6h: 2
-    블로그24h: 4
-    월검색: 1470
-    상승: 1.05
-    유튜브7일: 23455
+    뉴스24h: 6
+    뉴스6h: 0
+    블로그24h: 100
+    월검색: 126100
+    상승: 1.41
+    유튜브7일: 16763
+- kw: 제니 샤넬
+  core: 제니 샤넬
+  area: 드라마 패션
+  why: 샤넬 2027 S/S 쇼 앰버서더 비교와 위켄드 내한 공연 알라이아 빈티지 바디수트 착장이 화제
+  person: 블랙핑크 제니
+  product: 알라이아 1991 F/W 빈티지 바디수트
+  rows:
+  - B18
+  - B27
+  - B47
+  - R4
+  src: 급상승, 블로거, 블로거새글
+  bloggers:
+  - cocoleenice
+  - semingg
+  - tjthdus94
+  sources:
+    블로거: 2
+    블로거새글: 1
+    급상승: 1
+  score: 82
+  parts:
+    급상승: 16
+    출처: 6
+    뉴스: 0
+    검색: 12
+    최신: 25
+    제품: 15
+    유튜브: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 18
+    월검색: 3020
+    상승: 1.7
+    유튜브7일: 9520
 - kw: 이연희 루이비통 가방
   core: 이연희 가방
   area: 가방
-  why: 수년째 꾸준히 드는 200만원대 루이비통 알마 BB가 화제
+  why: 수년째 드는 루이비통 알마 BB, 200만원대 가성비 명품백으로 소개됨
   person: 이연희
   product: 루이비통 알마 BB
   rows:
-  - B38
+  - B37
   - B1
-  src: 블로거, 블로거새글
+  src: 블로거
   bloggers:
   - by-nyong
   - jayuyu
   sources:
-    블로거: 1
-    블로거새글: 1
+    블로거: 2
   score: 40
   parts:
     급상승: 0
@@ -62,24 +108,55 @@ items:
   stats:
     뉴스24h: 0
     뉴스6h: 0
-    블로그24h: 43
+    블로그24h: 47
     월검색: 35
     상승: 1.0
     유튜브7일: 0
+- kw: 안유진 라코스테
+  core: 안유진 패션
+  area: 데일리룩
+  why: 파리 2027 S/S 패션위크 출국 공항패션과 현지 룩, 쇼장 룩은 호불호
+  person: 아이브 안유진
+  product: 라코스테
+  rows:
+  - B57
+  src: 블로거
+  bloggers:
+  - mythya0730
+  sources:
+    블로거: 1
+  score: 39
+  parts:
+    급상승: 2
+    출처: 0
+    뉴스: 1
+    검색: 1
+    최신: 12
+    제품: 15
+    유튜브: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 1
+    뉴스6h: 1
+    블로그24h: 5
+    월검색: 130
+    상승: 1.09
+    유튜브7일: 1881
 - kw: 김연아 뉴발란스 바람막이
   core: 김연아 바람막이
   area: 의류
-  why: 김연아 착용 뉴발란스 ESCAPE 윈드브레이커 아이보리가 간절기 아이템으로 화제
+  why: 일명 연아 바람막이, 뉴발란스 ESCAPE 윈드브레이커 아이보리 착용 정보
   person: 김연아
-  product: 뉴발란스 ESCAPE 윈드브레이커 자켓 아이보리
+  product: 뉴발란스 ESCAPE 윈드브레이커 자켓(아이보리)
   rows:
-  - B25
+  - B24
   src: 블로거
   bloggers:
   - cocoleenice
   sources:
     블로거: 1
-  score: 34
+  score: 33
   parts:
     급상승: 0
     출처: 0
@@ -87,55 +164,22 @@ items:
     검색: 6
     최신: 12
     제품: 15
-    유튜브: 1
   new: true
   surge: false
   stats:
     뉴스24h: 0
     뉴스6h: 0
-    블로그24h: 18
+    블로그24h: 19
     월검색: 580
     상승: 1.02
-    유튜브7일: 1
-- kw: 조여정 시계
-  core: 조여정 시계
-  area: 시계·주얼리
-  why: 부산국제영화제 오픈토크에서 심플한 룩에 6천만원 시계를 매치해 반전
-  person: 조여정
-  product: 6천만원 시계
-  rows:
-  - B56
-  src: 블로거새글
-  bloggers:
-  - mythya0730
-  sources:
-    블로거새글: 1
-  score: 30
-  parts:
-    급상승: 0
-    출처: 0
-    뉴스: 0
-    검색: 3
-    최신: 12
-    제품: 15
-    유튜브: 0
-  new: true
-  surge: false
-  stats:
-    뉴스24h: 0
-    뉴스6h: 0
-    블로그24h: 6
-    월검색: 230
-    상승: 0.69
-    유튜브7일: 0
 - kw: 신봉선 티파니 목걸이
   core: 신봉선 목걸이
   area: 시계·주얼리
-  why: 매일 착용하는 2000만원대 티파니앤코 하드웨어 목걸이가 화제
+  why: 매일 착용하는 2,000만원대 티파니앤코 하드웨어 목걸이
   person: 신봉선
   product: 티파니앤코 하드웨어 목걸이 2,000만원대
   rows:
-  - B50
+  - B49
   src: 블로거
   bloggers:
   - tjthdus94
@@ -159,24 +203,22 @@ items:
     월검색: 25
     상승: 1.0
     유튜브7일: 2
-- kw: 하츠투하츠 주은 원피스
-  core: 주은 원피스
-  area: 의류
-  why: 주은이 STUDY SKY WAIST BELT DRESS를 입어 착장 정보와 구매 문의가 이어짐
+- kw: 주은 말리부백
+  core: 주은 가방
+  area: 가방
+  why: 하츠투하츠 주은이 MALIBU BAG MINI를 들고 나와 화제
   person: 하츠투하츠 주은
-  product: STUDY SKY WAIST BELT DRESS
+  product: MALIBU BAG MINI(YOUHEE)
   rows:
   - G2
-  - G7
-  - G13
   src: Grok
   bloggers: []
   sources:
-    Grok: 3
-  score: 22
+    Grok: 1
+  score: 21
   parts:
     급상승: 0
-    출처: 7
+    출처: 6
     뉴스: 0
     검색: 0
     제품: 15
@@ -186,25 +228,24 @@ items:
     뉴스24h: 0
     뉴스6h: 0
     블로그24h: 1
-    월검색: 10
+    월검색: 15
     상승: 1.0
-- kw: 주은 말리부백 미니
-  core: 주은 가방
-  area: 가방
-  why: 주은이 MALIBU BAG MINI(YOUHEE)를 들고 나와 화제
+- kw: 주은 원피스
+  core: 주은 원피스
+  area: 의류
+  why: STUDY SKY WAIST BELT DRESS 착장 정보와 구매 문의가 이어짐
   person: 하츠투하츠 주은
-  product: MALIBU BAG MINI
+  product: STUDY SKY WAIST BELT DRESS
   rows:
-  - G4
-  - G15
+  - G1
   src: Grok
   bloggers: []
   sources:
-    Grok: 2
-  score: 22
+    Grok: 1
+  score: 21
   parts:
     급상승: 0
-    출처: 7
+    출처: 6
     뉴스: 0
     검색: 0
     제품: 15
@@ -213,26 +254,25 @@ items:
   stats:
     뉴스24h: 0
     뉴스6h: 0
-    블로그24h: 0
-    월검색: 15
+    블로그24h: 2
+    월검색: 10
     상승: 1.0
 - kw: 이현주 케이프자켓
   core: 이현주 자켓
   area: 의류
-  why: 이현주가 WASHED CAPE JACKET(TUOMIO)을 입어 화제
+  why: WASHED CAPE JACKET(TUOMIO) 착용으로 화제
   person: 이현주
-  product: WASHED CAPE JACKET
+  product: WASHED CAPE JACKET(TUOMIO)
   rows:
-  - G5
-  - G12
+  - G3
   src: Grok
   bloggers: []
   sources:
-    Grok: 2
-  score: 22
+    Grok: 1
+  score: 21
   parts:
     급상승: 0
-    출처: 7
+    출처: 6
     뉴스: 0
     검색: 0
     제품: 15
@@ -249,18 +289,17 @@ items:
   area: 가방
   why: Mori Dimsum Bag, BADBLUE 가방 착용으로 손민수 화제
   person: 이현주
-  product: Mori Dimsum Bag
+  product: Mori Dimsum Bag, BADBLUE 가방
   rows:
-  - G3
-  - G8
+  - G4
   src: Grok
   bloggers: []
   sources:
-    Grok: 2
-  score: 22
+    Grok: 1
+  score: 21
   parts:
     급상승: 0
-    출처: 7
+    출처: 6
     뉴스: 0
     검색: 0
     제품: 15
@@ -272,26 +311,22 @@ items:
     블로그24h: 0
     월검색: 10
     상승: 1.0
-- kw: MEOVV 안나 공항패션 원피스
+- kw: 안나 공항패션 원피스
   core: 안나 원피스
   area: 의류
-  why: 미야 안나가 공항에서 입은 화이트 트위드 원피스(위위미유) 착장이 실시간 화제
+  why: MEOVV 안나가 공항에서 입은 화이트 트위드 원피스가 실시간 화제
   person: MEOVV 안나
-  product: 위위미유 원피스
+  product: 화이트 트위드 원피스(위위미유)
   rows:
-  - G1
-  - G6
-  - G9
-  - G11
-  - G14
+  - G5
   src: Grok
   bloggers: []
   sources:
-    Grok: 5
-  score: 22
+    Grok: 1
+  score: 21
   parts:
     급상승: 0
-    출처: 7
+    출처: 6
     뉴스: 0
     검색: 0
     제품: 15
@@ -300,75 +335,17 @@ items:
   stats:
     뉴스24h: 0
     뉴스6h: 0
-    블로그24h: 1
+    블로그24h: 21
     월검색: 85
-    상승: 1.0
-- kw: 정해인 타미힐피거 싱가포르
-  core: 정해인 타미힐피거
-  area: 데일리룩
-  why: 타미 힐피거 싱가포르 F1 이벤트 참석차 출국한 공항패션 화제
-  person: 정해인
-  product: ''
-  rows:
-  - S3
-  - S5
-  - S7
-  - S9
-  src: 뉴스검색
-  bloggers: []
-  sources:
-    뉴스검색: 4
-  score: 19
-  parts:
-    급상승: 0
-    출처: 11
-    뉴스: 8
-    검색: 0
-  new: true
-  surge: false
-  stats:
-    뉴스24h: 10
-    뉴스6h: 0
-    블로그24h: 4
-    월검색: 85
-    상승: 1.0
-- kw: 정용화 타미힐피거 F1
-  core: 정용화 타미힐피거
-  area: 데일리룩
-  why: 타미 힐피거 2026 싱가포르 F1 이벤트 참석차 출국
-  person: 정용화
-  product: ''
-  rows:
-  - S4
-  - S6
-  - S8
-  - S10
-  src: 뉴스검색
-  bloggers: []
-  sources:
-    뉴스검색: 4
-  score: 19
-  parts:
-    급상승: 0
-    출처: 11
-    뉴스: 8
-    검색: 0
-  new: true
-  surge: false
-  stats:
-    뉴스24h: 10
-    뉴스6h: 0
-    블로그24h: 3
-    월검색: 10
     상승: 1.0
 - kw: 전지현 에르메스 가방
   core: 전지현 가방
   area: 가방
-  why: 한국 여배우 최초로 에르메스 협찬을 받은 이야기와 포쉐트메티스 후기가 올라옴
+  why: 한국 여배우 최초 에르메스 협찬 이야기와 포쉐트메티스 후기
   person: 전지현
   product: ''
   rows:
-  - B43
+  - B42
   src: 블로거
   bloggers:
   - merryeeun
@@ -389,42 +366,71 @@ items:
     블로그24h: 1
     월검색: 560
     상승: 0.66
-- kw: 안유진 라코스테 파리
-  core: 안유진 패션
+- kw: 정해인 타미힐피거
+  core: 정해인 타미힐피거
   area: 데일리룩
-  why: 라코스테 앰버서더로 파리 2027 S/S 패션위크 공항·쇼장 룩이 화제
-  person: 아이브 안유진
+  why: 타미 힐피거 싱가포르 F1 이벤트 참석차 출국
+  person: 정해인
   product: ''
   rows:
-  - B59
-  src: 블로거
+  - S3
+  - S5
+  - S7
+  - S9
+  src: 뉴스검색
+  bloggers: []
+  sources:
+    뉴스검색: 4
+  score: 17
+  parts:
+    급상승: 0
+    출처: 9
+    뉴스: 8
+    검색: 0
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 10
+    뉴스6h: 0
+    블로그24h: 0
+    월검색: 85
+    상승: 1.0
+- kw: 조여정 시계
+  core: 조여정 시계
+  area: 시계·주얼리
+  why: 데님 룩에 6천만원대 시계를 매치해 부산국제영화제 오픈토크에서 반전 포인트
+  person: 조여정
+  product: ''
+  rows:
+  - B54
+  src: 블로거새글
   bloggers:
   - mythya0730
   sources:
-    블로거: 1
-  score: 17
+    블로거새글: 1
+  score: 15
   parts:
-    급상승: 2
+    급상승: 0
     출처: 0
-    뉴스: 2
-    검색: 1
+    뉴스: 0
+    검색: 3
     최신: 12
   new: true
   surge: false
   stats:
-    뉴스24h: 2
-    뉴스6h: 1
-    블로그24h: 1
-    월검색: 130
-    상승: 1.09
-- kw: 김혜은 직접 만든 가방
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 6
+    월검색: 230
+    상승: 0.69
+- kw: 김혜은 가방
   core: 김혜은 가방
   area: 가방
-  why: 에르메스 가죽으로 직접 만든 켈리백풍 가방을 영상에서 공개해 눈길
-  person: 배우 김혜은
+  why: 에르메스 가죽으로 직접 만든 켈리백 느낌의 가방 공개
+  person: 김혜은
   product: ''
   rows:
-  - B47
+  - B46
   src: 블로거새글
   bloggers:
   - tjthdus94
@@ -442,22 +448,50 @@ items:
   stats:
     뉴스24h: 0
     뉴스6h: 0
-    블로그24h: 100
+    블로그24h: 0
     월검색: 15
     상승: 1.0
-- kw: 하지원 주얼리 화보
-  core: 하지원 주얼리
-  area: 시계·주얼리
-  why: 최근 주얼리 화보 룩이 동안 미모와 함께 화제
-  person: 하지원
+- kw: 노지선 웨스턴 부츠
+  core: 노지선 부츠
+  area: 신발
+  why: 오버핏 카키 야상에 블랙 웨스턴 부츠 매치 사복 화제
+  person: 노지선
   product: ''
   rows:
-  - B11
-  src: 블로거새글
+  - B52
+  src: 블로거
   bloggers:
-  - cocoleenice
+  - byoung4595
   sources:
-    블로거새글: 1
+    블로거: 1
+  score: 12
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+    최신: 12
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 0
+    월검색: 10
+    상승: 1.0
+- kw: 강예원 롱부츠
+  core: 강예원 부츠
+  area: 신발
+  why: 40대 여배우가 즐겨 신는 롱부츠 스타일 화제
+  person: 강예원
+  product: ''
+  rows:
+  - B53
+  src: 블로거
+  bloggers:
+  - byoung4595
+  sources:
+    블로거: 1
   score: 12
   parts:
     급상승: 0
