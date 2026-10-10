@@ -1,6 +1,6 @@
 """쿠니네 방식 블로그 (대표 결정 2026-10-05: "쿠니네 방식으로 다 맞춘다").
 
-역할: 조사 = Grok(웹 + X) · 글 = Claude · 그림 = GPT Image(실사풍) → 없으면 Pexels 무료 사진. (GPT 사실 대조는 대표 결정으로 뺌)
+역할: 조사 = Grok(웹 + X) · 글 = Claude · 사진 = 대표가 무료 앱으로 직접(마스터 §10: 실제 기업·현장·통계 사진, 본문 일치). (GPT 사실 대조는 대표 결정으로 뺌)
 프롬프트: prompts/kunine-blog.md(강사 원문, 그대로) + prompts/kunine-addon.md(우리 자동화용 덧붙임).
 
 titles <키워드>        : Grok 조사 메모 → Claude가 8유형 × 2개 = 16개 중 유형마다 best 1개(버튼) + 최종 BEST 1(★) (2026-10-10 비용)
@@ -317,7 +317,10 @@ NO_CREDIT = []  # OpenAI 크레딧이 떨어지면 표시 (2026-10-06: 모르는
 def photo_prompt(desc: str, size: str, brand: str = "", lead: str = "") -> str:
     """사진 한 장을 그릴 영어 설명 전체. API에도, 도우미의 'ChatGPT·제미나이에 붙여넣기'에도 같은 글을 쓴다 (2026-10-06)."""
     shape = "Square 1:1 image. " if size == "1024x1024" else "Landscape 3:2 image. "
-    return (shape + (lead or "Photorealistic editorial news photograph, natural light, real-world location, sharp focus. ")
+    # 경제 마스터 §10 원문(실제 기업·기관·현장·공식 통계 이미지, 본문과 정확히 일치, 장식용 금지)에 맞춤 (대표 지시 2026-10-10)
+    return (shape + (lead or "Realistic documentary photograph of the real subject exactly as it looks in real life — "
+                             "the actual company building, product, trading floor, official chart or news scene described. "
+                             "True to the article, natural light, sharp focus. No decorative, staged or fictional elements. ")
             + desc + (  # 회사 사진은 그 회사의 실제 간판·로고가 보이게 (대표 지시 2026-10-06)
                 f" This must clearly be {brand}: show its real, accurate corporate signage — the actual "
                 f"{brand} logo and company name exactly as they appear on its real buildings, correctly spelled. "

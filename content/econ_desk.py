@@ -405,7 +405,7 @@ def index(by_blog: dict[str, list[dict]]) -> str:
     first = next(iter(blogs))
     return head(f"{NAME} 발행 도우미") + f"""
 <header class="brand"><img src="icon-180.png" alt=""><div><h1>발행 도우미</h1><p class="muted">{" · ".join(html.escape(b["label"]) for b in blogs.values())} · {now} 업데이트</p></div></header>
-{error_banner()}<nav class="tabs">{tabs}<a href="outfit/">착장</a><a href="#stats" data-t="stats">성과</a><a href="#aside" data-t="aside">어사이드</a><a href="photo/">사진</a></nav>
+{error_banner()}<nav class="tabs">{tabs}<a href="#stats" data-t="stats">성과</a><a href="#aside" data-t="aside">어사이드</a><a href="photo/">사진</a></nav>
 {secs}
 <section class="tab" id="aside" hidden>{aside_tab(blogs)}</section>
 <section class="tab" id="stats" hidden>{compare_html(blogs, by_blog)}</section>
@@ -917,10 +917,7 @@ def build(out: Path) -> list[dict]:
                     shutil.copy(src, d / x["file"])
             (d / "index.html").write_text(plain(page(p)), encoding="utf-8")
     (out / "index.html").write_text(plain(index(by_blog)), encoding="utf-8")
-    fb = all_blogs().get("fashion")
-    if fb:  # 착장 도우미 (2026-10-10)
-        (out / "outfit").mkdir(exist_ok=True)
-        (out / "outfit" / "index.html").write_text(plain(outfit_page(fb, by_blog.get("fashion", []))), encoding="utf-8")
+    # 착장 탭은 대표 결정 2026-10-10로 삭제 (outfit_page·워크플로는 코드에 남지만 도우미엔 안 보임)
     (out / "photo").mkdir(exist_ok=True)
     (out / "photo" / "index.html").write_text(plain(photo_page()), encoding="utf-8")  # 사진 크기 맞추기 (2026-10-07)
     for s in (180, 192, 512):
