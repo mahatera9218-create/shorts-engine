@@ -264,7 +264,7 @@ jobs:
           elif t.startswith("[경제자동]"):   # 도우미 '자동 글 다시 돌리기'
               cmd, arg1 = "auto", "force"
           elif t.startswith("[경제키워드새로]"):
-              cmd = "keywords"
+              cmd, arg1 = "keywords", "force"   # 도우미 '다시 모으기'는 Grok 새로 (2026-10-10)
           elif t.startswith("[경제제목새로]"):
               cmd, arg1 = "titles", t[len("[경제제목새로]"):].strip()[:60]
           elif t.startswith("[경제키워드]"):
