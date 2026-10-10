@@ -786,6 +786,18 @@ def main() -> None:
 def _run(cmd: str) -> None:
     if cmd == "keywords":
         keywords()
+        if BLOG["id"] == "fashion":  # 착장 도우미 '오늘 뜨는 연예인'도 같이 (대표 결정 2026-10-10)
+            try:
+                from .outfit import rank
+                rank()
+            except Exception as e:  # noqa: BLE001  (키워드 모으기는 살린다)
+                print(f"오늘 뜨는 연예인 실패: {str(e)[:200]}")
+    elif cmd == "celebs":  # 착장 도우미: 오늘 뜨는 연예인만 다시
+        from .outfit import rank
+        rank()
+    elif cmd == "outfit":  # 착장 도우미: 연예인 + 인스타 게시물 주소 + 상품 링크 → 글 (2026-10-10)
+        from .outfit import write
+        write(sys.argv[2])
     elif cmd == "add":
         add(sys.argv[2])
     elif cmd == "aside":  # 어사이드 목록 → 넣고 다시 채점 → 바로 자동 글 (대표 결정 2026-10-07)
