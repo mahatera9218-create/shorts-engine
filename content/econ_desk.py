@@ -517,12 +517,22 @@ def score_table(items: list[dict]) -> str:
         src = " · ".join(dict(it.get("sources") or {}))
         src_line = f'<div class="muted" style="font-size:11px">출처: {e(src)}</div>' if src else ""
         rows.append(f'<div style="padding:7px 0;border-bottom:1px solid var(--line)">'
-                    f'<div style="display:flex;justify-content:space-between;gap:8px"><b>{e(it["kw"])}</b>'
+                    f'<div style="display:flex;justify-content:space-between;gap:8px"><b>{e(it["kw"])}</b>{new_badge(it)}'
                     f'<span class="seal">{it.get("score", "")}</span></div>'
                     f'<div style="font-size:12px;margin-top:3px">{calc}</div>{raw_line}{src_line}</div>')
     return (f'<details style="margin-top:6px"><summary class="muted">키워드별 점수 계산 ({len(items)}개)</summary>'
             f'<div class="muted" style="font-size:11px;margin-top:4px">각 항목 점수를 더해 합계가 돼요 (화제성: 네이버인기·급상승·뉴스·최신·출처·유튜브 / 수요: 검색량)</div>'
             f'<div style="margin-top:4px">{"".join(rows)}</div></details>')
+
+
+def new_badge(it: dict) -> str:
+    """🆕 최근 없던 새 키워드 / 🔥 급부상(평소 2배↑) 표시 (대표 요청 2026-10-10)."""
+    b = ""
+    if it.get("surge"):
+        b += ' <span style="font-size:11px;font-weight:700;color:#c2410c">🔥급부상</span>'
+    if it.get("new"):
+        b += ' <span style="font-size:11px;font-weight:700;color:#1d4ed8">🆕NEW</span>'
+    return b
 
 
 def kw_row(it: dict, done: dict[str, str]) -> str:
@@ -533,7 +543,7 @@ def kw_row(it: dict, done: dict[str, str]) -> str:
         desk.issue_link(f"{LABEL}키워드", it["kw"], "이 키워드로 제목 후보를 만들어 주세요.")
     sc = f' <span class="seal">{it["score"]}</span>' if "score" in it else ""
     return (f'<a class="btn" style="text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
-            f'href="{e(href, quote=True)}">{"✅ " if slug else ""}<b>{e(it["kw"])}</b>{sc}</a>')
+            f'href="{e(href, quote=True)}">{"✅ " if slug else ""}<b>{e(it["kw"])}</b>{sc}{new_badge(it)}</a>')
 
 
 def flow_html() -> str:
@@ -562,9 +572,9 @@ def flow_html() -> str:
             sc = f' <span class="seal">{it["score"]}</span>' if "score" in it else ""
             if slug and (POSTS / slug).exists():
                 return (f'<a class="btn" style="text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
-                        f'href="p/{BID}-{desk.slug(slug)}/">✅ <b>{e(it["kw"])}</b>{sc}</a>')
+                        f'href="p/{BID}-{desk.slug(slug)}/">✅ <b>{e(it["kw"])}</b>{sc}{new_badge(it)}</a>')
             return (f'<button class="ghost" style="text-align:left;width:100%" onclick="pick_{BID}({e(json.dumps(it["kw"]), quote=True)})">'
-                    f'<b>{e(it["kw"])}</b>{sc}</button>')
+                    f'<b>{e(it["kw"])}</b>{sc}{new_badge(it)}</button>')
         rows = "".join(frow(it) for it in shown) or "<p class=muted>없음</p>"
     add_js = (f"function addKw_{BID}(){{const v=document.getElementById('kwin-{BID}').value.split('\\n').filter(l=>!/^\\s*http/.test(l)).join('\\n').trim();if(!v)return;"
               f"location.href='https://github.com/{desk.REPO}/issues/new?title='+encodeURIComponent('[{LABEL}키워드추가] {today}')"
