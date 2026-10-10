@@ -1,0 +1,311 @@
+keyword: 한화에어로스페이스
+person: ''
+mode: 쿠니네
+made: '15:56'
+items:
+- title: 한화에어로스페이스, 누리호 성공했는데 주가는 대체 왜?
+  type: 궁금형
+  rank: 1
+  best: true
+  chars: 30
+  flags: []
+- title: 한화에어로스페이스 972,000원에서 891,000원, 이틀 새 달라진 숫자
+  type: 비교형
+  rank: 2
+  best: false
+  chars: 42
+  flags: []
+- title: 한화에어로스페이스, 호재가 나왔는데 주가는 -8.33%
+  type: 반전형
+  rank: 3
+  best: true
+  chars: 30
+  flags: []
+- title: 한화에어로스페이스 이틀 새 -13%, 셀온 경고일까?
+  type: 위협형
+  rank: 4
+  best: true
+  chars: 29
+  flags: []
+- title: 한화에어로스페이스, 10월 29일 전에 확인할 체크포인트 3가지
+  type: 실행형
+  rank: 5
+  best: true
+  chars: 35
+  flags: []
+- title: 누리호 성공 호재 vs 재료 소멸, 한화에어로스페이스 엇갈린 시선
+  type: 비교형
+  rank: null
+  best: true
+  chars: 36
+  flags: []
+- title: 한화에어로스페이스, 4차 총제작에서 5차 콘솔 20개로 달라진 역할
+  type: 비교형
+  rank: null
+  best: false
+  chars: 37
+  flags: []
+- title: 누리호 성공했는데 우주주는 하락, 한화에어로스페이스는 어땠나
+  type: 비교형
+  rank: null
+  best: false
+  chars: 33
+  flags: []
+- title: 한화에어로스페이스 3분기 실적 전 주가 -4.99%와 -8.33%, 무엇이 다를까?
+  type: 비교형
+  rank: null
+  best: false
+  chars: 46
+  flags:
+  - 46자(45자 넘음)
+- title: 한화에어로스페이스 '팔까 말까' 고민이면 실적 발표일부터 보세요
+  type: 실행형
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: 한화에어로스페이스 보유 중이라면 10월 29일 공시에서 볼 것
+  type: 실행형
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: 한화에어로스페이스, 셀온 구간에서 투자자가 점검할 기준
+  type: 실행형
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: 누리호 6차 발사 일정, 한화에어로스페이스 투자자가 챙길 부분
+  type: 실행형
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: 한화에어로스페이스 100만원 투자했다면 이틀간 어떻게 달라졌을까
+  type: 이득형
+  rank: null
+  best: true
+  chars: 35
+  flags: []
+- title: 한화에어로스페이스 891,000원, 내 돈 기준으로 따져 보니
+  type: 이득형
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: 한화에어로스페이스, 2032년까지 연 1회 발사가 의미하는 기회
+  type: 이득형
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: 3040 투자자라면 한화에어로스페이스 우주 사업 장기 일정 보세요
+  type: 이득형
+  rank: null
+  best: false
+  chars: 36
+  flags: []
+- title: 한화에어로스페이스, 우주 매출이 커질 수 있는 조건 3가지
+  type: 이득형
+  rank: null
+  best: false
+  chars: 32
+  flags: []
+- title: 한화에어로스페이스 콘솔 20개, 직접 참여한 부분은 어디까지일까?
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 36
+  flags: []
+- title: 한화에어로스페이스, 미참여 콘솔 3곳이 따로 있다?
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: 한화에어로스페이스 10월 29일 공시, 시장이 가장 궁금한 숫자는
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 36
+  flags: []
+- title: 한화에어로스페이스 IR 개최, 이번엔 무슨 얘기가 나올까?
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 32
+  flags: []
+- title: 한화에어로스페이스, 호재에 팔리는 장이 위험한 이유
+  type: 위협형
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: 한화에어로스페이스 891,000원, 실적 발표 전 놓치면 안 될 변수
+  type: 위협형
+  rank: null
+  best: false
+  chars: 38
+  flags: []
+- title: 한화에어로스페이스, 재료 소멸 논란이 커지는 이유
+  type: 위협형
+  rank: null
+  best: false
+  chars: 27
+  flags: []
+- title: 한화에어로스페이스 3분기 실적, 잠정치 변동 가능성은 없을까?
+  type: 위협형
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: 누리호 5차 성공 뒤에 매물이 쏟아진 한화에어로스페이스
+  type: 반전형
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: 한화에어로스페이스, 우주 성공이 오히려 부담이 된 하루
+  type: 반전형
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: 한화에어로스페이스 하락, 사업 문제가 아닌 수급 문제일까?
+  type: 반전형
+  rank: null
+  best: false
+  chars: 32
+  flags: []
+- title: '''성공했는데 왜 떨어져?'' 한화에어로스페이스 주가 뒤 사정'
+  type: 반전형
+  rank: null
+  best: false
+  chars: 32
+  flags: []
+- title: 한화에어로스페이스, 이번 하락은 실적으로 확인하면 됩니다
+  type: 확신형
+  rank: null
+  best: false
+  chars: 31
+  flags: []
+- title: 한화에어로스페이스 우주 사업, 민간 역할 확대는 분명한 흐름
+  type: 확신형
+  rank: null
+  best: false
+  chars: 33
+  flags: []
+- title: 한화에어로스페이스, 누리호 이후 중요한 건 6차 발사 일정
+  type: 확신형
+  rank: null
+  best: false
+  chars: 32
+  flags: []
+- title: 한화에어로스페이스 주가보다 먼저 볼 건 10월 29일 숫자
+  type: 확신형
+  rank: null
+  best: true
+  chars: 32
+  flags: []
+- title: 한화에어로스페이스, 총제작 주관 이력은 숫자로 확인되는 사실
+  type: 확신형
+  rank: null
+  best: false
+  chars: 33
+  flags: []
+- title: 한화에어로스페이스 972,000원→891,000원, 이틀 만에 이렇게?
+  type: 자극형
+  rank: null
+  best: true
+  chars: 39
+  flags: []
+- title: 한화에어로스페이스 -8.33%, 누리호 성공 날 벌어진 일
+  type: 자극형
+  rank: null
+  best: false
+  chars: 32
+  flags: []
+- title: 한화에어로스페이스 '성공했는데 왜 떨어지나' 개미 한숨
+  type: 자극형
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: 한화에어로스페이스, 위성 15기 분리 성공 뒤 찾아온 급락
+  type: 자극형
+  rank: null
+  best: false
+  chars: 32
+  flags: []
+- title: 한화에어로스페이스 예산 삭감 논란, 요구액 3% 수준이라는 말까지
+  type: 자극형
+  rank: null
+  best: false
+  chars: 36
+  flags: []
+groups:
+- type: 비교형
+  idx:
+  - 1
+  - 5
+  - 6
+  - 7
+  - 8
+  best: 5
+- type: 실행형
+  idx:
+  - 4
+  - 9
+  - 10
+  - 11
+  - 12
+  best: 4
+- type: 이득형
+  idx:
+  - 13
+  - 14
+  - 15
+  - 16
+  - 17
+  best: 13
+- type: 궁금형
+  idx:
+  - 0
+  - 18
+  - 19
+  - 20
+  - 21
+  best: 0
+- type: 위협형
+  idx:
+  - 3
+  - 22
+  - 23
+  - 24
+  - 25
+  best: 3
+- type: 반전형
+  idx:
+  - 2
+  - 26
+  - 27
+  - 28
+  - 29
+  best: 2
+- type: 확신형
+  idx:
+  - 30
+  - 31
+  - 32
+  - 33
+  - 34
+  best: 33
+- type: 자극형
+  idx:
+  - 35
+  - 36
+  - 37
+  - 38
+  - 39
+  best: 35
