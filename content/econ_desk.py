@@ -175,6 +175,16 @@ def title_groups(T: dict) -> list[tuple[str, list[tuple[int, dict]]]]:
     """프롬프트 기준 제목 묶음 [(묶음 이름, [(번호, 제목)])]. 제목 고수 방식(…식) 묶음은 빼고 (대표 결정 2026-10-09: 프롬프트 기준).
     경제 = 최종 BEST 5 + 6유형 × 5, 패션 = 최종 추천 1 + 그룹 1·2·3 × 5."""
     items = T.get("items", [])
+    if T.get("mode") == "쿠니네":  # 경제: 유형마다 best 1개씩만 버튼 (대표 결정 2026-10-10 "유형별 버튼 달린 것만")
+        out = []
+        for g in T.get("groups", []):
+            if g["type"].endswith("식"):
+                continue
+            b = g.get("best")
+            j = b if isinstance(b, int) and 0 <= b < len(items) else (g["idx"][0] if g.get("idx") else None)
+            if j is not None and j < len(items):
+                out.append((g["type"], [(j + 1, items[j])]))
+        return [(n, xs) for n, xs in out if xs]
     out = [("최종 추천", [(i, it) for i, it in enumerate(items, 1) if it.get("rank")])]
     for g in T.get("groups", []):
         if g["type"].endswith("식"):
@@ -609,13 +619,17 @@ def flow_html() -> str:
                 tok = f"{f} {i}"
                 return (f'<button class="ghost" style="text-align:left;width:100%" onclick="pickT_{BID}({e(json.dumps(tok), quote=True)})">'
                         f'{"★ " if it.get("rank") == 1 else ""}{e(it["title"])}{badge(it["title"], it.get("type", ""))}</button>')
-        head_g, rest_g = (groups[0], groups[1:]) if groups else (("", []), [])
-        n_rest = sum(len(xs) for _, xs in rest_g)
-        body = "".join(btn(i, it) for i, it in head_g[1])
-        if rest_g:
-            body += (f'<details><summary class="muted">다른 제목 {n_rest}개</summary>'
-                     + "".join(f'<div class="muted" style="margin:8px 0 2px;font-size:13px">{e(name)}</div>'
-                               + "".join(btn(i, it) for i, it in xs) for name, xs in rest_g) + '</details>')
+        if BID == "econ":  # 유형마다 버튼 1개, 라벨과 함께 모두 보이게 (대표 결정 2026-10-10)
+            body = "".join(f'<div class="muted" style="margin:8px 0 2px;font-size:13px">{e(name)}</div>'
+                           + "".join(btn(i, it) for i, it in xs) for name, xs in groups)
+        else:
+            head_g, rest_g = (groups[0], groups[1:]) if groups else (("", []), [])
+            n_rest = sum(len(xs) for _, xs in rest_g)
+            body = "".join(btn(i, it) for i, it in head_g[1])
+            if rest_g:
+                body += (f'<details><summary class="muted">다른 제목 {n_rest}개</summary>'
+                         + "".join(f'<div class="muted" style="margin:8px 0 2px;font-size:13px">{e(name)}</div>'
+                                   + "".join(btn(i, it) for i, it in xs) for name, xs in rest_g) + '</details>')
         again = desk.issue_link(f"{LABEL}제목새로", T.get("keyword", ""), "다시 조사해서 새로 뽑아 주세요.")
         if BID != "econ":
             body += (f'<textarea id="lkt-{e(f, quote=True)}" rows="3" style="{TA};margin-top:10px" '
