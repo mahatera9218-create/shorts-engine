@@ -19,6 +19,7 @@ OUT = F.FLOW.parent / "outfit"
 N_SHOW = 10
 STALE_DAYS, STALE_PEN = 3, 15
 NAME = re.compile(r"^[가-힣A-Za-z]{2,6}$")  # 연예인 이름 (그룹명·영문 이름 포함, 너무 긴 건 빼기)
+NOT_NAME = re.compile(r"(코어|룩|패션|코디|스타일|트렌드|컬러|아이템|백|가방|니트|코트|원피스|신발|시즌)$")  # 사람이 아닌 패션 낱말 (10-10 '현백코어')
 
 
 def _candidates() -> dict[str, str]:
@@ -28,13 +29,13 @@ def _candidates() -> dict[str, str]:
                "공항 패션·시상식·화보·드라마 제작발표회·SNS 사진처럼 '옷차림'이 주목받을 만한 사람 위주로. "
                'JSON 배열만 답하세요: [{"name": "이름(본명이나 활동명 하나)", "why": "왜 화제인지 한 줄"}]', days=2)
     for it in F.parse_json(g) or []:
-        if isinstance(it, dict) and NAME.match((it.get("name") or "").strip()):
+        if isinstance(it, dict) and NAME.match((it.get("name") or "").strip()) and not NOT_NAME.search(it["name"].strip()):
             out.setdefault(it["name"].strip(), (it.get("why") or "").strip())
     kw = F.load(F.FLOW / F.today() / "keywords.yaml", {}) or {}
     for it in kw.get("items", []):
         name = (it.get("person") or it["kw"].split()[0]).strip()
         name = re.split(r"[(\s·,]", name)[0]
-        if NAME.match(name):
+        if NAME.match(name) and not NOT_NAME.search(name):
             out.setdefault(name, it["kw"])
     return out
 
