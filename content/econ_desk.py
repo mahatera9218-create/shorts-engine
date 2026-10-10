@@ -493,27 +493,28 @@ def score_table(items: list[dict]) -> str:
     e = html.escape
     if not items:
         return ""
+    label = {"네이버": "네이버인기", "검색": "검색량"}  # 보기 좋은 이름
+    raw = {"월검색": lambda v: f"검색 {_man(v)}", "유튜브7일": lambda v: f"유튜브 {_man(v)}"}
     rows = []
     for it in sorted(items, key=lambda x: -x.get("score", 0)):
+        parts = it.get("parts") or {}
+        pos = sorted(((k, v) for k, v in parts.items() if isinstance(v, (int, float)) and v > 0), key=lambda x: -x[1])
+        neg = [(k, v) for k, v in parts.items() if isinstance(v, (int, float)) and v < 0]
+        # 점수가 어떻게 합쳐졌나: 큰 항목부터 더하고, 감점(반복)은 빼서 = 합계
+        calc = " + ".join(f'{e(label.get(k, k))} <b>{v}</b>' for k, v in pos)
+        calc += "".join(f' − {e(k)} <b>{-v}</b>' for k, v in neg)
+        calc += f' = <b>{it.get("score", "")}</b>'
         st = it.get("stats") or {}
-        bits = []
-        if st.get("월검색"):
-            bits.append(f"검색 {_man(st['월검색'])}")
-        if st.get("상승") and st["상승"] >= 1.2:
-            bits.append(f"상승 ×{st['상승']}")
-        if st.get("유튜브7일"):
-            bits.append(f"유튜브 {_man(st['유튜브7일'])}")
-        if st.get("뉴스24h"):
-            bits.append(f"뉴스 {st['뉴스24h']}")
-        if st.get("블로그24h"):
-            bits.append(f"새글 {st['블로그24h']}")
-        why = " · ".join(bits) or "근거 수집 안 됨"
-        src = " · ".join(dict(it.get("sources") or {}))  # 어디서 찾았나 (Grok·뉴스·어사이드·급상승·대표)
+        rawbits = [f(st[k]) for k, f in raw.items() if st.get(k)]
+        raw_line = f'<div class="muted" style="font-size:11px">{e(" · ".join(rawbits))}</div>' if rawbits else ""
+        src = " · ".join(dict(it.get("sources") or {}))
         src_line = f'<div class="muted" style="font-size:11px">출처: {e(src)}</div>' if src else ""
-        rows.append(f'<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)">'
-                    f'<div style="min-width:0"><b>{e(it["kw"])}</b><div class="muted" style="font-size:12px">{e(why)}</div>{src_line}</div>'
-                    f'<span class="seal">{it.get("score", "")}</span></div>')
-    return (f'<details style="margin-top:6px"><summary class="muted">키워드별 점수·근거 ({len(items)}개)</summary>'
+        rows.append(f'<div style="padding:7px 0;border-bottom:1px solid var(--line)">'
+                    f'<div style="display:flex;justify-content:space-between;gap:8px"><b>{e(it["kw"])}</b>'
+                    f'<span class="seal">{it.get("score", "")}</span></div>'
+                    f'<div style="font-size:12px;margin-top:3px">{calc}</div>{raw_line}{src_line}</div>')
+    return (f'<details style="margin-top:6px"><summary class="muted">키워드별 점수 계산 ({len(items)}개)</summary>'
+            f'<div class="muted" style="font-size:11px;margin-top:4px">각 항목 점수를 더해 합계가 돼요 (화제성: 네이버인기·급상승·뉴스·최신·출처·유튜브 / 수요: 검색량)</div>'
             f'<div style="margin-top:4px">{"".join(rows)}</div></details>')
 
 
