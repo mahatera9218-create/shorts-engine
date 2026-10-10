@@ -175,15 +175,14 @@ def title_groups(T: dict) -> list[tuple[str, list[tuple[int, dict]]]]:
     """프롬프트 기준 제목 묶음 [(묶음 이름, [(번호, 제목)])]. 제목 고수 방식(…식) 묶음은 빼고 (대표 결정 2026-10-09: 프롬프트 기준).
     경제 = 최종 BEST 5 + 6유형 × 5, 패션 = 최종 추천 1 + 그룹 1·2·3 × 5."""
     items = T.get("items", [])
-    if T.get("mode") == "쿠니네":  # 경제: 유형마다 best 1개씩만 버튼 (대표 결정 2026-10-10 "유형별 버튼 달린 것만")
+    if T.get("mode") == "쿠니네":  # 경제: 유형마다 후보 전부 (대표 2026-10-10 "제목이 너무 적다"). best는 ★로 표시
         out = []
         for g in T.get("groups", []):
             if g["type"].endswith("식"):
                 continue
-            b = g.get("best")
-            j = b if isinstance(b, int) and 0 <= b < len(items) else (g["idx"][0] if g.get("idx") else None)
-            if j is not None and j < len(items):
-                out.append((g["type"], [(j + 1, items[j])]))
+            xs = [(j + 1, items[j]) for j in g.get("idx", []) if j < len(items)]
+            if xs:
+                out.append((g["type"], xs))
         return [(n, xs) for n, xs in out if xs]
     out = [("최종 추천", [(i, it) for i, it in enumerate(items, 1) if it.get("rank")])]
     for g in T.get("groups", []):
