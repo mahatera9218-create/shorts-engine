@@ -597,38 +597,51 @@ def score_table(items: list[dict]) -> str:
     if not items:
         return ""
     raw = {"월검색": lambda v: f"검색 {_man(v)}", "유튜브7일": lambda v: f"유튜브 {_man(v)}"}
+    cat_keys = {k for _, ks in CATS for k in ks}
+    xlabel = {"제품": "가격확인"}  # 카테고리 밖 플러스 항목 이름
     rows = []
     for it in sorted(items, key=lambda x: -x.get("score", 0)):
         parts = it.get("parts") or {}
+        bloggers = it.get("bloggers") or []
         cat_bits = []
         for cat, keys in CATS:
             sub = [(k, parts[k]) for k in keys if isinstance(parts.get(k), (int, float)) and parts[k] > 0]
             tot = sum(v for _, v in sub)
             if not sub:
                 continue
-            detail = " · ".join(f'{e(PART_LABEL.get(k, k))} {v}' for k, v in sub) if len(sub) > 1 else ""
+            if cat == "최신성":  # 왜 최신성이 붙었는지: 블로거(어제·오늘 글)·어사이드
+                d = ([f"블로거 {len(bloggers)}명·어제오늘"] if bloggers else []) + \
+                    ([f"어사이드 {it['naver_rank']}위"] if it.get("naver_rank") else [])
+                detail = " · ".join(d)
+            else:
+                detail = " · ".join(f'{e(PART_LABEL.get(k, k))} {v}' for k, v in sub) if len(sub) > 1 else ""
             cat_bits.append(f'<span style="white-space:nowrap;margin-right:10px">'
                             f'<b style="color:{CAT_COLOR[cat]}">{cat} {tot}</b>'
                             + (f' <span class="muted" style="font-size:11px">({detail})</span>' if detail else '') + '</span>')
+        extra = "".join(f' <span style="color:#7c3aed;white-space:nowrap">+ {e(xlabel.get(k, k))} {v}</span>'  # 제품(가격확인) 등 카테고리 밖 가점 — 안 숨게
+                        for k, v in parts.items() if isinstance(v, (int, float)) and v > 0 and k not in cat_keys)
         neg = "".join(f' <span style="color:var(--warn)">− {e(k)} {-v}</span>'
                       for k, v in parts.items() if isinstance(v, (int, float)) and v < 0)
         st = it.get("stats") or {}
         rawbits = [f(st[k]) for k, f in raw.items() if st.get(k)]
         raw_line = f'<div class="muted" style="font-size:11px">{e(" · ".join(rawbits))}</div>' if rawbits else ""
-        bloggers = it.get("bloggers") or []
-        src = " · ".join(dict(it.get("sources") or {}))
-        blog_line = (f'<div class="muted" style="font-size:11px">블로거 {len(bloggers)}명: {e(" · ".join(bloggers))}</div>'
+        prod = (it.get("product") or "").strip()
+        prod_line = f'<div class="muted" style="font-size:11px">💰 {e(prod)}</div>' if prod else ""  # 패션: 브랜드·제품·가격
+        blog_line = (f'<div class="muted" style="font-size:11px">블로거(어제·오늘) {len(bloggers)}명: {e(" · ".join(bloggers))}</div>'
                      if bloggers else "")
+        src = " · ".join(dict(it.get("sources") or {}))
         src_line = f'<div class="muted" style="font-size:11px">출처: {e(src)}</div>' if src else ""
         rows.append(f'<div style="padding:7px 0;border-bottom:1px solid var(--line)">'
                     f'<div style="display:flex;justify-content:space-between;gap:8px"><b>{e(it["kw"])}</b>{new_badge(it)}'
                     f'<span class="seal">{it.get("score", "")}</span></div>'
-                    f'<div style="font-size:12px;margin-top:3px">{"".join(cat_bits)}{neg}</div>{raw_line}{blog_line}{src_line}</div>')
+                    f'<div style="font-size:12px;margin-top:3px">{"".join(cat_bits)}{extra}{neg}</div>{raw_line}{prod_line}{blog_line}{src_line}</div>')
     return (f'<details style="margin-top:6px"><summary class="muted">키워드별 점수 ({len(items)}개)</summary>'
             f'<div class="muted" style="font-size:11px;margin-top:4px">세 묶음을 더해 합계 — '
             f'<b style="color:{CAT_COLOR["화제성"]}">화제성</b>(급상승·뉴스·출처) : '
             f'<b style="color:{CAT_COLOR["최신성"]}">최신성</b>(블로거·어사이드) : '
-            f'<b style="color:{CAT_COLOR["수요"]}">수요</b>(검색량) = 2:1:1</div>'
+            f'<b style="color:{CAT_COLOR["수요"]}">수요</b>(검색량) = 2:1:1'
+            f' · <span style="color:#7c3aed">+가격확인</span>(패션, 브랜드·가격 나온 주제). '
+            f'블로거는 <b>어제·오늘 글만</b> 세므로 블로거가 붙으면 그 자체로 최신이에요.</div>'
             f'<div style="margin-top:4px">{"".join(rows)}</div></details>')
 
 
