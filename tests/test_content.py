@@ -130,6 +130,8 @@ class ContentTest(unittest.TestCase):
         from pathlib import Path
         from content import desk
         for folder in Path("posts").glob("2026-*"):
+            if not (folder / "post.md").exists():  # 클립(clip.mp4)만 저장한 폴더는 글이 아니므로 건너뜀
+                continue
             p = desk.parse(folder)
             assert p and len(p["titles"]) == 5 and sum(t["best"] for t in p["titles"]) == 1
             assert [x["n"] for x in p["images"]] == list(range(1, len(p["images"]) + 1)) and p["tags"]
