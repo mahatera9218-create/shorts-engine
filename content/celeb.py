@@ -278,23 +278,35 @@ def checklist(a: dict, kw: str, pick: dict | None = None) -> list[tuple[bool, st
     few = [s["heading"] for s in a["sections"][:-1] if len(s["images"]) < 1]
     intro = [w for w in NO_INTRO.get(F.BLOG["id"], []) if w in t]
     person = (pick or {}).get("person") or kw.split()[0]
+    has_qa = bool(re.search(r"(^|\n)\s*Q\.", t))  # §15 패션은 Q&A 없어야
+    has_ref = "참조문헌" in t  # §15 패션은 참조문헌 문구 없어야 (경제 전용)
+    has_sum = bool(re.search(r"\d\s*줄\s*요약|전체\s*요약|한눈에\s*요약", t))  # §15 요약 섹션 없어야
     out = [
-        (len(t) >= 1500, f"본문 1,500자 이상 ({len(t)}자)"),
-        (5 <= len(a["sections"]) <= 7, f"소제목 구간 6개쯤 ({len(a['sections'])}개)"),
-        (17 <= len(a["tags"]) <= 19, f"해시태그 18~19개 ({len(a['tags'])}개)"),
-        (not few, "구간마다 사진 1장 " + (f"(빠진 곳 {len(few)})" if few else "(됨)")),
-        (emph <= 2, f"굵게·밑줄 2곳 이내 ({emph}곳)"),
-        (not meta, "제작 과정 문장 없음 " + (f"({len(meta)}곳)" if meta else "")),
+        (len(t) >= 1500, f"§9 본문 1,500자 이상 ({len(t)}자)"),
+        (5 <= len(a["sections"]) <= 7, f"§9 본문 구조 7단계(도입+소제목 6) ({len(a['sections'])}구간)"),
+        (len(a["tags"]) <= 19, f"§12 해시태그 19개 이하 ({len(a['tags'])}개)"),
+        (not few, "§11 구간마다 사진 1장 " + (f"(빠진 곳 {len(few)})" if few else "(됨)")),
+        (not has_qa, "§15 Q&A 없음 (패션 금지)"),
+        (not has_ref, "§15 참조문헌 문구 없음 (패션 금지)"),
+        (not has_sum, "§15 전체 요약 섹션 없음 (패션 금지)"),
+        (emph <= 2, f"문체: 굵게·밑줄 2곳 이내 ({emph}곳)"),
+        (not meta, "§14 제작 과정 문장 없음 " + (f"({len(meta)}곳)" if meta else "")),
         (not F.PRESS.search(t), "언론사명·링크 없음"),
-        (not intro, "자기소개·블로그이름 없이 시작 " + (f"({', '.join(intro)})" if intro else "")),
+        (not intro, "§10 자기소개·블로그이름 없이 시작 " + (f"({', '.join(intro)})" if intro else "")),
     ]
     if pick:
         ln = len(pick.get("title", ""))
         out += [
-            (35 <= ln <= 65, f"제목 35~65자 ({ln}자)"),
-            (bool(person) and person in pick.get("title", ""), f"제목에 인물 '{person}' 포함"),
+            (35 <= ln <= 65, f"§2 제목 35~65자 ({ln}자)"),
+            (bool(person) and person in pick.get("title", "").replace(" ", ""), f"§6 제목에 인물 '{person}' 포함"),
         ]
     return out
+
+
+def human_check() -> list[str]:
+    """패션 원문 §15 중 코드로 못 재는(사람이 봐야 하는) 항목 (대표 지적 2026-10-10)."""
+    return ["제목 15개·관점 다양(대표 결정으로 축소 운영)", "구어체·독특한 표현", "제목끼리 어휘·결말 중복 없음",
+            "인물·브랜드·가격이 확인된 내용인지(미확인은 표시)", "제목과 본문 내용 일치", "실제 착장·제품 사진 확보"]
 
 
 def produce(slug: str, n: int) -> Path:
@@ -310,12 +322,13 @@ def produce(slug: str, n: int) -> Path:
     a = F.claude_json(sys_prompt, ask, BODY, stage="글쓰기(연예·패션)")
     # 원문 체크 목표점 넘을 때까지 최대 2번만 고쳐쓰기 (대표 요청 2026-10-10). 검사는 무료, 고쳐쓰기만 1회 비용
     from .econ_score import CFG as _kcfg
-    target = (F.load(_kcfg(), {}) or {}).get("checklist_target", 8)
+    ratio = (F.load(_kcfg(), {}) or {}).get("checklist_pass_ratio", 0.8)
     fix_log: list[str] = []
     for attempt in range(2):
         cl = checklist(a, kw, pick)
         fails = [txt for ok, txt in cl if not ok]
-        if len(cl) - len(fails) >= target or not fails:
+        need = int(len(cl) * ratio + 0.999)
+        if len(cl) - len(fails) >= need or not fails:
             break
         fix_log.append(f"{attempt + 1}차 부족({len(cl) - len(fails)}/{len(cl)}): " + " / ".join(fails))
         a = F.claude_json(sys_prompt, ask + "\n\n[반드시 고칠 것 — 아래를 모두 충족]\n" + "\n".join(f"- {b}" for b in fails)
@@ -363,7 +376,8 @@ def produce(slug: str, n: int) -> Path:
         f"# 발행 패키지 · {kw} ({F.BLOG['name']})", "", f"**상태:** {status}",
         f"**본문:** {len(text_of(a))}자 · 사진 {k - 2}장 + 썸네일", "",
         "## 원문 체크", "", *[f"- {'✅' if ok else '⚠️'} {txt}" for ok, txt in checklist(a, kw, pick)],
-        *(["", "### 고쳐쓰기 기록(남긴 것)", *[f"- {x}" for x in fix_log]] if fix_log else []), "",
+        *(["", "### 고쳐쓰기 기록(남긴 것)", *[f"- {x}" for x in fix_log]] if fix_log else []),
+        "", "### 코드로 못 재는 항목 (사람이 확인)", *[f"- 👀 {x}" for x in human_check()], "",
         f"- 카테고리: **{a['area']}**", f"- 태그: {tags}", "",
         "## 제목 (추천 ★)", "", f"1. ★ {pick['title']} — {pick['type']}",
         *[f"{i + 2}. {t['title']} — {t['type']}" for i, t in enumerate(others)], "",

@@ -86,7 +86,8 @@ def parse(folder: Path) -> dict | None:
             blocks.append({"text": para})
     sources = t.split("## 출처", 1)[1].split("\n## ", 1)[0].strip() if "## 출처" in t else ""
     checklist = re.findall(r"^- ([✅⚠️].+)$", t.split("## 제목")[0], re.M)  # 원문 체크 (2026-10-10)
-    return {"folder": folder.name, "date": folder.name[:10], "ok": status_ok, "problems": problems, "checklist": checklist,
+    human = re.findall(r"^- 👀 (.+)$", t.split("## 제목")[0], re.M)  # 사람이 확인할 항목
+    return {"folder": folder.name, "date": folder.name[:10], "ok": status_ok, "problems": problems, "checklist": checklist, "human": human,
             "titles": titles, "tags": clean_tags(tags.group(1).split(",")) if tags else [],
             "category": cat.group(1) if cat else "", "blocks": blocks, "images": images, "sources": sources,
             "clip": (folder / "clip.mp4").exists(), "status": read_status(folder),

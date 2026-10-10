@@ -188,22 +188,35 @@ def checklist(a: dict, kw: str, pick: dict | None = None) -> list[tuple[bool, st
     press = F.PRESS.findall(t + " ".join(x["q"] + x["a"] for x in a["qa"]) + " ".join(a["tags"]))
     px = len(a.get("pixabay") or [])
     kc = t.count(core)
-    chars = len(t)
+    emoji = len(re.findall(r"[\U0001F000-\U0001FAFF\u2600-\u27BF]", t))  # §13 과도한 이모지
+    weird = re.findall(r"[`|{}<>\\]|\[\d+\]", t)  # §13 이상문자·내부 참조코드
+    intro0 = (a.get("intro") or [""])[0]
+    num_start = bool(re.search(r"\d", intro0[:20]))  # §4 첫 문장 숫자·사실로 시작
+    # 원문 §15 자체 검수 중 '코드로 셀 수 있는' 항목만 (대표 지적 2026-10-10: 자의 해석·누락 없이 원문대로)
     return [
-        (5 <= n_sec <= 7, f"소제목 구간 5~7개 ({n_sec}개)"),
-        (q_sec >= 5, f"질문형 소제목 5개 이상 ({q_sec}개)"),
-        (bool((a.get("table") or {}).get("rows")), "비교표 1개 이상 " + ("(있음)" if (a.get("table") or {}).get("rows") else "(없음)")),
-        (len(a["qa"]) == 3, f"Q&A 3개 ({len(a['qa'])}개)"),
-        (18 <= len(a["tags"]) <= 21, f"해시태그 약 20개 ({len(a['tags'])}개)"),
-        (not press, "언론사명·링크 없음 " + (f"({len(press)}곳 있음)" if press else "(없음)")),
-        (kc <= 20, f"핵심키워드 '{core}' 20회 이내 ({kc}회)"),
-        (px >= 5, f"픽사베이 검색어 5개 ({px}개)"),
-        (bool(a.get("intro")) and bool(a.get("closing")), "도입·마무리 문단 있음"),
-        (chars >= 1500, f"본문 1,500자 이상 ({chars}자)"),
+        (5 <= n_sec <= 7, f"§4 소제목(질문형) 5~7개 ({n_sec}개)"),
+        (q_sec == n_sec and n_sec > 0, f"§4 소제목 전부 질문형 ({q_sec}/{n_sec})"),
+        (bool((a.get("table") or {}).get("rows")), "§8 비교표 1개 이상 " + ("(있음)" if (a.get("table") or {}).get("rows") else "(없음)")),
+        (len(a["qa"]) == 3, f"§9 Q&A 정확히 3개 ({len(a['qa'])}개)"),
+        (18 <= len(a["tags"]) <= 21, f"§11 해시태그 20개 ({len(a['tags'])}개)"),
+        (core in " ".join(a["tags"]).replace(" ", ""), f"§11 해시태그에 핵심키워드 '{core}' 포함"),
+        (kc <= 20, f"§6 핵심키워드 '{core}' 20회 이내 ({kc}회)"),
+        (not press, "§12 언론사명·링크·괄호출처 없음 " + (f"({len(press)}곳)" if press else "")),
+        (px >= 5, f"§10 픽사베이 검색어 5개 ({px}개)"),
+        (num_start, "§4 도입 숫자·사실로 시작"),
+        (emoji <= 3, f"§13 과도한 이모지 없음 ({emoji}개)"),
+        (not weird, "§13 이상문자·내부코드 없음 " + (f"({len(weird)}곳)" if weird else "")),
+        (True, "§12 참조문헌 문구 1회 (코드가 자동 삽입)"),
     ] + ([
-        (len(pick.get("title", "")) <= 45, f"제목 45자 이내 ({len(pick.get('title',''))}자)"),
-        (core in pick.get("title", ""), f"제목에 핵심키워드 '{core}' 포함"),
+        (len(pick.get("title", "")) <= 45, f"§2 제목 45자 이내 ({len(pick.get('title',''))}자)"),
+        (core in pick.get("title", "").replace(" ", ""), f"§2·6 제목에 핵심키워드 '{core}' 포함"),
     ] if pick else [])
+
+
+def human_check() -> list[str]:
+    """코드로 못 재는(사람이 봐야 하는) 원문 항목 — 자동 통과로 속이지 않게 따로 안내 (대표 지적 2026-10-10)."""
+    return ["제목 8유형·개수(대표 결정으로 유형당 4개·최종 ★1개로 운영)", "말투 벤치마킹 자연스러움", "제목끼리 어순·표현 중복 없음",
+            "숫자·사실의 정확성(전망/확정 구분)", "제목이 약속한 내용을 본문이 설명했는지", "네이버에 바로 쓸 수 있는지"]
 
 
 def gain(kw: str, a: dict) -> tuple[bool, str]:
@@ -233,12 +246,13 @@ def produce(slug: str, n: int) -> Path:
     issues: list[dict] = []  # GPT 사실 대조는 뺐다 (대표 결정 2026-10-05: "검사는 필요 없을 것 같다"). 숫자는 Grok 조사 메모 안에서만 쓴다
     # 원문 체크 8/10 넘을 때까지 최대 2번만 고쳐쓰기 (대표 요청 2026-10-10). 실패 기록은 남긴다. 검사는 코드(무료), 고쳐쓰기만 1회 비용
     from .econ_score import CFG as _kcfg
-    target = (F.load(_kcfg(), {}) or {}).get("checklist_target", 8)
+    ratio = (F.load(_kcfg(), {}) or {}).get("checklist_pass_ratio", 0.8)  # 원문 체크 통과율 목표 (대표 '8/10' → 80%)
     fix_log: list[str] = []
     for attempt in range(2):
         cl = checklist(a, kw, pick)
         fails = [txt for ok, txt in cl if not ok]
-        if len(cl) - len(fails) >= target or not fails:
+        need = int(len(cl) * ratio + 0.999)
+        if len(cl) - len(fails) >= need or not fails:
             break
         fix_log.append(f"{attempt + 1}차 부족({len(cl) - len(fails)}/{len(cl)}): " + " / ".join(fails))
         a = F.claude_json(sys_prompt, ask + "\n\n[반드시 고칠 것 — 아래를 모두 충족]\n" + "\n".join(f"- {b}" for b in fails)
@@ -296,7 +310,8 @@ def produce(slug: str, n: int) -> Path:
         f"# 발행 패키지 · {kw} (쿠니네 방식)", "",
         f"**상태:** {status}", f"**정보 이득:** {gain_note}",
         "", "## 원문 체크", "", *[f"- {'✅' if ok else '⚠️'} {txt}" for ok, txt in cl],
-        *(["", "### 고쳐쓰기 기록(남긴 것)", *[f"- {x}" for x in fix_log]] if fix_log else []), "",
+        *(["", "### 고쳐쓰기 기록(남긴 것)", *[f"- {x}" for x in fix_log]] if fix_log else []),
+        "", "### 코드로 못 재는 항목 (사람이 확인)", *[f"- 👀 {x}" for x in human_check()], "",
         f"**본문:** {len(text_of(a))}자 · 사진 {k - 2}장 + 썸네일", "",
         f"- 카테고리: **{a['area']}**", f"- 태그: {tags}", "",
         "## 제목 (추천 ★)", "", f"1. ★ {pick['title']} — {pick['type']}",
