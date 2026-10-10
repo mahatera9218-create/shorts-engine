@@ -136,6 +136,25 @@ def outfit_links(folder: str) -> str:
     return f'<div class="card"><h2>착장 원본</h2>{links}{shops}</div>' if (links or shops) else ""
 
 
+ONE_HEAD = {  # 한 장만 그리는 단독 프롬프트 머리말 (대표 목표 2026-10-10 "한 요청에 한 장씩 딱딱 다 나오게" — 챗 이미지 모델은 한 요청당 1장)
+    "econ": ("블로그 사진 한 장을 만들어 주세요. 정사각형 800×800. 실제 뉴스 현장 사진처럼 사실적인 사진, 자연광, 또렷한 초점. "
+             "회사가 나오면 그 회사의 실제 건물과 진짜 로고·회사 이름 간판이 정확히 보이게. 그 밖의 글자·숫자·워터마크·차트는 넣지 말 것. "
+             "실존 인물의 얼굴이 알아보이게 그리지 말 것(뒷모습·손·멀리 있는 사람은 괜찮음)."),
+    "fashion": ("패션 블로그 사진 한 장을 만들어 주세요. 정사각형 800×800. 고급 패션 잡지 정물 사진, 부드러운 자연광, "
+                "크림색 리넨·따뜻한 돌 위, 조용한 럭셔리 분위기, 원단·니트·가죽·금속 장식의 질감이 아주 선명하게, 실제 색감. "
+                "제품만(사람·손·얼굴 없음), 브랜드 로고·글자·워터마크 없음."),
+}
+
+
+def one_prompt(it: dict, title: str = "") -> str:
+    """사진 한 장만을 위한 단독·완결 프롬프트. 혼자 붙여넣어도 딱 그 한 장이 나오게 공통 규칙을 포함한다."""
+    head = ONE_HEAD.get(BID, ONE_HEAD["econ"])
+    brand = f" ({it['brand']} 실제 건물, 진짜 로고·간판)" if it.get("brand") else ""
+    hook = (f" 이 글의 대표사진입니다. 제목 「{title}」을 보자마자 떠오르는 한 장면으로, 홈피드에서 손이 멈추게 대상을 화면 가득·강한 명암·높은 채도로."
+            if it["n"] == 1 and BID == "econ" else "")
+    return f"{head}\n\n{it['desc']}{brand}{hook}"
+
+
 def prompts_card(p: dict) -> str:
     """사진: 프롬프트만 (대표 결정 2026-10-09: 실제 사진 후보는 글과 안 맞는 게 많아 안 보여 줌). 경제 = 그릴 사진 프롬프트,
     패션 = 찾을 실제 사진 목록(번호·검색어·설명)."""
@@ -158,8 +177,16 @@ def prompts_card(p: dict) -> str:
     text = "\n\n".join(parts)
     if not text:
         return ""
+    one_btns = ""
+    if draw:  # 한 장씩 복사 (대표 목표 2026-10-10: 한 요청에 한 장씩 딱딱 다 나오게). 제미나이·그록은 한 번에 1장이라, 하나 붙여넣고 그림 나오면 다음 걸 붙여넣는다
+        one_btns = (
+            '<div class="muted" style="font-size:13px;margin:10px 0 2px">한 장씩 복사 — 하나 붙여넣어 그림이 나오면 다음 걸 붙여넣으세요 (제미나이·그록은 한 번에 1장씩)</div>'
+            + "".join(f'<button class="ghost small" style="margin:3px 0" '
+                      f'onclick="copyText(this,{e(json.dumps(one_prompt(it, best)), quote=True)})">📋 {it["n"]}번 한 장 · {e(it["label"])}</button>'
+                      for it in draw))
     return (f'<div class="card"><h2>사진</h2>'
-            f'<button onclick="copyText(this,{e(json.dumps(text), quote=True)})">📋 사진 프롬프트 복사</button>'
+            f'<button onclick="copyText(this,{e(json.dumps(text), quote=True)})">📋 사진 프롬프트 복사 (전체 한 번에)</button>'
+            f'{one_btns}'
             f'<details><summary class="muted">프롬프트 보기</summary><div style="font-size:13px;white-space:pre-wrap;word-break:break-word;'
             f'background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:8px">{e(text)}</div></details>'
             f'<a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="../../photo/">📐 사진 800×800 맞추기</a></div>')
@@ -259,6 +286,38 @@ def backfill_checklist(p: dict) -> tuple[list, list]:
         return [], []
 
 
+def _tbl_text(b: dict) -> str:
+    """표를 줄글로 (②번 방식): 2칸이면 '항목: 값', 그 밖은 ' · '로 이어 붙인다. 앱에서도 안 깨지고 네이버 AI가 읽는다."""
+    if len(b["header"]) == 2:
+        return "\n".join(f'{r[0]}: {r[1]}' for r in b["rows"])
+    return "\n".join([" · ".join(b["header"])] + [" · ".join(r) for r in b["rows"]])
+
+
+def table_card(p: dict) -> str:
+    """표 카드 (대표 지시 2026-10-10: 1번·2번 방식 버튼 다 주기, PC도 쓰니까).
+    ① 네이버 앱 '표' 버튼용 — 칸마다 복사  ② 줄글(항목: 값)  + PC·웹 글쓰기용 '표 서식 복사'(HTML 표 그대로)."""
+    e = html.escape
+    out = []
+    for b in p["blocks"]:
+        if "table" not in b:
+            continue
+        n = b["table"]
+        ncol, nrow = len(b["header"]), len(b["rows"]) + 1
+        cells = list(b["header"]) + [c for r in b["rows"] for c in r]
+        cell_btns = "".join(
+            f'<button class="ghost small" style="margin:3px 0" onclick="copyText(this,{e(json.dumps(str(c)), quote=True)})">{e(str(c))}</button>'
+            for c in cells)
+        out.append(
+            f'<div class="card"><h2>표 · {e(b["title"])}</h2>'
+            + desk.naver_table(b)
+            + f'<button onclick="copyTable(this,{n})">📋 표 서식 복사 (PC·웹 글쓰기에서 표로 붙음)</button>'
+            + f'<button class="ghost" onclick="copyText(this,{e(json.dumps(_tbl_text(b)), quote=True)})">📋 줄글로 복사 (앱에서도 깔끔 · 항목: 값)</button>'
+            + '<details><summary class="muted">네이버 앱에서 진짜 표로 넣기 — 칸마다 복사 ①</summary>'
+            + f'<div class="muted" style="font-size:13px;margin:4px 0">앱 글쓰기에서 <b>표</b> 버튼 → <b>{nrow}행 × {ncol}열</b> 만들고, 아래를 <b>왼쪽 위부터 순서대로</b> 칸마다 붙여넣으세요. (본문에 줄글로 들어간 이 표 부분은 지우면 됩니다.)</div>'
+            + cell_btns + '</details></div>')
+    return "".join(out)
+
+
 def page(p: dict) -> str:
     """글 화면: 제목 → 사진 → 본문 (대표 지시 2026-10-08: 설명 글·미리보기·발행 완료·태그 칸·사진 저장·출처 없앰).
     본문 복사 = 소제목 앞뒤 빈 줄 2칸(■ 없이) + 사진 자리 + 맨 끝 해시태그."""
@@ -304,6 +363,7 @@ def page(p: dict) -> str:
 <div class="card"><h2>본문</h2>
 <button onclick="copyBody(this)">📋 본문 복사</button>
 <details><summary class="muted">본문 보기·고치기</summary>{body}</details></div>
+{table_card(p)}
 </main><script>const POST={data};{desk.JS}</script></body></html>"""
 
 
