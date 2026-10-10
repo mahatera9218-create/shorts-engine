@@ -89,6 +89,30 @@ def key(n: str) -> str:
     return os.environ.get(n, "").strip()
 
 
+def post_meta(kw: str, title_type: str = "") -> dict:
+    """글을 만들 때 예측값을 남긴다 → 나중에 실제 조회·홈판 유입과 비교(벼려내기, 대표 결정 2026-10-10 '성과탭에서'). 못 찾으면 비움."""
+    day = FLOW / today()
+    core = (kw or "").split()[0] if kw else ""
+    score = None
+    try:
+        for it in (load(day / "keywords.yaml", {}) or {}).get("items", []):
+            if it.get("kw") == kw or (it.get("core") or "").strip() == core:
+                score = it.get("score")
+                break
+    except Exception:  # noqa: BLE001
+        pass
+    section = ""
+    if BLOG["id"] == "econ":
+        try:
+            from .econ_sections import section as _sec
+            section = _sec({"kw": kw})
+        except Exception:  # noqa: BLE001
+            pass
+    h = int(datetime.now(KST).strftime("%H"))
+    window = "아침(9시)" if h < 10 else ("점심(12시)" if h < 15 else "저녁(18시)")  # 어느 발행창 직전에 만들었나
+    return {"predict": score, "section": section, "type": title_type, "made_window": window}
+
+
 def today() -> str:
     return datetime.now(KST).strftime("%Y-%m-%d")
 
@@ -244,6 +268,12 @@ def keywords(force: bool = False) -> Path:
         "한 종목에 몰리지 않게, 작전주·테마주 추천·리딩방은 빼세요")
     old = load(day / "keywords.yaml", {"items": []})
     gathered = old.get("updated") and any("Grok" in (it.get("src") or "") for it in old.get("items", []))
+    if BLOG["id"] == "fashion" and (force or not gathered):  # 계절 인기 상품 먼저 (쇼핑인사이트, 무료) → Grok 프롬프트에 씀 (대표 결정 2026-10-10)
+        try:
+            from .season import rank as _season
+            _season()
+        except Exception as e:  # noqa: BLE001  (키워드 모으기는 살린다)
+            print(f"계절 상품 실패: {str(e)[:150]}")
     if not force and gathered:  # 오늘 이미 Grok으로 모음 → 돈 드는 Grok 건너뛰고 무료 점수만 갱신
         print("오늘 이미 키워드를 모았어요 → Grok 건너뛰고 검색량·점수만 갱신 (비용 절약)")
         grok_items = []
