@@ -373,6 +373,19 @@ document.getElementById('saveAll').onclick=async()=>{if(navigator.canShare&&navi
 </script></main></body></html>"""
 
 
+def error_banner() -> str:
+    """마지막 버튼 실행이 실패했으면 맨 위 빨간 띠 (content/run_error.py, 대표 지적 2026-10-10). 클로드 실행이 성공하면 사라짐."""
+    f = ROOT / "status" / "desk_error.yaml"
+    if not f.exists():
+        return ""
+    E = yaml.safe_load(f.read_text(encoding="utf-8")) or {}
+    e = html.escape
+    what = f' · {e(E["kw"])}' if E.get("kw") else ""
+    return (f'<div class="card" style="border:2px solid #d33;background:#fdecec;color:#7a1010">'
+            f'<b>❌ 마지막 실행 실패 ({e(E.get("at", ""))}{what})</b>'
+            f'<div style="margin-top:4px">{e(E.get("reason", ""))}</div></div>')
+
+
 def index(by_blog: dict[str, list[dict]]) -> str:
     from .blogs import all_blogs
     blogs = all_blogs()
@@ -382,7 +395,7 @@ def index(by_blog: dict[str, list[dict]]) -> str:
     first = next(iter(blogs))
     return head(f"{NAME} 발행 도우미") + f"""
 <header class="brand"><img src="icon-180.png" alt=""><div><h1>발행 도우미</h1><p class="muted">{" · ".join(html.escape(b["label"]) for b in blogs.values())} · {now} 업데이트</p></div></header>
-<nav class="tabs">{tabs}<a href="outfit/">착장</a><a href="#stats" data-t="stats">성과</a><a href="#aside" data-t="aside">어사이드</a><a href="photo/">사진</a></nav>
+{error_banner()}<nav class="tabs">{tabs}<a href="outfit/">착장</a><a href="#stats" data-t="stats">성과</a><a href="#aside" data-t="aside">어사이드</a><a href="photo/">사진</a></nav>
 {secs}
 <section class="tab" id="aside" hidden>{aside_tab(blogs)}</section>
 <section class="tab" id="stats" hidden>{compare_html(blogs, by_blog)}</section>
