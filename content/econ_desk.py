@@ -491,34 +491,6 @@ def score_table(items: list[dict]) -> str:
             f'<th>합계</th>{th}</tr>{tr}</table></div></details>')
 
 
-def rising_html(day: Path, today: str) -> str:
-    """📈 네이버 급상승 (어사이드 없이 공식 API, 하루 3번 — content/rising.py, 대표 요청 2026-10-10).
-    경제: 누르면 제목 후보 만들기 / 패션: 누르면 아래 '글 만들기' 칸에 들어감. 키워드 카드 안에 붙는다."""
-    e = html.escape
-    f = day / "rising.yaml"
-    R = (yaml.safe_load(f.read_text(encoding="utf-8")) or {}) if f.exists() else {}
-    again = desk.issue_link(f"{LABEL}급상승", today, "네이버 급상승 키워드를 다시 찾아 주세요.")
-    rows = []
-    for it in R.get("items", []):
-        meta = f'×{it.get("rise", "")}' + (f' · 새 글 {it["blog24h"]}' if it.get("blog24h") is not None else "") \
-            + (f' · {it["section"]}' if it.get("section") else "")
-        label = f'<b>{e(it["kw"])}</b> <span class="seal">{it.get("score", "")}</span>' \
-                f'<div class="muted" style="font-size:12px">{e(meta)}</div>'
-        if BID == "econ":
-            link = desk.issue_link(f"{LABEL}키워드", it["kw"], "이 키워드로 제목 후보를 만들어 주세요.")
-            rows.append(f'<a class="btn" style="text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
-                        f'href="{e(link, quote=True)}">{label}</a>')
-        else:
-            rows.append(f'<button class="ghost" style="text-align:left;width:100%" '
-                        f'onclick="pick_{BID}({e(json.dumps(it["kw"]), quote=True)})">{label}</button>')
-    when = f'{R.get("updated", "")} 기준 · 최근 3일 검색 상승' if R else "아직 없음"
-    return (f'<div style="margin-top:14px;padding-top:10px;border-top:1px solid var(--line)"><b>📈 네이버 급상승</b>'
-            f'<div class="muted" style="margin:4px 0 6px;font-size:13px">{e(when)}</div>'
-            f'{"".join(rows[:5])}'
-            + (f'<details><summary class="muted">더 보기 {len(rows) - 5}개</summary>{"".join(rows[5:])}</details>' if len(rows) > 5 else "")
-            + f'<a class="btn" style="margin-top:8px;background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(again, quote=True)}">🔄 급상승 다시 찾기</a></div>')
-
-
 def kw_row(it: dict, done: dict[str, str]) -> str:
     """키워드 한 줄: 글이 됐으면 ✅ + 글로, 아니면 누르면 제목 후보 만들기 (대표 결정 2026-10-09: 키워드는 대표가 고름)."""
     e = html.escape
@@ -601,7 +573,7 @@ def flow_html() -> str:
     kw_html = (f'<div class="card"><h2>키워드</h2><div class="muted" style="margin:4px 0 6px">{aside}</div>{rows}'
                f'{score_table(shown)}'
                f'<a class="btn" style="margin-top:8px;background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(refresh, quote=True)}">🔄 다시 모으기</a>'
-               f'{rising_html(day, today)}<script>{add_js}</script></div>{topic_box}')
+               f'<script>{add_js}</script></div>{topic_box}')   # 급상승 블록 제거 (대표 결정 2026-10-10: 메인 키워드 목록에 합침)
     topics = []
     for t in sorted(day.glob("*/titles.yaml")) if day.exists() else []:
         T = yaml.safe_load(t.read_text(encoding="utf-8")) or {}

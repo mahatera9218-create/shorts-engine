@@ -293,7 +293,8 @@ def keywords(force: bool = False) -> Path:
     keep_grok = not force and gathered  # Grok 건너뛸 땐 오늘 모은 Grok 키워드도 살림
     mine = [x for x in old.get("items", []) if x.get("src") in ("대표", "캡처") or x.get("naver_rank")
             or (keep_grok and "Grok" in (x.get("src") or ""))]  # 어사이드도 남김 (2026-10-07)
-    items = run(grok_items, mine)
+    rising_items = (load(day / "rising.yaml", {}) or {}).get("items", [])  # 급상승 키워드를 메인 후보에 합침 (대표 결정 2026-10-10)
+    items = run(grok_items, mine, rising_items=rising_items)
     save(day / "keywords.yaml", {"date": today(), "updated": datetime.now(KST).strftime("%H:%M"), "items": items})
     print(f"키워드 {len(items)}개, 1위 {items[0]['kw']} {items[0]['score']}점" if items else "키워드 없음")
     return day / "keywords.yaml"

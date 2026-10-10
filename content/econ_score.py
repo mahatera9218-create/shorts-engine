@@ -51,7 +51,7 @@ def headlines(url: str, hours: int = 24) -> list[str]:
         return []
 
 
-def gather(grok_items: list[dict], mine: list[dict]) -> list[tuple[str, str, str]]:
+def gather(grok_items: list[dict], mine: list[dict], rising_items: list[dict] | None = None) -> list[tuple[str, str, str]]:
     """(번호, 출처 이름, 내용) 줄 목록. 출처 이름은 점수표(source_points)의 이름과 같다."""
     cfg = F.load(CFG(), {})
     rows: list[tuple[str, str, str]] = []
@@ -60,6 +60,9 @@ def gather(grok_items: list[dict], mine: list[dict]) -> list[tuple[str, str, str
         rows.append((f"D{i}", src, it["kw"]))
     for i, it in enumerate(grok_items, 1):
         rows.append((f"G{i}", "Grok", f"{it['kw']} — {it.get('why', '')}"))
+    for i, it in enumerate(rising_items or [], 1):  # 네이버 급상승으로 찾은 키워드도 후보에 (대표 결정 2026-10-10: 급상승 탭 없애고 메인 목록에 합침)
+        if it.get("kw"):
+            rows.append((f"R{i}", "급상승", it["kw"]))
     refs = F.load(ROOT / "econ" / "ref" / "rss" / f"{F.today()}.yaml", {}) if F.BLOG["id"] == "econ" else {}
     skip = set(cfg.get("skip_bloggers", []))  # 키워드 조사에서 뺄 블로거 (대표 지시 2026-10-07 "쿠니네는 조사할 필요 없다")
     n = 0
@@ -352,8 +355,8 @@ def score(items: list[dict], src_rows: dict[str, str] | None) -> list[dict]:
     return items
 
 
-def run(grok_items: list[dict], mine: list[dict]) -> list[dict]:
-    rows = gather(grok_items, mine)
+def run(grok_items: list[dict], mine: list[dict], rising_items: list[dict] | None = None) -> list[dict]:
+    rows = gather(grok_items, mine, rising_items)
     print(f"모은 줄 {len(rows)}개: " + ", ".join(f"{s} {sum(1 for r in rows if r[1] == s)}"
                                             for s in dict.fromkeys(r[1] for r in rows)))
     if not rows:
