@@ -48,8 +48,8 @@ header.brand{display:flex;align-items:center;gap:12px;margin:6px 0 4px}
 header.brand img{width:48px;height:48px;border-radius:12px}
 header.brand h1{margin:0;font-size:21px}header.brand .muted{margin:0}
 .step{background:var(--accent)}h2{border-left:5px solid var(--accent);padding-left:8px}
-nav.tabs{display:flex;gap:6px;position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:5}
-nav.tabs a{flex:1;text-align:center;padding:12px 4px;border-radius:12px;border:1px solid var(--line);color:var(--ink);text-decoration:none;font-weight:700}
+nav.tabs{display:flex;gap:4px;position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:5}
+nav.tabs a{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;padding:11px 0;font-size:13px;letter-spacing:-.3px;border-radius:12px;border:1px solid var(--line);color:var(--ink);text-decoration:none;font-weight:700}
 nav.tabs a.on{background:var(--accent);color:#fff;border-color:var(--accent)}
 /* 태블릿 (대표 주 작업 기기, 2026-10-05): 넓은 화면은 두 칸 — 왼쪽 할 일, 오른쪽 결과 */
 @media (min-width:900px){main{max-width:1240px}.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}
@@ -382,7 +382,7 @@ def index(by_blog: dict[str, list[dict]]) -> str:
     first = next(iter(blogs))
     return head(f"{NAME} 발행 도우미") + f"""
 <header class="brand"><img src="icon-180.png" alt=""><div><h1>발행 도우미</h1><p class="muted">{" · ".join(html.escape(b["label"]) for b in blogs.values())} · {now} 업데이트</p></div></header>
-<nav class="tabs">{tabs}<a href="#aside" data-t="aside">🛰 어사이드</a><a href="#stats" data-t="stats">성과</a><a href="outfit/">👗 착장</a><a href="photo/">📐 사진</a></nav>
+<nav class="tabs">{tabs}<a href="outfit/">착장</a><a href="#stats" data-t="stats">성과</a><a href="#aside" data-t="aside">어사이드</a><a href="photo/">사진</a></nav>
 {secs}
 <section class="tab" id="aside" hidden>{aside_tab(blogs)}</section>
 <section class="tab" id="stats" hidden>{compare_html(blogs, by_blog)}</section>
@@ -470,7 +470,7 @@ def score_table(items: list[dict]) -> str:
 
 def rising_html(day: Path, today: str) -> str:
     """📈 네이버 급상승 (어사이드 없이 공식 API, 하루 3번 — content/rising.py, 대표 요청 2026-10-10).
-    경제: 누르면 제목 후보 만들기 / 패션: 누르면 아래 '상품 링크로 글' 칸에 들어감."""
+    경제: 누르면 제목 후보 만들기 / 패션: 누르면 아래 '글 만들기' 칸에 들어감. 키워드 카드 안에 붙는다."""
     e = html.escape
     f = day / "rising.yaml"
     R = (yaml.safe_load(f.read_text(encoding="utf-8")) or {}) if f.exists() else {}
@@ -489,10 +489,11 @@ def rising_html(day: Path, today: str) -> str:
             rows.append(f'<button class="ghost" style="text-align:left;width:100%" '
                         f'onclick="pick_{BID}({e(json.dumps(it["kw"]), quote=True)})">{label}</button>')
     when = f'{R.get("updated", "")} 기준 · 최근 3일 검색 상승' if R else "아직 없음"
-    return (f'<div class="card"><h2>📈 네이버 급상승</h2><div class="muted" style="margin:4px 0 6px;font-size:13px">{e(when)}</div>'
-            f'{"".join(rows[:10])}'
-            + (f'<details><summary class="muted">더 보기 {len(rows) - 10}개</summary>{"".join(rows[10:])}</details>' if len(rows) > 10 else "")
-            + f'<a class="btn" style="margin-top:8px;background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(again, quote=True)}">🔄 다시 찾기</a></div>')
+    return (f'<div style="margin-top:14px;padding-top:10px;border-top:1px solid var(--line)"><b>📈 네이버 급상승</b>'
+            f'<div class="muted" style="margin:4px 0 6px;font-size:13px">{e(when)}</div>'
+            f'{"".join(rows[:5])}'
+            + (f'<details><summary class="muted">더 보기 {len(rows) - 5}개</summary>{"".join(rows[5:])}</details>' if len(rows) > 5 else "")
+            + f'<a class="btn" style="margin-top:8px;background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(again, quote=True)}">🔄 급상승 다시 찾기</a></div>')
 
 
 def kw_row(it: dict, done: dict[str, str]) -> str:
@@ -527,7 +528,7 @@ def flow_html() -> str:
                        for name, xs in secs.items())
     else:
         shown = items[:5]  # 패션: 점수 상위 5개 (대표 결정 2026-10-09: 렌즈로 대표가 찾으니 정보 없는 키워드도)
-        def frow(it: dict) -> str:  # 패션 키워드를 누르면 깃헙이 아니라 아래 '상품 링크로 글' 칸에 들어감 (대표 결정 2026-10-09: 어제 방식)
+        def frow(it: dict) -> str:  # 패션 키워드를 누르면 깃헙이 아니라 아래 '글 만들기' 칸에 들어감 (대표 결정 2026-10-09: 어제 방식)
             slug = done.get(it["kw"])
             sc = f' <span class="seal">{it["score"]}</span>' if "score" in it else ""
             if slug and (POSTS / slug).exists():
@@ -539,16 +540,9 @@ def flow_html() -> str:
     add_js = (f"function addKw_{BID}(){{const v=document.getElementById('kwin-{BID}').value.split('\\n').filter(l=>!/^\\s*http/.test(l)).join('\\n').trim();if(!v)return;"
               f"location.href='https://github.com/{desk.REPO}/issues/new?title='+encodeURIComponent('[{LABEL}키워드추가] {today}')"
               "+'&body='+encodeURIComponent(v)}")
-    link_box = ""
-    if BID != "econ":  # 패션: 키워드 누르면 링크 칸에 넣고, 링크 붙여 '글 만들기' → 조사+★추천 제목+글 한 번에 (대표 결정 2026-10-09: 어제 방식)
-        add_js += (f"function pick_{BID}(k){{const t=document.getElementById('lkin-{BID}');t.value=k+'\\n';"
-                   "t.scrollIntoView({behavior:'smooth',block:'center'});t.focus()}"
-                   f"function addLink_{BID}(){{const v=document.getElementById('lkin-{BID}').value.trim();if(!v)return;"
-                   f"location.href='https://github.com/{desk.REPO}/issues/new?title='+encodeURIComponent('[{LABEL}링크] {today}')"
-                   "+'&body='+encodeURIComponent(v)}")
-        link_box = (f'<div class="card"><h2>상품 링크로 글</h2><textarea id="lkin-{BID}" rows="4" style="{TA}" '
-                    f'placeholder="첫 줄: 인물 아이템 (위 키워드를 누르면 들어와요)&#10;다음 줄: 구글 렌즈로 찾은 상품 링크"></textarea>'
-                    f'<button onclick="addLink_{BID}()">🔗 조사 + 추천 제목 + 글 만들기</button></div>')
+    if BID != "econ":  # 패션: 키워드를 누르면 아래 '글 만들기' 칸에 들어감 → 링크 붙여 ✍️ 글 만들기 (대표 요청 2026-10-10 탭 정리)
+        add_js += (f"function pick_{BID}(k){{const t=document.getElementById('kwin-{BID}');t.value=k+'\\n';"
+                   "t.scrollIntoView({behavior:'smooth',block:'center'});t.focus()}")
         add_js += (f"function pickT_{BID}(tok){{const f=tok.slice(0,tok.lastIndexOf(' '));const t=document.getElementById('lkt-'+f);"
                    "t.dataset.tok=tok;t.scrollIntoView({behavior:'smooth',block:'center'});t.focus();"
                    "t.placeholder='제목 선택됨 · 상품 링크를 넣으세요'}"
@@ -564,18 +558,27 @@ def flow_html() -> str:
                f"location.href='{issue}'+encodeURIComponent('[{LABEL}키워드] '+v)+'&body='+encodeURIComponent('이 주제로 조사해서 제목 후보를 만들어 주세요.')}}"
                f"function tpWrite_{BID}(){{const v=tpv_{BID}();if(!v)return;"
                f"location.href='{issue}'+encodeURIComponent('[{LABEL}주제글] {today}')+'&body='+encodeURIComponent(v)}}")
-    tip = "주제 (예: 30대 순자산 평균)" if BID == "econ" else "주제 (예: 카리나 공항 가방)&#10;상품 링크 (있으면, 한 줄에 하나)"
-    topic_box = (f'<div class="card"><h2>직접 주제</h2><textarea id="kwin-{BID}" rows="{2 if BID == "econ" else 3}" style="{TA}" placeholder="{tip}"></textarea>'
-                 f'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">'
-                 f'<button class="ghost" style="margin:0;padding:10px 4px;font-size:14px" onclick="addKw_{BID}()">➕ 목록에</button>'
-                 f'<button style="margin:0;padding:10px 4px;font-size:14px" onclick="tpTitles_{BID}()">📝 제목 뽑기</button>'
-                 f'<button style="margin:0;padding:10px 4px;font-size:14px" onclick="tpWrite_{BID}()">✍️ 바로 글</button></div></div>')
+    # 글 만들기 칸 하나로 (대표 요청 2026-10-10 탭 정리: '상품 링크로 글'·'직접 주제' 두 칸 → 하나)
+    small = 'class="ghost" style="margin:0;padding:10px 4px;font-size:14px"'
+    if BID == "econ":
+        tip = "주제 (예: 30대 순자산 평균)"
+        main = f'<button onclick="tpTitles_{BID}()">📝 제목 뽑기</button>'
+        subs = (f'<button {small} onclick="tpWrite_{BID}()">✍️ 제목 없이 바로 글</button>'
+                f'<button {small} onclick="addKw_{BID}()">➕ 키워드 목록에</button>')
+    else:
+        tip = "첫 줄: 주제 (예: 카리나 공항 가방) — 위 키워드를 누르면 들어와요&#10;다음 줄: 상품 링크 (있으면, 한 줄에 하나)"
+        main = f'<button onclick="tpWrite_{BID}()">✍️ 글 만들기</button>'
+        subs = (f'<button {small} onclick="tpTitles_{BID}()">📝 제목만 먼저</button>'
+                f'<button {small} onclick="addKw_{BID}()">➕ 키워드 목록에</button>')
+    topic_box = (f'<div class="card"><h2>글 만들기</h2><textarea id="kwin-{BID}" rows="{2 if BID == "econ" else 4}" style="{TA}" placeholder="{tip}"></textarea>'
+                 f'{main}<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px">{subs}</div>'
+                 '<div class="muted" style="font-size:12px;margin-top:6px">누르면 깃허브 화면이 열려요 → 초록 Create 버튼만 누르면 접수돼요.</div></div>')
     a = kw.get("aside")
     aside = f'🛰 어사이드 {e(a.get("at", ""))} · {a.get("n", 0)}개' if a else "🛰 어사이드 아직"
     kw_html = (f'<div class="card"><h2>키워드</h2><div class="muted" style="margin:4px 0 6px">{aside}</div>{rows}'
                f'{score_table(shown)}'
                f'<a class="btn" style="margin-top:8px;background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(refresh, quote=True)}">🔄 다시 모으기</a>'
-               f'<script>{add_js}</script></div>{rising_html(day, today)}{link_box}{topic_box}')
+               f'{rising_html(day, today)}<script>{add_js}</script></div>{topic_box}')
     topics = []
     for t in sorted(day.glob("*/titles.yaml")) if day.exists() else []:
         T = yaml.safe_load(t.read_text(encoding="utf-8")) or {}
