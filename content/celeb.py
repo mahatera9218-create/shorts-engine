@@ -56,30 +56,52 @@ def link_facts(urls: list[str]) -> str:
     c = anthropic.Anthropic()
     # 비용 줄이기 2차 (대표 지적 2026-10-10 "왜 이렇게 비싸"): 실측 1편 0.46~0.92달러였던 원인 = 웹 검색 여러 번 + 큰 페이지를 매 턴 다시 읽음.
     # → 정보 뽑기는 싼 Haiku로, 대표 링크만 열고(추가 페이지 없음), 페이지당 읽는 양 8,000토큰(3,000이면 소재·색이 잘림, 10-10 시험), 검색은 정가·판매처가 링크에 없을 때 1번만.
-    def call(model: str, fetch: str, search: str):
+    def call(model: str, fetch: str, search: str, page_tokens: int, searches: int):
         return c.messages.create(
             model=model, max_tokens=2000,
-            tools=[{"type": fetch, "name": "web_fetch", "max_uses": len(urls), "max_content_tokens": 8000},
-                   {"type": search, "name": "web_search", "max_uses": 1}],
+            tools=[{"type": fetch, "name": "web_fetch", "max_uses": len(urls) + 1, "max_content_tokens": page_tokens},
+                   {"type": search, "name": "web_search", "max_uses": searches}],
             messages=msgs)
+
+    def run(model: str, fetch: str, search: str, inp: float, out: float, page_tokens: int, searches: int) -> str:
+        msg = call(model, fetch, search, page_tokens, searches)
+        u = msg.usage
+        n = getattr(getattr(u, "server_tool_use", None), "web_search_requests", 0) or 0
+        F.SPENT["claude"] += (u.input_tokens * inp + u.output_tokens * out) / 1_000_000 + n * 0.01
+        text = "".join(b.text for b in msg.content if getattr(b, "type", "") == "text").strip()
+        k = text.find("[제품]")
+        return text[k:] if k >= 0 else text  # '링크를 확인하겠습니다' 같은 말은 버림
+
+    def good(t: str) -> bool:  # 제품 줄과 원 단위 가격이 있어야 '읽었다'로 침
+        return "[제품]" in t and bool(re.search(r"\d[\d,]*\s*(만\s*)?원", t)) and "확인할 수 없" not in t
+
+    ids = sorted({m for u in urls for m in re.findall(r"/p/([A-Za-z0-9]{8,})", u)})  # 주소 속 품번 (샤넬 등)
     msgs = [{"role": "user", "content": (
             f"오늘은 {F.today()}입니다. 아래 상품 링크를 하나씩 열어 제품 정보를 정리해 주세요. 링크 페이지가 가장 믿을 만한 자료입니다. "
-            "정가·판매처 가격이 링크에 없을 때만 웹 검색을 1번 하고, 검색 결과 요약에 보이는 값만 쓰세요(페이지를 더 열지 않기). "
-            "인사말·설명 없이 아래 모양만 답하세요. 직접 확인한 것만 쓰고 지어내지 마세요. 못 찾은 항목은 '확인 안 됨'이라고 쓰지 말고 그 줄을 아예 빼세요.\n"
+            "정가·판매처 가격이 링크에 없을 때만 웹 검색을 하고, 검색 결과에 보이는 값만 쓰세요. "
+            + (f"페이지가 잘 안 읽히면 주소 속 품번({', '.join(ids)})이나 제품명으로 검색해 공식 가격·소재·색을 찾으세요. " if ids else "")
+            + "인사말·설명 없이 아래 모양만 답하세요. 직접 확인한 것만 쓰고 지어내지 마세요. 못 찾은 항목은 '확인 안 됨'이라고 쓰지 말고 그 줄을 아예 빼세요.\n"
             "제품마다 이 모양으로 (값이 있는 줄만):\n"
             "[제품] 브랜드(한글·영문) | 제품명(영문 원어) | 가격(원)\n"
             "브랜드 : \n제품명 : \n품번 : \n정가 : \n할인가 : (판매처, 확인한 날)\n판매처별 가격 : 판매처 가격, 판매처 가격\n"
             "해외 가격 : 원래 통화 금액 (약 ○○원, 오늘 환율 기준)\n소재 : \n색 : \n"
             "그 아래 디자인 특징(실루엣·디테일·핏) 2~3줄. 맨 끝에 '출처:' 아래 확인한 주소.\n\n" + "\n".join(urls))}]
+    # 1차: 싼 Haiku로 (대부분의 쇼핑몰은 여기서 끝, 10-10 휠라 약 20원)
     try:
-        msg, inp, out = call("claude-haiku-4-5", "web_fetch_20250910", "web_search_20250305"), 1.0, 5.0  # Haiku 4.5: 1·5달러 / 100만 토큰
-    except anthropic.BadRequestError as e:  # Haiku에서 웹 도구가 안 되면 Sonnet으로 (같은 제한)
-        print(f"Haiku 링크 읽기 실패 → Sonnet: {str(e)[:160]}")
-        msg, inp, out = call("claude-sonnet-5-5", "web_fetch_20260209", "web_search_20260209"), 2.0, 10.0  # Sonnet 5.5: 2·10달러
-    u = msg.usage
-    searches = getattr(getattr(u, "server_tool_use", None), "web_search_requests", 0) or 0
-    F.SPENT["claude"] += (u.input_tokens * inp + u.output_tokens * out) / 1_000_000 + searches * 0.01
-    return "".join(b.text for b in msg.content if getattr(b, "type", "") == "text").strip()
+        text = run("claude-haiku-4-5", "web_fetch_20250910", "web_search_20250305", 1.0, 5.0, 8000, 1)
+    except anthropic.BadRequestError as e:
+        print(f"Haiku 링크 읽기 실패: {str(e)[:160]}")
+        text = ""
+    if good(text):
+        return text
+    # 2차: 명품 공식몰처럼 무거운 페이지 (10-10 샤넬 공식몰을 1차가 못 읽어 본문이 '확인 안 됨'으로 채워짐)
+    # → Sonnet + 동적 필터링(페이지를 코드로 걸러 읽음) + 품번 검색 3번까지
+    print("1차 링크 읽기에서 가격을 못 찾음 → Sonnet으로 다시")
+    text2 = run("claude-sonnet-5-5", "web_fetch_20260209", "web_search_20260209", 2.0, 10.0, 30000, 3)
+    if good(text2) or "[제품]" in text2:
+        return text2
+    print("링크에서 제품 정보를 못 읽음 — 조사 메모에 넣지 않음")
+    return ""
 
 
 def write_with_links(slug: str, n: int, urls: list[str]) -> Path:
@@ -87,8 +109,8 @@ def write_with_links(slug: str, n: int, urls: list[str]) -> Path:
     tdir = next(F.FLOW.glob(f"*/{slug}"), None)
     if not tdir:
         raise SystemExit(f"주제 폴더 없음: {slug}")
-    if urls:
-        facts = link_facts(urls)
+    facts = link_facts(urls) if urls else ""
+    if facts:  # 못 읽었으면 빈칸이라 넣지 않음 (2026-10-10)
         r = tdir / "research.md"
         old = r.read_text(encoding="utf-8") if r.exists() else ""
         r.write_text("[대표가 준 상품 링크에서 확인한 제품 정보 — 가장 믿을 만한 자료, 본문 제품 정보는 이걸 기준으로]\n"
@@ -104,7 +126,7 @@ def from_links(text: str) -> Path:
     if not kw or not urls:
         raise SystemExit("첫 줄에 '인물 아이템', 다음 줄에 상품 링크가 필요해요.")
     facts = link_facts(urls)
-    memo = (research(kw) or F.claude_research(kw)) + "\n\n[대표가 준 상품 링크에서 확인한 제품 정보 — 가장 믿을 만한 자료]\n" + facts
+    memo = (research(kw) or F.claude_research(kw)) + (("\n\n[대표가 준 상품 링크에서 확인한 제품 정보 — 가장 믿을 만한 자료]\n" + facts) if facts else "")
     d = titles(kw, memo)
     T = F.load(d / "titles.yaml", {})
     n = next((i for i, t in enumerate(T.get("items", []), 1) if t.get("rank") == 1), 1)
