@@ -147,22 +147,30 @@ def prompts_card(p: dict) -> str:
     best = next((t["text"] for t in p.get("titles", []) if t.get("best")), "")
     draw = [it for it in items if not it.get("person") and it.get("desc")]
     find = [it for it in items if it.get("person")]
-    parts = []
-    if draw:
-        parts.append(all_prompt(items, best))  # 대표사진이 제목을 담도록 제목을 같이 (2026-10-07)
-    if find:
-        parts.append("\n".join(f"{it['n']}번 · {it['label']}" + (f" — 검색어: {it['find']}" if it.get("find") else "") for it in find))
+    if not draw and not find:
+        px0 = POSTS / p["folder"] / "pixabay.txt"
+        if not px0.exists():
+            return ""
+    # 사진마다 따로 복사 (대표 지적 2026-10-10: 제미나이·그록은 한 번에 한 장만 그림 → 한 장씩 보내야 함)
+    btns = []
+    for it in draw:
+        one = it.get("prompt") or it.get("desc") or ""
+        hint = "대표사진" if it["n"] == 1 else f"사진 {it['n']}"
+        btns.append(f'<button class="ghost" style="text-align:left;width:100%;margin:3px 0" '
+                    f'onclick="copyText(this,{e(json.dumps(one), quote=True)})">📋 {hint} · {e(it.get("label", ""))} 복사</button>')
+    rows = "".join(btns)
+    find_line = ("".join(f'<div class="muted" style="font-size:13px">📷 {it["n"]}번 · {e(it.get("label", ""))}'
+                         + (f' — 검색어: {e(it["find"])}' if it.get("find") else "") + " (실제 사진 자리)</div>" for it in find)) if find else ""
     px = POSTS / p["folder"] / "pixabay.txt"
+    px_line = ""
     if px.exists():  # 경제 원문 '픽사베이 추천 검색어 5개' (2026-10-10)
-        parts.append("픽사베이 검색어: " + ", ".join(l for l in px.read_text(encoding="utf-8").splitlines() if l.strip()))
-    text = "\n\n".join(parts)
-    if not text:
-        return ""
-    return (f'<div class="card"><h2>사진</h2>'
-            f'<button onclick="copyText(this,{e(json.dumps(text), quote=True)})">📋 사진 프롬프트 복사</button>'
-            f'<details><summary class="muted">프롬프트 보기</summary><div style="font-size:13px;white-space:pre-wrap;word-break:break-word;'
-            f'background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:8px">{e(text)}</div></details>'
-            f'<a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="../../photo/">📐 사진 800×800 맞추기</a></div>')
+        kws = ", ".join(l for l in px.read_text(encoding="utf-8").splitlines() if l.strip())
+        px_line = (f'<div class="muted" style="font-size:12px;margin-top:6px">무료 사진(픽사베이) 검색어: {e(kws)} '
+                   f'<button class="ghost" style="padding:2px 8px;font-size:11px" onclick="copyText(this,{e(json.dumps(kws), quote=True)})">복사</button></div>') if kws else ""
+    all_btn = (f'<button class="ghost" style="width:100%;margin-top:6px" onclick="copyText(this,{e(json.dumps(all_prompt(items, best)), quote=True)})">📋 전체 한 번에 (앱이 여러 장 되면)</button>') if draw else ""
+    note = '<div class="muted" style="font-size:12px;margin-bottom:6px">제미나이·그록은 한 번에 한 장만 그려요. <b>사진마다 복사</b>를 눌러 하나씩 보내세요.</div>' if draw else ""
+    return (f'<div class="card"><h2>사진</h2>{note}{rows}{find_line}{all_btn}{px_line}'
+            f'<a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line);margin-top:8px" href="../../photo/">📐 사진 800×800 맞추기</a></div>')
 
 
 def topic_titles(folder: str) -> dict:
