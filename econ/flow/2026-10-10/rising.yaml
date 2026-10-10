@@ -1,5 +1,5 @@
 date: '2026-10-10'
-updated: '14:38'
+updated: '15:29'
 items:
 - kw: 한화에어로스페이스
   rise: 3.38
@@ -13,7 +13,7 @@ items:
   volume: 266500
   named: true
   blog24h: 100
-  section: ''
+  section: 국내주식
   score: 132
 - kw: LG에너지솔루션
   rise: 2.4
@@ -26,8 +26,8 @@ items:
   rise: 2.15
   volume: 235700
   named: true
-  blog24h: 60
-  section: ''
+  blog24h: 63
+  section: 국내주식
   score: 124
 - kw: AMD
   rise: 2.42
@@ -41,29 +41,29 @@ items:
   volume: 42600
   named: true
   blog24h: 100
-  section: ''
+  section: 해외주식
   score: 122
-- kw: 알테오젠
-  rise: 1.71
-  volume: 528400
+- kw: 엔화
+  rise: 1.57
+  volume: 3031300
   named: true
-  blog24h: 65
-  section: ''
-  score: 112
+  blog24h: 100
+  section: 환율
+  score: 114
 - kw: 일라이릴리
   rise: 1.83
   volume: 37810
   named: true
   blog24h: 100
-  section: ''
+  section: 해외주식
   score: 111
-- kw: 삼성SDI
-  rise: 1.47
-  volume: 756500
+- kw: 엔화환율
+  rise: 1.51
+  volume: 5094400
   named: true
   blog24h: 100
-  section: 국내주식
-  score: 107
+  section: 환율
+  score: 111
 - kw: 팔란티어
   rise: 1.7
   volume: 61500
@@ -71,38 +71,17 @@ items:
   blog24h: 100
   section: 해외주식
   score: 106
-- kw: 현대차
-  rise: 1.35
-  volume: 658600
+- kw: 일본환율
+  rise: 1.37
+  volume: 1366700
   named: true
   blog24h: 100
-  section: 국내주식
-  score: 99
-- kw: 포스코퓨처엠
-  rise: 1.58
-  volume: 457100
-  named: true
-  blog24h: 36
-  section: 국내주식
-  score: 97
-- kw: HD현대중공업
-  rise: 1.46
-  volume: 187700
-  named: true
-  blog24h: 97
-  section: 국내주식
-  score: 97
-- kw: 에코프로
-  rise: 1.33
-  volume: 625400
+  section: 환율
+  score: 102
+- kw: 유로환율
+  rise: 1.27
+  volume: 868400
   named: true
   blog24h: 100
-  section: ''
-  score: 97
-- kw: TSMC
-  rise: 1.61
-  volume: 31160
-  named: true
-  blog24h: 100
-  section: 해외주식
-  score: 97
+  section: 환율
+  score: 95
