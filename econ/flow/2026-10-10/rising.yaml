@@ -1,5 +1,5 @@
 date: '2026-10-10'
-updated: '15:29'
+updated: '15:38'
 items:
 - kw: 한화에어로스페이스
   rise: 3.38
@@ -85,3 +85,24 @@ items:
   blog24h: 100
   section: 환율
   score: 95
+- kw: 국제유가
+  rise: 1.08
+  volume: 1813800
+  named: true
+  blog24h: 100
+  section: 생활경제
+  score: 85
+- kw: 국제유가실시간
+  rise: 1.08
+  volume: 287400
+  named: true
+  blog24h: 100
+  section: 생활경제
+  score: 78
+- kw: 국채금리
+  rise: 1.14
+  volume: 144000
+  named: true
+  blog24h: 100
+  section: 생활경제
+  score: 77
