@@ -244,6 +244,12 @@ def keywords(force: bool = False) -> Path:
         "한 종목에 몰리지 않게, 작전주·테마주 추천·리딩방은 빼세요")
     old = load(day / "keywords.yaml", {"items": []})
     gathered = old.get("updated") and any("Grok" in (it.get("src") or "") for it in old.get("items", []))
+    if BLOG["id"] == "fashion" and (force or not gathered):  # 계절 인기 상품 먼저 (쇼핑인사이트, 무료) → Grok 프롬프트에 씀 (대표 결정 2026-10-10)
+        try:
+            from .season import rank as _season
+            _season()
+        except Exception as e:  # noqa: BLE001  (키워드 모으기는 살린다)
+            print(f"계절 상품 실패: {str(e)[:150]}")
     if not force and gathered:  # 오늘 이미 Grok으로 모음 → 돈 드는 Grok 건너뛰고 무료 점수만 갱신
         print("오늘 이미 키워드를 모았어요 → Grok 건너뛰고 검색량·점수만 갱신 (비용 절약)")
         grok_items = []
