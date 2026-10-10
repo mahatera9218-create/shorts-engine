@@ -249,7 +249,14 @@ def keywords(force: bool = False) -> Path:
         grok_items = []
     else:
         n_g = (load(_kcfg(), {}) or {}).get("grok_count", 8)  # 패션은 15개 (2026-10-06 대표 지적: 패션 키워드가 약함)
-        g = grok(f"오늘은 {today()}(한국 시간)입니다. 지금 X(트위터)에서 {topic}. 실제로 오늘 화제인 것 {n_g}개만. "
+        season = ""
+        if BLOG["id"] == "fashion":  # 계절 인기 상품을 넣어 '이 계절 상품 + 셀럽' 키워드가 나오게 (대표 요청 2026-10-10)
+            from .season import top_products
+            prods = top_products()
+            if prods:
+                season = ("이번 계절 네이버 쇼핑에서 많이 찾는 여성 상품: " + ", ".join(prods)
+                          + ". 이 중 한 아이템을 실제로 착용·구매해 화제가 된 연예인 위주로, '연예인+상품' 꼴로 뽑아 주세요. ")
+        g = grok(f"오늘은 {today()}(한국 시간)입니다. 지금 X(트위터)에서 {topic}. {season}실제로 오늘 화제인 것 {n_g}개만. "
                  'JSON 배열만 답하세요: [{"kw": "짧은 키워드", "area": "분야", "why": "왜 화제인지 한 줄", '
                  '"person": "관련 인물이 있으면 이름(회사·소속), 없으면 빈칸"}]')
         grok_items = [it for it in (parse_json(g) or []) if isinstance(it, dict) and it.get("kw")]
