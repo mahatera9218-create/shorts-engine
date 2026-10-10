@@ -1,0 +1,72 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · 밝음과 어두움이 갈리는 애플스토어 로고 클로즈업",
+  "make": true,
+  "file": "",
+  "desc": "Square close-up photograph of an Apple Store glass facade with the large glowing Apple logo centered, split lighting with one half bright and one half in deep shadow, strong contrast, cinematic, no other text or numbers",
+  "brand": "Apple",
+  "size": "1024x1024",
+  "prompt": "Square 1:1 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Square close-up photograph of an Apple Store glass facade with the large glowing Apple logo centered, split lighting with one half bright and one half in deep shadow, strong contrast, cinematic, no other text or numbers This must clearly be Apple: show its real, accurate corporate signage — the actual Apple logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 2,
+  "label": "중국 애플스토어 앞에서 신제품을 기다리는 소비자들",
+  "make": true,
+  "file": "",
+  "desc": "Realistic news-style photograph of a crowded Apple Store entrance in a Chinese city at dusk, customers queuing with shopping bags, the glowing Apple logo visible on the glass facade, natural evening light, no readable text other than the logo",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic news-style photograph of a crowded Apple Store entrance in a Chinese city at dusk, customers queuing with shopping bags, the glowing Apple logo visible on the glass facade, natural evening light, no readable text other than the logo No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 3,
+  "label": "매장에서 신형 스마트폰을 살펴보는 손",
+  "make": true,
+  "file": "",
+  "desc": "Close-up photograph of a hand holding a new premium smartphone in a bright store, blurred shelves of devices behind, shallow depth of field, photojournalism style, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Close-up photograph of a hand holding a new premium smartphone in a bright store, blurred shelves of devices behind, shallow depth of field, photojournalism style, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 4,
+  "label": "스마트폰 조립 라인에서 부품이 이동하는 모습",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photograph of a smartphone assembly line in a large electronics factory, workers in cleanroom suits seen from behind, rows of devices on conveyor, bright overhead lighting, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photograph of a smartphone assembly line in a large electronics factory, workers in cleanroom suits seen from behind, rows of devices on conveyor, bright overhead lighting, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 5,
+  "label": "메모리 칩이 실장된 회로 기판 클로즈업",
+  "make": true,
+  "file": "",
+  "desc": "Close-up photograph of memory chips and a circuit board on a clean workbench, cool blue lighting, macro shot, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Close-up photograph of memory chips and a circuit board on a clean workbench, cool blue lighting, macro shot, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 6,
+  "label": "미국 쿠퍼티노 애플 파크 전경",
+  "make": true,
+  "file": "",
+  "desc": "Aerial photograph of the Apple Park ring-shaped headquarters in Cupertino, California, on a clear sunny day, green landscaped grounds around the circular building",
+  "brand": "Apple",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Aerial photograph of the Apple Park ring-shaped headquarters in Cupertino, California, on a clear sunny day, green landscaped grounds around the circular building This must clearly be Apple: show its real, accurate corporate signage — the actual Apple logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 7,
+  "label": "증시 시세 화면을 바라보는 트레이더들의 뒷모습",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photograph of a Wall Street trading floor screens glowing in the evening with anonymous traders seen from behind, no readable numbers or text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photograph of a Wall Street trading floor screens glowing in the evening with anonymous traders seen from behind, no readable numbers or text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ }
+]
