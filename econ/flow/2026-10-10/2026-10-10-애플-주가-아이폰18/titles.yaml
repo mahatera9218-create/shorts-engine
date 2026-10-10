@@ -1,0 +1,235 @@
+keyword: 애플 주가 아이폰18
+person: 애플
+mode: 쿠니네
+made: '10:03'
+items:
+- title: 애플 주가 아이폰18 주문 15% 줄었다는데, 수요 약세 맞을까?
+  type: 궁금형
+  rank: 1
+  best: true
+  chars: 36
+  flags: []
+- title: 애플 주가 아이폰18 안 팔린다더니 중국 첫 3일 +12%
+  type: 반전형
+  rank: 2
+  best: true
+  chars: 32
+  flags: []
+- title: 애플 주가 아이폰18 주문 축소 뉴스, 매수 전 확인할 3가지
+  type: 실행형
+  rank: 3
+  best: true
+  chars: 34
+  flags: []
+- title: 애플 주가 아이폰18 패닉풀 교환 1,500건, 업데이트 후 제한 논란
+  type: 위협형
+  rank: 4
+  best: true
+  chars: 39
+  flags: []
+- title: 애플 주가 아이폰18 주문 15% 축소 VS 가을 전통 조정, 어느 쪽?
+  type: 비교형
+  rank: 5
+  best: true
+  chars: 40
+  flags: []
+- title: 애플 주가 아이폰18 Pro $1,199 VS 지난해, 100달러 더 낸 값어치는?
+  type: 비교형
+  rank: null
+  best: false
+  chars: 46
+  flags:
+  - 46자(45자 넘음)
+- title: 애플 주가 아이폰18 중국 +12% VS 대기시간 -31%, 누구 말이 맞나
+  type: 비교형
+  rank: null
+  best: false
+  chars: 42
+  flags: []
+- title: 애플 주가 아이폰18 Pro VS 폴더블 Duo, 10월 시장은 어디를 볼까
+  type: 비교형
+  rank: null
+  best: false
+  chars: 42
+  flags: []
+- title: 애플 주가 $336 종가 VS 목표가 $355~370, 격차는 얼마나?
+  type: 비교형
+  rank: null
+  best: false
+  chars: 39
+  flags: []
+- title: 애플 주가 아이폰18 보유자라면 10월 16일·23일 일정부터 보세요
+  type: 실행형
+  rank: null
+  best: false
+  chars: 38
+  flags: []
+- title: 애플 주가 아이폰18 교환 전, 업데이트 제한부터 확인하세요
+  type: 실행형
+  rank: null
+  best: false
+  chars: 33
+  flags: []
+- title: 애플 주가 아이폰18 기사 볼 때 15%의 기준월부터 따져보세요
+  type: 실행형
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: 애플 주가 아이폰18 살까 말까, 가격·메모리·출시 순서로 나눠 보세요
+  type: 실행형
+  rank: null
+  best: false
+  chars: 39
+  flags: []
+- title: 애플 주가 아이폰18 100달러 인상, 내 지갑에 남는 차이는?
+  type: 이득형
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: 애플 주가 아이폰18 기본형 2027년 출시, 기다리면 아끼는 돈은?
+  type: 이득형
+  rank: null
+  best: true
+  chars: 38
+  flags: []
+- title: 애플 주가 아이폰18 주문 감소 뉴스, 가을 반등 사례 알면 달라진다
+  type: 이득형
+  rank: null
+  best: false
+  chars: 38
+  flags: []
+- title: 애플 주가 아이폰18 Pro 대신 Duo 보고 살 때 비교할 포인트
+  type: 이득형
+  rank: null
+  best: false
+  chars: 37
+  flags: []
+- title: 애플 주가 아이폰18 목표가 $370, 증권가가 보는 숨은 근거
+  type: 이득형
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: 애플 주가 아이폰18 때문에 1.11% 빠졌는데 더 내릴까?
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 33
+  flags: []
+- title: 애플 주가 아이폰18 기본형은 왜 올가을 안 나왔을까?
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: 애플 주가 아이폰18 가격 100달러 인상, 진짜 원인은 메모리일까?
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 38
+  flags: []
+- title: 애플 주가 아이폰18 목표가 $355~370, 지금 가격과 얼마나 다를까?
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 41
+  flags: []
+- title: 애플 주가 아이폰18 주문 감축 논란, 놓치기 쉬운 숫자 3개
+  type: 위협형
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: 애플 주가 아이폰18 '15% 축소' 헤드라인만 보면 놓치는 것
+  type: 위협형
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: 애플 주가 아이폰18 Pro 가격 인상, 교체 주기 부담 커질까?
+  type: 위협형
+  rank: null
+  best: false
+  chars: 36
+  flags: []
+- title: 애플 주가 아이폰18 대기시간 31% 감소 경고, 해석은 갈린다
+  type: 위협형
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: 애플 주가 아이폰18 주문 줄었는데, 가을 반등 전통도 있다고?
+  type: 반전형
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: 애플 주가 아이폰18 악재 같지만, 증권가 컨센서스는 Moderate Buy
+  type: 반전형
+  rank: null
+  best: false
+  chars: 42
+  flags: []
+- title: 애플 주가 아이폰18 Pro 가격 올렸는데 IDC는 의외의 전망
+  type: 반전형
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: 애플 주가 아이폰18 기본형 빠졌는데, 폴더블이 대신 나온다
+  type: 반전형
+  rank: null
+  best: false
+  chars: 33
+  flags: []
+groups:
+- type: 비교형
+  idx:
+  - 5
+  - 4
+  - 6
+  - 7
+  - 8
+  best: 4
+- type: 실행형
+  idx:
+  - 2
+  - 9
+  - 10
+  - 11
+  - 12
+  best: 2
+- type: 이득형
+  idx:
+  - 13
+  - 14
+  - 15
+  - 16
+  - 17
+  best: 14
+- type: 궁금형
+  idx:
+  - 0
+  - 18
+  - 19
+  - 20
+  - 21
+  best: 0
+- type: 위협형
+  idx:
+  - 22
+  - 3
+  - 23
+  - 24
+  - 25
+  best: 3
+- type: 반전형
+  idx:
+  - 26
+  - 1
+  - 27
+  - 28
+  - 29
+  best: 1
