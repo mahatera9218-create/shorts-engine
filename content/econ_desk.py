@@ -483,12 +483,17 @@ def score_table(items: list[dict]) -> str:
     keys = list(dict.fromkeys(k for it in items for k in (it.get("parts") or {})))
     if not items or not keys:
         return ""
-    th = "".join(f"<th>{e(k)}</th>" for k in keys)
+    def num(v):
+        return f"{v:,}" if isinstance(v, (int, float)) else (e(str(v)) if v not in (None, "") else "")
+    skeys = ["월검색", "상승", "유튜브7일", "뉴스24h", "블로그24h"]  # 근거 숫자도 같이
+    th = "".join(f"<th>{e(k)}</th>" for k in keys) + "".join(f'<th class="muted">{e(k)}</th>' for k in skeys)
     tr = "".join(f'<tr><td style="text-align:left">{e(it["kw"])}</td><td><b>{it.get("score", "")}</b></td>'
-                 + "".join(f'<td>{(it.get("parts") or {}).get(k, "")}</td>' for k in keys) + "</tr>" for it in items)
-    return (f'<details style="margin-top:6px"><summary class="muted">점수표</summary><div style="overflow-x:auto">'
-            f'<table style="font-size:12px;border-collapse:collapse;width:100%;text-align:center"><tr><th style="text-align:left">키워드</th>'
-            f'<th>합계</th>{th}</tr>{tr}</table></div></details>')
+                 + "".join(f'<td>{(it.get("parts") or {}).get(k, "")}</td>' for k in keys)
+                 + "".join(f'<td class="muted">{num((it.get("stats") or {}).get(k))}</td>' for k in skeys)
+                 + "</tr>" for it in sorted(items, key=lambda x: -x.get("score", 0)))
+    return (f'<details style="margin-top:6px"><summary class="muted">점수표 (채점된 키워드 {len(items)}개 전체 · 근거 숫자 포함)</summary>'
+            f'<div style="overflow-x:auto"><table style="font-size:12px;border-collapse:collapse;width:100%;text-align:center;white-space:nowrap">'
+            f'<tr><th style="text-align:left">키워드</th><th>합계</th>{th}</tr>{tr}</table></div></details>')
 
 
 def kw_row(it: dict, done: dict[str, str]) -> str:
@@ -571,7 +576,7 @@ def flow_html() -> str:
     a = kw.get("aside")
     aside = f'🛰 어사이드 {e(a.get("at", ""))} · {a.get("n", 0)}개' if a else "🛰 어사이드 아직"
     kw_html = (f'<div class="card"><h2>키워드</h2><div class="muted" style="margin:4px 0 6px">{aside}</div>{rows}'
-               f'{score_table(shown)}'
+               f'{score_table(items)}'   # 점수표엔 버튼에 안 보이는 것까지 전체 채점 키워드 (대표 지적 2026-10-10)
                f'<a class="btn" style="margin-top:8px;background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(refresh, quote=True)}">🔄 다시 모으기</a>'
                f'<script>{add_js}</script></div>{topic_box}')   # 급상승 블록 제거 (대표 결정 2026-10-10: 메인 키워드 목록에 합침)
     topics = []
