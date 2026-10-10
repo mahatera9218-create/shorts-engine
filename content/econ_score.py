@@ -4,7 +4,7 @@
    야후 파이낸스 등 해외 RSS · 업비트 시세 급변 · 대표가 넣은 키워드(어드바이저·뉴스 랭킹·트렌드·캡처)
 2) 묶기(Claude): 같은 이야기를 한 키워드로 묶고, 어느 줄(번호)에서 나왔는지 적게 한다 → 출처는 코드가 번호로 다시 센다
    + 인기 종목(국내·미국 대표 종목 중 24시간 네이버 기사가 많은 것, config watch)
-3) 점수(코드, 100점): 출처 겹침 40(그날 1등 기준) + 네이버 뉴스량 25(최근 24시간 기사 수) + 검색량 35(검색광고 월간 검색량, 핵심어로).
+3) 점수(코드, 100점): 홈판 재정의 2026-10-10 → 화제성(네이버인기·검색어트렌드 급상승·뉴스량·최신·출처겹침) 67 : 수요(검색광고 월 검색량) 33 = 2:1. weights는 블로그 config.
    네이버 뉴스 '랭킹' 화면은 공식 통로가 없어 뉴스 검색 API로 대신한다.
 설정: config/econ_keywords.yaml, config/econ_refs.yaml
 """
@@ -254,7 +254,14 @@ def score(items: list[dict], src_rows: dict[str, str] | None) -> list[dict]:
     _recent = _recent_cores(cfg.get("stale_days", 3), cfg.get("stale_topn", 12)) if stale_pen else {}
     hub = _hub()
     q = {it["kw"]: (it.get("core") or it["kw"]) for it in items}  # 긴 키워드는 검색량이 0에 가까워 핵심어로 잰다
-    vols = _volumes(list(dict.fromkeys(q.values())))
+    cores = list(dict.fromkeys(q.values()))
+    vols = _volumes(cores)
+    rises: dict[str, dict] = {}  # 홈판 재정의 2026-10-10: 검색어트렌드 상승률(화제성)을 메인 점수에도 (무료 API)
+    if hub and cfg.get("weights", {}).get("급상승"):
+        try:
+            rises = hub.rise(cores)
+        except Exception as e:  # noqa: BLE001
+            print(f"급상승 점수 실패: {str(e)[:100]}")
     raw = {}
     for it in items:
         cnt: dict[str, int] = {}
@@ -271,7 +278,7 @@ def score(items: list[dict], src_rows: dict[str, str] | None) -> list[dict]:
         raw[it["kw"]] = src_pts
         it["sources"] = cnt
     top = max(raw.values() or [1]) or 1
-    w = {"출처": 40, "뉴스": 25, "검색": 35, "최신": 0, "네이버": 0, **cfg.get("weights", {})}  # 블로그마다 나눔
+    w = {"출처": 40, "뉴스": 25, "검색": 35, "최신": 0, "네이버": 0, "급상승": 0, **cfg.get("weights", {})}  # 블로그마다 나눔
     aside = any(it.get("naver_rank") for it in items)
     scale = 100 / (100 - w["네이버"]) if (w["네이버"] and not aside and w["네이버"] < 100) else 1
     for it in items:
@@ -287,7 +294,9 @@ def score(items: list[dict], src_rows: dict[str, str] | None) -> list[dict]:
         nf, vf = cfg.get("news_full", 100), cfg.get("vol_full", 1_000_000)
         n6 = FRESH.get(q[it["kw"]])
         ff = cfg.get("fresh_full", 10)  # 최신: 최근 6시간 기사 이 수면 만점 (대표 지시 2026-10-06 "따끈할수록 가점")
+        rise = (rises.get(q[it["kw"]]) or {}).get("rise", 1.0)  # 1.0 평소, 2.0 평소의 2배
         parts = {"네이버": round(w["네이버"] * naver_part(it.get("naver_rank"))),
+                 "급상승": round(w["급상승"] * min(1.0, max(0.0, rise - 1.0))) if w["급상승"] else 0,  # 2배↑면 만점 (화제성)
                  "최신": round(w["최신"] * min(n6, ff) / ff) if (n6 is not None and w["최신"]) else 0,
                  "출처": round(w["출처"] * raw[it["kw"]] / top),
                  "뉴스": round(w["뉴스"] * min(news, nf) / nf) if news is not None else 0,
@@ -299,7 +308,7 @@ def score(items: list[dict], src_rows: dict[str, str] | None) -> list[dict]:
         if rep and stale_pen:
             parts["반복"] = -min(rep * stale_pen, stale_cap)
         it.update(score=max(0, min(100, round(sum(parts.values()) * scale))), parts=parts,
-                  stats={"뉴스24h": news, "뉴스6h": n6, "블로그24h": blog, "월검색": int(vol) if vol else None})
+                  stats={"뉴스24h": news, "뉴스6h": n6, "블로그24h": blog, "월검색": int(vol) if vol else None, "상승": rise})
     return sorted(items, key=lambda x: -x["score"])
 
 
