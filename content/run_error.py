@@ -23,7 +23,6 @@ REASONS = [  # (찾을 말, 쉬운 설명) — 위에서부터 먼저 맞는 것
     (r"월 상한|MONTH_CAP|이번 달 비용", "이번 달 비용 상한에 닿아 멈췄어요. 상한을 올릴지 정해 주세요."),
     (r"authentication_error|invalid x-api-key|401", "API 키가 맞지 않아요. GitHub Secrets의 키를 확인해야 해요 (Claude에게 알려 주세요)."),
 ]
-NEED_CLAUDE = {"titles", "produce", "topicwrite", "linkwrite", "link", "outfit", "aside", "auto", "add"}
 
 
 def reason(log: str) -> str:
@@ -34,9 +33,8 @@ def reason(log: str) -> str:
 
 
 def main() -> None:
-    if sys.argv[1:2] == ["--clear"]:
-        if len(sys.argv) < 3 or sys.argv[2] in NEED_CLAUDE:
-            FILE.unlink(missing_ok=True)
+    if sys.argv[1:2] == ["--clear"]:  # 어떤 명령이든 성공하면 지난 실패 띠를 지운다 (대표 지적 2026-10-10: 옛 에러가 남아 있음)
+        FILE.unlink(missing_ok=True)
         return
     path, cmd, kw = (sys.argv[1:] + ["", "", ""])[:3]
     try:
