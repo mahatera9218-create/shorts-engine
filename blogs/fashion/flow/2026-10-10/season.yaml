@@ -1,0 +1,43 @@
+date: '2026-10-10'
+updated: '19:26'
+items:
+- product: 트위드자켓
+  category: '50000000'
+  level: 277.3
+  rise: 1.34
+- product: 원피스
+  category: '50000000'
+  level: 244.2
+  rise: 0.85
+- product: 스카프
+  category: '50000001'
+  level: 205.4
+  rise: 1.55
+- product: 트렌치코트
+  category: '50000000'
+  level: 204.0
+  rise: 1.59
+- product: 크로스백
+  category: '50000001'
+  level: 162.5
+  rise: 1.03
+- product: 맨투맨
+  category: '50000000'
+  level: 155.6
+  rise: 1.62
+- product: 후리스
+  category: '50000000'
+  level: 148.1
+  rise: 2.81
+- product: 가디건
+  category: '50000000'
+  level: 137.6
+  rise: 0.99
+- product: 로퍼
+  category: '50000001'
+  level: 99.5
+  rise: 0.95
+- product: 숄더백
+  category: '50000001'
+  level: 99.5
+  rise: 0.94
