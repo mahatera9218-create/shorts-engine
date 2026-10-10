@@ -55,17 +55,17 @@ def link_facts(urls: list[str]) -> str:
     import anthropic
     c = anthropic.Anthropic()
     # 비용 줄이기 2차 (대표 지적 2026-10-10 "왜 이렇게 비싸"): 실측 1편 0.46~0.92달러였던 원인 = 웹 검색 여러 번 + 큰 페이지를 매 턴 다시 읽음.
-    # → 정보 뽑기는 싼 Haiku로, 대표 링크만 열고(추가 페이지 없음), 페이지당 읽는 양 3,000토큰, 검색은 정가·판매처가 링크에 없을 때 1번만.
+    # → 정보 뽑기는 싼 Haiku로, 대표 링크만 열고(추가 페이지 없음), 페이지당 읽는 양 8,000토큰(3,000이면 소재·색이 잘림, 10-10 시험), 검색은 정가·판매처가 링크에 없을 때 1번만.
     def call(model: str, fetch: str, search: str):
         return c.messages.create(
             model=model, max_tokens=2000,
-            tools=[{"type": fetch, "name": "web_fetch", "max_uses": len(urls), "max_content_tokens": 3000},
+            tools=[{"type": fetch, "name": "web_fetch", "max_uses": len(urls), "max_content_tokens": 8000},
                    {"type": search, "name": "web_search", "max_uses": 1}],
             messages=msgs)
     msgs = [{"role": "user", "content": (
             f"오늘은 {F.today()}입니다. 아래 상품 링크를 하나씩 열어 제품 정보를 정리해 주세요. 링크 페이지가 가장 믿을 만한 자료입니다. "
             "정가·판매처 가격이 링크에 없을 때만 웹 검색을 1번 하고, 검색 결과 요약에 보이는 값만 쓰세요(페이지를 더 열지 않기). "
-            "직접 확인한 것만 쓰고 지어내지 마세요. 못 찾은 항목은 '확인 안 됨'이라고 쓰지 말고 그 줄을 아예 빼세요.\n"
+            "인사말·설명 없이 아래 모양만 답하세요. 직접 확인한 것만 쓰고 지어내지 마세요. 못 찾은 항목은 '확인 안 됨'이라고 쓰지 말고 그 줄을 아예 빼세요.\n"
             "제품마다 이 모양으로 (값이 있는 줄만):\n"
             "[제품] 브랜드(한글·영문) | 제품명(영문 원어) | 가격(원)\n"
             "브랜드 : \n제품명 : \n품번 : \n정가 : \n할인가 : (판매처, 확인한 날)\n판매처별 가격 : 판매처 가격, 판매처 가격\n"
