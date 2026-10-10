@@ -287,7 +287,7 @@ def add(text: str, aside: bool = False) -> None:
         data["items"] = score(items, None)
     data["updated"] = datetime.now(KST).strftime("%H:%M")
     if aside:  # 도우미 ①에 "어사이드가 언제 몇 개 넣었는지" 보이게 (대표 지적 2026-10-07 "어사이드가 넣고 있는지 확인할 수가 없다")
-        data["aside"] = {"at": data["updated"], "n": len(lines), "list": lines[:10]}
+        data["aside"] = {"at": data["updated"], "n": len(lines), "list": lines}  # 전체 저장 (대표 요청 2026-10-10: 어사이드 키워드 전체 보기 탭)
     save(day / "keywords.yaml", data)
 
 
