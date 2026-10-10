@@ -1,0 +1,72 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · JYP엔터테인먼트 사옥 간판 클로즈업",
+  "make": true,
+  "file": "",
+  "desc": "Square close-up photograph of the JYP Entertainment office building facade with the JYP logo signage large in the center of the frame, half of the scene lit by bright light and half in deep shadow with a strong split contrast, cinematic lighting, high saturation, no other text",
+  "brand": "JYP Entertainment",
+  "size": "1024x1024",
+  "prompt": "Square 1:1 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Square close-up photograph of the JYP Entertainment office building facade with the JYP logo signage large in the center of the frame, half of the scene lit by bright light and half in deep shadow with a strong split contrast, cinematic lighting, high saturation, no other text This must clearly be JYP Entertainment: show its real, accurate corporate signage — the actual JYP Entertainment logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 2,
+  "label": "서울 성내동 JYP엔터테인먼트 사옥 외관",
+  "make": true,
+  "file": "",
+  "desc": "Realistic news photograph of the JYP Entertainment office building in Seongnae-dong, Seoul, with the JYP logo signage clearly visible on the facade, daytime natural light, street-level angle",
+  "brand": "JYP Entertainment",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic news photograph of the JYP Entertainment office building in Seongnae-dong, Seoul, with the JYP logo signage clearly visible on the facade, daytime natural light, street-level angle This must clearly be JYP Entertainment: show its real, accurate corporate signage — the actual JYP Entertainment logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 3,
+  "label": "서울 외곽 개발 예정 빈 부지 전경",
+  "make": true,
+  "file": "",
+  "desc": "Wide aerial photograph of an empty urban development land plot with apartment complexes nearby on the outskirts of Seoul, clear day, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Wide aerial photograph of an empty urban development land plot with apartment complexes nearby on the outskirts of Seoul, clear day, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 4,
+  "label": "공원 용지와 인접한 개발 부지 풍경",
+  "make": true,
+  "file": "",
+  "desc": "Photograph of a small city park next to a large construction site fence in a Seoul apartment district, daylight, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Photograph of a small city park next to a large construction site fence in a Seoul apartment district, daylight, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 5,
+  "label": "서울 관공서 건물 입구",
+  "make": true,
+  "file": "",
+  "desc": "Photograph of the exterior of a Korean government office building entrance in Seoul, overcast light, no readable text, no people faces",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Photograph of the exterior of a Korean government office building entrance in Seoul, overcast light, no readable text, no people faces No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 6,
+  "label": "서울 동부 업무지구 건물 거리",
+  "make": true,
+  "file": "",
+  "desc": "Photograph of mid-rise office buildings on a busy street in eastern Seoul, afternoon light, no readable signs",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Photograph of mid-rise office buildings on a busy street in eastern Seoul, afternoon light, no readable signs No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 7,
+  "label": "서울 강동 주거 단지 전경",
+  "make": true,
+  "file": "",
+  "desc": "Photograph of Gangdong residential apartment complexes in Seoul with a river in the background, soft evening light, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Photograph of Gangdong residential apartment complexes in Seoul with a river in the background, soft evening light, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ }
+]
