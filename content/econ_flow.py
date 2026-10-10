@@ -232,21 +232,30 @@ def price_moves() -> list[dict]:
     return out
 
 
-def keywords() -> Path:
-    """여러 출처에서 모아 묶고 점수를 매긴다 (대표 지시 2026-10-05: Grok만 믿지 말고 겹치면 우선). content/econ_score.py"""
+def keywords(force: bool = False) -> Path:
+    """여러 출처에서 모아 묶고 점수를 매긴다 (대표 지시 2026-10-05: Grok만 믿지 말고 겹치면 우선). content/econ_score.py
+    비용 줄이기 (대표 결정 2026-10-10): 오늘 이미 Grok으로 모았으면 하루 3번 예약 중 다음 실행은 Grok을 건너뛰고(돈 안 씀)
+    검색량·뉴스 점수만 다시 매긴다. 도우미 '다시 모으기'(force)와 하루 첫 실행만 Grok을 새로 받는다."""
     from .econ_score import run
     day = FLOW / today()
     from .econ_score import CFG as _kcfg
     topic = (load(_kcfg(), {}) or {}).get("grok_topic") or (
         "한국 개인 투자자들이 가장 많이 이야기하는 경제·투자 화제. 분야는 국내주식·미국주식·금·비트코인·돈굴리기(예적금·ISA 등)·거시·환율. "
         "한 종목에 몰리지 않게, 작전주·테마주 추천·리딩방은 빼세요")
-    n_g = (load(_kcfg(), {}) or {}).get("grok_count", 8)  # 패션은 15개 (2026-10-06 대표 지적: 패션 키워드가 약함)
-    g = grok(f"오늘은 {today()}(한국 시간)입니다. 지금 X(트위터)에서 {topic}. 실제로 오늘 화제인 것 {n_g}개만. "
-             'JSON 배열만 답하세요: [{"kw": "짧은 키워드", "area": "분야", "why": "왜 화제인지 한 줄", '
-             '"person": "관련 인물이 있으면 이름(회사·소속), 없으면 빈칸"}]')
-    grok_items = [it for it in (parse_json(g) or []) if isinstance(it, dict) and it.get("kw")]
     old = load(day / "keywords.yaml", {"items": []})
-    mine = [x for x in old.get("items", []) if x.get("src") in ("대표", "캡처") or x.get("naver_rank")]  # 어사이드도 남김 (2026-10-07)
+    gathered = old.get("updated") and any("Grok" in (it.get("src") or "") for it in old.get("items", []))
+    if not force and gathered:  # 오늘 이미 Grok으로 모음 → 돈 드는 Grok 건너뛰고 무료 점수만 갱신
+        print("오늘 이미 키워드를 모았어요 → Grok 건너뛰고 검색량·점수만 갱신 (비용 절약)")
+        grok_items = []
+    else:
+        n_g = (load(_kcfg(), {}) or {}).get("grok_count", 8)  # 패션은 15개 (2026-10-06 대표 지적: 패션 키워드가 약함)
+        g = grok(f"오늘은 {today()}(한국 시간)입니다. 지금 X(트위터)에서 {topic}. 실제로 오늘 화제인 것 {n_g}개만. "
+                 'JSON 배열만 답하세요: [{"kw": "짧은 키워드", "area": "분야", "why": "왜 화제인지 한 줄", '
+                 '"person": "관련 인물이 있으면 이름(회사·소속), 없으면 빈칸"}]')
+        grok_items = [it for it in (parse_json(g) or []) if isinstance(it, dict) and it.get("kw")]
+    keep_grok = not force and gathered  # Grok 건너뛸 땐 오늘 모은 Grok 키워드도 살림
+    mine = [x for x in old.get("items", []) if x.get("src") in ("대표", "캡처") or x.get("naver_rank")
+            or (keep_grok and "Grok" in (x.get("src") or ""))]  # 어사이드도 남김 (2026-10-07)
     items = run(grok_items, mine)
     save(day / "keywords.yaml", {"date": today(), "updated": datetime.now(KST).strftime("%H:%M"), "items": items})
     print(f"키워드 {len(items)}개, 1위 {items[0]['kw']} {items[0]['score']}점" if items else "키워드 없음")
@@ -785,7 +794,7 @@ def main() -> None:
 
 def _run(cmd: str) -> None:
     if cmd == "keywords":
-        keywords()
+        keywords(force=(len(sys.argv) > 2 and sys.argv[2] == "force"))
         if BLOG["id"] == "fashion":  # 착장 도우미 '오늘 뜨는 연예인'도 같이 (대표 결정 2026-10-10)
             try:
                 from .outfit import rank

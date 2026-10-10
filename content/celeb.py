@@ -95,9 +95,9 @@ def link_facts(urls: list[str]) -> str:
     if good(text):
         return text
     # 2차: 명품 공식몰처럼 무거운 페이지 (10-10 샤넬 공식몰을 1차가 못 읽어 본문이 '확인 안 됨'으로 채워짐)
-    # → Sonnet + 동적 필터링(페이지를 코드로 걸러 읽음) + 품번 검색 3번까지
+    # → Sonnet + 동적 필터링(페이지를 코드로 걸러 읽음) + 품번 검색 1번 (대표 결정 2026-10-10: 가볍게, 막힌 페이지는 가끔 가격을 못 찾을 수 있음)
     print("1차 링크 읽기에서 가격을 못 찾음 → Sonnet으로 다시")
-    text2 = run("claude-sonnet-5-5", "web_fetch_20260209", "web_search_20260209", 2.0, 10.0, 30000, 3)
+    text2 = run("claude-sonnet-5-5", "web_fetch_20260209", "web_search_20260209", 2.0, 10.0, 15000, 1)  # 가볍게 (대표 결정 2026-10-10 비용): 15000토큰·검색 1번
     if good(text2) or "[제품]" in text2:
         return text2
     print("링크에서 제품 정보를 못 읽음 — 조사 메모에 넣지 않음")
