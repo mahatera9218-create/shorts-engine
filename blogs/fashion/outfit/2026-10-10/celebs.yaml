@@ -1,0 +1,83 @@
+date: '2026-10-10'
+updated: '10:42'
+items:
+- name: 한고은
+  why: 한고은 미니 원피스
+  score: 75
+  parts:
+    검색량: 25
+    상승: 50
+  volume: 33470
+  rise: 2.48
+- name: 김남길
+  why: 시상식 사회자 레드카펫 패션으로 화제
+  score: 57
+  parts:
+    검색량: 29
+    상승: 28
+  volume: 58670
+  rise: 1.55
+- name: 현백코어
+  why: 현백코어 패션
+  score: 47
+  parts:
+    검색량: 16
+    상승: 31
+  volume: 9040
+  rise: 1.61
+- name: CORTIS
+  why: 성현 패션리믹스 무대의상 바이럴
+  score: 42
+  parts:
+    검색량: 18
+    상승: 24
+  volume: 12470
+  rise: 1.47
+- name: 임지연
+  why: 임지연 레드 롱드레스
+  score: 42
+  parts:
+    검색량: 30
+    상승: 12
+  volume: 64010
+  rise: 1.25
+- name: 아이유
+  why: 아이유 프라다 원피스
+  score: 41
+  parts:
+    검색량: 41
+    상승: 0
+  volume: 296800
+  rise: 0.82
+- name: 휴잭맨
+  why: 한국인 선호 꽃미남 화보·패션 언급
+  score: 39
+  parts:
+    검색량: 17
+    상승: 22
+  volume: 11200
+  rise: 1.45
+- name: 장원영
+  why: 인천공항 출국 공항패션으로 토미힐피거 룩 주목
+  score: 38
+  parts:
+    검색량: 38
+    상승: 0
+  volume: 197200
+  rise: 0.93
+- name: 김고은
+  why: 김고은 울 크레이프 자켓 샤넬 1710만원
+  score: 37
+  parts:
+    검색량: 37
+    상승: 0
+  volume: 160200
+  rise: 0.42
+- name: 블랙핑크
+  why: 제니 샤넬 패션
+  score: 37
+  parts:
+    검색량: 28
+    상승: 9
+  volume: 48630
+  rise: 1.18
