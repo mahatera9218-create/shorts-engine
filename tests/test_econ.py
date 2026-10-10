@@ -39,21 +39,25 @@ class EconTest(unittest.TestCase):
         F.COSTS = old
 
     def test_score_counts_overlap(self):
+        from unittest import mock
         from content import econ_score
         items = [{"kw": "청년미래적금", "rows": ["B1", "B2", "G1", "N1"]}, {"kw": "금값", "rows": ["G2"]}]
         src = {"B1": "zkfldb888", "B2": "블로거", "G1": "Grok", "N1": "국내뉴스", "G2": "Grok"}
-        out = econ_score.score(items, src)
+        with mock.patch.object(econ_score, "_recent_cores", return_value={}):  # 디스크의 '최근 반복 주제' 데이터에 오염되지 않게 (점수 계산만 검증)
+            out = econ_score.score(items, src)
         self.assertEqual(out[0]["kw"], "청년미래적금")
         self.assertEqual(out[0]["parts"]["출처"], 8)  # 그날 1등 = 출처 만점 (홈판 재정의 2026-10-10: 화제성2:수요1, 출처 8)
         self.assertEqual(out[1]["parts"]["출처"], round(8 * 6 / 12))  # 쿠니네(zkfldb888)는 키워드 점수에서 뺌 (2026-10-07)
         self.assertEqual(out[0]["score"], round(8 * 100 / 80))  # 어사이드(네이버 20) 없는 날은 나머지 80점을 100점으로 환산
 
     def test_score_aside_rank(self):
+        from unittest import mock
         from content import econ_score
         items = [{"kw": "원달러 환율", "rows": [], "sources": {"Grok": 1}},
                  {"kw": "금값", "rows": [], "sources": {"어사이드": 1}, "naver_rank": 2},
                  {"kw": "코스피", "rows": [], "sources": {"어사이드": 1}, "naver_rank": 8}]
-        out = {x["kw"]: x for x in econ_score.score(items, None)}
+        with mock.patch.object(econ_score, "_recent_cores", return_value={}):  # 디스크 '최근 반복 주제' 감점에 오염되지 않게
+            out = {x["kw"]: x for x in econ_score.score(items, None)}
         self.assertEqual(out["금값"]["parts"]["네이버"], 20)   # 어사이드 1~3위 만점 (홈판 재정의 2026-10-10: 네이버 20)
         self.assertEqual(out["코스피"]["parts"]["네이버"], round(20 * 0.5))  # 7~10위 절반
         self.assertEqual(out["원달러 환율"]["score"], out["원달러 환율"]["parts"]["출처"])  # 어사이드 있는 날은 환산 없음
