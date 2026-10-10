@@ -1,0 +1,234 @@
+keyword: 삼성전자 성과급
+person: 삼성전자
+mode: 쿠니네
+made: '11:00'
+items:
+- title: 삼성전자 성과급 7.5억이라더니, 세후는 3.4억대 추산
+  type: 반전형
+  rank: 1
+  best: true
+  chars: 31
+  flags: []
+- title: 삼성전자 성과급 메모리 7.5억 VS LSI·파운드리 2.4억, 왜 3배 차이?
+  type: 비교형
+  rank: 2
+  best: true
+  chars: 44
+  flags: []
+- title: 삼성전자 성과급 연봉 8천만원이면 실수령 얼마나 될까?
+  type: 궁금형
+  rank: 3
+  best: true
+  chars: 30
+  flags: []
+- title: 삼성전자 성과급 7.5억, 세후는 3.4억대 추산 놓치기 쉬운 부분
+  type: 위협형
+  rank: 4
+  best: true
+  chars: 37
+  flags: []
+- title: 삼성전자 성과급 적자 사업부도 최소 보장, 누가 이득일까
+  type: 이득형
+  rank: 5
+  best: true
+  chars: 31
+  flags: []
+- title: 삼성전자 성과급 세전 7.5억 VS 세후 3.4억대, 실수령 차이는
+  type: 비교형
+  rank: null
+  best: false
+  chars: 37
+  flags: []
+- title: 삼성전자 성과급 현금 VS 자사주, 받고 나서 달라지는 것
+  type: 비교형
+  rank: null
+  best: false
+  chars: 32
+  flags: []
+- title: 삼성전자 성과급 메모리 7.5억, 공통조직 5.3억과 뭐가 다를까?
+  type: 비교형
+  rank: null
+  best: false
+  chars: 37
+  flags: []
+- title: 삼성전자 성과급 올해 OPI VS 신설 특별성과급, 총액 얼마?
+  type: 비교형
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: 삼성전자 성과급 받기 전 2027년 2월 지급률 공지부터 보세요
+  type: 실행형
+  rank: null
+  best: true
+  chars: 35
+  flags: []
+- title: 삼성전자 성과급 자사주 3분의 1씩 매도, 일정 먼저 짜두세요
+  type: 실행형
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: 삼성전자 성과급 연봉 8천만원이면, 내 사업부 기준부터 확인
+  type: 실행형
+  rank: null
+  best: false
+  chars: 33
+  flags: []
+- title: 삼성전자 성과급 2027년 소득, 과세 시점부터 체크하세요
+  type: 실행형
+  rank: null
+  best: false
+  chars: 32
+  flags: []
+- title: 삼성전자 성과급 기부 매칭 0.2~1%, 신청 전 따져볼 것
+  type: 실행형
+  rank: null
+  best: false
+  chars: 33
+  flags: []
+- title: 삼성전자 성과급 기부 1:1 매칭, 0.2~1% 어디까지 이득일까
+  type: 이득형
+  rank: null
+  best: false
+  chars: 36
+  flags: []
+- title: 삼성전자 성과급 자사주 3년 분할, 세금 부담 줄이는 방법은
+  type: 이득형
+  rank: null
+  best: false
+  chars: 33
+  flags: []
+- title: 삼성전자 성과급 40%는 공통 배분, 어느 부서가 유리할까
+  type: 이득형
+  rank: null
+  best: false
+  chars: 32
+  flags: []
+- title: 삼성전자 성과급 상한 없는 10.5%, 연봉 8천만원 몫은
+  type: 이득형
+  rank: null
+  best: false
+  chars: 32
+  flags: []
+- title: 삼성전자 성과급 내년 3월 말 지급, 정확히 언제 들어올까?
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 33
+  flags: []
+- title: 삼성전자 성과급 영업이익 370조 가정, 노조 추산 믿어도 될까?
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 36
+  flags: []
+- title: 삼성전자 성과급 전액 자사주, 현금은 언제부터 쓸 수 있나
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 32
+  flags: []
+- title: 삼성전자 성과급 2028년엔 10억대? 증권가 가정의 근거는
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 33
+  flags: []
+- title: 삼성전자 성과급 자사주 묶임, 현금 필요한 사람은 부담될 수도
+  type: 위협형
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: 삼성전자 성과급 2027년 소득 과세, 연봉과 합산되는 함정
+  type: 위협형
+  rank: null
+  best: false
+  chars: 33
+  flags: []
+- title: 삼성전자 성과급 주총 의결 전까지 확정 아닌 이유 있다
+  type: 위협형
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: 삼성전자 성과급 사업부별 격차, 파운드리 2.4억의 불편한 진실
+  type: 위협형
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: 삼성전자 성과급 현금인 줄 알았는데 전부 자사주라고?
+  type: 반전형
+  rank: null
+  best: false
+  chars: 29
+  flags: []
+- title: 삼성전자 성과급 모두 같은 줄 알았는데, 사업부별 3배 차이
+  type: 반전형
+  rank: null
+  best: false
+  chars: 33
+  flags: []
+- title: 삼성전자 성과급 노조 추산 7.5억, 확정 금액은 아니었다
+  type: 반전형
+  rank: null
+  best: false
+  chars: 32
+  flags: []
+- title: 삼성전자 성과급 올해 받는 줄 알았는데 지급은 2027년
+  type: 반전형
+  rank: null
+  best: false
+  chars: 31
+  flags: []
+groups:
+- type: 비교형
+  idx:
+  - 1
+  - 5
+  - 6
+  - 7
+  - 8
+  best: 1
+- type: 실행형
+  idx:
+  - 9
+  - 10
+  - 11
+  - 12
+  - 13
+  best: 9
+- type: 이득형
+  idx:
+  - 14
+  - 15
+  - 16
+  - 4
+  - 17
+  best: 4
+- type: 궁금형
+  idx:
+  - 2
+  - 18
+  - 19
+  - 20
+  - 21
+  best: 2
+- type: 위협형
+  idx:
+  - 3
+  - 22
+  - 23
+  - 24
+  - 25
+  best: 3
+- type: 반전형
+  idx:
+  - 0
+  - 26
+  - 27
+  - 28
+  - 29
+  best: 0
