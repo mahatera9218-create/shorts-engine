@@ -347,10 +347,11 @@ def score(items: list[dict], src_rows: dict[str, str] | None) -> list[dict]:
         rise = (rises.get(q[it["kw"]]) or {}).get("rise", 1.0)  # 1.0 평소, 2.0 평소의 2배
         parts = {"네이버": round(w["네이버"] * naver_part(it.get("naver_rank"))),
                  "급상승": round(w["급상승"] * min(1.0, max(0.0, rise - 1.0))) if w["급상승"] else 0,  # 2배↑면 만점 (화제성)
-                 "최신": round(w["최신"] * min(n6, ff) / ff) if (n6 is not None and w["최신"]) else 0,
                  "출처": round(w["출처"] * raw[it["kw"]] / top),
                  "뉴스": round(w["뉴스"] * min(news, nf) / nf) if news is not None else 0,
                  "검색": round(min(w["검색"], max(0.0, (math.log10(vol) - 2) / (math.log10(vf) - 2) * w["검색"]))) if vol else 0}
+        if w["최신"] and n6 is not None:  # 최신성은 어사이드(네이버)에만 부여 — 뉴스 기반 최신 점수는 신뢰도 낮아 기본 끔 (대표 결정 2026-10-10)
+            parts["최신"] = round(w["최신"] * min(n6, ff) / ff)
         pb = cfg.get("product_bonus", 0)  # 패션: 브랜드·가격이 이미 나온 주제 가점 (대표 결정 2026-10-08 '주제 고르기 강화')
         if pb and (it.get("product") or "").strip():
             parts["제품"] = pb
