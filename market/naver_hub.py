@@ -137,6 +137,29 @@ class ApiHub:
             time.sleep(0.1)
         return out
 
+    def rise(self, keywords: list[str], recent: int = 3, base: int = 11) -> dict[str, dict]:
+        """최근 며칠 검색 상승 (착장 도우미 '오늘 뜨는 연예인', 2026-10-10). 일 단위 검색어 트렌드 최근 recent+base일로
+        {키워드: {"rise": 최근 recent일 평균 ÷ 그 전 base일 평균, "level": 최근 평균(그 요청 안 상대값)}}. 값이 없으면 빠짐."""
+        end = date.today() - timedelta(days=1)
+        start = end - timedelta(days=recent + base - 1)
+        out: dict[str, dict] = {}
+        for i in range(0, len(keywords), MAX_GROUPS):
+            batch = keywords[i:i + MAX_GROUPS]
+            body = {"startDate": start.isoformat(), "endDate": end.isoformat(), "timeUnit": "date",
+                    "keywordGroups": [{"groupName": k, "keywords": [k]} for k in batch]}
+            data = request_json("POST", self.base + self.paths["search_trend"],
+                                headers={**self._headers(), "Content-Type": "application/json"}, json=body)
+            for res in data.get("results", []):
+                vals = [float(p.get("ratio", 0)) for p in res.get("data", [])]
+                if len(vals) < recent + 1:
+                    continue
+                now, before = vals[-recent:], vals[:-recent]
+                b = sum(before) / len(before) if before else 0.0
+                n = sum(now) / len(now)
+                out[res.get("title", "")] = {"rise": round(n / b, 2) if b > 0 else (9.9 if n > 0 else 0.0), "level": round(n, 1)}
+            time.sleep(0.1)
+        return out
+
     def shopping_category(self, name: str, category: str, months: int = 12) -> dict:
         """쇼핑 인사이트 분야별 클릭 추이. HUB 경로 미확인 → 카테고리 코드가 있을 때만 호출."""
         end = date.today().replace(day=1) - timedelta(days=1)

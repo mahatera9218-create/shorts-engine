@@ -121,6 +121,21 @@ def all_prompt(items: list[dict], title: str = "") -> str:
     return "\n".join(lines)
 
 
+def outfit_links(folder: str) -> str:
+    """착장 글이면 대표가 붙인 인스타 게시물 주소 (사진은 여기서 대표가 직접, 2026-10-10)."""
+    e = html.escape
+    f = FLOW / folder[:10] / folder / "outfit.yaml"
+    if not f.exists():
+        return ""
+    o = yaml.safe_load(f.read_text(encoding="utf-8")) or {}
+    links = "".join(f'<a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" '
+                    f'href="{e(u, quote=True)}" target="_blank" rel="noopener">📷 {e(o.get("person", ""))} 게시물 {i}</a>'
+                    for i, u in enumerate(o.get("insta", []), 1))
+    shops = "".join(f'<a href="{e(u, quote=True)}" target="_blank" rel="noopener" style="display:block;font-size:13px;padding:3px 0;'
+                    f'white-space:nowrap;overflow:hidden;text-overflow:ellipsis">🛍 {e(u)}</a>' for u in o.get("shops", []))
+    return f'<div class="card"><h2>착장 원본</h2>{links}{shops}</div>' if (links or shops) else ""
+
+
 def prompts_card(p: dict) -> str:
     """사진: 프롬프트만 (대표 결정 2026-10-09: 실제 사진 후보는 글과 안 맞는 게 많아 안 보여 줌). 경제 = 그릴 사진 프롬프트,
     패션 = 찾을 실제 사진 목록(번호·검색어·설명)."""
@@ -210,7 +225,7 @@ def page(p: dict) -> str:
 {f'<div class="card" style="border:2px solid var(--warn)"><b>⚠️ 확인 필요</b><ul>{probs}</ul></div>' if not p["ok"] else ""}
 <div class="card"><h2>제목{badge(best["text"], best.get("type", ""))}</h2>{desk.edit_box("title", best["text"], "제목 복사", one_line=True)}
 {f'<details><summary class="muted">다른 제목 {n_all}개</summary>{rest}</details>' if rest else ''}{rules_html()}{blog_links(T.get("keyword", "")) if BID != "econ" and T else ""}</div>
-{prompts_card(p)}
+{outfit_links(p["folder"])}{prompts_card(p)}
 <div class="card"><h2>본문</h2>
 <button onclick="copyBody(this)">📋 본문 복사</button>
 <details><summary class="muted">본문 보기·고치기</summary>{body}</details></div>
@@ -267,6 +282,70 @@ def blog_section(b: dict, posts: list[dict]) -> str:
             f'</div><div>{flow_html()}</div></div></section>')
 
 
+def outfit_page(fb: dict, posts: list[dict]) -> str:
+    """👗 착장 도우미 (대표 결정 2026-10-10): 오늘 뜨는 연예인 → 대표가 고르고 인스타 게시물 주소·상품 링크 붙이기 → 글.
+    인스타는 대표가 직접 열어 주소만 복사한다(자동 수집 안 함). 사진은 대표가 넣는다."""
+    e = html.escape
+    today = datetime.now(KST).strftime("%Y-%m-%d")
+    base = fb["base"]
+    cel = (yaml.safe_load((base / "outfit" / today / "celebs.yaml").read_text(encoding="utf-8")) or {}) \
+        if (base / "outfit" / today / "celebs.yaml").exists() else {}
+    handles = {}
+    hf = ROOT / "config" / "celeb_instagram.yaml"
+    if hf.exists():
+        handles = yaml.safe_load(hf.read_text(encoding="utf-8")) or {}
+    issue = f"https://github.com/{desk.REPO}/issues/new?title="
+    rows = []
+    for c in cel.get("items", []):
+        h = handles.get(c["name"])
+        insta = f"https://www.instagram.com/{h}/" if h else \
+            "https://www.google.com/search?q=" + urllib.parse.quote(f'{c["name"]} 인스타그램')
+        rows.append(
+            f'<div style="display:flex;gap:6px;align-items:stretch;margin:4px 0">'
+            f'<button class="ghost" style="flex:1;margin:0;text-align:left" onclick="pickC({e(json.dumps(c["name"]), quote=True)})">'
+            f'<b>{e(c["name"])}</b> <span class="seal">{c.get("score", "")}</span>'
+            f'<div class="muted" style="font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{e(c.get("why", ""))}</div></button>'
+            f'<a class="btn" style="width:64px;margin:0;padding:8px 4px;font-size:13px;display:flex;align-items:center;justify-content:center;background:transparent;color:var(--ink);'
+            f'border:1px solid var(--line)" href="{e(insta, quote=True)}" target="_blank" rel="noopener">인스타</a></div>')
+    keys = list(dict.fromkeys(k for c in cel.get("items", []) for k in (c.get("parts") or {})))
+    table = ""
+    if keys:
+        table = ('<details style="margin-top:6px"><summary class="muted">점수표</summary><div style="overflow-x:auto">'
+                 '<table style="font-size:12px;border-collapse:collapse;width:100%;text-align:center"><tr><th style="text-align:left">이름</th><th>합계</th>'
+                 + "".join(f"<th>{e(k)}</th>" for k in keys) + "<th>월 검색</th></tr>"
+                 + "".join(f'<tr><td style="text-align:left">{e(c["name"])}</td><td><b>{c.get("score", "")}</b></td>'
+                           + "".join(f'<td>{(c.get("parts") or {}).get(k, "")}</td>' for k in keys)
+                           + f'<td>{c.get("volume") or ""}</td></tr>' for c in cel.get("items", []))
+                 + "</table></div></details>")
+    again = desk.issue_link("착장새로", today, "오늘 뜨는 연예인을 다시 뽑아 주세요.")
+    done = []
+    for p in sorted((p for p in posts if p["date"] == today), key=lambda p: p["folder"], reverse=True):
+        of = base / "flow" / p["folder"][:10] / p["folder"] / "outfit.yaml"
+        if not of.exists():
+            continue
+        o = yaml.safe_load(of.read_text(encoding="utf-8")) or {}
+        best = next((x["text"] for x in p["titles"] if x["best"]), p["folder"])
+        links = "".join(f'<a href="{e(u, quote=True)}" target="_blank" rel="noopener" class="muted" style="font-size:13px;margin-right:8px">'
+                        f'📷 게시물 {i}</a>' for i, u in enumerate(o.get("insta", []), 1))
+        done.append(f'<div style="padding:6px 0;border-bottom:1px solid var(--line)">'
+                    f'<a href="../p/fashion-{desk.slug(p["folder"])}/"><b>{e(o.get("person", ""))}</b> · {e(best)}</a>'
+                    f'<div>{links}</div></div>')
+    js = ("function pickC(n){const t=document.getElementById('oin');t.value=n+'\\n';"
+          "t.scrollIntoView({behavior:'smooth',block:'center'});t.focus()}"
+          "function goOutfit(){const v=document.getElementById('oin').value.trim();if(!v)return;"
+          f"location.href='{issue}'+encodeURIComponent('[착장글] {today}')+'&body='+encodeURIComponent(v)}}")
+    return head("착장 도우미", "../") + f"""
+<a href="../" class="muted">← 발행 도우미</a>
+<h1>👗 착장 도우미</h1>
+<div class="card"><h2>오늘 뜨는 연예인</h2>{"".join(rows) or '<p class="muted">없음</p>'}{table}
+<a class="btn" style="margin-top:8px;background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(again, quote=True)}">🔄 다시 뽑기</a></div>
+<div class="card"><h2>글 만들기</h2>
+<textarea id="oin" rows="5" style="{TA}" placeholder="첫 줄: 연예인 이름 (위에서 누르면 들어와요)&#10;인스타 게시물 주소&#10;상품 링크 (렌즈 결과, 한 줄에 하나)"></textarea>
+<button onclick="goOutfit()">✍️ 착장 글 만들기</button></div>
+<div class="card"><h2>오늘 착장 글</h2>{"".join(done) or '<p class="muted">없음</p>'}</div>
+</main><script>{js}</script></body></html>"""
+
+
 def photo_page() -> str:
     """📐 사진 800×800 맞추기 (대표 지시 2026-10-08: 업로드만, 설정·설명 없음). 휴대폰 브라우저 안에서만 처리, 어디에도 안 올림.
     꽉 채우기(넘치는 부분 자름) — 세로 사진은 위쪽(얼굴)을 살림."""
@@ -300,7 +379,7 @@ def index(by_blog: dict[str, list[dict]]) -> str:
     first = next(iter(blogs))
     return head(f"{NAME} 발행 도우미") + f"""
 <header class="brand"><img src="icon-180.png" alt=""><div><h1>발행 도우미</h1><p class="muted">{" · ".join(html.escape(b["label"]) for b in blogs.values())} · {now} 업데이트</p></div></header>
-<nav class="tabs">{tabs}<a href="#aside" data-t="aside">🛰 어사이드</a><a href="#stats" data-t="stats">성과</a><a href="photo/">📐 사진</a></nav>
+<nav class="tabs">{tabs}<a href="#aside" data-t="aside">🛰 어사이드</a><a href="#stats" data-t="stats">성과</a><a href="outfit/">👗 착장</a><a href="photo/">📐 사진</a></nav>
 {secs}
 <section class="tab" id="aside" hidden>{aside_tab(blogs)}</section>
 <section class="tab" id="stats" hidden>{compare_html(blogs, by_blog)}</section>
@@ -778,6 +857,10 @@ def build(out: Path) -> list[dict]:
                     shutil.copy(src, d / x["file"])
             (d / "index.html").write_text(plain(page(p)), encoding="utf-8")
     (out / "index.html").write_text(plain(index(by_blog)), encoding="utf-8")
+    fb = all_blogs().get("fashion")
+    if fb:  # 착장 도우미 (2026-10-10)
+        (out / "outfit").mkdir(exist_ok=True)
+        (out / "outfit" / "index.html").write_text(plain(outfit_page(fb, by_blog.get("fashion", []))), encoding="utf-8")
     (out / "photo").mkdir(exist_ok=True)
     (out / "photo" / "index.html").write_text(plain(photo_page()), encoding="utf-8")  # 사진 크기 맞추기 (2026-10-07)
     for s in (180, 192, 512):
