@@ -44,9 +44,9 @@ class EconTest(unittest.TestCase):
         src = {"B1": "zkfldb888", "B2": "블로거", "G1": "Grok", "N1": "국내뉴스", "G2": "Grok"}
         out = econ_score.score(items, src)
         self.assertEqual(out[0]["kw"], "청년미래적금")
-        self.assertEqual(out[0]["parts"]["출처"], 20)  # 그날 1등 = 출처 만점 (경제 20, 2026-10-07 네이버 인기 35·최신 25)
-        self.assertEqual(out[1]["parts"]["출처"], round(20 * 6 / 12))  # 쿠니네(zkfldb888)는 키워드 점수에서 뺌 (2026-10-07)
-        self.assertEqual(out[0]["score"], round(20 * 100 / 65))  # 어사이드 없는 날은 나머지 65점을 100점으로 환산
+        self.assertEqual(out[0]["parts"]["출처"], 15)  # 그날 1등 = 출처 만점 (2026-10-10 네이버 비중 강화로 출처 20→15)
+        self.assertEqual(out[1]["parts"]["출처"], round(15 * 6 / 12))  # 쿠니네(zkfldb888)는 키워드 점수에서 뺌 (2026-10-07)
+        self.assertEqual(out[0]["score"], round(15 * 100 / 65))  # 어사이드 없는 날은 나머지 65점을 100점으로 환산
 
     def test_score_aside_rank(self):
         from content import econ_score
