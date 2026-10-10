@@ -508,8 +508,10 @@ def score_table(items: list[dict]) -> str:
         if st.get("블로그24h"):
             bits.append(f"새글 {st['블로그24h']}")
         why = " · ".join(bits) or "근거 수집 안 됨"
+        src = " · ".join(dict(it.get("sources") or {}))  # 어디서 찾았나 (Grok·뉴스·어사이드·급상승·대표)
+        src_line = f'<div class="muted" style="font-size:11px">출처: {e(src)}</div>' if src else ""
         rows.append(f'<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)">'
-                    f'<div style="min-width:0"><b>{e(it["kw"])}</b><div class="muted" style="font-size:12px">{e(why)}</div></div>'
+                    f'<div style="min-width:0"><b>{e(it["kw"])}</b><div class="muted" style="font-size:12px">{e(why)}</div>{src_line}</div>'
                     f'<span class="seal">{it.get("score", "")}</span></div>')
     return (f'<details style="margin-top:6px"><summary class="muted">키워드별 점수·근거 ({len(items)}개)</summary>'
             f'<div style="margin-top:4px">{"".join(rows)}</div></details>')
