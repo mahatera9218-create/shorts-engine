@@ -669,6 +669,23 @@ GAIN = {"type": "object", "additionalProperties": False, "required": ["gain", "m
                        "pass": {"type": "boolean"}}}
 
 
+EDITOR = {"type": "object", "additionalProperties": False, "required": ["pass", "issues"],
+          "properties": {"pass": {"type": "boolean", "description": "모든 기준을 충족하면 true"},
+                         "issues": {"type": "array", "items": {"type": "string"},
+                                    "description": "위반한 기준과 고칠 점을 구체적으로 (없으면 빈 배열). 글 작가가 바로 고칠 수 있게 한 줄씩"}}}
+
+
+def editor_review(text: str, title: str, kw: str, rubric: list[str]) -> list[str]:
+    """엄격한 편집장(AI) 검수 (대표 결정 2026-10-10). 코드로 못 재는 질(말투·중복·사실·제목일치·AI 티)만 본다. 문제 목록을 돌려준다.
+    글 1편 읽고 평가만 하므로 쌈(어림 15~30원). 켜려면 config strict_editor: true."""
+    rb = "\n".join(f"- {r}" for r in rubric)
+    out = claude_json(
+        ["너는 네이버 블로그 편집장이다. 아래 기준으로만 깐깐하게 검수한다. 기준과 무관한 트집은 잡지 않는다. "
+         "실제로 위반한 것만, 어디를 어떻게 고칠지 구체적으로 적는다. 다 지켰으면 pass=true, issues는 빈 배열."],
+        f"[제목] {title}\n[핵심키워드] {kw}\n\n[검수 기준]\n{rb}\n\n[글]\n{text[:9000]}", EDITOR, stage="편집장 검수")
+    return [] if out.get("pass") else [i for i in (out.get("issues") or []) if i.strip()][:6]
+
+
 def top10(keyword: str) -> list[dict]:
     """네이버 공식 블로그 검색 API 정확도순 상위 10개 제목·요약 (검색 화면 크롤링 아님)."""
     from market.common import load_yaml, request_json
