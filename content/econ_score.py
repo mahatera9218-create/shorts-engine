@@ -323,14 +323,17 @@ def score(items: list[dict], src_rows: dict[str, str] | None) -> list[dict]:
                 cnt[s] = cnt.get(s, 0) + 1
         src_pts = 0.0
         for s, c in cnt.items():
-            p = pts.get(s, 0) * (c if s in ("블로거", "블로거새글", "국내뉴스", "해외뉴스", "뉴스검색") else 1)
+            if s in ("블로거", "블로거새글"):  # 블로거 겹침은 화제성(출처)이 아니라 최신성으로 옮김 (대표 결정 2026-10-10)
+                continue
+            p = pts.get(s, 0) * (c if s in ("국내뉴스", "해외뉴스", "뉴스검색") else 1)
             src_pts += min(p, caps.get(s, p))
         raw[it["kw"]] = src_pts
         it["sources"] = cnt
     top = max(raw.values() or [1]) or 1
-    w = {"출처": 40, "뉴스": 25, "검색": 35, "최신": 0, "네이버": 0, "급상승": 0, **cfg.get("weights", {})}  # 블로그마다 나눔
-    aside = any(it.get("naver_rank") for it in items)
-    scale = 100 / (100 - w["네이버"]) if (w["네이버"] and not aside and w["네이버"] < 100) else 1
+    # 큰 구조 2:1:1 = 화제성(급상승+뉴스+출처 50) : 최신성(블로거+어사이드 25) : 수요(검색 25) (대표 결정 2026-10-10)
+    w = {"출처": 11, "뉴스": 16, "검색": 25, "급상승": 23, "네이버": 15, "블로거": 25, **cfg.get("weights", {})}  # 네이버=어사이드, 블로거=최신성(블로거 우선)
+    fresh_cap = cfg.get("fresh_cap", 25)        # 최신성 상한 (블로거+어사이드 합쳐)
+    bfull = cfg.get("blogger_full", 2)          # 서로 다른 블로거 이 수면 최신성 블로거 만점
     for it in items:
         news = blog = None
         if hub:
@@ -343,15 +346,18 @@ def score(items: list[dict], src_rows: dict[str, str] | None) -> list[dict]:
         # 만점 기준은 블로그마다 (패션은 검색량·기사가 경제보다 훨씬 적어 경제 기준이면 다 낮게 나옴, 2026-10-06)
         nf, vf = cfg.get("news_full", 100), cfg.get("vol_full", 1_000_000)
         n6 = FRESH.get(q[it["kw"]])
-        ff = cfg.get("fresh_full", 10)  # 최신: 최근 6시간 기사 이 수면 만점 (대표 지시 2026-10-06 "따끈할수록 가점")
         rise = (rises.get(q[it["kw"]]) or {}).get("rise", 1.0)  # 1.0 평소, 2.0 평소의 2배
-        parts = {"네이버": round(w["네이버"] * naver_part(it.get("naver_rank"))),
-                 "급상승": round(w["급상승"] * min(1.0, max(0.0, rise - 1.0))) if w["급상승"] else 0,  # 2배↑면 만점 (화제성)
+        parts = {"급상승": round(w["급상승"] * min(1.0, max(0.0, rise - 1.0))) if w["급상승"] else 0,  # 화제성: 2배↑면 만점
                  "출처": round(w["출처"] * raw[it["kw"]] / top),
                  "뉴스": round(w["뉴스"] * min(news, nf) / nf) if news is not None else 0,
                  "검색": round(min(w["검색"], max(0.0, (math.log10(vol) - 2) / (math.log10(vf) - 2) * w["검색"]))) if vol else 0}
-        if w["최신"] and n6 is not None:  # 최신성은 어사이드(네이버)에만 부여 — 뉴스 기반 최신 점수는 신뢰도 낮아 기본 끔 (대표 결정 2026-10-10)
-            parts["최신"] = round(w["최신"] * min(n6, ff) / ff)
+        # 최신성 = 블로거 우선(서로 다른 블로거 수, 같은 블로거 반복은 무시) + 어사이드 보조, 합쳐 상한. 어사이드 없어도 블로거 단독으로 감 (대표 결정 2026-10-10)
+        nblog = len(it.get("bloggers") or [])
+        blog_fresh = round(w["블로거"] * min(nblog, bfull) / bfull) if (w["블로거"] and nblog) else 0
+        aside_fresh = round(w["네이버"] * naver_part(it.get("naver_rank"))) if w["네이버"] else 0
+        fresh = min(fresh_cap, blog_fresh + aside_fresh)
+        if fresh:
+            parts["최신"] = fresh
         pb = cfg.get("product_bonus", 0)  # 패션: 브랜드·가격이 이미 나온 주제 가점 (대표 결정 2026-10-08 '주제 고르기 강화')
         if pb and (it.get("product") or "").strip():
             parts["제품"] = pb
@@ -361,9 +367,10 @@ def score(items: list[dict], src_rows: dict[str, str] | None) -> list[dict]:
         core = (it.get("core") or it["kw"]).strip()
         is_new = core not in _recent  # 최근 며칠 상위에 없던 키워드 (대표 요청 2026-10-10 '미미하다 급부상/새로운 것')
         surge = isinstance(rise, (int, float)) and rise >= cfg.get("surge_rise", 2.0)  # 평소의 2배↑ 급부상
-        it.update(score=max(0, min(100, round(sum(parts.values()) * scale))), parts=parts, new=is_new, surge=surge,
+        it.update(score=max(0, min(100, round(sum(parts.values())))), parts=parts, new=is_new, surge=surge,
                   stats={"뉴스24h": news, "뉴스6h": n6, "블로그24h": blog, "월검색": int(vol) if vol else None, "상승": rise})
-    items.sort(key=lambda x: -x["score"])
+    # 선정 우선순위: 점수 → 서로 다른 블로거 수 → 어사이드 순위 (대표 결정 2026-10-10 '블로거→어사이드')
+    items.sort(key=lambda x: (-x["score"], -len(x.get("bloggers") or []), -naver_part(x.get("naver_rank"))))
     # 유튜브 '지금 콘텐츠가 쏟아지나' 화제성 보조 (대표 결정 2026-10-10): 상위 후보에만 묻어 쿼터 아낌
     yb = cfg.get("youtube_bonus", 0)
     if yb:

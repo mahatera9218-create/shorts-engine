@@ -45,10 +45,11 @@ class EconTest(unittest.TestCase):
         src = {"B1": "zkfldb888", "B2": "블로거", "G1": "Grok", "N1": "국내뉴스", "G2": "Grok"}
         with mock.patch.object(econ_score, "_recent_cores", return_value={}):  # 디스크의 '최근 반복 주제' 데이터에 오염되지 않게 (점수 계산만 검증)
             out = econ_score.score(items, src)
+        # 출처(화제성)에서 블로거는 뺀다(최신성으로 감). 청년: Grok6+국내뉴스2=8, 금값: Grok6. 쿠니네(zkfldb888)는 0점.
         self.assertEqual(out[0]["kw"], "청년미래적금")
-        self.assertEqual(out[0]["parts"]["출처"], 8)  # 그날 1등 = 출처 만점 (홈판 재정의 2026-10-10: 화제성2:수요1, 출처 8)
-        self.assertEqual(out[1]["parts"]["출처"], round(8 * 6 / 12))  # 쿠니네(zkfldb888)는 키워드 점수에서 뺌 (2026-10-07)
-        self.assertEqual(out[0]["score"], round(8 * 100 / 70))  # 어사이드(네이버 30) 없는 날은 나머지 70점을 100점으로 환산 (최신성 어사이드 전용, 2026-10-10)
+        self.assertEqual(out[0]["parts"]["출처"], 11)  # 그날 1등 = 출처 만점(w 출처 11, 화제성:최신성:수요 2:1:1 2026-10-10)
+        self.assertEqual(out[1]["parts"]["출처"], round(11 * 6 / 8))  # Grok만(6) / 1등(8)
+        self.assertEqual(out[0]["score"], 11)  # 블로거·어사이드 없어 최신성 0, 뉴스·검색 없음 → 출처만. 환산 없음(2:1:1)
 
     def test_score_aside_rank(self):
         from unittest import mock
@@ -58,10 +59,23 @@ class EconTest(unittest.TestCase):
                  {"kw": "코스피", "rows": [], "sources": {"어사이드": 1}, "naver_rank": 8}]
         with mock.patch.object(econ_score, "_recent_cores", return_value={}):  # 디스크 '최근 반복 주제' 감점에 오염되지 않게
             out = {x["kw"]: x for x in econ_score.score(items, None)}
-        self.assertEqual(out["금값"]["parts"]["네이버"], 30)   # 어사이드 1~3위 만점 (최신성 어사이드 전용 2026-10-10: 네이버 30)
-        self.assertEqual(out["코스피"]["parts"]["네이버"], round(30 * 0.5))  # 7~10위 절반
-        self.assertEqual(out["원달러 환율"]["score"], out["원달러 환율"]["parts"]["출처"])  # 어사이드 있는 날은 환산 없음
+        # 어사이드는 최신성의 '보조'(네이버 weight 15). 블로거 없으면 어사이드만으로 최신성.
+        self.assertEqual(out["금값"]["parts"]["최신"], 15)   # 어사이드 1~3위 → 보조 만점(15)
+        self.assertEqual(out["코스피"]["parts"]["최신"], round(15 * 0.5))  # 7~10위 절반
+        self.assertNotIn("최신", out["원달러 환율"]["parts"])  # 블로거·어사이드 둘 다 없으면 최신성 없음
         self.assertGreater(out["금값"]["score"], out["원달러 환율"]["score"])
+
+    def test_score_blogger_freshness(self):
+        from unittest import mock
+        from content import econ_score
+        # 최신성 블로거: 서로 다른 블로거 수로 센다(같은 블로거 반복은 무시). 2명이면 만점.
+        items = [{"kw": "A", "rows": [], "sources": {}, "bloggers": ["b1", "b2"]},
+                 {"kw": "B", "rows": [], "sources": {}, "bloggers": ["b1"]}]
+        with mock.patch.object(econ_score, "_recent_cores", return_value={}):
+            out = {x["kw"]: x for x in econ_score.score(items, None)}
+        self.assertEqual(out["A"]["parts"]["최신"], 25)        # 서로 다른 블로거 2명(blogger_full) = 최신성 만점
+        self.assertEqual(out["B"]["parts"]["최신"], round(25 * 1 / 2))  # 1명 = 절반
+        self.assertGreater(out["A"]["score"], out["B"]["score"])  # 선정 우선순위 블로거→어사이드
 
     def test_kunine_check(self):
         from content import kunine
