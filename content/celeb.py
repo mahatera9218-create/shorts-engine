@@ -54,22 +54,31 @@ def link_facts(urls: list[str]) -> str:
         return ""
     import anthropic
     c = anthropic.Anthropic()
-    msg = c.messages.create(
-        model="claude-sonnet-5-5", max_tokens=4000,
-        # 비용 줄이기 (대표 지적 2026-10-08 "링크 정보 가져오는 게 1,400원?"): 페이지마다 읽는 글 양 상한, 검색·추가로 여는 페이지 수 줄임
-        tools=[{"type": "web_fetch_20260209", "name": "web_fetch", "max_uses": len(urls) + 2, "max_content_tokens": 6000},
-               {"type": "web_search_20260209", "name": "web_search", "max_uses": 2}],
-        messages=[{"role": "user", "content": (
-            f"오늘은 {F.today()}입니다. 아래 상품 링크를 하나씩 열어 제품 정보를 정리해 주세요. 링크 페이지가 가장 믿을 만한 자료이고, "
-            "링크에 없는 항목(정가·할인가·다른 판매처 가격·해외 가격·품번 등)만 웹 검색 1~2번으로 브랜드 공식몰·판매처를 찾아 채우세요(검색 결과 요약에 값이 보이면 페이지를 더 열지 말고 그대로 쓰기). "
+    # 비용 줄이기 2차 (대표 지적 2026-10-10 "왜 이렇게 비싸"): 실측 1편 0.46~0.92달러였던 원인 = 웹 검색 여러 번 + 큰 페이지를 매 턴 다시 읽음.
+    # → 정보 뽑기는 싼 Haiku로, 대표 링크만 열고(추가 페이지 없음), 페이지당 읽는 양 3,000토큰, 검색은 정가·판매처가 링크에 없을 때 1번만.
+    def call(model: str, fetch: str, search: str):
+        return c.messages.create(
+            model=model, max_tokens=2000,
+            tools=[{"type": fetch, "name": "web_fetch", "max_uses": len(urls), "max_content_tokens": 3000},
+                   {"type": search, "name": "web_search", "max_uses": 1}],
+            messages=msgs)
+    msgs = [{"role": "user", "content": (
+            f"오늘은 {F.today()}입니다. 아래 상품 링크를 하나씩 열어 제품 정보를 정리해 주세요. 링크 페이지가 가장 믿을 만한 자료입니다. "
+            "정가·판매처 가격이 링크에 없을 때만 웹 검색을 1번 하고, 검색 결과 요약에 보이는 값만 쓰세요(페이지를 더 열지 않기). "
             "직접 확인한 것만 쓰고 지어내지 마세요. 못 찾은 항목은 '확인 안 됨'이라고 쓰지 말고 그 줄을 아예 빼세요.\n"
             "제품마다 이 모양으로 (값이 있는 줄만):\n"
             "[제품] 브랜드(한글·영문) | 제품명(영문 원어) | 가격(원)\n"
             "브랜드 : \n제품명 : \n품번 : \n정가 : \n할인가 : (판매처, 확인한 날)\n판매처별 가격 : 판매처 가격, 판매처 가격\n"
             "해외 가격 : 원래 통화 금액 (약 ○○원, 오늘 환율 기준)\n소재 : \n색 : \n"
-            "그 아래 디자인 특징(실루엣·디테일·핏) 2~3줄. 맨 끝에 '출처:' 아래 확인한 주소.\n\n" + "\n".join(urls))}])
+            "그 아래 디자인 특징(실루엣·디테일·핏) 2~3줄. 맨 끝에 '출처:' 아래 확인한 주소.\n\n" + "\n".join(urls))}]
+    try:
+        msg, inp, out = call("claude-haiku-4-5", "web_fetch_20250910", "web_search_20250305"), 1.0, 5.0  # Haiku 4.5: 1·5달러 / 100만 토큰
+    except anthropic.BadRequestError as e:  # Haiku에서 웹 도구가 안 되면 Sonnet으로 (같은 제한)
+        print(f"Haiku 링크 읽기 실패 → Sonnet: {str(e)[:160]}")
+        msg, inp, out = call("claude-sonnet-5-5", "web_fetch_20260209", "web_search_20260209"), 2.0, 10.0  # Sonnet 5.5: 2·10달러
     u = msg.usage
-    F.SPENT["claude"] += (u.input_tokens * 3.0 + u.output_tokens * 15.0) / 1_000_000 + 0.01 * 2
+    searches = getattr(getattr(u, "server_tool_use", None), "web_search_requests", 0) or 0
+    F.SPENT["claude"] += (u.input_tokens * inp + u.output_tokens * out) / 1_000_000 + searches * 0.01
     return "".join(b.text for b in msg.content if getattr(b, "type", "") == "text").strip()
 
 
