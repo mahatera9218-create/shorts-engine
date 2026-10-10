@@ -3,7 +3,7 @@
 역할: 조사 = Grok(웹 + X) · 글 = Claude · 그림 = GPT Image(실사풍) → 없으면 Pexels 무료 사진. (GPT 사실 대조는 대표 결정으로 뺌)
 프롬프트: prompts/kunine-blog.md(강사 원문, 그대로) + prompts/kunine-addon.md(우리 자동화용 덧붙임).
 
-titles <키워드>        : Grok 조사 메모 → Claude가 6유형 × 5개 = 30개 + 유형별 BEST 6 + 최종 BEST 5
+titles <키워드>        : Grok 조사 메모 → Claude가 8유형 × 5개 = 40개 + 최종 BEST 5 (2026-10-10 원문)
 produce <주제폴더> <번호>: 고른 제목으로 본문(1,500자) · 표 · Q&A · 해시태그 20 → 정보 이득·사실 대조·형식 검사
                          → 소제목 구간마다 그 아래 글과 이어지는 사진 2장 + 썸네일 → econ/posts/<글>/ (발행 도우미)
 억선생 자료(그림 창고·캐릭터·쇼츠)는 클립용으로 남겨 두고 블로그에는 쓰지 않는다.
@@ -24,7 +24,7 @@ from .title_refs import VERSION_SCHEMA, versions_ask
 
 PROMPT = ROOT / "prompts" / "kunine-blog.md"
 ADDON = ROOT / "prompts" / "kunine-addon.md"
-TYPES = ["비교형", "실행형", "이득형", "궁금형", "위협형", "반전형"]
+TYPES = ["비교형", "실행형", "이득형", "궁금형", "위협형", "반전형", "확신형", "자극형"]  # 2026-10-10 원문 8유형
 REF_LINE = "참조문헌: 뉴스, 언론보도 및 공식자료"  # 강사 지정 문구, Q&A 뒤에 정확히 한 번
 AI_NOTE = "※ 일부 이미지는 AI로 만든 이미지입니다. 이 글은 정보 제공용이며 투자 권유가 아닙니다."
 MAX_IMAGES = 6           # 본문 사진 최대 (소제목 구간마다 2장)
@@ -59,18 +59,18 @@ def research(kw: str) -> str:
         days=2, web=True, turns=2)  # 어제·오늘 뉴스만 (대표 결정 2026-10-05), 턴 2번으로 비용 절약
 
 
-# ---------------------------------------------------------------- 제목 (6유형 × 5)
+# ---------------------------------------------------------------- 제목 (8유형 × 5, 2026-10-10)
 
 TITLES = {"type": "object", "additionalProperties": False, "required": ["groups", "final", "person"],
           "properties": {
               "person": {"type": "string", "description": "글 주인공 인물이 있으면 '회사 이름', 없으면 빈칸"},
-              "groups": {"type": "array", "description": "비교형·실행형·이득형·궁금형·위협형·반전형 순서로 6개",
+              "groups": {"type": "array", "description": "비교형·실행형·이득형·궁금형·위협형·반전형·확신형·자극형 순서로 8개",
                          "items": {"type": "object", "additionalProperties": False,
                                    "required": ["type", "candidates", "best"],
                                    "properties": {"type": {"type": "string", "enum": TYPES},
                                                   "candidates": {"type": "array", "items": {"type": "string"}},
                                                   "best": {"type": "integer", "description": "candidates 중 BEST의 번호(0부터)"}}}},
-              "final": {"type": "array", "description": "유형별 BEST 6개를 다시 비교해 고른 최종 BEST 5 (1번이 메인 추천)",
+              "final": {"type": "array", "description": "40개 중 고른 최종 BEST 5 (1번이 최종 1순위)",
                         "items": {"type": "object", "additionalProperties": False, "required": ["title", "type"],
                                   "properties": {"title": {"type": "string"}, "type": {"type": "string", "enum": TYPES}}}}}}
 
@@ -88,8 +88,8 @@ def titles(kw: str) -> Path:
     (d / "research.md").write_text(f"# 조사 메모: {kw}\n\n{memo}\n", encoding="utf-8")
     out = F.claude_json(prompt() + [g for g in [title_guide()] if g], (
         f"핵심키워드: {kw}\n\n[조사 메모]\n{memo[:10000]}\n\n"
-        "이번 단계는 **제목만** 만듭니다(본문은 다음 단계). 원문의 '제목 후보 생성 규칙'대로 6유형 × 5개, 유형별 BEST, "
-        "최종 BEST 5를 JSON으로 주세요(45자 이내).\n\n" + __import__("content.blog_stats", fromlist=["x"]).title_hint(F.BLOG["id"]) + __import__("content.good_rules", fromlist=["x"]).title_hint(F.BLOG["id"])),
+        "이번 단계는 **제목만** 만듭니다(본문은 다음 단계). 원문의 제목 규칙대로 8유형 × 5개 = 40개와 "
+        "최종 BEST 5를 JSON으로 주세요(45자 이내 기본, 자연스러우면 조금 길어도 됨).\n\n" + __import__("content.blog_stats", fromlist=["x"]).title_hint(F.BLOG["id"]) + __import__("content.good_rules", fromlist=["x"]).title_hint(F.BLOG["id"])),
         TITLES, stage="제목(쿠니네)")
     core = kw.split()[0]
     items, seen = [], set()
@@ -129,16 +129,16 @@ IMG = {"type": "object", "additionalProperties": False, "required": ["brand", "r
                       "real_query": {"type": "string", "description": "위키미디어 공용에서 그 회사의 실제 사옥·공장·매장 사진을 찾을 영어 검색어(예: Samsung Electronics Seocho building). 없으면 빈칸"},
                       "prompt": {"type": "string"}, "stock_query": {"type": "string"}, "alt": {"type": "string"}}}
 BODY = {"type": "object", "additionalProperties": False,
-        "required": ["intro", "sections", "closing", "table", "qa", "tags", "sources", "thumb", "area"],
+        "required": ["intro", "sections", "closing", "table", "qa", "tags", "sources", "pixabay", "thumb", "area"],
         "properties": {
             "area": {"type": "string", "enum": F.AREAS},
             "intro": {"type": "array", "items": {"type": "string"}, "description": "도입부 문단들"},
-            "sections": {"type": "array", "description": "소제목 구간 2~4개",
+            "sections": {"type": "array", "description": "질문형 소제목 구간 5~7개",
                          "items": {"type": "object", "additionalProperties": False,
                                    "required": ["heading", "images", "paragraphs"],
                                    "properties": {"heading": {"type": "string"},
                                                   "images": {"type": "array", "items": IMG,
-                                                             "description": "이 구간 맨 위에 놓을 사진 2장 (아래 문단과 강하게 이어지게)"},
+                                                             "description": "이 구간 맨 위에 놓을 사진 1장 (아래 문단과 강하게 이어지게)"},
                                                   "paragraphs": {"type": "array", "items": {"type": "string"}}}}},
             "closing": {"type": "array", "items": {"type": "string"}, "description": "마무리 문단들"},
             "table": {"type": "object", "additionalProperties": False, "required": ["title", "header", "rows", "after"],
@@ -149,6 +149,7 @@ BODY = {"type": "object", "additionalProperties": False,
                                               "properties": {"q": {"type": "string"}, "a": {"type": "string"}}}},
             "tags": {"type": "array", "items": {"type": "string"}, "description": "해시태그용 단어 20개 (# 없이)"},
             "sources": {"type": "array", "items": {"type": "string"}, "description": "근거 출처 (블로그에 안 나감)"},
+            "pixabay": {"type": "array", "items": {"type": "string"}, "description": "픽사베이 검색용 추천 키워드 5개 (영어)"},
             "thumb": IMG}}
 
 
@@ -157,11 +158,14 @@ def text_of(a: dict) -> str:
 
 
 def check(a: dict, kw: str) -> list[str]:
-    """형식 검사(코드): 1,500자 이내 · 언론사명/링크 없음 · 핵심키워드 20회 이내 · Q&A 3개 · 해시태그 20개."""
+    """형식 검사(코드, 2026-10-10 원문): 질문형 소제목 5~7개 · 표 1개 이상 · 언론사명/링크 없음 · 핵심키워드 20회 이내 · Q&A 3개 · 해시태그 20개.
+    글자 수 상한은 새 원문에 없어 검사하지 않음."""
     t = text_of(a)
     bad, core = [], kw.split()[0]
-    if len(t) > 1550:  # 글자 수는 원문 프롬프트 기준 (대표 결정 2026-10-08)
-        bad.append(f"본문 {len(t)}자 → 공백 포함 1,500자 안으로")
+    if not 5 <= len(a["sections"]) <= 7:
+        bad.append(f"소제목 구간 {len(a['sections'])}개 → 질문형 5~7개")
+    if not (a.get("table") or {}).get("rows"):
+        bad.append("표 없음 → 비교표 1개 이상")
     m = F.PRESS.findall(t + " ".join(x["q"] + x["a"] for x in a["qa"]) + " ".join(a["tags"]))
     if m:
         bad.append(f"언론사명·링크 {len(m)}곳 → 빼고 사실만 (공식 발표는 기관 이름만)")
@@ -217,7 +221,7 @@ def produce(slug: str, n: int) -> Path:
     lines += a["intro"]
     k, used = 2, set()
     for si, sec in enumerate(a["sections"], 1):
-        for im in sec["images"][:2]:
+        for im in sec["images"][:1]:  # 구간마다 1장 (소제목 5~7개라, 2026-10-10)
             if k - 1 > MAX_IMAGES:
                 break
             # 맨 앞 2장(썸네일 + 본문 첫 장)은 대표가 ChatGPT·제미나이로 직접(고화질), 나머지는 무료 사진 (대표 결정 2026-10-06)
@@ -239,6 +243,8 @@ def produce(slug: str, n: int) -> Path:
     lines.append("\n".join(f"Q. {x['q']}\nA. {x['a']}" for x in a["qa"][:3]))
     lines += [REF_LINE, AI_NOTE]
     (post / "prompts.json").write_text(json.dumps(prompts, ensure_ascii=False, indent=1), encoding="utf-8")
+    if a.get("pixabay"):  # 원문 '픽사베이 추천 검색어 5개' (2026-10-10) → 도우미 사진 칸에 표시
+        (post / "pixabay.txt").write_text("\n".join(a["pixabay"][:5]), encoding="utf-8")
     (post / "body.txt").write_text("\n\n".join(lines) + "\n", encoding="utf-8")
     finals = [t for t in T["items"] if t.get("rank") and t is not pick][:4]
     tags = ",".join(x.replace("#", "").replace(" ", "") for x in a["tags"][:20])

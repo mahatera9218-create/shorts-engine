@@ -65,7 +65,9 @@ class EconTest(unittest.TestCase):
              "closing": ["끝"], "qa": [{"q": "q", "a": "a"}] * 3, "tags": ["t"] * 20}
         bad = kunine.check(a, "삼성전자 주가")
         self.assertTrue(any("언론사명" in b for b in bad))
-        a["sections"][0]["paragraphs"] = ["회사 공식 발표에 따르면 올랐다"]
+        self.assertTrue(any("5~7개" in b for b in bad) and any("표 없음" in b for b in bad))  # 2026-10-10 원문
+        a["sections"] = [{"heading": f"왜 {i}?", "images": [], "paragraphs": ["회사 공식 발표에 따르면 올랐다"]} for i in range(5)]
+        a["table"] = {"title": "t", "header": ["a", "b"], "rows": [["1", "2"]], "after": 1}
         self.assertEqual(kunine.check(a, "삼성전자 주가"), [])
 
     def test_blogs(self):
@@ -84,9 +86,9 @@ class EconTest(unittest.TestCase):
             importlib.reload(celeb)
             a = {"greeting": "캐시미어 다이어리의 캐다입니다.", "sections": [{"heading": "h", "images": [], "paragraphs": ["첨부한 사진을 보면 예뻐요"]},
                                                                     {"heading": "끝", "images": [], "paragraphs": ["마무리"]}],
-                 "summary": "세 가지가 좋았어요", "tags": ["t"] * 25}
+                 "tags": ["t"] * 25}
             bad = " ".join(celeb.check(a))
-            for word in ("1,500자", "요약", "제작 과정", "해시태그", "자기소개", "사진 없는 구간"):
+            for word in ("1,500자", "소제목 구간", "제작 과정", "해시태그", "자기소개", "사진 없는 구간"):
                 self.assertIn(word, bad)
         finally:
             os.environ.pop("BLOG", None)
