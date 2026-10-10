@@ -247,7 +247,8 @@ def produce(slug: str, n: int) -> Path:
         (post / "pixabay.txt").write_text("\n".join(a["pixabay"][:5]), encoding="utf-8")
     (post / "body.txt").write_text("\n\n".join(lines) + "\n", encoding="utf-8")
     finals = [t for t in T["items"] if t.get("rank") and t is not pick][:4]
-    tags = ",".join(x.replace("#", "").replace(" ", "") for x in a["tags"][:20])
+    from .tags import fix as fix_tags  # 붙인 형태 + 낱말 둘 다 (대표 지적 2026-10-10 '#애플주가'·'애플 주가')
+    tags = ",".join(fix_tags(a["tags"], kw, 20))
     status = "✅ 발행 가능 (사실 대조 생략, 숫자는 조사 메모 기준)"
     if not ok_gain:
         status += " · ⚠️ 정보 이득 부족 — 발행 보류, Claude에게 알려 주세요"

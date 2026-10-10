@@ -317,7 +317,8 @@ def produce(slug: str, n: int) -> Path:
     (post / "body.txt").write_text("\n\n".join(lines) + "\n", encoding="utf-8")
     (post / "prompts.json").write_text(json.dumps(prompts, ensure_ascii=False, indent=1), encoding="utf-8")
     others = [t for t in T["items"] if t is not pick][:4]
-    tags = ",".join(x.replace("#", "").replace(" ", "") for x in a["tags"][:19])
+    from .tags import fix as fix_tags  # 붙인 형태 + 낱말 둘 다 (대표 지적 2026-10-10 '#애플주가'·'애플 주가')
+    tags = ",".join(fix_tags(a["tags"], kw, 19))
     status = "✅ 발행 가능" + (" · ⚠️ 형식: " + " / ".join(left) if left else "")
     from .kunine import NO_CREDIT
     if NO_CREDIT:
