@@ -17,7 +17,17 @@ permissions:
   contents: write
 
 jobs:
+  # 경제 참고 블로거(대표 지정, config/econ_refs.yaml) 어제오늘 새 글 제목을 먼저 모은다 (최신성 신호, 대표 결정 2026-10-10).
+  # AI 없음·0원(공개 RSS). 패션은 키워드 모으기 때 블로거 RSS를 바로 읽어 따로 필요 없음.
+  refs:
+    uses: ./.github/workflows/econ-flow.yml
+    with:
+      cmd: refs
+      blog: econ
+    secrets: inherit
   run:
+    needs: refs
+    if: ${{ always() }}   # 블로거 조사가 실패해도 키워드는 모은다
     strategy:
       fail-fast: false
       matrix:

@@ -583,33 +583,52 @@ def _man(v) -> str:
     return f"{v:,}"
 
 
+# 점수 항목을 3개 카테고리로 묶음 (대표 결정 2026-10-10: 화제성:최신성:수요 = 2:1:1). 세부 항목은 카테고리 안에서 가중치가 다름
+CATS = [("화제성", ["급상승", "뉴스", "출처", "유튜브"]),  # 지금 버즈 (유튜브는 보너스)
+        ("최신성", ["최신"]),                              # 블로거(어제오늘)·어사이드
+        ("수요", ["검색"])]                                # 월 검색량
+CAT_COLOR = {"화제성": "#c2410c", "최신성": "#1d4ed8", "수요": "#15803d"}
+PART_LABEL = {"검색": "검색량", "최신": "블로거·어사이드"}
+
+
 def score_table(items: list[dict]) -> str:
-    """키워드 근거 (대표 요청 2026-10-09 '점수표 살려 줘', 2026-10-10 가독성: 가로 표 → 한 줄씩 세로로)."""
+    """키워드 근거 (대표 요청 2026-10-09 '점수표 살려 줘'). 3개 카테고리(화제성·최신성·수요)로 묶어 보여 줌 (대표 결정 2026-10-10)."""
     e = html.escape
     if not items:
         return ""
-    label = {"네이버": "네이버인기", "검색": "검색량"}  # 보기 좋은 이름
     raw = {"월검색": lambda v: f"검색 {_man(v)}", "유튜브7일": lambda v: f"유튜브 {_man(v)}"}
     rows = []
     for it in sorted(items, key=lambda x: -x.get("score", 0)):
         parts = it.get("parts") or {}
-        pos = sorted(((k, v) for k, v in parts.items() if isinstance(v, (int, float)) and v > 0), key=lambda x: -x[1])
-        neg = [(k, v) for k, v in parts.items() if isinstance(v, (int, float)) and v < 0]
-        # 점수가 어떻게 합쳐졌나: 큰 항목부터 더하고, 감점(반복)은 빼서 = 합계
-        calc = " + ".join(f'{e(label.get(k, k))} <b>{v}</b>' for k, v in pos)
-        calc += "".join(f' − {e(k)} <b>{-v}</b>' for k, v in neg)
-        calc += f' = <b>{it.get("score", "")}</b>'
+        cat_bits = []
+        for cat, keys in CATS:
+            sub = [(k, parts[k]) for k in keys if isinstance(parts.get(k), (int, float)) and parts[k] > 0]
+            tot = sum(v for _, v in sub)
+            if not sub:
+                continue
+            detail = " · ".join(f'{e(PART_LABEL.get(k, k))} {v}' for k, v in sub) if len(sub) > 1 else ""
+            cat_bits.append(f'<span style="white-space:nowrap;margin-right:10px">'
+                            f'<b style="color:{CAT_COLOR[cat]}">{cat} {tot}</b>'
+                            + (f' <span class="muted" style="font-size:11px">({detail})</span>' if detail else '') + '</span>')
+        neg = "".join(f' <span style="color:var(--warn)">− {e(k)} {-v}</span>'
+                      for k, v in parts.items() if isinstance(v, (int, float)) and v < 0)
         st = it.get("stats") or {}
         rawbits = [f(st[k]) for k, f in raw.items() if st.get(k)]
         raw_line = f'<div class="muted" style="font-size:11px">{e(" · ".join(rawbits))}</div>' if rawbits else ""
+        bloggers = it.get("bloggers") or []
         src = " · ".join(dict(it.get("sources") or {}))
+        blog_line = (f'<div class="muted" style="font-size:11px">블로거 {len(bloggers)}명: {e(" · ".join(bloggers))}</div>'
+                     if bloggers else "")
         src_line = f'<div class="muted" style="font-size:11px">출처: {e(src)}</div>' if src else ""
         rows.append(f'<div style="padding:7px 0;border-bottom:1px solid var(--line)">'
                     f'<div style="display:flex;justify-content:space-between;gap:8px"><b>{e(it["kw"])}</b>{new_badge(it)}'
                     f'<span class="seal">{it.get("score", "")}</span></div>'
-                    f'<div style="font-size:12px;margin-top:3px">{calc}</div>{raw_line}{src_line}</div>')
-    return (f'<details style="margin-top:6px"><summary class="muted">키워드별 점수 계산 ({len(items)}개)</summary>'
-            f'<div class="muted" style="font-size:11px;margin-top:4px">각 항목 점수를 더해 합계가 돼요 (화제성: 네이버인기·급상승·뉴스·최신·출처·유튜브 / 수요: 검색량)</div>'
+                    f'<div style="font-size:12px;margin-top:3px">{"".join(cat_bits)}{neg}</div>{raw_line}{blog_line}{src_line}</div>')
+    return (f'<details style="margin-top:6px"><summary class="muted">키워드별 점수 ({len(items)}개)</summary>'
+            f'<div class="muted" style="font-size:11px;margin-top:4px">세 묶음을 더해 합계 — '
+            f'<b style="color:{CAT_COLOR["화제성"]}">화제성</b>(급상승·뉴스·출처) : '
+            f'<b style="color:{CAT_COLOR["최신성"]}">최신성</b>(블로거·어사이드) : '
+            f'<b style="color:{CAT_COLOR["수요"]}">수요</b>(검색량) = 2:1:1</div>'
             f'<div style="margin-top:4px">{"".join(rows)}</div></details>')
 
 
