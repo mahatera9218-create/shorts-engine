@@ -54,7 +54,7 @@ def run() -> None:
     if F.BLOG["id"] == "econ":  # 정부 지원금·정책 안내는 안 씀 (대표 결정 2026-10-10)
         from .econ_sections import POLICY
         vol = {k: v for k, v in vol.items() if not POLICY.search(k)}
-    ent = [k for k in vol if has_name(k)]
+    ent = [k for k in vol if has_name(k)]  # 회사·연예인·생활 말이 든 키워드를 후보 앞자리에
     rest = [k for k in sorted(vol, key=lambda k: -vol[k]) if k not in ent]
     cands = (sorted(ent, key=lambda k: -vol[k]) + rest)[:N_CAND]
     hub = _hub()
@@ -66,8 +66,8 @@ def run() -> None:
     scored = []
     for k in cands:
         r = (rises.get(k) or {}).get("rise", 0.0)
-        steady = any(t in k for t in topics) and vol[k] >= 10000  # 아파트·금리·환율처럼 늘 많이 찾는 생활 말은 줄지만 않으면 (2026-10-10)
-        if r < (1.0 if steady else 1.2):  # 평소보다 20% 이상 오른 것만
+        steady = any(t in k for t in topics) and vol[k] >= 10000  # 아파트·금리·환율처럼 늘 많이 찾는 생활 말은 크게 줄지만 않으면 (2026-10-10)
+        if r < (0.9 if steady else 1.2):  # 평소보다 20% 이상 오른 것만 (생활 말은 주말에 검색이 줄어 0.9까지)
             continue
         rise_pt = min(60, (r - 1) * 60)  # 평소의 2배면 60점
         vol_pt = min(40, max(0.0, (math.log10(vol[k]) - 3) / 3 * 40)) if vol[k] > 0 else 0  # 1천 → 0점, 100만 → 40점
@@ -120,5 +120,7 @@ def run() -> None:
     F.save(out, {"date": F.today(), "updated": datetime.now(F.KST).strftime("%H:%M"), "items": items})
     if F.BLOG["id"] == "econ":
         print("섹션별:", {k: sum(1 for it in items if it.get("section") == k) for k in dict.fromkeys(it.get("section") for it in items)})
-        print("생활 말 상승률(상위 10):", [(k, round((rises.get(k) or {}).get("rise", 0), 2)) for k in cands if any(t in k for t in topics)][:10])
+        for sec in ("부동산", "생활경제"):
+            got = [(k, round((rises.get(k) or {}).get("rise", 0), 2)) for k in cands if section({"kw": k}) == sec]
+            print(f"{sec} 후보 {len(got)}개:", got[:12])
     print(f"급상승 {len(items)}개 → {out}" + (f" (1위 {items[0]['kw']} ×{items[0]['rise']})" if items else ""))
