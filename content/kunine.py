@@ -3,7 +3,7 @@
 역할: 조사 = Grok(웹 + X) · 글 = Claude · 그림 = GPT Image(실사풍) → 없으면 Pexels 무료 사진. (GPT 사실 대조는 대표 결정으로 뺌)
 프롬프트: prompts/kunine-blog.md(강사 원문, 그대로) + prompts/kunine-addon.md(우리 자동화용 덧붙임).
 
-titles <키워드>        : Grok 조사 메모 → Claude가 8유형 × 5개 = 40개 + 최종 BEST 5 (2026-10-10 원문)
+titles <키워드>        : Grok 조사 메모 → Claude가 8유형 × 2개 = 16개 중 유형마다 best 1개(버튼) + 최종 BEST 1(★) (2026-10-10 비용)
 produce <주제폴더> <번호>: 고른 제목으로 본문(1,500자) · 표 · Q&A · 해시태그 20 → 정보 이득·사실 대조·형식 검사
                          → 소제목 구간마다 그 아래 글과 이어지는 사진 2장 + 썸네일 → econ/posts/<글>/ (발행 도우미)
 억선생 자료(그림 창고·캐릭터·쇼츠)는 클립용으로 남겨 두고 블로그에는 쓰지 않는다.
@@ -25,6 +25,7 @@ from .title_refs import VERSION_SCHEMA, versions_ask
 PROMPT = ROOT / "prompts" / "kunine-blog.md"
 ADDON = ROOT / "prompts" / "kunine-addon.md"
 TYPES = ["비교형", "실행형", "이득형", "궁금형", "위협형", "반전형", "확신형", "자극형"]  # 2026-10-10 원문 8유형
+PER_TYPE = 2   # 유형마다 만드는 후보 수 (대표 결정 2026-10-10 비용: 5→2, 도우미엔 유형마다 best 1개만 버튼)
 REF_LINE = "참조문헌: 뉴스, 언론보도 및 공식자료"  # 강사 지정 문구, Q&A 뒤에 정확히 한 번
 AI_NOTE = "※ 일부 이미지는 AI로 만든 이미지입니다. 이 글은 정보 제공용이며 투자 권유가 아닙니다."
 MAX_IMAGES = 6           # 본문 사진 최대 (소제목 구간마다 2장)
@@ -70,7 +71,7 @@ TITLES = {"type": "object", "additionalProperties": False, "required": ["groups"
                                    "properties": {"type": {"type": "string", "enum": TYPES},
                                                   "candidates": {"type": "array", "items": {"type": "string"}},
                                                   "best": {"type": "integer", "description": "candidates 중 BEST의 번호(0부터)"}}}},
-              "final": {"type": "array", "description": "40개 중 고른 최종 BEST 5 (1번이 최종 1순위)",
+              "final": {"type": "array", "description": "유형별 best 8개 중 고른 최종 BEST 1 (1번이 최종 1순위)",
                         "items": {"type": "object", "additionalProperties": False, "required": ["title", "type"],
                                   "properties": {"title": {"type": "string"}, "type": {"type": "string", "enum": TYPES}}}}}}
 
@@ -88,8 +89,8 @@ def titles(kw: str) -> Path:
     (d / "research.md").write_text(f"# 조사 메모: {kw}\n\n{memo}\n", encoding="utf-8")
     out = F.claude_json(prompt() + [g for g in [title_guide()] if g], (
         f"핵심키워드: {kw}\n\n[조사 메모]\n{memo[:10000]}\n\n"
-        "이번 단계는 **제목만** 만듭니다(본문은 다음 단계). 원문의 제목 규칙대로 8유형 × 5개 = 40개와 "
-        "최종 BEST 5를 JSON으로 주세요(45자 이내 기본, 자연스러우면 조금 길어도 됨).\n\n" + __import__("content.blog_stats", fromlist=["x"]).title_hint(F.BLOG["id"]) + __import__("content.good_rules", fromlist=["x"]).title_hint(F.BLOG["id"])),
+        "이번 단계는 **제목만** 만듭니다(본문은 다음 단계). 원문의 제목 규칙대로 8유형마다 2개씩(= 16개), 유형마다 그중 best 하나를 고르고, "
+        "그 유형별 best 8개 중 최종 BEST 1을 골라 JSON으로 주세요(45자 이내 기본, 자연스러우면 조금 길어도 됨).\n\n" + __import__("content.blog_stats", fromlist=["x"]).title_hint(F.BLOG["id"]) + __import__("content.good_rules", fromlist=["x"]).title_hint(F.BLOG["id"])),
         TITLES, stage="제목(쿠니네)")
     core = kw.split()[0]
     items, seen = [], set()
@@ -105,11 +106,11 @@ def titles(kw: str) -> Path:
 
     bests = {g["type"]: g["candidates"][g["best"]] for g in out["groups"] if g["candidates"]
              and 0 <= g["best"] < len(g["candidates"])}
-    for r, f in enumerate(out["final"][:5], 1):  # 최종 BEST 5가 1~5번
+    for r, f in enumerate(out["final"][:1], 1):  # 최종 BEST 1이 ★ (대표 결정 2026-10-10)
         add(f["title"], f["type"], r, f["title"] in bests.values())
     groups = []
     for g in out["groups"]:
-        idx = [add(t, g["type"], None, t == bests.get(g["type"])) for t in g["candidates"][:5]]
+        idx = [add(t, g["type"], None, t == bests.get(g["type"])) for t in g["candidates"][:PER_TYPE]]
         groups.append({"type": g["type"], "idx": idx, "best": idx[g["best"]] if 0 <= g["best"] < len(idx) else None})
     from .good_rules import ensure  # 반응굿 유형이 하나도 없으면 3개 보충 (대표 지시 2026-10-08)
     extra = ensure(items, F.BLOG["id"], kw, memo, prompt(), 45)
@@ -118,7 +119,7 @@ def titles(kw: str) -> Path:
     (d / "chosen.yaml").unlink(missing_ok=True)
     F.save(d / "titles.yaml", {"keyword": kw, "person": out.get("person", ""), "mode": "쿠니네",
                                "made": datetime.now(F.KST).strftime("%H:%M"), "items": items, "groups": groups})
-    print(f"제목 {len(items)}개 (최종 BEST 5) → {d}")
+    print(f"제목 {len(items)}개 (유형별 best + 최종 ★) → {d}")
     return d
 
 
