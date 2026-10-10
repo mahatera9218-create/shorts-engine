@@ -292,7 +292,8 @@ def keywords(force: bool = False) -> Path:
                  'JSON 배열만 답하세요: [{"kw": "짧은 키워드", "area": "분야", "why": "왜 화제인지 한 줄", '
                  '"person": "관련 인물이 있으면 이름(회사·소속), 없으면 빈칸"}]')
         grok_items = [it for it in (parse_json(g) or []) if isinstance(it, dict) and it.get("kw")]
-    mine = [x for x in old.get("items", []) if "대표" in (x.get("src") or "") or "캡처" in (x.get("src") or "") or x.get("naver_rank")]  # 진짜 대표·캡처·어사이드만 (2026-10-10 '대표' 오표기 수정)
+    mine = [x for x in old.get("items", [])
+            if x.get("by_me") or x.get("naver_rank") or "캡처" in (x.get("src") or "")]  # 진짜 대표(by_me)·어사이드·캡처만. src 문자열에 기대지 않음 — 옛 '대표' 오표기 찌꺼기가 되살아나지 않게 (2026-10-10)
     rising_items = (load(day / "rising.yaml", {}) or {}).get("items", [])  # 급상승 키워드를 메인 후보에 합침 (대표 결정 2026-10-10)
     items = run(grok_items, mine, rising_items=rising_items)
     # 최근 N일 이미 글로 쓴 주제는 뺀다 (대표 지적 2026-10-10 '2주 전 글이 또 나온다'). 단 검색량 초대형은 남김
@@ -340,11 +341,15 @@ def add(text: str, aside: bool = False) -> None:
             hit["src"] = ", ".join(sorted(set(filter(None, (hit.get("src") or "").split(", "))) | {src}))
             if aside:
                 hit["naver_rank"] = min(hit.get("naver_rank") or 99, rank)
+            else:
+                hit["by_me"] = True  # 대표가 직접 넣었다는 영구 표식 (출처 '대표' 판정 기준, 2026-10-10)
         else:
             new = {"kw": kw, "area": "", "src": src, "why": "어사이드 · 네이버 홈판·인기글" if aside else "대표가 조사해 넣음",
                    "rows": [], "sources": {src: 1}}
             if aside:
                 new["naver_rank"] = rank
+            else:
+                new["by_me"] = True  # 대표가 직접 넣었다는 영구 표식 (2026-10-10)
             items.append(new)
     if items:  # 검색량·뉴스량 점수는 바로 매긴다 (AI 비용 없음)
         from .econ_score import score

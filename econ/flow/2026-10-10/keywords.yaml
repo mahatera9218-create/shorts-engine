@@ -70,36 +70,6 @@ items:
     월검색: 1813800
     상승: 1.08
     유튜브7일: 40752
-- kw: 카카오 주가
-  core: 카카오
-  area: 국내주식
-  why: 대표 지정 키워드, 카카오 주가 흐름 점검
-  person: ''
-  product: ''
-  rows:
-  - D2
-  src: 대표
-  bloggers: []
-  sources:
-    대표: 1
-  score: 66
-  parts:
-    네이버: 0
-    급상승: 2
-    최신: 10
-    출처: 5
-    뉴스: 11
-    검색: 30
-    유튜브: 8
-  new: true
-  surge: false
-  stats:
-    뉴스24h: 91
-    뉴스6h: 15
-    블로그24h: 100
-    월검색: 445700
-    상승: 1.1
-    유튜브7일: 227873
 - kw: SK하이닉스 주가 하락
   core: SK하이닉스
   area: 국내주식
@@ -137,66 +107,6 @@ items:
     월검색: 6424000
     상승: 1.15
     유튜브7일: 96673
-- kw: 기아 주가
-  core: 기아
-  area: 국내주식
-  why: 대표 지정 키워드, 기아 주가 흐름 점검
-  person: ''
-  product: ''
-  rows:
-  - D4
-  src: 대표
-  bloggers: []
-  sources:
-    대표: 1
-  score: 65
-  parts:
-    네이버: 0
-    급상승: 0
-    최신: 10
-    출처: 5
-    뉴스: 12
-    검색: 30
-    유튜브: 8
-  new: true
-  surge: false
-  stats:
-    뉴스24h: 100
-    뉴스6h: 100
-    블로그24h: 100
-    월검색: 381700
-    상승: 1.02
-    유튜브7일: 413438
-- kw: 아마존 AWS 주가
-  core: 아마존
-  area: 미국주식
-  why: 대표 지정 키워드, 아마존·AWS 주가 점검
-  person: ''
-  product: ''
-  rows:
-  - D10
-  src: 대표
-  bloggers: []
-  sources:
-    대표: 1
-  score: 65
-  parts:
-    네이버: 0
-    급상승: 2
-    최신: 10
-    출처: 5
-    뉴스: 12
-    검색: 28
-    유튜브: 8
-  new: true
-  surge: false
-  stats:
-    뉴스24h: 100
-    뉴스6h: 20
-    블로그24h: 63
-    월검색: 219000
-    상승: 1.11
-    유튜브7일: 269102
 - kw: 미국 증시 S&P500 나스닥 반등
   core: S&P500
   area: 미국주식
