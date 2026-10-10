@@ -23,7 +23,7 @@
 - 크리에이터 어드바이저 → 트렌드 → 주제 '패션·미용'의 인기·급상승 검색어
 - 네이버 블로그 홈의 패션·미용 인기글, 네이버 앱 홈판의 패션·스타일 글 20편 정도
 - 아래 패션 블로거들의 최근 2일 글 중 공감·댓글이 평소보다 눈에 띄게 많은 글의 주제:
-  blog.naver.com/qkrrnfjqm , ohye1991 , jayuyu , lub_hong , goodface0863 , cocoleenice , semingg , djdjdj8206 , by-nyong , merryeeun , wlstjs9754 , tjthdus94
+  blog.naver.com/qkrrnfjqm , ohye1991 , jayuyu , lub_hong , goodface0863 , cocoleenice , semingg , djdjdj8206 , by-nyong , merryeeun , wlstjs9754 , tjthdus94 , byoung4595 , mythya0730
 뽑는 것: 인물(연예인 이름) + 아이템 + 브랜드(나와 있으면) + 가격(나와 있으면). 예) 원희 버킷백 샤넬 1238만원
 순위: 여러 곳에 겹친 것 → 블로거 반응이 큰 것 → 어드바이저 급상승 → 나머지. 최근 이틀 안, 인물 없는 일반 코디·광고·협찬 글은 빼기. 최대 10개.
 
