@@ -75,3 +75,4 @@ endpoints:
     search_trend: /search-trend/v1/search
     # 쇼핑 인사이트 분야별 트렌드. HUB 경로 미확인(추정). seeds.yaml에 카테고리 코드가 있을 때만 호출한다.
     shopping_category: /shopping/v1/categories
+    shopping_keywords: /shopping/v1/category/keywords   # 분야 내 상품 키워드별 트렌드 (계절 인기 상품, 2026-10-10)
