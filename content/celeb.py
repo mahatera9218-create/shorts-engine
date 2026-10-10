@@ -128,15 +128,15 @@ def _grok_research(kw: str) -> str:
 
 # ---------------------------------------------------------------- 제목 (그룹 3 × 5 + 최종 1)
 
-GROUPS = ["그룹 1 주인공 숨김", "그룹 2 이름 노출", "그룹 3 관련 인물"]
-TITLES = {"type": "object", "additionalProperties": False, "required": ["groups", "final", "person"],
+# 제목 = 원문(2026-10-10 '출발' 최종본): 16유형 중 서로 다른 관점으로 후보 15개 + 최종 추천 1개
+TITLES = {"type": "object", "additionalProperties": False, "required": ["candidates", "final", "person"],
           "properties": {
               "person": {"type": "string", "description": "주인공 이름"},
-              "groups": {"type": "array", "description": "그룹 1·2·3 순서로 3개",
-                         "items": {"type": "object", "additionalProperties": False, "required": ["group", "titles"],
-                                   "properties": {"group": {"type": "string", "enum": GROUPS},
-                                                  "titles": {"type": "array", "items": {"type": "string"}}}}},
-              "final": {"type": "string", "description": "15개 중 최종 추천 제목 1개"}}}
+              "candidates": {"type": "array", "description": "제목 후보 정확히 15개, 서로 다른 유형·관점",
+                             "items": {"type": "object", "additionalProperties": False, "required": ["type", "title"],
+                                       "properties": {"type": {"type": "string", "description": "원문 16유형 중 유형명 (예: 구어체 감탄·반문형)"},
+                                                      "title": {"type": "string"}}}},
+              "final": {"type": "string", "description": "15개 중 최종 추천 제목 1개 (후보 중 하나 그대로)"}}}
 
 
 def title_guide() -> str:
@@ -162,7 +162,7 @@ def titles(kw: str, memo: str | None = None) -> Path:
     memo = memo or research(kw) or F.claude_research(kw)
     (d / "research.md").write_text(f"# 조사 메모: {kw}\n\n{memo}\n", encoding="utf-8")
     out = F.claude_json(prompt() + [g for g in [title_guide()] if g], (
-        f"키워드(주어): {kw}\n\n[조사 메모]\n{memo[:10000]}\n\n이번 단계는 **제목만** 만듭니다. 원문의 제목 규칙대로 그룹 1·2·3 각 5개와 "
+        f"키워드(주어): {kw}\n\n[조사 메모]\n{memo[:10000]}\n\n이번 단계는 **제목만** 만듭니다. 원문의 제목 규칙대로 서로 다른 유형의 후보 15개(유형명과 함께)와 "
         "최종 추천 1개를 JSON으로 주세요.\n\n" + __import__("content.blog_stats", fromlist=["x"]).title_hint(F.BLOG["id"]) + __import__("content.good_rules", fromlist=["x"]).title_hint(F.BLOG["id"])), TITLES, stage="제목(연예·패션)")
     person = out.get("person", "")
     items, groups = [], []
@@ -172,18 +172,15 @@ def titles(kw: str, memo: str | None = None) -> Path:
             if x["title"] == t:
                 return i
         n = len(t)
-        flags = ([f"{n}자(35자 넘음)"] if n > 35 else []) + (["괄호"] if re.search(r"[\[\]()]", t) else [])
-        if g.startswith("그룹 1") and person and person in t:
-            flags.append("주인공 이름 들어감")
-        items.append({"title": t, "type": g.split()[0] + " " + g.split()[1], "rank": rank, "best": rank == 1,
-                      "chars": n, "flags": flags})
+        flags = [f"{n}자(70자 넘음)"] if n > 70 else []  # 원문 25~70자 (2026-10-10)
+        items.append({"title": t, "type": g, "rank": rank, "best": rank == 1, "chars": n, "flags": flags})
         return len(items) - 1
 
-    add(out["final"], next((g["group"] for g in out["groups"] if out["final"] in g["titles"]), GROUPS[0]), 1)
-    for g in out["groups"]:
-        groups.append({"type": g["group"], "idx": [add(t, g["group"], None) for t in g["titles"][:5]], "best": None})
+    cands = [c for c in out["candidates"] if c.get("title", "").strip()][:15]
+    add(out["final"], next((c["type"] for c in cands if c["title"] == out["final"]), "최종 추천"), 1)
+    groups.append({"type": "제목 후보", "idx": [add(c["title"], c["type"], None) for c in cands], "best": None})
     from .good_rules import ensure  # 반응굿 유형이 하나도 없으면 3개 보충 (대표 지시 2026-10-08)
-    extra = ensure(items, F.BLOG["id"], kw, memo, prompt(), 35)
+    extra = ensure(items, F.BLOG["id"], kw, memo, prompt(), 70)
     if extra:
         groups.insert(0, {"type": "반응굿 유형", "idx": [add(t, "반응굿 유형", None) for t in extra], "best": None})
     (d / "chosen.yaml").unlink(missing_ok=True)
@@ -200,7 +197,7 @@ IMG = {"type": "object", "additionalProperties": False, "required": ["kind", "qu
                       "query_en": {"type": "string"}, "prompt": {"type": "string"}, "stock_query": {"type": "string"},
                       "alt": {"type": "string"}}}
 BODY = {"type": "object", "additionalProperties": False,
-        "required": ["greeting", "sections", "summary", "tags", "sources", "thumb", "area"],
+        "required": ["greeting", "sections", "tags", "sources", "thumb", "area"],
         "properties": {
             "area": {"type": "string"},
             "greeting": {"type": "string", "description": "첫 문단(도입). 블로그 설정의 인사말 규칙을 따름"},
@@ -209,8 +206,7 @@ BODY = {"type": "object", "additionalProperties": False,
                                                     "properties": {"heading": {"type": "string"},
                                                                    "images": {"type": "array", "items": IMG},
                                                                    "paragraphs": {"type": "array", "items": {"type": "string"}}}}},
-            "summary": {"type": "string", "description": "숫자·순서 말 없는 짧은 전체 요약"},
-            "tags": {"type": "array", "items": {"type": "string"}, "description": "8개 안팎(6~10개): 인물 → 인물+아이템 → 브랜드 → 브랜드+아이템 → 일반 키워드 순"},
+            "tags": {"type": "array", "items": {"type": "string"}, "description": "18~19개 (원문 최대 19개): 인물 → 인물+아이템 → 브랜드 → 브랜드+아이템 → 일반 키워드 순"},
             "sources": {"type": "array", "items": {"type": "string"}},
             "thumb": IMG}}
 
@@ -225,9 +221,7 @@ NO_INTRO = {"fashion": ["캐시미어 다이어리", "캐다입니다", "캐다�
 def check(a: dict) -> list[str]:
     t, bad = text_of(a), []
     if len(t) < 1500:  # 글자 수는 원문 프롬프트 기준 (대표 결정 2026-10-08)
-        bad.append(f"본문 {len(t)}자 → 1,500자 이상(1,800~2,500자)")
-    if re.search(r"\d|첫째|둘째|셋째|두 가지|세 가지", a["summary"]):
-        bad.append("요약에 숫자·순서 말 → 빼기")
+        bad.append(f"본문 {len(t)}자 → 1,500자 이상")
     raw = "\n".join(p for s in a["sections"] for p in s["paragraphs"])
     if len(re.findall(r"\*\*|__", raw)) // 2 > 2:  # 쿠니네는 강조 거의 없음 (조사 2026-10-08)
         bad.append("굵게·밑줄 강조 → 글 전체 2곳 이내로")
@@ -238,10 +232,8 @@ def check(a: dict) -> list[str]:
         bad.append("언론사명·링크 → 빼기")
     if not 17 <= len(a["tags"]) <= 19:  # 쿠니네 실제 18~19개 (대표 결정 2026-10-08 블로그 글 조사 후, 원문 '20개 미만' 안)
         bad.append(f"해시태그 {len(a['tags'])}개 → 18~19개")
-    if not 7 <= len(a["sections"]) <= 9:  # 원문 추천 흐름 8구간 (대표 지적 2026-10-07)
-        bad.append(f"소제목 구간 {len(a['sections'])}개 → 8개(전체 착장 → 눈에 띈 제품 → 브랜드·제품명 → 디자인·소재 → 가격 → 실루엣·어울리는 이유 → 따라 입기 → 마무리)")
-    if re.search(r"알려진 바가 없|확인되지 않아|확인되지 않았|정보가 없어", t):
-        bad.append("'가격이 알려지지 않았다' 같은 조사 과정 문장 → 빼고, 같은 라인 공식가나 가격대 고르는 기준으로")
+    if not 5 <= len(a["sections"]) <= 7:  # 원문 본문 구조 7단계 = 도입(소제목 없음) + 소제목 6구간 (2026-10-10)
+        bad.append(f"소제목 구간 {len(a['sections'])}개 → 6개(공개된 상황 → 전체 스타일링 → 브랜드·제품 정보 → 색상·소재·실루엣·디테일 → 스타일링 팁 → 감상·마무리)")
     few = [s["heading"] for s in a["sections"][:-1] if len(s["images"]) < 1]  # 구간마다 사진 1장 (마무리 제외, 대표 결정 2026-10-08 사진 줄이기)
     if few:
         bad.append("사진 없는 구간 → 1장씩: " + ", ".join(few[:5]))
@@ -299,7 +291,6 @@ def produce(slug: str, n: int) -> Path:
             k += 1
         lines.append(f"■ {sec['heading']}")
         lines += sec["paragraphs"]
-    lines.append(a["summary"])
     # AI 사진 안내·사진 출처 줄 없음 (대표 결정 2026-10-08: 패션은 실사만, 쿠니네처럼 출처 안 적음)
     (post / "body.txt").write_text("\n\n".join(lines) + "\n", encoding="utf-8")
     (post / "prompts.json").write_text(json.dumps(prompts, ensure_ascii=False, indent=1), encoding="utf-8")

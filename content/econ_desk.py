@@ -152,6 +152,9 @@ def prompts_card(p: dict) -> str:
         parts.append(all_prompt(items, best))  # 대표사진이 제목을 담도록 제목을 같이 (2026-10-07)
     if find:
         parts.append("\n".join(f"{it['n']}번 · {it['label']}" + (f" — 검색어: {it['find']}" if it.get("find") else "") for it in find))
+    px = POSTS / p["folder"] / "pixabay.txt"
+    if px.exists():  # 경제 원문 '픽사베이 추천 검색어 5개' (2026-10-10)
+        parts.append("픽사베이 검색어: " + ", ".join(l for l in px.read_text(encoding="utf-8").splitlines() if l.strip()))
     text = "\n\n".join(parts)
     if not text:
         return ""
