@@ -509,7 +509,7 @@ def kw_row(it: dict, done: dict[str, str]) -> str:
 
 def flow_html() -> str:
     """키워드(대표가 고름) → 제목 후보(프롬프트 기준) → 대표가 제목 고름(패션은 상품 링크도) → 글 (대표 결정 2026-10-09 역할 정리).
-    경제 키워드 = 국내주식·해외주식·금·비트코인 섹션마다 3개, 75점 이상만 / 패션 = 점수 상위 5개."""
+    경제 키워드 = 국내주식·해외주식·금·비트코인·부동산·환율·생활경제 섹션마다 3개 (config sections) / 패션 = 점수 상위 5개."""
     from .econ_sections import pick
     e = html.escape
     today = datetime.now(KST).strftime("%Y-%m-%d")

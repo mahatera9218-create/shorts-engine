@@ -14,7 +14,7 @@ from datetime import datetime
 
 from . import econ_flow as F
 
-N_CAND, N_FRESH, N_SHOW = 120, 30, 15
+N_CAND, N_FRESH, N_SHOW = 150, 40, 15
 NAME_PT, BROAD_PT = 20, -15  # 회사·연예인 이름이 든 키워드는 올리고, 이름 없는 넓은 말은 내림 (대표 요청 2026-10-10)
 
 
@@ -48,8 +48,12 @@ def run() -> None:
         for n, v in _volumes(names).items():
             vol[n.replace(" ", "")] = max(vol.get(n.replace(" ", ""), 0), v or 0)
     keyed = [n.replace(" ", "") for n in names]
+    topics = [t.replace(" ", "") for t in cfg.get("rising_topics") or []]  # 부동산·환율·생활경제 말 (2026-10-10)
     def has_name(k: str) -> bool:
-        return any(n and n in k for n in keyed)
+        return any(n and n in k for n in keyed + topics)
+    if F.BLOG["id"] == "econ":  # 정부 지원금·정책 안내는 안 씀 (대표 결정 2026-10-10)
+        from .econ_sections import POLICY
+        vol = {k: v for k, v in vol.items() if not POLICY.search(k)}
     ent = [k for k in vol if has_name(k)]
     rest = [k for k in sorted(vol, key=lambda k: -vol[k]) if k not in ent]
     cands = (sorted(ent, key=lambda k: -vol[k]) + rest)[:N_CAND]
@@ -78,11 +82,18 @@ def run() -> None:
             print(f"블로그 검색 실패 {it['kw']}: {str(e)[:80]}")
             it["blog24h"] = None
         it["pt"] += min(20, (it["blog24h"] or 0) / 5)  # 24시간 새 글 100개면 20점
-    items = sorted(scored[:N_FRESH], key=lambda x: -x["pt"])[:N_SHOW]
-    if F.BLOG["id"] == "econ":
+    items = sorted(scored[:N_FRESH], key=lambda x: -x["pt"])
+    if F.BLOG["id"] == "econ":  # 섹션마다 4개까지 — 회사만 몰리지 않고 부동산·환율·생활경제도 보이게 (2026-10-10)
         from .econ_sections import section
+        cnt: dict[str, int] = {}
+        keep = []
         for it in items:
             it["section"] = section({"kw": it["kw"]})
+            cnt[it["section"]] = cnt.get(it["section"], 0) + 1
+            if cnt[it["section"]] <= 4:
+                keep.append(it)
+        items = keep
+    items = items[:N_SHOW]
     for it in items:
         it["score"] = round(it.pop("pt"))
     out = F.FLOW / F.today() / "rising.yaml"
