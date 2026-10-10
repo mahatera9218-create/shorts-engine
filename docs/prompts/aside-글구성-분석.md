@@ -9,7 +9,7 @@
 
 [대상] 블로거마다 최근 60편의 공감·댓글을 보고 반응 많은 글 3편 + 반응 적은 글 1편
 경제: https://blog.naver.com/zkfldb888 (쿠니네, 5편+2편으로 더 자세히) , 8starstarstar8 , balahk , dutyfrees , meaning87 , ranto28 , rmsgud2007 , ishiseido77 , antsal , crazytech
-패션: https://blog.naver.com/qkrrnfjqm (쿠니네패션, 5편+2편으로 더 자세히) , ohye1991 , jayuyu , lub_hong , goodface0863 , cocoleenice , semingg , djdjdj8206 , by-nyong , merryeeun , wlstjs9754 , tjthdus94
+패션: https://blog.naver.com/qkrrnfjqm (쿠니네패션, 5편+2편으로 더 자세히) , ohye1991 , jayuyu , lub_hong , goodface0863 , cocoleenice , semingg , djdjdj8206 , by-nyong , merryeeun , wlstjs9754 , tjthdus94 , byoung4595 , mythya0730
 
 [글마다 볼 것]
 1. 전체 구성 유형: 두괄식(결론 먼저) / 미괄식(결론 끝) / 양괄식 / 기승전결 / 문제-원인-해결 / 시간순 / 나열형 / 비교형 / 스토리형 중 무엇인지, 섞였으면 어떻게
