@@ -61,6 +61,7 @@ jobs:
           NAVER_AD_API_KEY: ${{ secrets.NAVER_AD_API_KEY }}       # 키워드 점수: 월간 검색량 (검색광고 API)
           NAVER_AD_SECRET_KEY: ${{ secrets.NAVER_AD_SECRET_KEY }}
           NAVER_AD_CUSTOMER_ID: ${{ secrets.NAVER_AD_CUSTOMER_ID }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}         # 키워드 화제성 보조: 유튜브 최근 영상 수 (2026-10-10)
           BLOG: ${{ inputs.blog || 'econ' }}   # 경제·연예·패션 (config/blogs.yaml, 2026-10-05)
           CMD: ${{ inputs.cmd || (github.event.schedule == '30 22 * * 0' && 'learn') || ((github.event.schedule == '40 20 * * *' || github.event_name == 'push') && 'refs') || 'keywords' }}
           ARG1: ${{ inputs.arg1 }}
