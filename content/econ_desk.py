@@ -300,8 +300,9 @@ def index(by_blog: dict[str, list[dict]]) -> str:
     first = next(iter(blogs))
     return head(f"{NAME} 발행 도우미") + f"""
 <header class="brand"><img src="icon-180.png" alt=""><div><h1>발행 도우미</h1><p class="muted">{" · ".join(html.escape(b["label"]) for b in blogs.values())} · {now} 업데이트</p></div></header>
-<nav class="tabs">{tabs}<a href="#stats" data-t="stats">성과</a><a href="photo/">📐 사진</a></nav>
+<nav class="tabs">{tabs}<a href="#aside" data-t="aside">🛰 어사이드</a><a href="#stats" data-t="stats">성과</a><a href="photo/">📐 사진</a></nav>
 {secs}
+<section class="tab" id="aside" hidden>{aside_tab(blogs)}</section>
 <section class="tab" id="stats" hidden>{compare_html(blogs, by_blog)}</section>
 </main><script>const POST={{"blocks":[],"images":[]}};{desk.JS}
 function tab(){{const h=(location.hash||'#{first}').slice(1);document.querySelectorAll('section.tab').forEach(s=>s.hidden=s.id!==h);
@@ -622,6 +623,35 @@ def stats_html(posts: list[dict]) -> str:
         (f'<details class="card"><summary><b>📐 참고 블로거 틀</b> <span class="muted">썸네일·제목·글 구성 (한 번 분석)</span></summary>'
          f'<pre style="white-space:pre-wrap;font-size:13px">{e(frame.read_text(encoding="utf-8")[:8000])}</pre></details>') if frame.exists() else "")
     return ("<div>" + cost + pub + blog + rss_html + "</div><div><h2>캡처에서 읽은 숫자</h2>" + cap_html + learn_html + "</div>")
+
+
+def aside_tab(blogs: dict) -> str:
+    """🛰 어사이드 탭: 어사이드가 올린 키워드 전체를 경제·패션 각각, 최근 날짜순으로 (대표 요청 2026-10-10)."""
+    e = html.escape
+    cards = []
+    for bid, b in blogs.items():
+        flow = b["base"] / "flow"
+        days = []
+        for f in sorted(flow.glob("*/keywords.yaml"), reverse=True)[:10] if flow.exists() else []:
+            try:
+                a = (yaml.safe_load(f.read_text(encoding="utf-8")) or {}).get("aside")
+            except Exception:  # noqa: BLE001
+                a = None
+            if a and a.get("list"):
+                days.append((f.parent.name, a))
+        if days:
+            body = "".join(
+                f'<details class="fold"{" open" if i == 0 else ""} data-k="aside-{bid}-{day}">'
+                f'<summary>{e(day)} · {e(a.get("at", ""))} · {len(a["list"])}개</summary>'
+                f'<ol style="margin:6px 0 10px;padding-left:22px">'
+                + "".join(f'<li style="padding:2px 0">{e(str(k))}</li>' for k in a["list"]) + '</ol></details>'
+                for i, (day, a) in enumerate(days))
+        else:
+            body = '<p class="muted">어사이드가 올린 키워드가 아직 없어요. 매일 아침 어사이드 루틴이 돌면 여기에 쌓여요.</p>'
+        cards.append(f'<div class="card"><h2>{e(b["label"])}</h2>{body}</div>')
+    return ('<h2 style="margin:8px 0">🛰 어사이드가 올린 키워드</h2>'
+            '<p class="muted" style="margin:0 0 10px">점수·섹션과 상관없이, 어사이드가 네이버에서 모아 올린 그대로예요.</p>'
+            + "".join(cards))
 
 
 def compare_html(blogs: dict, by_blog: dict[str, list[dict]]) -> str:
