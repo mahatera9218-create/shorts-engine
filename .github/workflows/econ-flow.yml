@@ -68,7 +68,7 @@ jobs:
           ARG2: ${{ inputs.arg2 }}
         run: |
           exec > >(tee -a run.log) 2>&1   # 실패 이유를 찾으려고 기록을 남김 (2026-10-10)
-          if [ "$CMD" = "keywords" ]; then python -m content.econ_flow keywords
+          if [ "$CMD" = "keywords" ]; then python -m content.econ_flow keywords "$ARG1"   # ARG1=force면 Grok 새로 (다시 모으기)
           elif [ "$CMD" = "add" ]; then python -m content.econ_flow add "$ARG1"
           elif [ "$CMD" = "aside" ]; then python -m content.econ_flow aside "$ARG1"   # 어사이드 목록 → 바로 자동 글 (2026-10-07)
           elif [ "$CMD" = "auto" ]; then python -m content.econ_flow auto "$ARG1"     # 10시 자동 글 / 도우미 다시 돌리기(force)
