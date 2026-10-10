@@ -1,105 +1,68 @@
 date: '2026-10-10'
-updated: 08:48
+updated: 09:05
 items:
-- kw: 경량패딩 추천
+- kw: 경량 패딩 추천
   core: 경량패딩
   area: 의류
-  why: 올가을 패션업계 경쟁 구도가 경량 패딩으로, 네파 에어써밋 여성 경량 다운자켓도 소개
+  why: 올가을 패션업계 경량 패딩 신상 경쟁, 네파 에어써밋 등 후기
   person: ''
   product: 네파 에어써밋 여성 경량 다운자켓
   rows:
   - S1
+  - S5
   - S6
   - B54
   src: 뉴스검색, 블로거새글
   bloggers:
   - tjthdus94
   sources:
-    뉴스검색: 2
+    뉴스검색: 3
     블로거새글: 1
-  score: 68
+  score: 94
   parts:
     네이버: 0
-    최신: 6
-    출처: 11
-    뉴스: 2
+    최신: 19
+    출처: 13
+    뉴스: 4
     검색: 10
     제품: 15
   stats:
-    뉴스24h: 5
-    뉴스6h: 1
+    뉴스24h: 7
+    뉴스6h: 3
     블로그24h: 100
     월검색: 124000
-- kw: 문가영 샤넬 패션
-  core: 문가영 샤넬
-  area: 드라마 패션
-  why: 부산 아시아 스타 어워즈에서 샤넬 신상 착장이 워스트로 거론, 현백코어 룩과 샤넬 치마도 화제
-  person: 문가영
-  product: 샤넬 신상
-  rows:
-  - B3
-  - B7
-  - B26
-  - B33
-  - B40
-  - B1
-  src: 블로거, 블로거새글
-  bloggers:
-  - by-nyong
-  - djdjdj8206
-  - goodface0863
-  - jayuyu
-  - ohye1991
-  - semingg
-  sources:
-    블로거: 5
-    블로거새글: 1
-  score: 54
-  parts:
-    네이버: 0
-    최신: 0
-    출처: 20
-    뉴스: 0
-    검색: 0
-    제품: 15
-  stats:
-    뉴스24h: 0
-    뉴스6h: 0
-    블로그24h: 15
-    월검색: 40
-- kw: 장원영 바시티재킷
-  core: 장원영 재킷
+- kw: 로로피아나 코트 대체템
+  core: 로로피아나 코트
   area: 의류
-  why: 인천공항 출국길 토미힐피거 바시티재킷으로 단정하면서 선배 느낌을 낸 공항패션
-  person: 아이브 장원영
-  product: 토미힐피거 바시티재킷
+  why: 900만원 로로피아나 코트 대신 90만원대 헬렌카민스키 코트 추천 비교
+  person: ''
+  product: 헬렌카민스키 코트 90만원대
   rows:
-  - G2
-  - G8
+  - G14
   - G15
   src: Grok
   bloggers: []
   sources:
-    Grok: 3
-  score: 42
+    Grok: 2
+  score: 40
   parts:
     네이버: 0
     최신: 0
     출처: 6
-    뉴스: 6
-    검색: 0
+    뉴스: 0
+    검색: 5
     제품: 15
   stats:
-    뉴스24h: 12
+    뉴스24h: 0
     뉴스6h: 0
-    블로그24h: 14
-    월검색: 10
-- kw: 김연아 바람막이
+    블로그24h: 0
+    월검색: 3250
+- kw: 김연아 뉴발란스 바람막이
   core: 김연아 바람막이
   area: 의류
-  why: 뉴발란스 ESCAPE 윈드브레이커 자켓(아이보리) 착용, 간절기 아이템
+  why: 연아 바람막이로 불리는 뉴발란스 ESCAPE 윈드브레이커 착용 정보
   person: 김연아
-  product: 뉴발란스 ESCAPE 윈드브레이커 자켓
+  product: 뉴발란스 ESCAPE 윈드브레이커 자켓 아이보리
   rows:
   - B14
   src: 블로거새글
@@ -118,39 +81,13 @@ items:
   stats:
     뉴스24h: 0
     뉴스6h: 0
-    블로그24h: 3
+    블로그24h: 11
     월검색: 570
-- kw: 아이유 프라다 가방
-  core: 아이유 가방
-  area: 가방
-  why: 드라마 속 프라다 프린트 드레스와 미디움 갤러리아 백(610만원대) 착용으로 관심
-  person: 아이유
-  product: 프라다 미디움 갤러리아 백 610만원대
-  rows:
-  - G4
-  - G9
-  src: Grok
-  bloggers: []
-  sources:
-    Grok: 2
-  score: 37
-  parts:
-    네이버: 0
-    최신: 0
-    출처: 6
-    뉴스: 0
-    검색: 3
-    제품: 15
-  stats:
-    뉴스24h: 0
-    뉴스6h: 0
-    블로그24h: 0
-    월검색: 700
 - kw: 김고은 샤넬 셋업
   core: 김고은 샤넬
-  area: 드라마 패션
-  why: 부산국제영화제 액터스 하우스에서 3300만원 샤넬 셋업, 올드하다는 반응도
-  person: 김고은
+  area: 의류
+  why: 부산국제영화제 액터스하우스에서 3300만원 샤넬 셋업 착용, 올드하다는 반응
+  person: 배우 김고은
   product: 샤넬 셋업 3300만원
   rows:
   - B37
@@ -172,38 +109,67 @@ items:
     뉴스6h: 0
     블로그24h: 2
     월검색: 400
-- kw: 슬기 폴뉴아 가방
-  core: 슬기 가방
+- kw: 아이유 프라다 가방
+  core: 아이유 가방
   area: 가방
-  why: 아수라 탑·스커트에 폴뉴아 셀리아 백을 맞춘 코디가 화제, 착용템 링크 공유 폭발
-  person: 레드벨벳 슬기
-  product: 폴뉴아 셀리아 백
+  why: 21세기 대군 부인 4회 꽃무늬 원피스에 프라다 가방 매치 화제
+  person: 아이유
+  product: 프라다 미디움 갤러리아 레더백 1,465만원
   rows:
   - G5
-  - G10
-  - G14
+  - G6
   src: Grok
   bloggers: []
   sources:
-    Grok: 3
-  score: 34
+    Grok: 2
+  score: 37
   parts:
     네이버: 0
     최신: 0
     출처: 6
     뉴스: 0
-    검색: 1
+    검색: 3
     제품: 15
   stats:
     뉴스24h: 0
     뉴스6h: 0
     블로그24h: 0
-    월검색: 240
+    월검색: 700
+- kw: 현백코어 패션
+  core: 현백코어
+  area: 데일리룩
+  why: 부잣집 딸 분위기 현백코어 트렌드가 논쟁이 되며 블로거들이 다룸
+  person: ''
+  product: ''
+  rows:
+  - B1
+  - B26
+  - B57
+  src: 블로거, 블로거새글
+  bloggers:
+  - jayuyu
+  - semingg
+  - tjthdus94
+  sources:
+    블로거: 2
+    블로거새글: 1
+  score: 35
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 16
+    뉴스: 0
+    검색: 7
+  stats:
+    뉴스24h: 1
+    뉴스6h: 0
+    블로그24h: 35
+    월검색: 9040
 - kw: 신봉선 티파니 목걸이
   core: 신봉선 목걸이
   area: 시계·주얼리
-  why: 365일 착용한다는 티파니앤코 하드웨어 목걸이, 2,000만원대
-  person: 신봉선
+  why: 매일 착용하는 2,000만원대 티파니 하드웨어 목걸이 화제
+  person: 개그우먼 신봉선
   product: 티파니앤코 하드웨어 목걸이 2,000만원대
   rows:
   - B53
@@ -225,71 +191,22 @@ items:
     뉴스6h: 0
     블로그24h: 3
     월검색: 25
-- kw: 리사 루이비통
-  core: 리사 루이비통
-  area: 의류
-  why: 핫핑크 트위드와 루이비통 스타일링 분석
-  person: 블랙핑크 리사
-  product: 루이비통 핫핑크 트위드
-  rows:
-  - B25
-  src: 블로거
-  bloggers:
-  - cocoleenice
-  sources:
-    블로거: 1
-  score: 34
-  parts:
-    네이버: 0
-    최신: 0
-    출처: 4
-    뉴스: 0
-    검색: 3
-    제품: 15
-  stats:
-    뉴스24h: 1
-    뉴스6h: 0
-    블로그24h: 18
-    월검색: 940
-- kw: 쯔위 루이비통 재킷
-  core: 쯔위 루이비통
-  area: 의류
-  why: 대만 출국길에 루이비통 재킷·스커트·가방·부츠 풀착장, 재킷은 515만원으로 화제
-  person: 트와이스 쯔위
-  product: 루이비통 재킷 515만원
+- kw: 주은 하츠투하츠 부츠
+  core: 주은 부츠
+  area: 신발
+  why: 하츠투하츠 주은 착용 롱부츠 품절, 니트·숏츠·원피스·가방 등 착장 판매 급상승
+  person: 하츠투하츠 주은
+  product: s/e/o 니하이 슬라우치 버클 롱부츠
   rows:
   - G3
-  - G11
+  - G4
+  - G7
+  - G8
+  - G9
   src: Grok
   bloggers: []
   sources:
-    Grok: 2
-  score: 32
-  parts:
-    네이버: 0
-    최신: 0
-    출처: 6
-    뉴스: 0
-    검색: 0
-    제품: 15
-  stats:
-    뉴스24h: 0
-    뉴스6h: 0
-    블로그24h: 39
-    월검색: 10
-- kw: 주은 유희 가방
-  core: 주은 가방
-  area: 가방
-  why: 비엔프롬 벨트 드레스와 유희 말리부 미니 백·니트 코디
-  person: 하츠투하츠 주은
-  product: 유희 말리부 미니 백
-  rows:
-  - G6
-  - G12
-  src: Grok
-  bloggers: []
-  sources:
-    Grok: 2
+    Grok: 5
   score: 32
   parts:
     네이버: 0
@@ -302,96 +219,102 @@ items:
     뉴스24h: 0
     뉴스6h: 0
     블로그24h: 0
-    월검색: 15
-- kw: 김민하 니트 스커트
-  core: 김민하 패션
-  area: 드라마 패션
-  why: 부산국제영화제 액터스하우스 니트·가죽 스커트 착장, 브랜드·가격 정보 소개
-  person: 김민하
-  product: ''
+    월검색: 10
+- kw: 슬기 29cm 탑 스커트
+  core: 슬기 탑
+  area: 의류
+  why: 레드벨벳 슬기 착용 ASURA 탑·스커트 세트룩과 가방 바이럴
+  person: 레드벨벳 슬기
+  product: ASURA 탑, 레이스 새틴 밴드 스커트, FOLNUA CELIA BAG
   rows:
-  - B4
-  - B27
-  - B39
-  src: 블로거, 블로거새글
-  bloggers:
-  - by-nyong
-  - ohye1991
-  - semingg
+  - G1
+  - G2
+  - G10
+  src: Grok
+  bloggers: []
   sources:
-    블로거: 2
-    블로거새글: 1
+    Grok: 3
   score: 32
   parts:
     네이버: 0
     최신: 0
-    출처: 16
-    뉴스: 5
-    검색: 0
-  stats:
-    뉴스24h: 10
-    뉴스6h: 0
-    블로그24h: 3
-    월검색: 40
-- kw: 제니 바디수트
-  core: 제니 패션
-  area: 드라마 패션
-  why: 더 위켄드 내한 콘서트 깜짝 게스트로 나온 제니의 바디수트 패션
-  person: 블랙핑크 제니
-  product: ''
-  rows:
-  - B5
-  - S16
-  src: 뉴스검색, 블로거
-  bloggers:
-  - ohye1991
-  sources:
-    블로거: 1
-    뉴스검색: 1
-  score: 32
-  parts:
-    네이버: 0
-    최신: 6
-    출처: 7
-    뉴스: 4
-    검색: 4
-  stats:
-    뉴스24h: 9
-    뉴스6h: 1
-    블로그24h: 2
-    월검색: 1440
-- kw: 최화정 공항패션
-  core: 최화정 공항패션
-  area: 데일리룩
-  why: 인천공항에서 프라다 니트, 루이비통 가방, 반클리프 아펠 목걸이 착용
-  person: 최화정
-  product: 프라다 니트, 루이비통 가방, 반클리프 아펠 목걸이
-  rows:
-  - B56
-  src: 블로거
-  bloggers:
-  - tjthdus94
-  sources:
-    블로거: 1
-  score: 29
-  parts:
-    네이버: 0
-    최신: 0
-    출처: 4
+    출처: 6
     뉴스: 0
     검색: 0
     제품: 15
   stats:
     뉴스24h: 0
     뉴스6h: 0
-    블로그24h: 18
-    월검색: 15
-- kw: 조이 플리스
+    블로그24h: 0
+    월검색: 10
+- kw: 카이 아미 티셔츠
+  core: 카이 티셔츠
+  area: 의류
+  why: EXO 카이 콘서트 브이로그 파자마·셔츠·티셔츠 착용 화제
+  person: EXO 카이
+  product: 아미 블루 코튼 마리네르 티 160만원대
+  rows:
+  - G11
+  - G12
+  - G13
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 3
+  score: 32
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 6
+    뉴스: 0
+    검색: 0
+    제품: 15
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 0
+    월검색: 10
+- kw: 문가영 샤넬 스커트
+  core: 문가영 샤넬
+  area: 의류
+  why: 부산국제영화제·마리끌레르 어워즈에서 샤넬 신상 착장이 워스트 반응과 현백코어 논쟁으로 화제
+  person: 배우 문가영
+  product: ''
+  rows:
+  - B3
+  - B7
+  - B26
+  - B33
+  - B40
+  - B43
+  src: 블로거, 블로거새글
+  bloggers:
+  - by-nyong
+  - djdjdj8206
+  - goodface0863
+  - ohye1991
+  - semingg
+  sources:
+    블로거: 5
+    블로거새글: 1
+  score: 31
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 20
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 15
+    월검색: 40
+- kw: 조이 탑텐 플리스
   core: 조이 플리스
   area: 의류
-  why: 탑텐 플러피플리스 하이넥 집업 착용, 3만원대 아이템
+  why: 레드벨벳 조이 착용 3만원대 탑텐 플러피 플리스 집업
   person: 레드벨벳 조이
-  product: 탑텐 플러피플리스 하이넥 집업
+  product: 탑텐 플러피플리스 하이넥 집업 3만원대
   rows:
   - B16
   src: 블로거
@@ -412,10 +335,36 @@ items:
     뉴스6h: 0
     블로그24h: 0
     월검색: 15
+- kw: 최화정 공항패션
+  core: 최화정 공항패션
+  area: 데일리룩
+  why: 66세 최화정 프라다 니트·루이비통 가방·반클리프 목걸이 인천공항 룩
+  person: 최화정
+  product: 프라다 니트, 루이비통 가방, 반클리프 아펠 목걸이
+  rows:
+  - B56
+  src: 블로거
+  bloggers:
+  - tjthdus94
+  sources:
+    블로거: 1
+  score: 29
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 4
+    뉴스: 0
+    검색: 0
+    제품: 15
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 14
+    월검색: 15
 - kw: 윈터 화이트 원피스
   core: 윈터 원피스
   area: 의류
-  why: 브롱스 앤 방코 화이트 컷아웃 라인스톤 드레스 무대 의상
+  why: 에스파 윈터 무대 브롱스 앤 방코 화이트 컷아웃 라인스톤 드레스
   person: 에스파 윈터
   product: 브롱스 앤 방코 화이트 컷아웃 라인스톤 드레스
   rows:
@@ -438,17 +387,46 @@ items:
     뉴스6h: 0
     블로그24h: 1
     월검색: 75
+- kw: 김민하 부국제 패션
+  core: 김민하 패션
+  area: 의류
+  why: 부산국제영화제 액터스하우스 니트·가죽 스커트 착장과 처피뱅 변신으로 화제
+  person: 배우 김민하
+  product: ''
+  rows:
+  - B4
+  - B27
+  - B39
+  src: 블로거
+  bloggers:
+  - by-nyong
+  - ohye1991
+  - semingg
+  sources:
+    블로거: 3
+  score: 28
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 13
+    뉴스: 5
+    검색: 0
+  stats:
+    뉴스24h: 10
+    뉴스6h: 0
+    블로그24h: 14
+    월검색: 40
 - kw: 신민아 루이비통
   core: 신민아 루이비통
   area: 의류
-  why: 파리에서 루이비통과 어울린 룩으로 동안 화제
-  person: 신민아
+  why: 42세 신민아 파리에서 루이비통 착장과 동안 미모 화제
+  person: 배우 신민아
   product: ''
   rows:
   - S7
   - S8
+  - S16
   - S17
-  - S18
   src: 뉴스검색
   bloggers: []
   sources:
@@ -465,11 +443,11 @@ items:
     뉴스6h: 1
     블로그24h: 42
     월검색: 540
-- kw: 한고은 미니 원피스
-  core: 한고은 원피스
+- kw: 한고은 레드카펫 드레스
+  core: 한고은 드레스
   area: 드라마 패션
-  why: 서울드라마어워즈 레드카펫에서 50대 베스트 드레서로 반응 가장 좋았던 룩
-  person: 한고은
+  why: 서울드라마어워즈 2026 레드카펫에서 50대 한고은 블랙 미니 원피스가 베스트 드레서로 화제
+  person: 배우 한고은
   product: ''
   rows:
   - B2
@@ -484,47 +462,49 @@ items:
   - jayuyu
   sources:
     블로거: 4
-  score: 22
+  score: 20
   parts:
     네이버: 0
     최신: 0
     출처: 13
     뉴스: 0
-    검색: 1
+    검색: 0
   stats:
     뉴스24h: 0
     뉴스6h: 0
-    블로그24h: 14
-    월검색: 210
-- kw: 안유진 공항패션
-  core: 안유진 공항패션
-  area: 데일리룩
-  why: 김포공항 출국길 핫팬츠로 비율을 살린 공항룩이 재조명
-  person: 아이브 안유진
+    블로그24h: 100
+    월검색: 25
+- kw: 제니 바디수트
+  core: 제니 바디수트
+  area: 의류
+  why: 더 위켄드 내한 콘서트 게스트 무대에서 바디수트 패션 화제
+  person: 블랙핑크 제니
   product: ''
   rows:
-  - G1
-  - G13
-  src: Grok
-  bloggers: []
+  - B5
+  - S15
+  src: 뉴스검색, 블로거
+  bloggers:
+  - ohye1991
   sources:
-    Grok: 2
+    블로거: 1
+    뉴스검색: 1
   score: 11
   parts:
     네이버: 0
     최신: 0
-    출처: 6
+    출처: 7
     뉴스: 0
-    검색: 1
+    검색: 0
   stats:
-    뉴스24h: 1
+    뉴스24h: 0
     뉴스6h: 0
-    블로그24h: 11
-    월검색: 200
-- kw: 수지 파리 여행룩
+    블로그24h: 2
+    월검색: 130
+- kw: 수지 파리 패션
   core: 수지 패션
   area: 데일리룩
-  why: 셀린느 쇼 참석 후 파리 일정에서 선보인 여행룩이 화제
+  why: 셀린느 쇼 파리 패션위크 후 수지 여행룩 화제
   person: 수지
   product: ''
   rows:
@@ -544,29 +524,54 @@ items:
   stats:
     뉴스24h: 2
     뉴스6h: 0
-    블로그24h: 6
+    블로그24h: 21
     월검색: 440
-- kw: 안나 공항패션
-  core: 안나 공항패션
+- kw: 카리나 데일리룩
+  core: 카리나 패션
   area: 데일리룩
-  why: 공항패션으로 에이블리 손민수 유행
-  person: 미야오 안나
+  why: 에스파 카리나 래글런티·오버롤 테마파크 사복 화제
+  person: 에스파 카리나
   product: ''
   rows:
-  - G7
-  src: Grok
-  bloggers: []
+  - B19
+  src: 블로거
+  bloggers:
+  - cocoleenice
   sources:
-    Grok: 1
-  score: 9
+    블로거: 1
+  score: 8
   parts:
     네이버: 0
     최신: 0
-    출처: 6
+    출처: 4
     뉴스: 0
+    검색: 1
+  stats:
+    뉴스24h: 1
+    뉴스6h: 0
+    블로그24h: 10
+    월검색: 250
+- kw: 방찬 시계
+  core: 방찬 시계
+  area: 시계·주얼리
+  why: 스트레이키즈 방찬 싱가포르행 공항에서 시계로 완성한 룩
+  person: 스트레이키즈 방찬
+  product: ''
+  rows:
+  - S11
+  src: 뉴스검색
+  bloggers: []
+  sources:
+    뉴스검색: 1
+  score: 5
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 2
+    뉴스: 1
     검색: 0
   stats:
-    뉴스24h: 0
+    뉴스24h: 2
     뉴스6h: 0
-    블로그24h: 2
-    월검색: 65
+    블로그24h: 1
+    월검색: 10
