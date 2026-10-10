@@ -277,7 +277,7 @@ def score(items: list[dict], src_rows: dict[str, str] | None) -> list[dict]:
     cfg = F.load(CFG(), {})
     pts, caps = cfg.get("source_points", {}), cfg.get("caps", {})
     stale_pen, stale_cap = cfg.get("stale_penalty", 0), cfg.get("stale_cap", 25)
-    _recent = _recent_cores(cfg.get("stale_days", 3), cfg.get("stale_topn", 12)) if stale_pen else {}
+    _recent = _recent_cores(cfg.get("stale_days", 3), cfg.get("stale_topn", 12))  # 반복 감점 + 🆕 표시용 (항상 계산)
     hub = _hub()
     q = {it["kw"]: (it.get("core") or it["kw"]) for it in items}  # 긴 키워드는 검색량이 0에 가까워 핵심어로 잰다
     cores = list(dict.fromkeys(q.values()))
@@ -333,7 +333,10 @@ def score(items: list[dict], src_rows: dict[str, str] | None) -> list[dict]:
         rep = _recent.get((it.get("core") or it["kw"]).strip(), 0)  # 최근 며칠 반복된 주제 감점 (대표 지시 2026-10-10 "맨날 똑같다")
         if rep and stale_pen:
             parts["반복"] = -min(rep * stale_pen, stale_cap)
-        it.update(score=max(0, min(100, round(sum(parts.values()) * scale))), parts=parts,
+        core = (it.get("core") or it["kw"]).strip()
+        is_new = core not in _recent  # 최근 며칠 상위에 없던 키워드 (대표 요청 2026-10-10 '미미하다 급부상/새로운 것')
+        surge = isinstance(rise, (int, float)) and rise >= cfg.get("surge_rise", 2.0)  # 평소의 2배↑ 급부상
+        it.update(score=max(0, min(100, round(sum(parts.values()) * scale))), parts=parts, new=is_new, surge=surge,
                   stats={"뉴스24h": news, "뉴스6h": n6, "블로그24h": blog, "월검색": int(vol) if vol else None, "상승": rise})
     items.sort(key=lambda x: -x["score"])
     # 유튜브 '지금 콘텐츠가 쏟아지나' 화제성 보조 (대표 결정 2026-10-10): 상위 후보에만 묻어 쿼터 아낌

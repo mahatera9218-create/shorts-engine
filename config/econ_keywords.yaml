@@ -97,3 +97,4 @@ watch:
 youtube_bonus: 8   # 최대 보너스 점
 youtube_top: 10    # 상위 몇 개에만 물을지
 youtube_full: 500  # 최근 7일 영상 이 수면 보너스 만점
+surge_rise: 2.0   # 🔥급부상 표시 기준: 최근 3일 검색이 평소의 몇 배 이상이면 (대표 요청 2026-10-10)
