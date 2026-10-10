@@ -1,5 +1,5 @@
 date: '2026-10-10'
-updated: 09:16
+updated: 09:31
 items:
 - kw: 경량 패딩 추천
   core: 경량패딩
@@ -22,19 +22,114 @@ items:
     뉴스검색: 3
     블로거: 2
     블로거새글: 1
-  score: 100
+  score: 71
   parts:
     네이버: 0
-    최신: 11
+    최신: 15
     출처: 15
-    뉴스: 5
+    뉴스: 6
     검색: 20
     제품: 15
   stats:
-    뉴스24h: 7
-    뉴스6h: 3
+    뉴스24h: 8
+    뉴스6h: 4
     블로그24h: 100
     월검색: 124000
+- kw: 한고은 미니 원피스
+  core: 한고은 원피스
+  area: 드라마 패션
+  why: 서울드라마어워즈 2026 레드카펫에서 50대 동안과 각선미로 베스트 드레서 반응
+  person: 한고은
+  product: ''
+  rows:
+  - B2
+  - B6
+  - B36
+  - B42
+  - B65
+  src: 블로거, 어사이드
+  bloggers:
+  - by-nyong
+  - djdjdj8206
+  - goodface0863
+  - jayuyu
+  - mythya0730
+  sources:
+    블로거: 5
+    어사이드: 1
+  score: 37
+  parts:
+    네이버: 26
+    최신: 0
+    출처: 9
+    뉴스: 0
+    검색: 2
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 15
+    월검색: 210
+  naver_rank: 6
+- kw: 리사 크롭 트위드 셋업 루이비통
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 3
+  score: 36
+  parts:
+    네이버: 35
+    최신: 0
+    출처: 0
+    뉴스: 1
+    검색: 0
+  stats:
+    뉴스24h: 1
+    뉴스6h: 0
+    블로그24h: 2
+    월검색: 10
+- kw: 문가영 미디스커트 샤넬 1520만원
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 1
+  score: 35
+  parts:
+    네이버: 35
+    최신: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 1
+    월검색: 10
+- kw: 김고은 울 크레이프 자켓 샤넬 1710만원
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 2
+  score: 35
+  parts:
+    네이버: 35
+    최신: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 3
+    월검색: 10
 - kw: 제니 샤넬 패션
   core: 제니 샤넬
   area: 드라마 패션
@@ -50,7 +145,7 @@ items:
   - ohye1991
   sources:
     블로거: 2
-  score: 49
+  score: 32
   parts:
     네이버: 0
     최신: 0
@@ -61,7 +156,7 @@ items:
   stats:
     뉴스24h: 1
     뉴스6h: 0
-    블로그24h: 23
+    블로그24h: 25
     월검색: 2940
 - kw: 로로피아나 코트
   core: 로로피아나 코트
@@ -77,7 +172,7 @@ items:
   bloggers: []
   sources:
     Grok: 3
-  score: 45
+  score: 29
   parts:
     네이버: 0
     최신: 0
@@ -112,7 +207,7 @@ items:
   sources:
     블로거: 4
     블로거새글: 1
-  score: 45
+  score: 29
   parts:
     네이버: 0
     최신: 0
@@ -123,8 +218,48 @@ items:
   stats:
     뉴스24h: 0
     뉴스6h: 0
-    블로그24h: 10
+    블로그24h: 11
     월검색: 40
+- kw: 젠데이아 커스텀 드레스 루이비통
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 4
+  score: 26
+  parts:
+    네이버: 26
+    최신: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 2
+    월검색: 10
+- kw: 임지연 레드 롱드레스
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 5
+  score: 26
+  parts:
+    네이버: 26
+    최신: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 9
+    월검색: 10
 - kw: 아이유 프라다 원피스
   core: 아이유 원피스
   area: 드라마 패션
@@ -139,7 +274,7 @@ items:
   bloggers: []
   sources:
     Grok: 3
-  score: 37
+  score: 24
   parts:
     네이버: 0
     최신: 0
@@ -170,7 +305,7 @@ items:
   sources:
     블로거: 2
     블로거새글: 1
-  score: 37
+  score: 24
   parts:
     네이버: 0
     최신: 0
@@ -180,7 +315,7 @@ items:
   stats:
     뉴스24h: 1
     뉴스6h: 0
-    블로그24h: 35
+    블로그24h: 40
     월검색: 9040
 - kw: 김연아 뉴발란스 바람막이
   core: 김연아 바람막이
@@ -195,7 +330,7 @@ items:
   - cocoleenice
   sources:
     블로거새글: 1
-  score: 37
+  score: 24
   parts:
     네이버: 0
     최신: 0
@@ -221,7 +356,7 @@ items:
   - by-nyong
   sources:
     블로거새글: 1
-  score: 35
+  score: 23
   parts:
     네이버: 0
     최신: 0
@@ -232,7 +367,7 @@ items:
   stats:
     뉴스24h: 0
     뉴스6h: 0
-    블로그24h: 2
+    블로그24h: 3
     월검색: 400
 - kw: 최화정 공항패션
   core: 최화정 패션
@@ -247,7 +382,7 @@ items:
   - tjthdus94
   sources:
     블로거: 1
-  score: 34
+  score: 22
   parts:
     네이버: 0
     최신: 0
@@ -258,7 +393,7 @@ items:
   stats:
     뉴스24h: 0
     뉴스6h: 0
-    블로그24h: 18
+    블로그24h: 21
     월검색: 380
 - kw: 레드벨벳 슬기 패션
   core: 슬기 패션
@@ -274,7 +409,7 @@ items:
   bloggers: []
   sources:
     Grok: 3
-  score: 31
+  score: 20
   parts:
     네이버: 0
     최신: 0
@@ -303,7 +438,7 @@ items:
   bloggers: []
   sources:
     Grok: 5
-  score: 29
+  score: 19
   parts:
     네이버: 0
     최신: 0
@@ -329,7 +464,7 @@ items:
   - tjthdus94
   sources:
     블로거새글: 1
-  score: 29
+  score: 19
   parts:
     네이버: 0
     최신: 0
@@ -340,7 +475,7 @@ items:
   stats:
     뉴스24h: 0
     뉴스6h: 0
-    블로그24h: 3
+    블로그24h: 4
     월검색: 25
 - kw: 조이 탑텐 플리스
   core: 조이 플리스
@@ -355,7 +490,7 @@ items:
   - cocoleenice
   sources:
     블로거: 1
-  score: 28
+  score: 18
   parts:
     네이버: 0
     최신: 0
@@ -368,6 +503,93 @@ items:
     뉴스6h: 0
     블로그24h: 0
     월검색: 15
+- kw: 김민하 가죽자켓 르917
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 7
+  score: 18
+  parts:
+    네이버: 18
+    최신: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 1
+    월검색: 10
+- kw: 신봉선 하드웨어 목걸이 티파니 2455만원
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 8
+  score: 18
+  parts:
+    네이버: 18
+    최신: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 0
+    월검색: 10
+- kw: 변우석 올블랙 공항패션
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 9
+  score: 18
+  parts:
+    네이버: 18
+    최신: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 37
+    월검색: 10
+- kw: 신민아 루이비통
+  core: 신민아 루이비통
+  area: 데일리룩
+  why: 42세 신민아가 파리에서 루이비통 룩과 동안 셀카로 화제
+  person: 신민아
+  product: ''
+  rows:
+  - S7
+  - S8
+  - S15
+  - S16
+  src: 뉴스검색
+  bloggers: []
+  sources:
+    뉴스검색: 4
+  score: 17
+  parts:
+    네이버: 0
+    최신: 4
+    출처: 6
+    뉴스: 2
+    검색: 5
+  stats:
+    뉴스24h: 2
+    뉴스6h: 1
+    블로그24h: 46
+    월검색: 540
 - kw: 김민하 부국제 패션
   core: 김민하 패션
   area: 드라마 패션
@@ -385,78 +607,18 @@ items:
   - semingg
   sources:
     블로거: 3
-  score: 26
+  score: 14
   parts:
     네이버: 0
     최신: 0
     출처: 9
-    뉴스: 8
+    뉴스: 5
     검색: 0
   stats:
-    뉴스24h: 10
+    뉴스24h: 7
     뉴스6h: 0
-    블로그24h: 15
+    블로그24h: 16
     월검색: 40
-- kw: 신민아 루이비통
-  core: 신민아 루이비통
-  area: 데일리룩
-  why: 42세 신민아가 파리에서 루이비통 룩과 동안 셀카로 화제
-  person: 신민아
-  product: ''
-  rows:
-  - S7
-  - S8
-  - S15
-  - S16
-  src: 뉴스검색
-  bloggers: []
-  sources:
-    뉴스검색: 4
-  score: 26
-  parts:
-    네이버: 0
-    최신: 4
-    출처: 6
-    뉴스: 2
-    검색: 5
-  stats:
-    뉴스24h: 2
-    뉴스6h: 1
-    블로그24h: 45
-    월검색: 540
-- kw: 한고은 미니 원피스
-  core: 한고은 원피스
-  area: 드라마 패션
-  why: 서울드라마어워즈 2026 레드카펫에서 50대 동안과 각선미로 베스트 드레서 반응
-  person: 한고은
-  product: ''
-  rows:
-  - B2
-  - B6
-  - B36
-  - B42
-  - B65
-  src: 블로거
-  bloggers:
-  - by-nyong
-  - djdjdj8206
-  - goodface0863
-  - jayuyu
-  - mythya0730
-  sources:
-    블로거: 5
-  score: 17
-  parts:
-    네이버: 0
-    최신: 0
-    출처: 9
-    뉴스: 0
-    검색: 2
-  stats:
-    뉴스24h: 0
-    뉴스6h: 0
-    블로그24h: 15
-    월검색: 210
 - kw: 안유진 라코스테 패션
   core: 안유진 패션
   area: 데일리룩
@@ -470,7 +632,7 @@ items:
   - mythya0730
   sources:
     블로거새글: 1
-  score: 17
+  score: 11
   parts:
     네이버: 0
     최신: 4
@@ -480,7 +642,7 @@ items:
   stats:
     뉴스24h: 2
     뉴스6h: 1
-    블로그24h: 17
+    블로그24h: 18
     월검색: 130
 - kw: 리사 루이비통 스타일링
   core: 리사 루이비통
@@ -495,7 +657,7 @@ items:
   - cocoleenice
   sources:
     블로거: 1
-  score: 15
+  score: 10
   parts:
     네이버: 0
     최신: 0
@@ -505,7 +667,7 @@ items:
   stats:
     뉴스24h: 1
     뉴스6h: 0
-    블로그24h: 49
+    블로그24h: 50
     월검색: 940
 - kw: 수지 파리 여행룩
   core: 수지 패션
@@ -520,7 +682,7 @@ items:
   - by-nyong
   sources:
     블로거: 1
-  score: 14
+  score: 9
   parts:
     네이버: 0
     최신: 0
@@ -545,7 +707,7 @@ items:
   - cocoleenice
   sources:
     블로거: 1
-  score: 11
+  score: 7
   parts:
     네이버: 0
     최신: 0
@@ -570,7 +732,7 @@ items:
   - mythya0730
   sources:
     블로거: 1
-  score: 6
+  score: 4
   parts:
     네이버: 0
     최신: 0
@@ -580,5 +742,18 @@ items:
   stats:
     뉴스24h: 1
     뉴스6h: 0
-    블로그24h: 23
+    블로그24h: 24
     월검색: 10
+aside:
+  at: 09:31
+  n: 9
+  list:
+  - 문가영 미디스커트 샤넬 1520만원
+  - 김고은 울 크레이프 자켓 샤넬 1710만원
+  - 리사 크롭 트위드 셋업 루이비통
+  - 젠데이아 커스텀 드레스 루이비통
+  - 임지연 레드 롱드레스
+  - 한고은 미니 원피스
+  - 김민하 가죽자켓 르917
+  - 신봉선 하드웨어 목걸이 티파니 2455만원
+  - 변우석 올블랙 공항패션
