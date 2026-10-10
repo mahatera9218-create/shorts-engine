@@ -322,16 +322,20 @@ def produce(slug: str, n: int) -> Path:
     a = F.claude_json(sys_prompt, ask, BODY, stage="글쓰기(연예·패션)")
     # 원문 체크 목표점 넘을 때까지 최대 2번만 고쳐쓰기 (대표 요청 2026-10-10). 검사는 무료, 고쳐쓰기만 1회 비용
     from .econ_score import CFG as _kcfg
-    ratio = (F.load(_kcfg(), {}) or {}).get("checklist_pass_ratio", 0.8)
+    cfg = F.load(_kcfg(), {}) or {}
+    ratio = cfg.get("checklist_pass_ratio", 0.8)
+    max_fix = cfg.get("max_rewrite", 1)  # 고쳐쓰기 1회 (대표 결정 2026-10-10)
     fix_log: list[str] = []
-    for attempt in range(2):
+    for attempt in range(max_fix + 1):
         cl = checklist(a, kw, pick)
         fails = [txt for ok, txt in cl if not ok]
+        ed = F.editor_review(text_of(a), pick["title"], kw, human_check()) if cfg.get("strict_editor") else []
         need = int(len(cl) * ratio + 0.999)
-        if len(cl) - len(fails) >= need or not fails:
+        if (len(cl) - len(fails) >= need and not ed) or attempt >= max_fix:
             break
-        fix_log.append(f"{attempt + 1}차 부족({len(cl) - len(fails)}/{len(cl)}): " + " / ".join(fails))
-        a = F.claude_json(sys_prompt, ask + "\n\n[반드시 고칠 것 — 아래를 모두 충족]\n" + "\n".join(f"- {b}" for b in fails)
+        fix_log.append(f"{attempt + 1}차: 원문 {len(cl) - len(fails)}/{len(cl)}"
+                       + (" · 원문부족 " + " / ".join(fails) if fails else "") + (" · 편집장 " + " / ".join(ed) if ed else ""))
+        a = F.claude_json(sys_prompt, ask + "\n\n[반드시 고칠 것 — 아래를 모두 충족]\n" + "\n".join(f"- {b}" for b in fails + ed)
                           + "\n\n[지난 초안]\n" + json.dumps(a, ensure_ascii=False), BODY, stage=f"고쳐쓰기{attempt + 1}")
     left = check(a)
     post = F.POSTS / slug
