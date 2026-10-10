@@ -213,6 +213,29 @@ def _volumes(kws: list[str]) -> dict[str, float]:
     return out
 
 
+def _youtube_recent(cores: list[str], days: int = 7) -> dict[str, int]:
+    """키워드마다 최근 days일 유튜브 공개 영상 수(대략, search.list totalResults) → '지금 콘텐츠가 쏟아지나' 화제성 보조.
+    (대표 결정 2026-10-10 '유튜브 연동'). 키 없거나 쿼터 넘으면 조용히 건너뜀. search.list 1회 100단위라 상위 후보에만 묻는다."""
+    k = secret("YOUTUBE_API_KEY")
+    if not k or not cores:
+        return {}
+    since = (datetime.now(F.KST) - timedelta(days=days)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    out: dict[str, int] = {}
+    for c in cores:
+        try:
+            r = requests.get("https://www.googleapis.com/youtube/v3/search", timeout=20, params={
+                "key": k, "part": "snippet", "q": c, "type": "video", "publishedAfter": since,
+                "maxResults": 1, "regionCode": "KR", "relevanceLanguage": "ko"})
+            if r.status_code == 403:  # 쿼터 소진 등 → 더 묻지 않고 멈춤
+                print("유튜브 쿼터/권한으로 건너뜀")
+                break
+            r.raise_for_status()
+            out[c] = int((r.json().get("pageInfo") or {}).get("totalResults", 0))
+        except Exception as e:  # noqa: BLE001
+            print(f"유튜브 조회 실패 {c}: {str(e)[:60]}")
+    return out
+
+
 def naver_part(rank: int | None) -> float:
     """어사이드 순위 → 네이버 인기 비율: 1~3위 100%, 4~6위 75%, 7~10위 50% (대표 결정 2026-10-07)."""
     if not rank:
@@ -309,7 +332,24 @@ def score(items: list[dict], src_rows: dict[str, str] | None) -> list[dict]:
             parts["반복"] = -min(rep * stale_pen, stale_cap)
         it.update(score=max(0, min(100, round(sum(parts.values()) * scale))), parts=parts,
                   stats={"뉴스24h": news, "뉴스6h": n6, "블로그24h": blog, "월검색": int(vol) if vol else None, "상승": rise})
-    return sorted(items, key=lambda x: -x["score"])
+    items.sort(key=lambda x: -x["score"])
+    # 유튜브 '지금 콘텐츠가 쏟아지나' 화제성 보조 (대표 결정 2026-10-10): 상위 후보에만 묻어 쿼터 아낌
+    yb = cfg.get("youtube_bonus", 0)
+    if yb:
+        yt_top = cfg.get("youtube_top", 10)
+        yf = cfg.get("youtube_full", 500)  # 최근 7일 이만큼 영상이면 만점 보너스
+        top_cores = list(dict.fromkeys(q[it["kw"]] for it in items[:yt_top]))
+        yrec = _youtube_recent(top_cores)
+        for it in items[:yt_top]:
+            v = yrec.get(q[it["kw"]])
+            if v is None:
+                continue
+            bonus = round(yb * min(1.0, math.log10(v + 1) / math.log10(yf + 1)))
+            it["parts"]["유튜브"] = bonus
+            it["stats"]["유튜브7일"] = v
+            it["score"] = max(0, min(100, it["score"] + bonus))
+        items.sort(key=lambda x: -x["score"])
+    return items
 
 
 def run(grok_items: list[dict], mine: list[dict]) -> list[dict]:
