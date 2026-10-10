@@ -1,23 +1,93 @@
 date: '2026-10-10'
-updated: '14:25'
+updated: '14:41'
 items:
+- kw: 김지원
+  rise: 3.37
+  volume: 235600
+  named: true
+  blog24h: 100
+  score: 132
+- kw: 신민아
+  rise: 2.87
+  volume: 91060
+  named: true
+  blog24h: 100
+  score: 126
+- kw: 한고은
+  rise: 2.48
+  volume: 33470
+  named: true
+  blog24h: 100
+  score: 120
+- kw: 서현진
+  rise: 1.96
+  volume: 66620
+  named: true
+  blog24h: 62
+  score: 114
+- kw: 제니
+  rise: 1.68
+  volume: 86800
+  named: true
+  blog24h: 100
+  score: 107
+- kw: 현백코어
+  rise: 1.61
+  volume: 9040
+  named: true
+  blog24h: 83
+  score: 86
+- kw: 민지
+  rise: 1.6
+  volume: 8160
+  named: true
+  blog24h: 86
+  score: 85
+- kw: 김혜수
+  rise: 1.37
+  volume: 133200
+  named: true
+  blog24h: 74
+  score: 85
+- kw: 김남길
+  rise: 1.55
+  volume: 58670
+  named: true
+  blog24h: 24
+  score: 81
+- kw: 임지연
+  rise: 1.25
+  volume: 64010
+  named: true
+  blog24h: 99
+  score: 79
+- kw: CORTIS
+  rise: 1.47
+  volume: 12470
+  named: true
+  blog24h: 30
+  score: 69
+- kw: 휴잭맨
+  rise: 1.45
+  volume: 11200
+  named: true
+  blog24h: 4
+  score: 62
 - kw: 경량패딩
   rise: 1.41
   volume: 124000
+  named: false
   blog24h: 100
-  score: 73
+  score: 58
+- kw: 정호연
+  rise: 1.28
+  volume: 22230
+  named: true
+  blog24h: 13
+  score: 57
 - kw: 후리스
   rise: 1.47
   volume: 39590
+  named: false
   blog24h: 100
-  score: 70
-- kw: 패딩
-  rise: 1.2
-  volume: 36890
-  blog24h: 100
-  score: 53
-- kw: 롱패딩
-  rise: 1.25
-  volume: 17720
-  blog24h: 100
-  score: 52
+  score: 55
