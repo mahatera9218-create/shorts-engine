@@ -802,12 +802,9 @@ def main() -> None:
 def _run(cmd: str) -> None:
     if cmd == "keywords":
         keywords(force=(len(sys.argv) > 2 and sys.argv[2] == "force"))
-        if BLOG["id"] == "fashion":  # 착장 도우미 '오늘 뜨는 연예인'도 같이 (대표 결정 2026-10-10)
-            try:
-                from .outfit import rank
-                rank()
-            except Exception as e:  # noqa: BLE001  (키워드 모으기는 살린다)
-                print(f"오늘 뜨는 연예인 실패: {str(e)[:200]}")
+    elif cmd == "season":  # 쇼핑인사이트 계절 인기 상품 (패션, 대표 요청 2026-10-10)
+        from .season import rank
+        rank()
     elif cmd == "rising":  # 네이버 급상승 탐지 (어사이드 없이 공식 API, 2026-10-10)
         from .rising import run as rising_run
         rising_run()
