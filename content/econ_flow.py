@@ -295,6 +295,23 @@ def keywords(force: bool = False) -> Path:
             or (keep_grok and "Grok" in (x.get("src") or ""))]  # 어사이드도 남김 (2026-10-07)
     rising_items = (load(day / "rising.yaml", {}) or {}).get("items", [])  # 급상승 키워드를 메인 후보에 합침 (대표 결정 2026-10-10)
     items = run(grok_items, mine, rising_items=rising_items)
+    # 최근 N일 이미 글로 쓴 주제는 뺀다 (대표 지적 2026-10-10 '2주 전 글이 또 나온다'). 단 검색량 초대형은 남김
+    from .econ_score import _written_recent
+    rw_days = (load(_kcfg(), {}) or {}).get("rewrite_days", 14)
+    big = (load(_kcfg(), {}) or {}).get("rewrite_bigvol", 200000)
+    cores, titles = _written_recent(rw_days)
+    def already(it):
+        core = (it.get("core") or it["kw"]).split()[0]
+        vol = (it.get("stats") or {}).get("월검색") or 0
+        if vol >= big:
+            return False  # 초대형 검색량이면 다시 써도 됨
+        if core in cores:
+            return True
+        return any(core and core in t for t in titles)  # 제목에 이미 들어간 핵심어
+    before = len(items)
+    items = [it for it in items if it.get("src", "").find("대표") >= 0 or not already(it)]  # 대표가 직접 넣은 건 유지
+    if before != len(items):
+        print(f"이미 쓴 주제 {before - len(items)}개 제외 (최근 {rw_days}일)")
     save(day / "keywords.yaml", {"date": today(), "updated": datetime.now(KST).strftime("%H:%M"), "items": items})
     print(f"키워드 {len(items)}개, 1위 {items[0]['kw']} {items[0]['score']}점" if items else "키워드 없음")
     return day / "keywords.yaml"

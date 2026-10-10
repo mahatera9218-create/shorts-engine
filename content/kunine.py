@@ -179,6 +179,30 @@ def check(a: dict, kw: str) -> list[str]:
     return bad
 
 
+def checklist(a: dict, kw: str) -> list[tuple[bool, str]]:
+    """원문 프롬프트를 지켰는지 전체 점검표 (대표 요청 2026-10-10 '올리기 전 원문대로인지, 부족한 건 뭔지'). (됐나, 설명)."""
+    t = text_of(a)
+    core = kw.split()[0]
+    n_sec = len(a["sections"])
+    q_sec = sum(1 for sec in a["sections"] if sec.get("heading", "").strip().endswith("?"))
+    press = F.PRESS.findall(t + " ".join(x["q"] + x["a"] for x in a["qa"]) + " ".join(a["tags"]))
+    px = len(a.get("pixabay") or [])
+    kc = t.count(core)
+    chars = len(t)
+    return [
+        (5 <= n_sec <= 7, f"소제목 구간 5~7개 ({n_sec}개)"),
+        (q_sec >= 5, f"질문형 소제목 5개 이상 ({q_sec}개)"),
+        (bool((a.get("table") or {}).get("rows")), "비교표 1개 이상 " + ("(있음)" if (a.get("table") or {}).get("rows") else "(없음)")),
+        (len(a["qa"]) == 3, f"Q&A 3개 ({len(a['qa'])}개)"),
+        (18 <= len(a["tags"]) <= 21, f"해시태그 약 20개 ({len(a['tags'])}개)"),
+        (not press, "언론사명·링크 없음 " + (f"({len(press)}곳 있음)" if press else "(없음)")),
+        (kc <= 20, f"핵심키워드 '{core}' 20회 이내 ({kc}회)"),
+        (px >= 5, f"픽사베이 검색어 5개 ({px}개)"),
+        (bool(a.get("intro")) and bool(a.get("closing")), "도입·마무리 문단 있음"),
+        (chars >= 1500, f"본문 1,500자 이상 ({chars}자)"),
+    ]
+
+
 def gain(kw: str, a: dict) -> tuple[bool, str]:
     """정보 이득 게이트 (CLAUDE.md): 네이버 블로그 검색 상위 10개(제목·요약)에 없는 것이 하나라도 있나."""
     rows = F.top10(kw)
@@ -257,9 +281,11 @@ def produce(slug: str, n: int) -> Path:
         status += " · ⚠️ 형식: " + " / ".join(left)
     if NO_CREDIT:
         status += " · ⚠️ OpenAI 크레딧이 없어 AI 사진 대신 무료 사진으로 채움 — 대표가 크레딧 충전 필요"
+    cl = checklist(a, kw)
     (post / "post.md").write_text("\n".join([
         f"# 발행 패키지 · {kw} (쿠니네 방식)", "",
         f"**상태:** {status}", f"**정보 이득:** {gain_note}",
+        "", "## 원문 체크", "", *[f"- {'✅' if ok else '⚠️'} {txt}" for ok, txt in cl], "",
         f"**본문:** {len(text_of(a))}자 · 사진 {k - 2}장 + 썸네일", "",
         f"- 카테고리: **{a['area']}**", f"- 태그: {tags}", "",
         "## 제목 (추천 ★)", "", f"1. ★ {pick['title']} — {pick['type']}",
