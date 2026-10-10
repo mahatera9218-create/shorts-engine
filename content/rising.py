@@ -66,7 +66,8 @@ def run() -> None:
     scored = []
     for k in cands:
         r = (rises.get(k) or {}).get("rise", 0.0)
-        if r < 1.2:  # 평소보다 20% 이상 오른 것만
+        steady = any(t in k for t in topics) and vol[k] >= 10000  # 아파트·금리·환율처럼 늘 많이 찾는 생활 말은 줄지만 않으면 (2026-10-10)
+        if r < (1.0 if steady else 1.2):  # 평소보다 20% 이상 오른 것만
             continue
         rise_pt = min(60, (r - 1) * 60)  # 평소의 2배면 60점
         vol_pt = min(40, max(0.0, (math.log10(vol[k]) - 3) / 3 * 40)) if vol[k] > 0 else 0  # 1천 → 0점, 100만 → 40점
@@ -74,28 +75,50 @@ def run() -> None:
         scored.append({"kw": k, "rise": r, "volume": int(vol[k]), "named": named,
                        "pt": rise_pt + vol_pt + (NAME_PT if named else BROAD_PT)})
     scored.sort(key=lambda x: -x["pt"])
+    pool = scored[:N_FRESH]
+    if F.BLOG["id"] == "econ":  # 새 글 수를 잴 후보에 섹션마다 3개는 넣기 (점수 낮은 생활 말이 잘리지 않게)
+        from .econ_sections import section
+        per: dict[str, int] = {}
+        extra = []
+        for it in scored:
+            sec = section({"kw": it["kw"]})
+            per[sec] = per.get(sec, 0) + 1
+            if per[sec] <= 3 and it not in pool:
+                extra.append(it)
+        pool = pool + extra
     # 3) 지난 24시간 새 블로그 글 수 (지금 쓰이는 중인가)
-    for it in scored[:N_FRESH]:
+    for it in pool:
         try:
             it["blog24h"], _ = _recent_count(hub, "blog_search", it["kw"])
         except Exception as e:  # noqa: BLE001
             print(f"블로그 검색 실패 {it['kw']}: {str(e)[:80]}")
             it["blog24h"] = None
         it["pt"] += min(20, (it["blog24h"] or 0) / 5)  # 24시간 새 글 100개면 20점
-    items = sorted(scored[:N_FRESH], key=lambda x: -x["pt"])
+    items = sorted(pool, key=lambda x: -x["pt"])
     if F.BLOG["id"] == "econ":  # 섹션마다 4개까지 — 회사만 몰리지 않고 부동산·환율·생활경제도 보이게 (2026-10-10)
         from .econ_sections import section
-        cnt: dict[str, int] = {}
-        keep = []
         for it in items:
             it["section"] = section({"kw": it["kw"]})
-            cnt[it["section"]] = cnt.get(it["section"], 0) + 1
-            if cnt[it["section"]] <= 4:
-                keep.append(it)
-        items = keep
+        # 섹션마다 2개는 먼저 자리 보장, 남은 자리는 점수순 (섹션당 4개까지) — 회사만 15개를 차지하지 않게
+        first, cnt = [], {}
+        for it in items:
+            if cnt.get(it["section"], 0) < 2:
+                cnt[it["section"]] = cnt.get(it["section"], 0) + 1
+                first.append(it)
+        rest = [it for it in items if it not in first]
+        for it in rest:
+            if len(first) >= N_SHOW:
+                break
+            if cnt.get(it["section"], 0) < 4:
+                cnt[it["section"]] = cnt.get(it["section"], 0) + 1
+                first.append(it)
+        items = sorted(first, key=lambda x: -x["pt"])
     items = items[:N_SHOW]
     for it in items:
         it["score"] = round(it.pop("pt"))
     out = F.FLOW / F.today() / "rising.yaml"
     F.save(out, {"date": F.today(), "updated": datetime.now(F.KST).strftime("%H:%M"), "items": items})
+    if F.BLOG["id"] == "econ":
+        print("섹션별:", {k: sum(1 for it in items if it.get("section") == k) for k in dict.fromkeys(it.get("section") for it in items)})
+        print("생활 말 상승률(상위 10):", [(k, round((rises.get(k) or {}).get("rise", 0), 2)) for k in cands if any(t in k for t in topics)][:10])
     print(f"급상승 {len(items)}개 → {out}" + (f" (1위 {items[0]['kw']} ×{items[0]['rise']})" if items else ""))
