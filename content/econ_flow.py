@@ -268,6 +268,14 @@ def keywords(force: bool = False) -> Path:
         "한 종목에 몰리지 않게, 작전주·테마주 추천·리딩방은 빼세요")
     old = load(day / "keywords.yaml", {"items": []})
     gathered = old.get("updated") and any("Grok" in (it.get("src") or "") for it in old.get("items", []))
+    # 경제: 최신성(블로거)용으로 오늘 참고 블로거 글을 먼저 모은다 (없을 때만, 무료 RSS). '다시 모으기' 버튼에서도 블로거가 들어오게 (2026-10-10)
+    if BLOG["id"] == "econ" and (load(_kcfg(), {}) or {}).get("blogger_keywords") \
+            and not (ROOT / "econ" / "ref" / "rss" / f"{today()}.yaml").exists():
+        try:
+            from .econ_refs import titles as _refs
+            _refs()
+        except Exception as e:  # noqa: BLE001  (키워드 모으기는 살린다)
+            print(f"참고 블로거 모으기 실패: {str(e)[:150]}")
     if BLOG["id"] == "fashion" and (force or not gathered):  # 계절 인기 상품 먼저 (쇼핑인사이트, 무료) → Grok 프롬프트에 씀 (대표 결정 2026-10-10)
         try:
             from .season import rank as _season
