@@ -1,0 +1,114 @@
+keyword: 문가영 미디스커트 샤넬 1520만원
+person: 문가영
+mode: 연예패션
+made: '13:31'
+items:
+- title: '"벨트가 어디까지 내려가는 거예요?" 부산 레드카펫에서 문가영 허리선에 시선이 쏠린 이유'
+  type: 구어체 감탄·반문형
+  rank: 1
+  best: true
+  chars: 49
+  flags: []
+- title: 처음엔 평범한 블랙 스커트인 줄 알았는데 문가영 레드카펫 룩은 벨트가 반전이었네요
+  type: 첫인상 착각·정체 반전형
+  rank: null
+  best: false
+  chars: 45
+  flags: []
+- title: 벨트 하나 내려갔을 뿐인데 문가영 브이넥 베스트 룩이 이렇게 달라 보인다고?
+  type: 작은 디테일의 큰 변화형
+  rank: null
+  best: false
+  chars: 42
+  flags: []
+- title: 같은 날 부산 레드카펫, 김민하·고아성과 나란히 놓고 보니 문가영만 허리선이 달랐다
+  type: 같은 옷·다른 사람 비교형
+  rank: null
+  best: false
+  chars: 46
+  flags: []
+- title: 파라다이스호텔 포토월에 문가영이 나타났는데 블랙 플레어 스커트 실루엣부터 눈에 들어왔다
+  type: 상황·현장 중심형
+  rank: null
+  best: false
+  chars: 48
+  flags: []
+- title: 브이넥 베스트에 블랙 플레어 스커트, 문가영처럼 입으면 행사룩 고민이 끝날까?
+  type: 따라 입고 싶은 손민수형
+  rank: null
+  best: false
+  chars: 43
+  flags: []
+- title: 베스트에 플레어 스커트, 여기에 낮은 벨트까지? 문가영이 보여 준 뜻밖의 조합
+  type: 의외의 조합·레이어드형
+  rank: null
+  best: false
+  chars: 43
+  flags: []
+- title: 사진만 보고 지나칠 뻔했는데 문가영 허리 벨트 디테일을 다시 보니 계산된 포인트였다
+  type: 공개된 사진 속 숨은 정보형
+  rank: null
+  best: false
+  chars: 46
+  flags: []
+- title: 마리끌레르 아시아스타어워즈 문가영 레드카펫 패션, 베스트와 스커트 비율 짚어보기
+  type: 브랜드·패션 행사 연결형
+  rank: null
+  best: false
+  chars: 44
+  flags: []
+- title: 처음엔 벨트가 너무 과한가 싶었는데... 다시 보니 문가영 룩은 이 디테일이 전부였다
+  type: 시선 집중·감정 대비형
+  rank: null
+  best: false
+  chars: 47
+  flags: []
+- title: '''그 배우'' 레드카펫 착장에 다들 벨트 위치만 물었다는데, 부산에서 본 블랙 룩 정리'
+  type: 이름 숨기고 궁금증 유발형
+  rank: null
+  best: false
+  chars: 47
+  flags: []
+- title: 시상식 하객룩이 밋밋하다면 문가영 블랙 플레어 스커트처럼 허리선으로 변화를 줘 보세요
+  type: 독자 고민 해결형
+  rank: null
+  best: false
+  chars: 47
+  flags: []
+- title: 단정한 블랙인 줄 알았는데 분위기가 달라졌네, 문가영 부산 레드카펫 유니크 룩
+  type: 새로운 스타일 변화형
+  rank: null
+  best: false
+  chars: 43
+  flags: []
+- title: 이번 가을엔 블랙 플레어 스커트가 다르네, 문가영 레드카펫 룩으로 보는 미디 실루엣
+  type: 트렌드·계절 변화형
+  rank: null
+  best: false
+  chars: 46
+  flags: []
+- title: 유니크하다 vs 과하다? 벨트 위치로 반응이 갈린 문가영 부산 레드카펫 룩 다시 보기
+  type: 의외성·논란 반응형
+  rank: null
+  best: false
+  chars: 47
+  flags: []
+groups:
+- type: 제목 후보
+  idx:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  best: null
