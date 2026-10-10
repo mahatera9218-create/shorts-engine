@@ -68,14 +68,15 @@ class EconTest(unittest.TestCase):
     def test_score_blogger_freshness(self):
         from unittest import mock
         from content import econ_score
-        # 최신성 블로거: 서로 다른 블로거 수로 센다(같은 블로거 반복은 무시). 2명이면 만점.
-        items = [{"kw": "A", "rows": [], "sources": {}, "bloggers": ["b1", "b2"]},
+        full = econ_score.F.load(econ_score.CFG(), {}).get("blogger_full", 2)  # 블로그별 만점 기준(경제 3·패션 2)
+        # 최신성 블로거: 서로 다른 블로거 수로 센다(같은 블로거 반복은 무시). full명이면 만점.
+        items = [{"kw": "A", "rows": [], "sources": {}, "bloggers": [f"b{i}" for i in range(full)]},
                  {"kw": "B", "rows": [], "sources": {}, "bloggers": ["b1"]}]
         with mock.patch.object(econ_score, "_recent_cores", return_value={}):
             out = {x["kw"]: x for x in econ_score.score(items, None)}
-        self.assertEqual(out["A"]["parts"]["최신"], 25)        # 서로 다른 블로거 2명(blogger_full) = 최신성 만점
-        self.assertEqual(out["B"]["parts"]["최신"], round(25 * 1 / 2))  # 1명 = 절반
-        self.assertGreater(out["A"]["score"], out["B"]["score"])  # 선정 우선순위 블로거→어사이드
+        self.assertEqual(out["A"]["parts"]["최신"], 25)        # 서로 다른 블로거 full명 = 최신성 만점
+        self.assertEqual(out["B"]["parts"]["최신"], round(25 * 1 / full))  # 1명 = 비율만큼
+        self.assertGreater(out["A"]["score"], out["B"]["score"])  # 블로거 많을수록 위 (선정 우선순위 블로거→어사이드)
 
     def test_kunine_check(self):
         from content import kunine
