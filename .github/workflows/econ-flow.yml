@@ -14,7 +14,7 @@ on:
   #   paths: ["config/econ_refs.yaml"]
   workflow_dispatch:
     inputs:
-      cmd: {description: "keywords | add | aside | auto | link | linkcheck | titles | produce | learn | refs | masters", required: true, default: keywords}
+      cmd: {description: "keywords | add | aside | auto | link | titles | produce | learn | refs | masters", required: true, default: keywords}
       arg1: {description: "키워드 / 주제폴더", required: false, default: ""}
       arg2: {description: "제목 번호", required: false, default: ""}
       blog: {description: "econ | ent | fashion", required: false, default: econ}
@@ -77,7 +77,6 @@ jobs:
           elif [ "$CMD" = "outfit" ]; then python -m content.econ_flow outfit "$ARG1"   # 착장 도우미: 글 (2026-10-10)
           elif [ "$CMD" = "topicwrite" ]; then python -m content.econ_flow topicwrite "$ARG1"   # 직접 입력 주제로 바로 글 (2026-10-09)
           elif [ "$CMD" = "linkwrite" ]; then python -m content.econ_flow linkwrite "$ARG1"   # 패션: 제목 + 상품 링크로 글 (2026-10-09)
-          elif [ "$CMD" = "linkcheck" ]; then python -m content.econ_flow linkcheck "$ARG1"   # 상품 링크가 읽히는지만 점검 (2026-10-08)
           elif [ "$CMD" = "titles" ]; then python -m content.econ_flow titles "$ARG1"
           elif [ "$CMD" = "produce" ]; then python -m content.econ_flow produce "$ARG1" "$ARG2"
           elif [ "$CMD" = "learn" ]; then python -m content.econ_inbox learn
