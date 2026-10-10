@@ -208,17 +208,73 @@ def blog_links(kw: str, n: int = 3) -> str:
             + '</div>')
 
 
+def _recon_a(folder: str) -> dict | None:
+    """옛 글(원문 체크 저장 전)도 체크를 보이게: 저장 파일(body.txt·table.json·pixabay.txt·태그)에서 본문 구조를 되살린다 (대표 결정 2026-10-10). 비용 0."""
+    d = POSTS / folder
+    bt = d / "body.txt"
+    if not bt.exists():
+        return None
+    body = bt.read_text(encoding="utf-8")
+    md = (d / "post.md").read_text(encoding="utf-8") if (d / "post.md").exists() else ""
+    mt = re.search(r"^- 태그: (.+)$", md, re.M)
+    tags = [x.strip() for x in (mt.group(1).split(",") if mt else []) if x.strip()]
+    tbl = json.loads((d / "table.json").read_text(encoding="utf-8")) if (d / "table.json").exists() else {}
+    px = [l for l in (d / "pixabay.txt").read_text(encoding="utf-8").splitlines() if l.strip()] if (d / "pixabay.txt").exists() else []
+    intro, sections, qa, cur, pend, started = [], [], [], None, 0, False
+    for b in [x.strip() for x in body.split("\n\n") if x.strip()]:
+        if b.startswith("[이미지"):
+            pend += 1; continue
+        if b.startswith("[표"):
+            continue
+        if b.startswith("■"):
+            cur = {"heading": b.lstrip("■ ").strip(), "paragraphs": [], "images": [{}] * pend}
+            sections.append(cur); pend = 0; started = True; continue
+        if re.match(r"^Q\.", b):
+            for m in re.finditer(r"Q\.\s*(.+?)\s*A\.\s*(.+?)(?=\nQ\.|\Z)", b, re.S):
+                qa.append({"q": m.group(1).strip(), "a": m.group(2).strip()})
+            continue
+        if b.startswith("참조문헌") or b.startswith("※"):
+            continue
+        (intro if not started else (cur["paragraphs"] if cur else intro)).append(b)
+    return {"intro": intro, "sections": sections, "closing": sections[-1]["paragraphs"][-1:] if sections else [],
+            "table": tbl, "qa": qa, "tags": tags, "pixabay": px, "thumb": {}, "greeting": intro[0] if intro else "", "sources": []}
+
+
+def backfill_checklist(p: dict) -> tuple[list, list]:
+    """저장된 원문 체크가 없으면 파일에서 되살려 계산 (대표 결정 2026-10-10 '옛 글에도 보이게')."""
+    if p.get("checklist"):
+        return p["checklist"], p.get("human") or []
+    a = _recon_a(p["folder"])
+    if not a:
+        return [], []
+    mod = __import__("content.kunine" if BID == "econ" else "content.celeb", fromlist=["checklist"])
+    best = next((t["text"] for t in p.get("titles", []) if t.get("best")), p["titles"][0]["text"] if p.get("titles") else "")
+    kw = best.split()[0] if best else p["folder"][11:]
+    pick = {"title": best, "type": "", "person": kw}
+    try:
+        cl = mod.checklist(a, kw, pick)
+        return [("✅ " if ok else "⚠️ ") + txt for ok, txt in cl], mod.human_check()
+    except Exception as e:  # noqa: BLE001
+        print(f"원문 체크 되살리기 실패 {p['folder']}: {str(e)[:80]}")
+        return [], []
+
+
 def page(p: dict) -> str:
     """글 화면: 제목 → 사진 → 본문 (대표 지시 2026-10-08: 설명 글·미리보기·발행 완료·태그 칸·사진 저장·출처 없앰).
     본문 복사 = 소제목 앞뒤 빈 줄 2칸(■ 없이) + 사진 자리 + 맨 끝 해시태그."""
     e = html.escape
     best = next((t for t in p["titles"] if t["best"]), p["titles"][0] if p["titles"] else {"text": p["folder"], "type": ""})
     probs = "".join(f"<li>{e(x)}</li>" for x in p["problems"])
-    cl = p.get("checklist") or []
+    cl, human = (p.get("checklist") or []), (p.get("human") or [])
+    if not cl:
+        cl, human = backfill_checklist(p)
+        p = {**p, "human": human}
     cl_ok = sum(1 for x in cl if x.startswith("✅"))
     cl_html = (f'<div class="card"><h2>원문 체크 <span class="muted" style="font-size:14px">{cl_ok}/{len(cl)}</span></h2>'
                '<div class="muted" style="font-size:12px;margin-bottom:4px">강사 원문 프롬프트대로 됐는지 · ⚠️는 부족한 부분</div>'
                + "".join(f'<div style="font-size:14px;padding:2px 0{";color:var(--warn);font-weight:700" if x.startswith("⚠") else ""}">{e(x)}</div>' for x in cl)
+               + (f'<details style="margin-top:6px"><summary class="muted">코드로 못 재는 항목 — 사람이 확인 ({len(human)}개)</summary>'
+                  + "".join(f'<div style="font-size:13px;padding:2px 0">👀 {e(x)}</div>' for x in human) + '</details>' if human else "")
                + '</div>') if cl else ""
     T = topic_titles(p["folder"])
     pick_btn = lambda t, typ: (f'<button class="ghost" onclick="setEd(\'title\',{e(json.dumps(t), quote=True)})">{e(t)}'  # noqa: E731
