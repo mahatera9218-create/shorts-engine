@@ -268,7 +268,8 @@ def produce(slug: str, n: int) -> Path:
         "", "## 사진 출처", "", *([f"- {c}" for c in credits] or ["- 없음"]),
         ]),
         encoding="utf-8")
-    F.save(tdir / "chosen.yaml", {"title": pick["title"], "post": slug, "at": datetime.now(F.KST).strftime("%H:%M")})
+    F.save(tdir / "chosen.yaml", {"title": pick["title"], "post": slug, "at": datetime.now(F.KST).strftime("%H:%M"),
+                                   "kw": kw, **F.post_meta(kw, pick.get("type", ""))})
     print(f"제작 완료 → {post}")
     return post
 

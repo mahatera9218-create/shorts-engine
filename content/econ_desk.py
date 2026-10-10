@@ -846,7 +846,73 @@ def compare_html(blogs: dict, by_blog: dict[str, list[dict]]) -> str:
     grid = f'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px">{"".join(cols)}</div>'
     note = ('<div class="card muted" style="font-size:14px">글 1편 어림 = 제목 후보 1번 + 글·사진 1번 + 키워드 모으기 비용을 만든 글 수로 나눈 몫. '
             '제목을 다시 뽑거나 고른 키워드로 글을 안 만들면 그만큼 더 들어요.</div>')
-    return stats_html(blogs) + head_  # 어사이드 통계 위, 비용 아래, 나머지 없앰 (대표 지시 2026-10-08)
+    return calibrate_html(blogs) + stats_html(blogs) + head_  # 홈판 벼려내기 맨 위, 어사이드 통계, 비용 (대표 결정 2026-10-10)
+
+
+def _home_share(paths: list[dict]) -> int | None:
+    """유입 경로 목록에서 홈판(블로그 홈·피드·추천·탐색) 비중 % 합. 숫자가 없으면 None."""
+    import re as _re
+    tot = 0
+    hit = False
+    for x in paths or []:
+        name, sh = x.get("path", ""), x.get("share", "")
+        m = _re.search(r"(\d+(?:\.\d+)?)", str(sh))
+        if m and any(w in name for w in ("홈", "피드", "추천", "탐색")):
+            tot += float(m.group(1)); hit = True
+    return round(tot) if hit else None
+
+
+def calibrate_html(blogs: dict) -> str:
+    """홈판 벼려내기 (대표 결정 2026-10-10 '벼리는 건 성과탭에서'): 목표인 홈판 유입 비중 + 예측 점수 vs 실제 조회.
+    예측은 글 만들 때 chosen.yaml에 남긴 점수, 실제는 어사이드 주간 통계(제목으로 맞춤). 데이터가 쌓이면 채워진다."""
+    e = html.escape
+    from .blog_stats import recent
+    rs = recent(4)
+    last = rs[0] if rs else {}
+    cards = []
+    for bid, b in blogs.items():
+        # 예측: 이 블로그가 만든 글의 {제목: chosen 메타}
+        pred = {}
+        for cf in sorted((b["base"] / "flow").glob("*/*/chosen.yaml")) if (b["base"] / "flow").exists() else []:
+            c = yaml.safe_load(cf.read_text(encoding="utf-8")) or {}
+            if c.get("title"):
+                pred[c["title"].strip()] = c
+        d = (last.get("blogs") or {}).get(bid) or {}
+        home = _home_share(d.get("paths", []))
+        posts = d.get("posts", [])
+        # 예측 vs 실제 (주간 통계 글 제목 ↔ chosen 제목)
+        rows, sec_hit = [], {}
+        for r in posts:
+            t = (r.get("title") or "").strip()
+            c = pred.get(t) or next((v for k, v in pred.items() if k and (k in t or t in k)), None)
+            views = r.get("조회", 0)
+            pv = c.get("predict") if c else None
+            if c and c.get("section"):
+                sec_hit.setdefault(c["section"], []).append(views)
+            rows.append((t, pv, views, c.get("section") if c else "", c.get("type") if c else ""))
+        rows.sort(key=lambda x: -(x[2] or 0))
+        head = (f'<p style="font-size:22px;margin:4px 0">🏠 홈판 유입 <b>{home}%</b></p>' if home is not None
+                else '<p class="muted">홈판 유입 비중: 주간 통계가 들어오면 표시돼요 (어사이드 월요일).</p>')
+        body = ""
+        if rows:
+            trs = "".join(f'<tr><td style="text-align:left;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{e(t)}</td>'
+                          f'<td>{"" if pv is None else pv}</td><td><b>{v:,}</b></td><td class="muted">{e(sec or "")}</td></tr>'
+                          for t, pv, v, sec, ty in rows[:10])
+            body = ('<table style="width:100%;border-collapse:collapse;font-size:13px;text-align:center;margin-top:6px">'
+                    '<tr><th style="text-align:left">제목</th><th>예측</th><th>실제조회</th><th>섹션</th></tr>' + trs + '</table>')
+            if sec_hit:
+                avg = sorted(((k, round(sum(v) / len(v))) for k, v in sec_hit.items()), key=lambda x: -x[1])
+                body += ('<div class="muted" style="font-size:12px;margin-top:6px">섹션별 평균 조회: '
+                         + " · ".join(f"{e(k)} {v:,}" for k, v in avg) + "</div>")
+        elif pred:
+            body = f'<div class="muted" style="font-size:13px">만든 글 {len(pred)}편 · 조회수는 다음 주간 통계에서 맞춰 보여요.</div>'
+        else:
+            body = '<div class="muted" style="font-size:13px">아직 만든 글이 없어요.</div>'
+        cards.append(f'<div class="card"><h2>{e(b["label"])} 홈판 벼려내기</h2>{head}{body}</div>')
+    note = ('<div class="card muted" style="font-size:13px">홈판 노출이 목표예요. 예측(화제성 점수)이 높은데 실제 조회·홈판 유입이 낮으면 그 유형을 낮추고, '
+            '반대면 올려요. 어사이드 주간 통계가 쌓일수록 정확해져요.</div>')
+    return (f'<h2 style="margin:8px 0">🏠 홈판 벼려내기</h2>'
+            f'<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px">{"".join(cards)}</div>{note}')
 
 
 def stats_html(blogs: dict) -> str:
