@@ -89,6 +89,30 @@ def key(n: str) -> str:
     return os.environ.get(n, "").strip()
 
 
+def post_meta(kw: str, title_type: str = "") -> dict:
+    """글을 만들 때 예측값을 남긴다 → 나중에 실제 조회·홈판 유입과 비교(벼려내기, 대표 결정 2026-10-10 '성과탭에서'). 못 찾으면 비움."""
+    day = FLOW / today()
+    core = (kw or "").split()[0] if kw else ""
+    score = None
+    try:
+        for it in (load(day / "keywords.yaml", {}) or {}).get("items", []):
+            if it.get("kw") == kw or (it.get("core") or "").strip() == core:
+                score = it.get("score")
+                break
+    except Exception:  # noqa: BLE001
+        pass
+    section = ""
+    if BLOG["id"] == "econ":
+        try:
+            from .econ_sections import section as _sec
+            section = _sec({"kw": kw})
+        except Exception:  # noqa: BLE001
+            pass
+    h = int(datetime.now(KST).strftime("%H"))
+    window = "아침(9시)" if h < 10 else ("점심(12시)" if h < 15 else "저녁(18시)")  # 어느 발행창 직전에 만들었나
+    return {"predict": score, "section": section, "type": title_type, "made_window": window}
+
+
 def today() -> str:
     return datetime.now(KST).strftime("%Y-%m-%d")
 

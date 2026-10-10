@@ -332,7 +332,8 @@ def produce(slug: str, n: int) -> Path:
         "## 본문", "", "(body.txt)", "", "## 출처", "", *[f"- {s}" for s in a["sources"]],
         "", "## 사진 출처 (위키미디어 사진은 사진 아래에 작가·라이선스 표시가 필요해요)", "", *([f"- {c}" for c in credits] or ["- 없음"])]),
         encoding="utf-8")
-    F.save(tdir / "chosen.yaml", {"title": pick["title"], "post": slug, "at": datetime.now(F.KST).strftime("%H:%M")})
+    F.save(tdir / "chosen.yaml", {"title": pick["title"], "post": slug, "at": datetime.now(F.KST).strftime("%H:%M"),
+                                   "kw": kw, **F.post_meta(kw, pick.get("type", ""))})
     print(f"제작 완료 → {post}")
     return post
 
