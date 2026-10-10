@@ -477,23 +477,42 @@ def written_today(day: Path) -> dict[str, str]:
     return out
 
 
-def score_table(items: list[dict]) -> str:
-    """키워드 점수표 (대표 요청 2026-10-09 '점수표 살려 줘') — 접어서."""
-    e = html.escape
-    keys = list(dict.fromkeys(k for it in items for k in (it.get("parts") or {})))
-    if not items or not keys:
+def _man(v) -> str:
+    """숫자를 휴대폰에서 읽기 쉽게 (12345 → 1.2만, 231131 → 23만)."""
+    if not isinstance(v, (int, float)) or v is None:
         return ""
-    def num(v):
-        return f"{v:,}" if isinstance(v, (int, float)) else (e(str(v)) if v not in (None, "") else "")
-    skeys = ["월검색", "상승", "유튜브7일", "뉴스24h", "블로그24h"]  # 근거 숫자도 같이
-    th = "".join(f"<th>{e(k)}</th>" for k in keys) + "".join(f'<th class="muted">{e(k)}</th>' for k in skeys)
-    tr = "".join(f'<tr><td style="text-align:left">{e(it["kw"])}</td><td><b>{it.get("score", "")}</b></td>'
-                 + "".join(f'<td>{(it.get("parts") or {}).get(k, "")}</td>' for k in keys)
-                 + "".join(f'<td class="muted">{num((it.get("stats") or {}).get(k))}</td>' for k in skeys)
-                 + "</tr>" for it in sorted(items, key=lambda x: -x.get("score", 0)))
-    return (f'<details style="margin-top:6px"><summary class="muted">점수표 (채점된 키워드 {len(items)}개 전체 · 근거 숫자 포함)</summary>'
-            f'<div style="overflow-x:auto"><table style="font-size:12px;border-collapse:collapse;width:100%;text-align:center;white-space:nowrap">'
-            f'<tr><th style="text-align:left">키워드</th><th>합계</th>{th}</tr>{tr}</table></div></details>')
+    v = int(v)
+    if v >= 10000:
+        man = v / 10000
+        return f"{man:.0f}만" if man >= 10 else f"{man:.1f}만"
+    return f"{v:,}"
+
+
+def score_table(items: list[dict]) -> str:
+    """키워드 근거 (대표 요청 2026-10-09 '점수표 살려 줘', 2026-10-10 가독성: 가로 표 → 한 줄씩 세로로)."""
+    e = html.escape
+    if not items:
+        return ""
+    rows = []
+    for it in sorted(items, key=lambda x: -x.get("score", 0)):
+        st = it.get("stats") or {}
+        bits = []
+        if st.get("월검색"):
+            bits.append(f"검색 {_man(st['월검색'])}")
+        if st.get("상승") and st["상승"] >= 1.2:
+            bits.append(f"상승 ×{st['상승']}")
+        if st.get("유튜브7일"):
+            bits.append(f"유튜브 {_man(st['유튜브7일'])}")
+        if st.get("뉴스24h"):
+            bits.append(f"뉴스 {st['뉴스24h']}")
+        if st.get("블로그24h"):
+            bits.append(f"새글 {st['블로그24h']}")
+        why = " · ".join(bits) or "근거 수집 안 됨"
+        rows.append(f'<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)">'
+                    f'<div style="min-width:0"><b>{e(it["kw"])}</b><div class="muted" style="font-size:12px">{e(why)}</div></div>'
+                    f'<span class="seal">{it.get("score", "")}</span></div>')
+    return (f'<details style="margin-top:6px"><summary class="muted">키워드별 점수·근거 ({len(items)}개)</summary>'
+            f'<div style="margin-top:4px">{"".join(rows)}</div></details>')
 
 
 def kw_row(it: dict, done: dict[str, str]) -> str:
