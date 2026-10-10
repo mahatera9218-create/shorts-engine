@@ -179,7 +179,7 @@ def check(a: dict, kw: str) -> list[str]:
     return bad
 
 
-def checklist(a: dict, kw: str) -> list[tuple[bool, str]]:
+def checklist(a: dict, kw: str, pick: dict | None = None) -> list[tuple[bool, str]]:
     """원문 프롬프트를 지켰는지 전체 점검표 (대표 요청 2026-10-10 '올리기 전 원문대로인지, 부족한 건 뭔지'). (됐나, 설명)."""
     t = text_of(a)
     core = kw.split()[0]
@@ -200,7 +200,10 @@ def checklist(a: dict, kw: str) -> list[tuple[bool, str]]:
         (px >= 5, f"픽사베이 검색어 5개 ({px}개)"),
         (bool(a.get("intro")) and bool(a.get("closing")), "도입·마무리 문단 있음"),
         (chars >= 1500, f"본문 1,500자 이상 ({chars}자)"),
-    ]
+    ] + ([
+        (len(pick.get("title", "")) <= 45, f"제목 45자 이내 ({len(pick.get('title',''))}자)"),
+        (core in pick.get("title", ""), f"제목에 핵심키워드 '{core}' 포함"),
+    ] if pick else [])
 
 
 def gain(kw: str, a: dict) -> tuple[bool, str]:
@@ -228,11 +231,18 @@ def produce(slug: str, n: int) -> Path:
     a = F.claude_json(sys_prompt, ask, BODY, stage="글쓰기(쿠니네)")
     ok_gain, gain_note = True, "생략 (대표 결정 2026-10-05)"  # 정보 이득 검사 뺌 — gain()은 다시 켤 때를 위해 남김
     issues: list[dict] = []  # GPT 사실 대조는 뺐다 (대표 결정 2026-10-05: "검사는 필요 없을 것 같다"). 숫자는 Grok 조사 메모 안에서만 쓴다
-    bad = check(a, kw)
-    if issues or bad:
-        a = F.claude_json(sys_prompt, ask + "\n\n[고칠 것]\n" + "\n".join(f"- {b}" for b in bad)
-                          + ("\n[사실 대조(GPT)]\n" + json.dumps(issues, ensure_ascii=False) if issues else "")
-                          + "\n\n[지난 초안]\n" + json.dumps(a, ensure_ascii=False), BODY, stage="고쳐쓰기(사실·형식)")
+    # 원문 체크 8/10 넘을 때까지 최대 2번만 고쳐쓰기 (대표 요청 2026-10-10). 실패 기록은 남긴다. 검사는 코드(무료), 고쳐쓰기만 1회 비용
+    from .econ_score import CFG as _kcfg
+    target = (F.load(_kcfg(), {}) or {}).get("checklist_target", 8)
+    fix_log: list[str] = []
+    for attempt in range(2):
+        cl = checklist(a, kw, pick)
+        fails = [txt for ok, txt in cl if not ok]
+        if len(cl) - len(fails) >= target or not fails:
+            break
+        fix_log.append(f"{attempt + 1}차 부족({len(cl) - len(fails)}/{len(cl)}): " + " / ".join(fails))
+        a = F.claude_json(sys_prompt, ask + "\n\n[반드시 고칠 것 — 아래를 모두 충족]\n" + "\n".join(f"- {b}" for b in fails)
+                          + "\n\n[지난 초안]\n" + json.dumps(a, ensure_ascii=False), BODY, stage=f"고쳐쓰기{attempt + 1}")
     left = check(a, kw)
     post = F.POSTS / slug
     post.mkdir(parents=True, exist_ok=True)
@@ -281,11 +291,12 @@ def produce(slug: str, n: int) -> Path:
         status += " · ⚠️ 형식: " + " / ".join(left)
     if NO_CREDIT:
         status += " · ⚠️ OpenAI 크레딧이 없어 AI 사진 대신 무료 사진으로 채움 — 대표가 크레딧 충전 필요"
-    cl = checklist(a, kw)
+    cl = checklist(a, kw, pick)
     (post / "post.md").write_text("\n".join([
         f"# 발행 패키지 · {kw} (쿠니네 방식)", "",
         f"**상태:** {status}", f"**정보 이득:** {gain_note}",
-        "", "## 원문 체크", "", *[f"- {'✅' if ok else '⚠️'} {txt}" for ok, txt in cl], "",
+        "", "## 원문 체크", "", *[f"- {'✅' if ok else '⚠️'} {txt}" for ok, txt in cl],
+        *(["", "### 고쳐쓰기 기록(남긴 것)", *[f"- {x}" for x in fix_log]] if fix_log else []), "",
         f"**본문:** {len(text_of(a))}자 · 사진 {k - 2}장 + 썸네일", "",
         f"- 카테고리: **{a['area']}**", f"- 태그: {tags}", "",
         "## 제목 (추천 ★)", "", f"1. ★ {pick['title']} — {pick['type']}",

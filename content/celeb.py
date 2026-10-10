@@ -269,6 +269,34 @@ def check(a: dict) -> list[str]:
     return bad
 
 
+def checklist(a: dict, kw: str, pick: dict | None = None) -> list[tuple[bool, str]]:
+    """패션 원문(§ 본문·사진·해시태그) 지켰는지 점검표 (대표 요청 2026-10-10). (됐나, 설명)."""
+    t = text_of(a)
+    raw = "\n".join(p for s in a["sections"] for p in s["paragraphs"])
+    emph = len(re.findall(r"\*\*|__", raw)) // 2
+    meta = [m for m in META if m in t]
+    few = [s["heading"] for s in a["sections"][:-1] if len(s["images"]) < 1]
+    intro = [w for w in NO_INTRO.get(F.BLOG["id"], []) if w in t]
+    person = (pick or {}).get("person") or kw.split()[0]
+    out = [
+        (len(t) >= 1500, f"본문 1,500자 이상 ({len(t)}자)"),
+        (5 <= len(a["sections"]) <= 7, f"소제목 구간 6개쯤 ({len(a['sections'])}개)"),
+        (17 <= len(a["tags"]) <= 19, f"해시태그 18~19개 ({len(a['tags'])}개)"),
+        (not few, "구간마다 사진 1장 " + (f"(빠진 곳 {len(few)})" if few else "(됨)")),
+        (emph <= 2, f"굵게·밑줄 2곳 이내 ({emph}곳)"),
+        (not meta, "제작 과정 문장 없음 " + (f"({len(meta)}곳)" if meta else "")),
+        (not F.PRESS.search(t), "언론사명·링크 없음"),
+        (not intro, "자기소개·블로그이름 없이 시작 " + (f"({', '.join(intro)})" if intro else "")),
+    ]
+    if pick:
+        ln = len(pick.get("title", ""))
+        out += [
+            (35 <= ln <= 65, f"제목 35~65자 ({ln}자)"),
+            (bool(person) and person in pick.get("title", ""), f"제목에 인물 '{person}' 포함"),
+        ]
+    return out
+
+
 def produce(slug: str, n: int) -> Path:
     tdir = next(F.FLOW.glob(f"*/{slug}"), None)
     if not tdir:
@@ -280,10 +308,18 @@ def produce(slug: str, n: int) -> Path:
     ask = (f"키워드(주어): {kw}\n확정 제목: {pick['title']}\n주인공: {T.get('person', '')}\n\n[조사 메모]\n{memo[:10000]}\n\n"
            "이번 단계는 **본문만** 씁니다(제목은 정해졌습니다). 원문 본문 규칙과 덧붙임·블로그 설정대로 JSON으로 주세요." "\n본문은 확정 제목이 약속한 것(숫자·질문·반전·비교)에 반드시 답하도록, 조사 메모에서 제목과 직접 관련된 사실을 먼저 씁니다(대표 확인 2026-10-09).")
     a = F.claude_json(sys_prompt, ask, BODY, stage="글쓰기(연예·패션)")
-    bad = check(a)
-    if bad:
-        a = F.claude_json(sys_prompt, ask + "\n\n[고칠 것]\n" + "\n".join(f"- {b}" for b in bad)
-                          + "\n\n[지난 초안]\n" + json.dumps(a, ensure_ascii=False), BODY, stage="고쳐쓰기(형식)")
+    # 원문 체크 목표점 넘을 때까지 최대 2번만 고쳐쓰기 (대표 요청 2026-10-10). 검사는 무료, 고쳐쓰기만 1회 비용
+    from .econ_score import CFG as _kcfg
+    target = (F.load(_kcfg(), {}) or {}).get("checklist_target", 8)
+    fix_log: list[str] = []
+    for attempt in range(2):
+        cl = checklist(a, kw, pick)
+        fails = [txt for ok, txt in cl if not ok]
+        if len(cl) - len(fails) >= target or not fails:
+            break
+        fix_log.append(f"{attempt + 1}차 부족({len(cl) - len(fails)}/{len(cl)}): " + " / ".join(fails))
+        a = F.claude_json(sys_prompt, ask + "\n\n[반드시 고칠 것 — 아래를 모두 충족]\n" + "\n".join(f"- {b}" for b in fails)
+                          + "\n\n[지난 초안]\n" + json.dumps(a, ensure_ascii=False), BODY, stage=f"고쳐쓰기{attempt + 1}")
     left = check(a)
     post = F.POSTS / slug
     post.mkdir(parents=True, exist_ok=True)
@@ -326,6 +362,8 @@ def produce(slug: str, n: int) -> Path:
     (post / "post.md").write_text("\n".join([
         f"# 발행 패키지 · {kw} ({F.BLOG['name']})", "", f"**상태:** {status}",
         f"**본문:** {len(text_of(a))}자 · 사진 {k - 2}장 + 썸네일", "",
+        "## 원문 체크", "", *[f"- {'✅' if ok else '⚠️'} {txt}" for ok, txt in checklist(a, kw, pick)],
+        *(["", "### 고쳐쓰기 기록(남긴 것)", *[f"- {x}" for x in fix_log]] if fix_log else []), "",
         f"- 카테고리: **{a['area']}**", f"- 태그: {tags}", "",
         "## 제목 (추천 ★)", "", f"1. ★ {pick['title']} — {pick['type']}",
         *[f"{i + 2}. {t['title']} — {t['type']}" for i, t in enumerate(others)], "",
