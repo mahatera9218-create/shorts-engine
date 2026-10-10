@@ -844,7 +844,9 @@ def _run(cmd: str) -> None:
             from .celeb import produce as _produce, research as _research, titles as _titles, link_facts
             memo = _research(kw) or claude_research(kw)
             if urls:
-                memo = "[대표가 준 상품 링크에서 확인한 제품 정보 — 가장 믿을 만한 자료]\n" + link_facts(urls) + "\n\n" + memo
+                facts = link_facts(urls)
+                if facts:
+                    memo = "[대표가 준 상품 링크에서 확인한 제품 정보 — 가장 믿을 만한 자료]\n" + facts + "\n\n" + memo
             d = _titles(kw, memo)
         T = load(d / "titles.yaml", {})
         _produce(d.name, next((i for i, t in enumerate(T.get("items", []), 1) if t.get("rank") == 1), 1))
