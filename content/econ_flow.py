@@ -276,7 +276,9 @@ def keywords(force: bool = False) -> Path:
             print(f"계절 상품 실패: {str(e)[:150]}")
     if not force and gathered:  # 오늘 이미 Grok으로 모음 → 돈 드는 Grok 건너뛰고 무료 점수만 갱신
         print("오늘 이미 키워드를 모았어요 → Grok 건너뛰고 검색량·점수만 갱신 (비용 절약)")
-        grok_items = []
+        # 어제 Grok이 찾은 키워드는 다시 Grok 후보로 되먹인다 (출처가 '대표'로 잘못 찍히지 않게, 대표 지적 2026-10-10)
+        grok_items = [{"kw": x["kw"], "why": x.get("why", ""), "area": x.get("area", ""), "person": x.get("person", "")}
+                      for x in old.get("items", []) if "Grok" in (x.get("src") or "") and "대표" not in (x.get("src") or "")]
     else:
         n_g = (load(_kcfg(), {}) or {}).get("grok_count", 8)  # 패션은 15개 (2026-10-06 대표 지적: 패션 키워드가 약함)
         season = ""
@@ -290,9 +292,7 @@ def keywords(force: bool = False) -> Path:
                  'JSON 배열만 답하세요: [{"kw": "짧은 키워드", "area": "분야", "why": "왜 화제인지 한 줄", '
                  '"person": "관련 인물이 있으면 이름(회사·소속), 없으면 빈칸"}]')
         grok_items = [it for it in (parse_json(g) or []) if isinstance(it, dict) and it.get("kw")]
-    keep_grok = not force and gathered  # Grok 건너뛸 땐 오늘 모은 Grok 키워드도 살림
-    mine = [x for x in old.get("items", []) if x.get("src") in ("대표", "캡처") or x.get("naver_rank")
-            or (keep_grok and "Grok" in (x.get("src") or ""))]  # 어사이드도 남김 (2026-10-07)
+    mine = [x for x in old.get("items", []) if "대표" in (x.get("src") or "") or "캡처" in (x.get("src") or "") or x.get("naver_rank")]  # 진짜 대표·캡처·어사이드만 (2026-10-10 '대표' 오표기 수정)
     rising_items = (load(day / "rising.yaml", {}) or {}).get("items", [])  # 급상승 키워드를 메인 후보에 합침 (대표 결정 2026-10-10)
     items = run(grok_items, mine, rising_items=rising_items)
     # 최근 N일 이미 글로 쓴 주제는 뺀다 (대표 지적 2026-10-10 '2주 전 글이 또 나온다'). 단 검색량 초대형은 남김
