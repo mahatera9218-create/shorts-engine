@@ -25,8 +25,8 @@ permissions:
   issues: write
   actions: read
 
-concurrency:
-  group: desk-button
+concurrency:   # 이슈마다 따로 (2026-10-10: 한 줄로 세우면 기다리던 버튼이 다음 버튼에 밀려 취소됨 — 문가영 글). 글 만들기는 econ-flow가 블로그별로 줄 세움
+  group: desk-button-${{ github.event.issue.number || github.run_id }}
   cancel-in-progress: false
 
 jobs:
