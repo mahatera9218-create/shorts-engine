@@ -222,6 +222,12 @@ def page(p: dict) -> str:
     e = html.escape
     best = next((t for t in p["titles"] if t["best"]), p["titles"][0] if p["titles"] else {"text": p["folder"], "type": ""})
     probs = "".join(f"<li>{e(x)}</li>" for x in p["problems"])
+    cl = p.get("checklist") or []
+    cl_ok = sum(1 for x in cl if x.startswith("✅"))
+    cl_html = (f'<div class="card"><h2>원문 체크 <span class="muted" style="font-size:14px">{cl_ok}/{len(cl)}</span></h2>'
+               '<div class="muted" style="font-size:12px;margin-bottom:4px">강사 원문 프롬프트대로 됐는지 · ⚠️는 부족한 부분</div>'
+               + "".join(f'<div style="font-size:14px;padding:2px 0{";color:var(--warn);font-weight:700" if x.startswith("⚠") else ""}">{e(x)}</div>' for x in cl)
+               + '</div>') if cl else ""
     T = topic_titles(p["folder"])
     pick_btn = lambda t, typ: (f'<button class="ghost" onclick="setEd(\'title\',{e(json.dumps(t), quote=True)})">{e(t)}'  # noqa: E731
                                f'{badge(t, typ)}</button>')
@@ -243,6 +249,7 @@ def page(p: dict) -> str:
 <a href="../../" class="muted">← 목록</a>
 <h1>{e(best["text"])}</h1>
 {f'<div class="card" style="border:2px solid var(--warn)"><b>⚠️ 확인 필요</b><ul>{probs}</ul></div>' if not p["ok"] else ""}
+{cl_html}
 <div class="card"><h2>제목{badge(best["text"], best.get("type", ""))}</h2>{desk.edit_box("title", best["text"], "제목 복사", one_line=True)}
 {f'<details><summary class="muted">다른 제목 {n_all}개</summary>{rest}</details>' if rest else ''}{rules_html()}{blog_links(T.get("keyword", "")) if BID != "econ" and T else ""}</div>
 {outfit_links(p["folder"])}{prompts_card(p)}
