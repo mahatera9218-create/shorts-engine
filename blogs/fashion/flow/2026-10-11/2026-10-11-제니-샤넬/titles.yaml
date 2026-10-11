@@ -1,0 +1,114 @@
+keyword: 제니 샤넬
+person: 제니
+mode: 연예패션
+made: '11:40'
+items:
+- title: '"저 옷 어디 거야?" 더 위켄드 무대에 깜짝 등장한 제니, 퍼플 레오파드 보디수트 눈길'
+  type: 구어체 감탄·반문형
+  rank: 1
+  best: true
+  chars: 49
+  flags: []
+- title: 처음엔 그냥 시스루 무대 의상인 줄 알았는데 제니가 입은 건 알라이아 빈티지였네
+  type: 첫인상 착각·정체 반전형
+  rank: null
+  best: false
+  chars: 44
+  flags: []
+- title: 풀뱅 하나 바꿨을 뿐인데 제니 분위기가 확 달라졌네요, 롱 스트레이트 헤어까지
+  type: 작은 디테일의 큰 변화형
+  rank: null
+  best: false
+  chars: 43
+  flags: []
+- title: 35년 전 옷이라고? 제니가 위켄드 콘서트에서 입은 1991 F/W 알라이아 보디수트
+  type: 나이·이미지 의외성형
+  rank: null
+  best: false
+  chars: 47
+  flags: []
+- title: '"그 가수 누구야?" 고양 스타디움을 들썩이게 한 서프라이즈 게스트의 레오파드 룩'
+  type: 이름 숨기고 궁금증 유발형
+  rank: null
+  best: false
+  chars: 45
+  flags: []
+- title: 고양 스타디움에 서프라이즈로 나타난 제니, 'One of the Girls' 첫 라이브 무대 착장 관찰기
+  type: 상황·현장 중심형
+  rank: null
+  best: false
+  chars: 58
+  flags: []
+- title: 공연 사진만 보고 지나칠 뻔했는데 제니 보디수트의 레이스 디테일이 따로 있었네요
+  type: 공개된 사진 속 숨은 정보형
+  rank: null
+  best: false
+  chars: 44
+  flags: []
+- title: 시스루 레이스에 퍼플 레오파드를 겹친다고? 제니가 보여준 이 조합이 의외로 되네요
+  type: 의외의 조합·레이어드형
+  rank: null
+  best: false
+  chars: 45
+  flags: []
+- title: '"드디어 봤다" 팬들 난리 난 제니 합동 무대, 의상은 어떻게 입었나 뜯어봤어요'
+  type: 논란·반응 중심형
+  rank: null
+  best: false
+  chars: 44
+  flags: []
+- title: 분위기가 달라졌네, 풀뱅에 하이넥 롱슬리브로 대담해진 제니 무대룩 실루엣 분석
+  type: 새로운 스타일 변화형
+  rank: null
+  best: false
+  chars: 43
+  flags: []
+- title: 레오파드는 부담스러워서 못 입겠다면, 제니 무대룩에서 힌트를 얻어보세요
+  type: 독자 고민 해결형
+  rank: null
+  best: false
+  chars: 39
+  flags: []
+- title: 같은 시스루 보디수트인데 왜 이렇게 다르지? 제니 무대룩과 평범한 레이어드의 차이
+  type: 같은 옷·다른 사람 비교형
+  rank: null
+  best: false
+  chars: 45
+  flags: []
+- title: 처음엔 너무 과감한가 싶었는데 다시 보니 매력 있는 제니의 퍼플 레오파드 룩
+  type: 시선 집중·감정 대비형
+  rank: null
+  best: false
+  chars: 42
+  flags: []
+- title: 제니 샤넬 앰배서더 이미지 잠시 내려놓고, 위켄드 무대에선 알라이아 빈티지를 택했어요
+  type: 브랜드·패션 행사 연결형
+  rank: null
+  best: false
+  chars: 47
+  flags: []
+- title: 제니 샤넬 아니었어? 위켄드 서울 공연 속 보디수트 정체와 인스타 속 비하인드 사진
+  type: 궁금증 해소형
+  rank: null
+  best: false
+  chars: 46
+  flags: []
+groups:
+- type: 제목 후보
+  idx:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  best: null
