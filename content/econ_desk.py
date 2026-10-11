@@ -688,6 +688,8 @@ def new_badge(it: dict) -> str:
         b += ' <span style="font-size:11px;font-weight:700;color:#c2410c">🔥급부상</span>'
     if it.get("new"):
         b += ' <span style="font-size:11px;font-weight:700;color:#1d4ed8">🆕NEW</span>'
+    if it.get("written"):  # 대표가 넣은 키워드가 최근 쓴 주제와 겹침 (대표 결정 2026-10-11: 막지 않고 경고만)
+        b += f' <span style="font-size:11px;font-weight:700;color:#b91c1c">⚠️{it["written"][5:]} 이미 씀</span>'
     return b
 
 
