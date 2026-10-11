@@ -10,9 +10,7 @@
 """
 from __future__ import annotations
 
-import html
 import math
-import re
 from datetime import datetime, timedelta
 from email.utils import parsedate_to_datetime
 from xml.etree import ElementTree as ET
@@ -96,16 +94,8 @@ def gather(grok_items: list[dict], mine: list[dict], rising_items: list[dict] | 
                 rows.append((f"{'N' if kind == '국내뉴스' else 'Y'}{n}", kind, t))
     for i, it in enumerate(F.price_moves() if F.BLOG["id"] == "econ" else [], 1):
         rows.append((f"P{i}", "시세", f"{it['kw']} — {it['why']}"))
-    # 뉴스 검색어 (블로그별 news_queries, 2026-10-06): 네이버 뉴스 검색 API로 최근 24시간 기사 제목 — 패션처럼 RSS가 약한 분야용
-    hub0 = _hub() if cfg.get("news_queries") else None
-    n = 0
-    for qy in cfg.get("news_queries", []) if hub0 else []:
-        try:
-            for t in _recent_titles(hub0, qy)[:cfg.get("news_per_query", 8)]:
-                n += 1
-                rows.append((f"S{n}", "뉴스검색", t))
-        except Exception as e:  # noqa: BLE001
-            print(f"뉴스 검색 실패 {qy}: {str(e)[:80]}")
+    # 뉴스 검색어(news_queries)는 뺌 (대표 결정 2026-10-11): 네이버 검색 API 결과(기사 제목)를 AI 묶기에 넣는 경로라
+    # 2026-09 검색 API 특약('AI 입력 금지')과 어긋남. 검색 API는 건수(숫자)만 코드로 쓴다.
     # 인기 종목: 국내·미국 대표 종목의 최근 24시간 네이버 기사 수 (뉴스 제목에서 테마로 묶여 사라지지 않게, 2026-10-05 대표 지적)
     hub = _hub()
     if hub:
@@ -180,24 +170,6 @@ def _recent_count(hub, path: str, kw: str) -> tuple[int, int]:
     if path == "news_search":
         FRESH[kw] = n6
     return n, int(data.get("total") or 0)
-
-
-def _recent_titles(hub, kw: str) -> list[str]:
-    """네이버 뉴스 검색(최신순)에서 최근 24시간 기사 제목 (태그 뺌, 같은 제목 하나만)."""
-    data = request_json("GET", hub.base + hub.paths["news_search"], headers=hub._headers(),
-                        params={"query": kw, "display": 30, "sort": "date"})
-    since = datetime.now(F.KST) - timedelta(hours=24)
-    out = []
-    for it in data.get("items", []):
-        try:
-            if parsedate_to_datetime(it.get("pubDate") or "") < since:
-                continue
-        except (TypeError, ValueError):
-            continue
-        t = html.unescape(re.sub(r"<[^>]+>", "", it.get("title", ""))).strip()
-        if t and t not in out:
-            out.append(t)
-    return out
 
 
 def _volumes(kws: list[str]) -> dict[str, float]:
