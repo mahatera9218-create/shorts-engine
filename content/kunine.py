@@ -250,10 +250,13 @@ def produce(slug: str, n: int) -> Path:
     ratio = cfg.get("checklist_pass_ratio", 0.8)  # 원문 체크 통과율 목표 (대표 '8/10' → 80%)
     max_fix = cfg.get("max_rewrite", 1)  # 고쳐쓰기 횟수 (대표 결정 2026-10-10: 1회)
     fix_log: list[str] = []
+    first_bad: list[str] = []  # 처음에 걸린 것 전부 (고친 것 계산용, 2026-10-11)
     for attempt in range(max_fix + 1):
         cl = checklist(a, kw, pick)
         fails = [txt for ok, txt in cl if not ok]
         ed = F.editor_review(text_of(a), pick["title"], kw, human_check()) if cfg.get("strict_editor") else []
+        if attempt == 0:
+            first_bad = fails + ed
         need = int(len(cl) * ratio + 0.999)
         if (len(cl) - len(fails) >= need and not ed) or attempt >= max_fix:
             break
@@ -261,6 +264,8 @@ def produce(slug: str, n: int) -> Path:
                        + (" · 원문부족 " + " / ".join(fails) if fails else "") + (" · 편집장 " + " / ".join(ed) if ed else ""))
         a = F.claude_json(sys_prompt, ask + "\n\n[반드시 고칠 것 — 아래를 모두 충족]\n" + "\n".join(f"- {b}" for b in fails + ed)
                           + "\n\n[지난 초안]\n" + json.dumps(a, ensure_ascii=False), BODY, stage=f"고쳐쓰기{attempt + 1}")
+    remaining = fails + ed          # 고쳐쓰기 뒤에도 남은 것
+    fixed = [x for x in first_bad if x not in remaining]   # 처음 걸렸다가 고쳐진 것
     left = check(a, kw)
     post = F.POSTS / slug
     post.mkdir(parents=True, exist_ok=True)
@@ -315,10 +320,9 @@ def produce(slug: str, n: int) -> Path:
         f"**상태:** {status}", f"**정보 이득:** {gain_note}",
         "", "## 원문 체크", "", *[f"- {'✅' if ok else '⚠️'} {txt}" for ok, txt in cl],
         *(["", "### 고쳐쓰기 기록(남긴 것)", *[f"- {x}" for x in fix_log]] if fix_log else []),
-        *(["", "## 편집장 검토", "",
-           ("✅ 편집장(AI)이 아래 항목을 모두 확인했어요 — 지적 없음." if not ed
-            else "⚠️ 편집장(AI) 지적 (고쳐쓰기 후 남음): " + " / ".join(ed)),
-           "", "### 편집장(AI)이 본 항목 (코드로 못 재는 질)", *[f"- 👀 {x}" for x in human_check()]]
+        *(["", "## 편집장 검토", "", f"고침 {len(fixed)} · 남음 {len(remaining)}",
+           "", "### 고친 것", *([f"- {x}" for x in fixed] or ["- 없음"]),
+           "", "### 아직 남은 것", *([f"- {x}" for x in remaining] or ["- 없음"])]
           if cfg.get("strict_editor") else
           ["", "### 코드로 못 재는 항목 (사람이 확인)", *[f"- 👀 {x}" for x in human_check()]]), "",
         f"**본문:** {len(text_of(a))}자 · 사진 {k - 2}장 + 썸네일", "",

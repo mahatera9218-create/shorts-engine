@@ -302,18 +302,28 @@ def page(p: dict) -> str:
         cl, human = backfill_checklist(p)
         p = {**p, "human": human}
     cl_ok = sum(1 for x in cl if x.startswith("✅"))
-    review = (p.get("review") or "").strip()  # 엄격한 편집장(AI) 검토 판정 (코드로 못 재는 항목을 AI가 봄, 2026-10-11)
-    warn = review.startswith("⚠")
-    rev_html = (f'<div style="font-size:13px;margin-top:8px;padding:7px 9px;border-radius:8px;'
-                f'background:{"rgba(184,110,0,.14)" if warn else "rgba(31,138,76,.14)"}">🧑‍⚖️ {e(review)}</div>') if review else ""
-    human_label = "편집장(AI)이 본 항목" if review else "코드로 못 재는 항목 — 사람이 확인"  # 편집장이 봤으면 '사람이 확인' 딱지 떼기
-    cl_html = (f'<div class="card"><h2>원문 체크 <span class="muted" style="font-size:14px">{cl_ok}/{len(cl)}</span></h2>'
-               '<div class="muted" style="font-size:12px;margin-bottom:4px">강사 원문 프롬프트대로 됐는지 · ⚠️는 부족한 부분</div>'
-               + "".join(f'<div style="font-size:14px;padding:2px 0{";color:var(--warn);font-weight:700" if x.startswith("⚠") else ""}">{e(x)}</div>' for x in cl)
-               + rev_html
-               + (f'<details style="margin-top:6px"><summary class="muted">{human_label} ({len(human)}개)</summary>'
-                  + "".join(f'<div style="font-size:13px;padding:2px 0">👀 {e(x)}</div>' for x in human) + '</details>' if human else "")
-               + '</div>') if cl else ""
+    fixed, remaining = (p.get("fixed") or []), (p.get("remaining") or [])
+    review = (p.get("review") or "").strip()
+    new_fmt = bool(fixed or remaining)            # 새 형식(고침/남음 목록)
+    old_fmt = bool(review) and not new_fmt        # 옛 형식(편집장 지적 한 줄) — 이미 쓴 글 호환
+    warn = bool(remaining) or review.startswith("⚠") or any(x.startswith("⚠") for x in cl)
+    summary = f'원문 체크 {cl_ok}/{len(cl)}' + (f' · 편집장 고침 {len(fixed)}·남음 {len(remaining)}' if new_fmt else (' · 편집장 검토' if old_fmt else ''))
+    inner = ('<div class="muted" style="font-size:12px;margin-bottom:4px">강사 원문 프롬프트대로 됐는지 · ⚠️는 부족한 부분</div>'
+             + "".join(f'<div style="font-size:14px;padding:2px 0{";color:var(--warn);font-weight:700" if x.startswith("⚠") else ""}">{e(x)}</div>' for x in cl))
+    lst = lambda xs: "".join(f'<div style="font-size:12px;padding:1px 0 1px 10px">· {e(x)}</div>' for x in xs)
+    if new_fmt:  # 편집장(AI) 검토: 고친 것 / 아직 남은 것 (대표 지적 2026-10-11 '뭘 고쳤고 뭘 안 고쳤는지')
+        inner += ('<div style="font-size:13px;margin-top:8px;font-weight:700">🧑‍⚖️ 편집장(AI) 검토</div>'
+                  + (f'<div style="font-size:13px;margin-top:4px;color:var(--ok)">✅ 고친 것 {len(fixed)}</div>{lst(fixed)}' if fixed else '')
+                  + (f'<div style="font-size:13px;margin-top:4px;color:var(--warn);font-weight:700">⚠️ 아직 남은 것 {len(remaining)}</div>{lst(remaining)}'
+                     if remaining else '<div style="font-size:13px;margin-top:4px;color:var(--ok)">남은 지적 없음</div>'))
+    elif old_fmt:  # 이미 쓴 글(옛 형식): 편집장 지적 한 줄 그대로
+        inner += f'<div style="font-size:13px;margin-top:8px"><b>🧑‍⚖️ 편집장(AI) 검토</b><br>{e(review)}</div>'
+    elif human:  # 옛 글(편집장 없음): 코드로 못 재는 항목 안내
+        inner += ('<div class="muted" style="font-size:12px;margin-top:8px">코드로 못 재는 항목 — 사람이 확인</div>'
+                  + "".join(f'<div style="font-size:13px;padding:2px 0">👀 {e(x)}</div>' for x in human))
+    cl_html = (f'<details class="card"><summary style="font-weight:700;cursor:pointer;list-style:revert">'
+               f'📋 {summary}{" ⚠️" if warn else " ✅"}</summary>'
+               f'<div style="margin-top:8px">{inner}</div></details>') if cl else ""
     T = topic_titles(p["folder"])
     pick_btn = lambda t, typ: (f'<button class="ghost" onclick="setEd(\'title\',{e(json.dumps(t), quote=True)})">{e(t)}'  # noqa: E731
                                f'{badge(t, typ)}</button>')
