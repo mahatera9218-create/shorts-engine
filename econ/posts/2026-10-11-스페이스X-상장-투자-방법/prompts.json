@@ -1,0 +1,72 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · 밝음과 어둠이 갈리는 발사대 위의 로켓",
+  "make": true,
+  "file": "",
+  "desc": "Square photograph of a large white rocket standing on a launch pad seen from a low angle, half of the frame lit by bright golden sunrise and half in dark cold shadow, strong contrast, cinematic lighting, no text or logos, rocket centered and filling the frame",
+  "brand": "",
+  "size": "1024x1024",
+  "prompt": "Square 1:1 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Square photograph of a large white rocket standing on a launch pad seen from a low angle, half of the frame lit by bright golden sunrise and half in dark cold shadow, strong contrast, cinematic lighting, no text or logos, rocket centered and filling the frame No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 2,
+  "label": "뉴욕 타임스스퀘어의 나스닥 시장 건물 야경",
+  "make": true,
+  "file": "",
+  "desc": "Realistic news-style photograph of the Nasdaq MarketSite building in Times Square, New York, large curved LED display glowing at dusk, no readable numbers, crowd of anonymous pedestrians seen from behind, cinematic natural light",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic news-style photograph of the Nasdaq MarketSite building in Times Square, New York, large curved LED display glowing at dusk, no readable numbers, crowd of anonymous pedestrians seen from behind, cinematic natural light No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 3,
+  "label": "스마트폰으로 해외주식을 거래하는 손",
+  "make": true,
+  "file": "",
+  "desc": "Close-up photograph of a person's hands holding a smartphone showing a generic stock trading app interface with no readable text, on a wooden desk with a coffee cup, soft window light, anonymous office worker",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Close-up photograph of a person's hands holding a smartphone showing a generic stock trading app interface with no readable text, on a wooden desk with a coffee cup, soft window light, anonymous office worker No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 4,
+  "label": "노트북 화면에 펼친 펀드 구성종목 목록",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photograph of a laptop on a desk showing a blurred generic fund holdings list in a spreadsheet layout with no readable text, a notebook and pen beside it, soft daylight, anonymous office setting",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic photograph of a laptop on a desk showing a blurred generic fund holdings list in a spreadsheet layout with no readable text, a notebook and pen beside it, soft daylight, anonymous office setting No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 5,
+  "label": "해 질 녘 여의도 금융가의 빈 트레이딩 데스크",
+  "make": true,
+  "file": "",
+  "desc": "Moody photograph of a trader's empty desk with multiple dark monitors at the Yeouido financial district in Seoul at dusk, cool blue tones, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Moody photograph of a trader's empty desk with multiple dark monitors at the Yeouido financial district in Seoul at dusk, cool blue tones, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 6,
+  "label": "시골 주택 지붕 위의 위성 안테나",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photograph of a Starlink-style satellite dish antenna mounted on a rural house roof under a clear blue sky, no text or logos, natural light",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic photograph of a Starlink-style satellite dish antenna mounted on a rural house roof under a clear blue sky, no text or logos, natural light No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 7,
+  "label": "밝음과 어둠으로 갈라지는 숲길",
+  "make": true,
+  "file": "",
+  "desc": "Photograph of a fork in a quiet forest path with light on one side and shadow on the other, strong contrast, no people, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Photograph of a fork in a quiet forest path with light on one side and shadow on the other, strong contrast, no people, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ }
+]
