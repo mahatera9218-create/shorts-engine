@@ -319,8 +319,10 @@ def produce(slug: str, n: int) -> Path:
     pick, kw = T["items"][n - 1], T["keyword"]
     memo = (tdir / "research.md").read_text(encoding="utf-8")
     sys_prompt = prompt()
+    from .kunine import WRITE_CHECK  # 편집장이 보는 것 = 처음부터 지킬 것 (고쳐쓰기 줄이기, 2026-10-11)
     ask = (f"키워드(주어): {kw}\n확정 제목: {pick['title']}\n주인공: {T.get('person', '')}\n\n[조사 메모]\n{memo[:10000]}\n\n"
-           "이번 단계는 **본문만** 씁니다(제목은 정해졌습니다). 원문 본문 규칙과 덧붙임·블로그 설정대로 JSON으로 주세요." "\n본문은 확정 제목이 약속한 것(숫자·질문·반전·비교)에 반드시 답하도록, 조사 메모에서 제목과 직접 관련된 사실을 먼저 씁니다(대표 확인 2026-10-09).")
+           "이번 단계는 **본문만** 씁니다(제목은 정해졌습니다). 원문 본문 규칙과 덧붙임·블로그 설정대로 JSON으로 주세요." "\n본문은 확정 제목이 약속한 것(숫자·질문·반전·비교)에 반드시 답하도록, 조사 메모에서 제목과 직접 관련된 사실을 먼저 씁니다(대표 확인 2026-10-09)."
+           + WRITE_CHECK)
     a = F.claude_json(sys_prompt, ask, BODY, stage="글쓰기(연예·패션)")
     # 원문 체크 목표점 넘을 때까지 최대 2번만 고쳐쓰기 (대표 요청 2026-10-10). 검사는 무료, 고쳐쓰기만 1회 비용
     from .econ_score import CFG as _kcfg
