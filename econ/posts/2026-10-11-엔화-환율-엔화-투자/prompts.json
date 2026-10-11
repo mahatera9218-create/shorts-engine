@@ -1,0 +1,72 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · 일본 엔화 지폐 클로즈업",
+  "make": true,
+  "file": "",
+  "desc": "Realistic documentary photo of Japanese yen banknotes, a single 10000 yen note filling the frame, sharp focus, natural light, square composition, no text overlays",
+  "brand": "",
+  "size": "1024x1024",
+  "prompt": "Square 1:1 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic documentary photo of Japanese yen banknotes, a single 10000 yen note filling the frame, sharp focus, natural light, square composition, no text overlays No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 2,
+  "label": "환전 창구에 놓인 일본 엔화 지폐",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photo of a currency exchange counter in Seoul with Japanese yen banknotes laid out on the desk, natural light, close-up documentary style, no readable text or numbers",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic photo of a currency exchange counter in Seoul with Japanese yen banknotes laid out on the desk, natural light, close-up documentary style, no readable text or numbers No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 3,
+  "label": "도쿄 금융가 고층 빌딩 전경",
+  "make": true,
+  "file": "",
+  "desc": "Realistic news-style photo of the Tokyo financial district skyline in daylight with office towers, wide shot, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic news-style photo of the Tokyo financial district skyline in daylight with office towers, wide shot, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 4,
+  "label": "은행 창구에서 예금 서류를 작성하는 손",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photo of a bank branch counter in Korea with a customer's hands filling out a deposit form, natural light, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic photo of a bank branch counter in Korea with a customer's hands filling out a deposit form, natural light, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 5,
+  "label": "도쿄 일본은행 본점 건물 외관",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photo of Bank of Japan headquarters building exterior in Tokyo, daytime, wide angle, no people faces",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic photo of Bank of Japan headquarters building exterior in Tokyo, daytime, wide angle, no people faces No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 6,
+  "label": "서울 여의도 증권가 사무실 풍경",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photo of a trading floor screen area in Yeouido Seoul seen from a distance with office workers seen from behind, no readable numbers",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic photo of a trading floor screen area in Yeouido Seoul seen from a distance with office workers seen from behind, no readable numbers No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 7,
+  "label": "탁자 위 일본 엔화 동전과 지폐",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photo of Japanese yen coins and a small stack of bills on a wooden table, close-up, soft natural light, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic photo of Japanese yen coins and a small stack of bills on a wooden table, close-up, soft natural light, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ }
+]
