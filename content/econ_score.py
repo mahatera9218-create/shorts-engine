@@ -10,9 +10,7 @@
 """
 from __future__ import annotations
 
-import html
 import math
-import re
 from datetime import datetime, timedelta
 from email.utils import parsedate_to_datetime
 from xml.etree import ElementTree as ET
