@@ -1,0 +1,72 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · LG에너지솔루션이 입주한 여의도 LG트윈타워",
+  "make": true,
+  "file": "",
+  "desc": "Square documentary photograph of the LG Twin Towers in Yeouido, Seoul, where LG Energy Solution is headquartered, close view of the building with the LG logo clearly visible, sunny day, natural light, realistic colors",
+  "brand": "LG Energy Solution",
+  "size": "1024x1024",
+  "prompt": "Square 1:1 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Square documentary photograph of the LG Twin Towers in Yeouido, Seoul, where LG Energy Solution is headquartered, close view of the building with the LG logo clearly visible, sunny day, natural light, realistic colors This must clearly be LG Energy Solution: show its real, accurate corporate signage — the actual LG Energy Solution logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 2,
+  "label": "2차전지 배터리 셀이 생산 라인에서 이동하는 모습",
+  "make": true,
+  "file": "",
+  "desc": "Realistic news photograph of rows of cylindrical lithium-ion battery cells moving on a production line inside a clean factory, natural light, sharp focus, no text, no logos",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic news photograph of rows of cylindrical lithium-ion battery cells moving on a production line inside a clean factory, natural light, sharp focus, no text, no logos No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 3,
+  "label": "여의도 증권사 사무실에서 모니터를 보는 직장인들의 뒷모습",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photograph of a securities trading office in Yeouido, Seoul, anonymous office workers seen from behind looking at large monitors with blurred screens, natural daylight, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic photograph of a securities trading office in Yeouido, Seoul, anonymous office workers seen from behind looking at large monitors with blurred screens, natural daylight, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 4,
+  "label": "계산기와 노트를 두고 손익을 계산하는 손",
+  "make": true,
+  "file": "",
+  "desc": "Close-up realistic photograph of a person's hands holding a calculator and a pen over a plain notebook on a desk, natural window light, no readable text or numbers",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Close-up realistic photograph of a person's hands holding a calculator and a pen over a plain notebook on a desk, natural window light, no readable text or numbers No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 5,
+  "label": "서울 여의도 LG트윈타워 전경",
+  "make": true,
+  "file": "",
+  "desc": "Wide aerial photograph of the LG Twin Towers office complex in Yeouido, Seoul where LG Energy Solution is headquartered, with the LG logo visible on the building, sunny day, Han river in the background",
+  "brand": "LG Energy Solution",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Wide aerial photograph of the LG Twin Towers office complex in Yeouido, Seoul where LG Energy Solution is headquartered, with the LG logo visible on the building, sunny day, Han river in the background This must clearly be LG Energy Solution: show its real, accurate corporate signage — the actual LG Energy Solution logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 6,
+  "label": "글로벌 배터리 경쟁을 상징하는 컨테이너 항만",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photograph of a container port with stacked shipping containers and cranes at dawn, natural light, no text or logos, documentary style",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic photograph of a container port with stacked shipping containers and cranes at dawn, natural light, no text or logos, documentary style No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 7,
+  "label": "스마트폰으로 ETF를 살펴보는 모습",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photograph of a person's hand holding a smartphone with a blurred generic brokerage app screen, cafe table, natural light, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic photograph of a person's hand holding a smartphone with a blurred generic brokerage app screen, cafe table, natural light, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ }
+]
