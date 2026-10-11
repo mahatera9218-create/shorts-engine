@@ -131,5 +131,11 @@ class EconTest(unittest.TestCase):
         self.assertIn(("2026-10-09", "삼성전자 성과급 A"), titles)
 
 
+    def test_title_style(self):
+        """제목 방식 판정: 따옴표 = 속마음형 (대표 결정 2026-10-11)."""
+        from content.kunine import title_style
+        self.assertEqual(title_style("삼성전자 성과급 '7.5억 받는다던데...' 실제 통장엔 얼마"), "속마음형")
+        self.assertEqual(title_style("삼성전자 성과급 7.5억이라더니, 세후는 3.4억대 추산"), "숫자형")
+
 if __name__ == "__main__":
     unittest.main()

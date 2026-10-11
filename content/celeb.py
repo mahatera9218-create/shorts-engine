@@ -20,7 +20,7 @@ import requests
 from market.common import ROOT
 from . import econ_flow as F
 from .title_refs import VERSION_SCHEMA, versions_ask
-from .kunine import ai_photo, pexels, photo_prompt
+from .kunine import TITLE_STYLE, ai_photo, pexels, photo_prompt, title_style
 
 UA = {"User-Agent": "shorts-engine/1.0 (blog image lookup; contact via GitHub)"}
 FREE = ("cc0", "public domain", "cc by", "cc-by", "pd")  # 위키미디어 자유 이용 라이선스만
@@ -195,7 +195,7 @@ def titles(kw: str, memo: str | None = None) -> Path:
     (d / "research.md").write_text(f"# 조사 메모: {kw}\n\n{memo}\n", encoding="utf-8")
     out = F.claude_json(prompt() + [g for g in [title_guide()] if g], (
         f"키워드(주어): {kw}\n\n[조사 메모]\n{memo[:10000]}\n\n이번 단계는 **제목만** 만듭니다. 원문의 제목 규칙대로 서로 다른 유형의 후보 15개(유형명과 함께)와 "
-        "최종 추천 1개를 JSON으로 주세요.\n\n" + __import__("content.blog_stats", fromlist=["x"]).title_hint(F.BLOG["id"]) + __import__("content.good_rules", fromlist=["x"]).title_hint(F.BLOG["id"])), TITLES, stage="제목(연예·패션)")
+        "최종 추천 1개를 JSON으로 주세요. 15개 중 8개 이상은 속마음형, 나머지는 숫자형으로.\n" + TITLE_STYLE + "\n" + __import__("content.blog_stats", fromlist=["x"]).title_hint(F.BLOG["id"]) + __import__("content.good_rules", fromlist=["x"]).title_hint(F.BLOG["id"])), TITLES, stage="제목(연예·패션)")
     person = out.get("person", "")
     items, groups = [], []
 
@@ -205,7 +205,7 @@ def titles(kw: str, memo: str | None = None) -> Path:
                 return i
         n = len(t)
         flags = [f"{n}자(70자 넘음)"] if n > 70 else []  # 원문 25~70자 (2026-10-10)
-        items.append({"title": t, "type": g, "rank": rank, "best": rank == 1, "chars": n, "flags": flags})
+        items.append({"title": t, "type": g, "rank": rank, "best": rank == 1, "chars": n, "flags": flags, "style": title_style(t)})
         return len(items) - 1
 
     cands = [c for c in out["candidates"] if c.get("title", "").strip()][:15]
@@ -435,7 +435,7 @@ def produce(slug: str, n: int) -> Path:
         "", "## 사진 출처 (위키미디어 사진은 사진 아래에 작가·라이선스 표시가 필요해요)", "", *([f"- {c}" for c in credits] or ["- 없음"])]),
         encoding="utf-8")
     F.save(tdir / "chosen.yaml", {"title": pick["title"], "post": slug, "at": datetime.now(F.KST).strftime("%H:%M"),
-                                   "kw": kw, **F.post_meta(kw, pick.get("type", ""))})
+                                   "kw": kw, "style": title_style(pick["title"]), **F.post_meta(kw, pick.get("type", ""))})
     print(f"제작 완료 → {post}")
     return post
 
