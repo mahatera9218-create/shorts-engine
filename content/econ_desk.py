@@ -59,6 +59,7 @@ details.fold>summary h2{display:flex;justify-content:space-between;align-items:c
 details.fold>summary h2::after{content:"접기 ▴";font-size:13px;color:var(--soft);font-weight:600}
 details.fold:not([open])>summary h2::after{content:"펼치기 ▾"}
 .seal{display:inline-block;background:var(--accent);color:#fff;border-radius:6px;padding:0 6px;font-weight:800}
+button.reload{position:fixed;bottom:16px;right:14px;z-index:60;width:52px;height:52px;min-height:52px;margin:0;padding:0;border-radius:50%;background:var(--accent);color:#fff;font-size:23px;line-height:52px;text-align:center;border:0;box-shadow:0 3px 10px rgba(0,0,0,.3)}
 """
 
 
@@ -69,7 +70,9 @@ def head(title: str, depth: str = "") -> str:
 <meta name="theme-color" content="#c96442"><link rel="manifest" href="{depth}manifest.webmanifest">
 <link rel="apple-touch-icon" href="{depth}icon-180.png"><meta name="apple-mobile-web-app-title" content="발행 도우미">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>{e(title)}</title><style>{CSS}</style></head><body><main>"""
+<title>{e(title)}</title><style>{CSS}</style></head><body>
+<button class="reload" onclick="location.href=location.pathname+'?r='+Date.now()" aria-label="새로고침" title="새로고침">🔄</button>
+<main>"""
 
 
 def read_short(folder: Path) -> dict | None:
