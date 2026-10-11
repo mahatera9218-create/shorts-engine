@@ -1055,7 +1055,8 @@ def calibrate_html(blogs: dict) -> str:
         home = _home_share(d.get("paths", []))
         posts = d.get("posts", [])
         # 예측 vs 실제 (주간 통계 글 제목 ↔ chosen 제목)
-        rows, sec_hit = [], {}
+        rows, sec_hit, sty_hit, era_hit = [], {}, {}, {}
+        from .kunine import title_style
         for r in posts:
             t = (r.get("title") or "").strip()
             c = pred.get(t) or next((v for k, v in pred.items() if k and (k in t or t in k)), None)
@@ -1063,6 +1064,9 @@ def calibrate_html(blogs: dict) -> str:
             pv = c.get("predict") if c else None
             if c and c.get("section"):
                 sec_hit.setdefault(c["section"], []).append(views)
+            if c:  # 제목 방식별·새 방식 전후 (대표 결정 2026-10-11). 'style'이 저장된 글 = 새 방식(10-11 이후) 글
+                sty_hit.setdefault(c.get("style") or title_style(t), []).append(views)
+                era_hit.setdefault("새 방식" if c.get("style") else "이전", []).append(views)
             rows.append((t, pv, views, c.get("section") if c else "", c.get("type") if c else ""))
         rows.sort(key=lambda x: -(x[2] or 0))
         head = (f'<p style="font-size:22px;margin:4px 0">🏠 홈판 유입 <b>{home}%</b></p>' if home is not None
@@ -1078,6 +1082,12 @@ def calibrate_html(blogs: dict) -> str:
                 avg = sorted(((k, round(sum(v) / len(v))) for k, v in sec_hit.items()), key=lambda x: -x[1])
                 body += ('<div class="muted" style="font-size:12px;margin-top:6px">섹션별 평균 조회: '
                          + " · ".join(f"{e(k)} {v:,}" for k, v in avg) + "</div>")
+            for label, hit, order in (("제목 방식별 평균 조회", sty_hit, ["속마음형", "숫자형"]),
+                                      ("새 방식 전·후 평균 조회", era_hit, ["이전", "새 방식"])):
+                if hit:
+                    body += (f'<div style="font-size:13px;margin-top:6px"><b>{label}</b>: '
+                             + " · ".join(f"{k} <b>{round(sum(hit[k]) / len(hit[k])):,}</b> ({len(hit[k])}편)" for k in order if k in hit)
+                             + "</div>")
         elif pred:
             body = f'<div class="muted" style="font-size:13px">만든 글 {len(pred)}편 · 조회수는 다음 주간 통계에서 맞춰 보여요.</div>'
         else:
