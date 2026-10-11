@@ -1,72 +1,72 @@
 [
  {
   "n": 1,
-  "label": "썸네일 · 달러 지폐를 부채꼴로 펼친 실사 사진",
+  "label": "썸네일 · 발사대 위의 로켓",
   "make": true,
   "file": "",
-  "desc": "Realistic documentary close-up photograph, square composition, a neat fan of US hundred-dollar bills filling the frame, natural daylight, sharp focus, true colors, no added text",
+  "desc": "Realistic documentary photograph of a rocket standing upright on a launch pad close-up, natural daylight, sharp focus, square composition, no text or logos",
   "brand": "",
   "size": "1024x1024",
-  "prompt": "Square 1:1 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic documentary close-up photograph, square composition, a neat fan of US hundred-dollar bills filling the frame, natural daylight, sharp focus, true colors, no added text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+  "prompt": "Square 1:1 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic documentary photograph of a rocket standing upright on a launch pad close-up, natural daylight, sharp focus, square composition, no text or logos No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
  },
  {
   "n": 2,
-  "label": "뉴욕 타임스스퀘어의 나스닥 마켓사이트 외관",
+  "label": "뉴욕 타임스스퀘어의 나스닥 시장 건물 외관",
   "make": true,
   "file": "",
-  "desc": "Realistic news photograph of the exterior of the Nasdaq MarketSite building in Times Square, New York, large curved LED screen on the facade, daylight, wide angle, no readable numbers",
+  "desc": "Realistic news photograph of the Nasdaq MarketSite building facade in Times Square, New York, daytime natural light, wide angle, no readable numbers",
   "brand": "",
   "size": "1536x1024",
-  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic news photograph of the exterior of the Nasdaq MarketSite building in Times Square, New York, large curved LED screen on the facade, daylight, wide angle, no readable numbers No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic news photograph of the Nasdaq MarketSite building facade in Times Square, New York, daytime natural light, wide angle, no readable numbers No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
  },
  {
   "n": 3,
-  "label": "스마트폰으로 해외주식을 거래하는 손",
+  "label": "노트북으로 해외주식 거래를 하는 투자자의 뒷모습",
   "make": true,
   "file": "",
-  "desc": "Close-up of a person's hands holding a smartphone showing a generic brokerage app with blurred charts, office desk, natural window light, no readable text",
+  "desc": "Realistic photo of an anonymous office worker seen from behind looking at a laptop showing a generic brokerage app, natural window light, no readable text",
   "brand": "",
   "size": "1536x1024",
-  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Close-up of a person's hands holding a smartphone showing a generic brokerage app with blurred charts, office desk, natural window light, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic photo of an anonymous office worker seen from behind looking at a laptop showing a generic brokerage app, natural window light, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
  },
  {
   "n": 4,
-  "label": "시세 화면을 바라보는 트레이더들의 뒷모습",
+  "label": "발사대에 서 있는 로켓",
   "make": true,
   "file": "",
-  "desc": "Documentary photo of a trading floor monitor wall seen from behind, silhouettes of traders, blurred screens with no readable numbers, cool office light",
+  "desc": "Realistic photograph of a rocket standing upright on a launch pad at dawn, no logos or text, natural light",
   "brand": "",
   "size": "1536x1024",
-  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Documentary photo of a trading floor monitor wall seen from behind, silhouettes of traders, blurred screens with no readable numbers, cool office light No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic photograph of a rocket standing upright on a launch pad at dawn, no logos or text, natural light No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
  },
  {
   "n": 5,
-  "label": "지붕에 설치된 위성 인터넷 안테나",
+  "label": "지구 궤도의 인공위성",
   "make": true,
   "file": "",
-  "desc": "Realistic photo of a satellite internet dish installed on a rural house roof under blue sky, no text",
+  "desc": "Realistic photo of a satellite in orbit above Earth, documentary style, no text",
   "brand": "",
   "size": "1536x1024",
-  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic photo of a satellite internet dish installed on a rural house roof under blue sky, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic photo of a satellite in orbit above Earth, documentary style, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
  },
  {
   "n": 6,
-  "label": "발사대 위의 로켓",
+  "label": "뉴욕 월스트리트 증권가 풍경",
   "make": true,
   "file": "",
-  "desc": "Realistic photo of a rocket standing on a launch pad at dawn, distant view, natural light, no text or logos",
+  "desc": "Realistic photo of Wall Street street sign and stock exchange building in New York, daytime, no readable numbers",
   "brand": "",
   "size": "1536x1024",
-  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic photo of a rocket standing on a launch pad at dawn, distant view, natural light, no text or logos No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic photo of Wall Street street sign and stock exchange building in New York, daytime, no readable numbers No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
  },
  {
   "n": 7,
-  "label": "자산 계획을 세우는 책상 위 손",
+  "label": "책상 위에서 달러 지폐를 정리하는 손",
   "make": true,
   "file": "",
-  "desc": "Realistic photo of a person's hands at a desk with a notebook and calculator, coffee cup, home office natural light, no readable text",
+  "desc": "Realistic close-up of hands sorting US dollar bills on a desk next to a notebook, natural light, no readable numbers",
   "brand": "",
   "size": "1536x1024",
-  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic photo of a person's hands at a desk with a notebook and calculator, coffee cup, home office natural light, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic close-up of hands sorting US dollar bills on a desk next to a notebook, natural light, no readable numbers No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
  }
 ]
