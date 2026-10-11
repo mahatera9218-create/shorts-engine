@@ -113,6 +113,23 @@ class EconTest(unittest.TestCase):
             os.environ.pop("BLOG", None)
             importlib.reload(econ_flow)
 
+    def test_written_recent_days(self):
+        """이미 쓴 주제: core별 마지막 날과 (날, 제목) 목록 (대표 결정 2026-10-11 초대형 3일 간격)."""
+        from unittest import mock
+        from content import econ_flow as F
+        from content.econ_score import _written_recent
+        with tempfile.TemporaryDirectory() as d:
+            flow = Path(d)
+            for day, kw, title in [("2026-10-09", "삼성전자 성과급", "삼성전자 성과급 A"),
+                                   ("2026-10-10", "삼성전자 주가", "삼성전자 주가 B")]:
+                t = flow / day / kw.replace(" ", "-")
+                t.mkdir(parents=True)
+                (t / "chosen.yaml").write_text(f"kw: {kw}\ntitle: {title}\n", encoding="utf-8")
+            with mock.patch.object(F, "FLOW", flow), mock.patch.object(F, "today", lambda: "2026-10-11"):
+                cores, titles = _written_recent(14)
+        self.assertEqual(cores["삼성전자"], "2026-10-10")
+        self.assertIn(("2026-10-09", "삼성전자 성과급 A"), titles)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -304,23 +304,43 @@ def keywords(force: bool = False) -> Path:
             if x.get("by_me") or x.get("naver_rank") or "캡처" in (x.get("src") or "")]  # 진짜 대표(by_me)·어사이드·캡처만. src 문자열에 기대지 않음 — 옛 '대표' 오표기 찌꺼기가 되살아나지 않게 (2026-10-10)
     rising_items = (load(day / "rising.yaml", {}) or {}).get("items", [])  # 급상승 키워드를 메인 후보에 합침 (대표 결정 2026-10-10)
     items = run(grok_items, mine, rising_items=rising_items)
-    # 최근 N일 이미 글로 쓴 주제는 뺀다 (대표 지적 2026-10-10 '2주 전 글이 또 나온다'). 단 검색량 초대형은 남김
+    # 최근 N일 이미 글로 쓴 주제는 뺀다 (대표 지적 2026-10-10 '2주 전 글이 또 나온다').
+    # 검색량 초대형도 최근 3일 안에 쓴 건 뺀다 (대표 결정 2026-10-11 '3일 간격, 다양하게'). 대표가 직접 넣은 건 남기고 '최근 씀' 경고만
     from .econ_score import _written_recent
-    rw_days = (load(_kcfg(), {}) or {}).get("rewrite_days", 14)
-    big = (load(_kcfg(), {}) or {}).get("rewrite_bigvol", 200000)
+    kc = load(_kcfg(), {}) or {}
+    rw_days = kc.get("rewrite_days", 14)
+    big = kc.get("rewrite_bigvol", 200000)
+    big_days = kc.get("rewrite_bigdays", 3)
     cores, titles = _written_recent(rw_days)
-    def already(it):
+    big_since = (datetime.strptime(today(), "%Y-%m-%d") - timedelta(days=big_days)).strftime("%Y-%m-%d")
+
+    def last_written(it) -> str:
         core = (it.get("core") or it["kw"]).split()[0]
+        if not core:
+            return ""
+        days = [d for d, t in titles if core in t] + ([cores[core]] if core in cores else [])
+        return max(days) if days else ""
+
+    def already(it) -> bool:
+        last = last_written(it)
+        if not last:
+            return False
         vol = (it.get("stats") or {}).get("월검색") or 0
-        if vol >= big:
-            return False  # 초대형 검색량이면 다시 써도 됨
-        if core in cores:
-            return True
-        return any(core and core in t for t in titles)  # 제목에 이미 들어간 핵심어
+        return last >= big_since if vol >= big else True
+
     before = len(items)
-    items = [it for it in items if it.get("src", "").find("대표") >= 0 or not already(it)]  # 대표가 직접 넣은 건 유지
+    kept = []
+    for it in items:
+        it.pop("written", None)
+        if it.get("by_me") or "대표" in (it.get("src") or ""):
+            if already(it):
+                it["written"] = last_written(it)  # 도우미에 '⚠️ 최근 씀' 표시 (대표 결정 2026-10-11)
+            kept.append(it)
+        elif not already(it):
+            kept.append(it)
+    items = kept
     if before != len(items):
-        print(f"이미 쓴 주제 {before - len(items)}개 제외 (최근 {rw_days}일)")
+        print(f"이미 쓴 주제 {before - len(items)}개 제외 (최근 {rw_days}일, 초대형은 {big_days}일)")
     save(day / "keywords.yaml", {"date": today(), "updated": datetime.now(KST).strftime("%H:%M"), "items": items})
     print(f"키워드 {len(items)}개, 1위 {items[0]['kw']} {items[0]['score']}점" if items else "키워드 없음")
     return day / "keywords.yaml"
