@@ -112,9 +112,9 @@ def all_prompt(items: list[dict], title: str = "") -> str:
     for it in draw:
         shape = "800×800"  # 사진 크기 고정 (대표 결정 2026-10-08)
         brand = f" — {it['brand']} 실제 건물, 진짜 로고·간판" if it.get("brand") else ""
-        hook = ((f" — 이 글의 대표사진. 글 제목 「{title}」을 보자마자 떠오르는 한 장면으로" if title else " — 이 글의 대표사진")
-                + ", 홈피드에서 손이 멈추게 대상을 화면 가득·강한 명암·높은 채도. 다른 번호 사진과 겹치지 않게"
-                if it["n"] == 1 and BID == "econ" else "")  # 경제 썸네일 = 제목 한 장 요약 (대표 지적 2026-10-07 "대표사진이 애매")
+        hook = ((f" — 이 글의 대표사진. 글 제목 「{title}」을 한 장으로 요약한 실제 장면으로" if title else " — 이 글의 대표사진")
+                + ", 실제 뉴스 현장 사진처럼 사실적으로 · 대상을 화면 가득·선명하게 (과장·시네마틱 연출 없이). 다른 번호 사진과 겹치지 않게"
+                if it["n"] == 1 and BID == "econ" else "")  # 경제 썸네일 = 제목 한 장 요약 + 실사 (대표 지시 2026-10-11 '실사 느낌으로')
         lines.append(f"{it['n']}번 ({shape}, {it['label']}{brand}{hook}): {it['desc']}")
     if find:  # 실제 인물 사진은 그리지 않는다 — 발행 도우미의 '인물 사진 자리'에서 원본을 바로 받는다 (2026-10-06)
         lines += ["", "※ " + ", ".join(f"{it['n']}번" for it in find) + "은 실제 인물 사진을 따로 넣을 자리라 만들지 않습니다."]
