@@ -26,6 +26,22 @@ PROMPT = ROOT / "prompts" / "kunine-blog.md"
 ADDON = ROOT / "prompts" / "kunine-addon.md"
 TYPES = ["비교형", "실행형", "이득형", "궁금형", "위협형", "반전형", "확신형", "자극형"]  # 2026-10-10 원문 8유형
 PER_TYPE = 4   # 유형마다 만드는 후보 수 (대표 2026-10-10: 비용 위해 5→2 했다가 "제목이 너무 적다"로 4로. 도우미엔 유형마다 전부 보임)
+# 제목 방식 섞기 (대표 결정 2026-10-11, 점검 2번): 속마음형(새) + 숫자형(지금). 2주 뒤 어느 쪽이 더 눌렸는지 비교 (chosen.yaml style)
+TITLE_STYLE = (
+    "\n[제목 방식 — 두 가지를 섞기]\n"
+    "- **속마음형(후보의 절반 이상)**: 독자가 속으로 하는 말이나 세간에 도는 말을 작은따옴표로 넣고, 핵심 답(결론 숫자·결과)은 제목에 쓰지 말고 본문에서 밝힌다. "
+    "예: 삼성전자 성과급 '7.5억 받는다던데...' 실제 통장엔 얼마 들어올까\n"
+    "- **숫자형(나머지)**: 지금처럼 정확한 숫자를 앞에 둔다. 예: 삼성전자 성과급 7.5억이라더니, 세후는 3.4억대 추산\n"
+    "- 따옴표 안은 독자 속마음·세간의 말이다. 특정 인물이 한 말처럼 지어내지 않는다.\n"
+    "- 소름·충격·폭망 같은 센 말은 본문이 실제로 그만큼 놀라운 사실을 담을 때만. 제목이 묻는 것은 본문이 반드시 답한다.\n"
+    "- 최종 BEST는 두 방식 중 홈판에서 더 눌릴 것을 고른다.\n")
+
+
+def title_style(title: str) -> str:
+    """제목 방식 판정: 따옴표가 있으면 속마음형, 없으면 숫자형 (2주 비교용, 2026-10-11)."""
+    return "속마음형" if re.search(r"['‘’\"“”]", title) else "숫자형"
+
+
 REF_LINE = "참조문헌: 뉴스, 언론보도 및 공식자료"  # 강사 지정 문구, Q&A 뒤에 정확히 한 번
 AI_NOTE = "※ 일부 이미지는 AI로 만든 이미지입니다. 이 글은 정보 제공용이며 투자 권유가 아닙니다."
 MAX_IMAGES = 6           # 본문 사진 최대 (소제목 구간마다 2장)
@@ -90,7 +106,8 @@ def titles(kw: str) -> Path:
     out = F.claude_json(prompt() + [g for g in [title_guide()] if g], (
         f"핵심키워드: {kw}\n\n[조사 메모]\n{memo[:10000]}\n\n"
         "이번 단계는 **제목만** 만듭니다(본문은 다음 단계). 원문의 제목 규칙대로 8유형마다 4개씩(= 32개) 만들고, 유형마다 그중 best 하나를 고르고, "
-        "그 유형별 best 8개 중 최종 BEST 1을 골라 JSON으로 주세요(45자 이내 기본, 자연스러우면 조금 길어도 됨).\n\n" + __import__("content.blog_stats", fromlist=["x"]).title_hint(F.BLOG["id"]) + __import__("content.good_rules", fromlist=["x"]).title_hint(F.BLOG["id"])),
+        "그 유형별 best 8개 중 최종 BEST 1을 골라 JSON으로 주세요(45자 이내 기본, 자연스러우면 조금 길어도 됨). "
+        "유형마다 4개 중 앞 2개는 속마음형, 뒤 2개는 숫자형으로.\n" + TITLE_STYLE + "\n" + __import__("content.blog_stats", fromlist=["x"]).title_hint(F.BLOG["id"]) + __import__("content.good_rules", fromlist=["x"]).title_hint(F.BLOG["id"])),
         TITLES, stage="제목(쿠니네)")
     core = kw.split()[0]
     items, seen = [], set()
@@ -100,7 +117,7 @@ def titles(kw: str) -> Path:
             return next(i for i, t in enumerate(items) if t["title"] == title)
         seen.add(title)
         n = len(title)
-        items.append({"title": title, "type": typ, "rank": rank, "best": best, "chars": n,
+        items.append({"title": title, "type": typ, "rank": rank, "best": best, "chars": n, "style": title_style(title),
                       "flags": ([f"{n}자(45자 넘음)"] if n > 45 else []) + ([f"키워드 '{core}' 없음"] if core not in title else [])})
         return len(items) - 1
 
@@ -357,7 +374,7 @@ def produce(slug: str, n: int) -> Path:
         ]),
         encoding="utf-8")
     F.save(tdir / "chosen.yaml", {"title": pick["title"], "post": slug, "at": datetime.now(F.KST).strftime("%H:%M"),
-                                   "kw": kw, **F.post_meta(kw, pick.get("type", ""))})
+                                   "kw": kw, "style": title_style(pick["title"]), **F.post_meta(kw, pick.get("type", ""))})
     print(f"제작 완료 → {post}")
     return post
 
