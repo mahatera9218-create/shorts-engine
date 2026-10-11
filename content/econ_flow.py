@@ -694,7 +694,10 @@ def editor_review(text: str, title: str, kw: str, rubric: list[str]) -> list[str
     rb = "\n".join(f"- {r}" for r in rubric)
     out = claude_json(
         ["너는 네이버 블로그 편집장이다. 아래 기준으로만 깐깐하게 검수한다. 기준과 무관한 트집은 잡지 않는다. "
-         "실제로 위반한 것만, 어디를 어떻게 고칠지 구체적으로 적는다. 다 지켰으면 pass=true, issues는 빈 배열."],
+         "실제로 위반한 것만, 어디를 어떻게 고칠지 구체적으로 적는다. 다 지켰으면 pass=true, issues는 빈 배열. "
+         "단, 숫자는 반올림·올림·내림·근삿값 수준의 작은 차이(예: 약 52% vs 52.1%, 91~112배 vs 94~111배, 3개월 vs 3.7개월)는 "
+         "절대 지적하지 않는다. 단위가 틀렸거나, 사실 자체가 다르거나, 지어낸 수치이거나, 기준(시점·공모가/종가 등)이 뒤섞여 독자가 "
+         "확실히 오해할 때만 숫자를 지적한다."],
         f"[제목] {title}\n[핵심키워드] {kw}\n\n[검수 기준]\n{rb}\n\n[글]\n{text[:9000]}", EDITOR, stage="편집장 검수")
     return [] if out.get("pass") else [i for i in (out.get("issues") or []) if i.strip()][:6]
 
