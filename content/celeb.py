@@ -305,8 +305,9 @@ def checklist(a: dict, kw: str, pick: dict | None = None) -> list[tuple[bool, st
 
 def human_check() -> list[str]:
     """패션 원문 §15 중 코드로 못 재는(사람이 봐야 하는) 항목 (대표 지적 2026-10-10)."""
-    return ["제목 15개·관점 다양(대표 결정으로 축소 운영)", "구어체·독특한 표현", "제목끼리 어휘·결말 중복 없음",
-            "인물·브랜드·가격이 확인된 내용인지(미확인은 표시)", "제목과 본문 내용 일치", "실제 착장·제품 사진 확보"]
+    # 글(본문) 검수용만 — 제목 개수·제목끼리 중복은 '제목 생성' 단계 몫이라 뺌 (2026-10-11)
+    return ["구어체·독특한 표현이 자연스러운지(AI 티 없이)", "인물·브랜드·가격이 확인된 내용인지(미확인은 표시했는지)",
+            "제목이 약속한 내용을 본문이 설명했는지", "네이버에 바로 쓸 수 있는지(군더더기·작업 메모식 표현 없이)"]
 
 
 def produce(slug: str, n: int) -> Path:
@@ -378,6 +379,8 @@ def produce(slug: str, n: int) -> Path:
     from .tags import fix as fix_tags  # 붙인 형태 + 낱말 둘 다 (대표 지적 2026-10-10 '#애플주가'·'애플 주가')
     tags = ",".join(fix_tags(a["tags"], kw, 19))
     status = "✅ 발행 가능" + (" · ⚠️ 형식: " + " / ".join(left) if left else "")
+    if remaining:  # 편집장이 고쳐쓰고도 남은 지적 → 발행 전 확인 (대표 지적 2026-10-11)
+        status += f" · ⚠️ 편집장 지적 {len(remaining)}건 — 발행 전 확인"
     from .kunine import NO_CREDIT
     if NO_CREDIT:
         status += " · ⚠️ OpenAI 크레딧이 없어 AI 사진 대신 무료 사진으로 채움 — 대표가 크레딧 충전 필요"

@@ -310,17 +310,19 @@ def page(p: dict) -> str:
     new_fmt = bool(fixed or remaining)            # 새 형식(고침/남음 목록)
     old_fmt = bool(review) and not new_fmt        # 옛 형식(편집장 지적 한 줄) — 이미 쓴 글 호환
     warn = bool(remaining) or review.startswith("⚠") or any(x.startswith("⚠") for x in cl)
-    summary = f'원문 체크 {cl_ok}/{len(cl)}' + (f' · 편집장 고침 {len(fixed)}·남음 {len(remaining)}' if new_fmt else (' · 편집장 검토' if old_fmt else ''))
+    todo = remaining or ([review] if old_fmt else [])   # 발행 전 고쳐야 할 것 (옛 글은 지적 한 줄 그대로)
+    summary = f'원문 체크 {cl_ok}/{len(cl)}' + (f' · 편집장 고칠 것 {len(todo)}' if (new_fmt or old_fmt) else '')
     inner = ('<div class="muted" style="font-size:12px;margin-bottom:4px">강사 원문 프롬프트대로 됐는지 · ⚠️는 부족한 부분</div>'
              + "".join(f'<div style="font-size:14px;padding:2px 0{";color:var(--warn);font-weight:700" if x.startswith("⚠") else ""}">{e(x)}</div>' for x in cl))
-    lst = lambda xs: "".join(f'<div style="font-size:12px;padding:1px 0 1px 10px">· {e(x)}</div>' for x in xs)
-    if new_fmt:  # 편집장(AI) 검토: 고친 것 / 아직 남은 것 (대표 지적 2026-10-11 '뭘 고쳤고 뭘 안 고쳤는지')
-        inner += ('<div style="font-size:13px;margin-top:8px;font-weight:700">🧑‍⚖️ 편집장(AI) 검토</div>'
-                  + (f'<div style="font-size:13px;margin-top:4px;color:var(--ok)">✅ 고친 것 {len(fixed)}</div>{lst(fixed)}' if fixed else '')
-                  + (f'<div style="font-size:13px;margin-top:4px;color:var(--warn);font-weight:700">⚠️ 아직 남은 것 {len(remaining)}</div>{lst(remaining)}'
-                     if remaining else '<div style="font-size:13px;margin-top:4px;color:var(--ok)">남은 지적 없음</div>'))
-    elif old_fmt:  # 이미 쓴 글(옛 형식): 편집장 지적 한 줄 그대로
-        inner += f'<div style="font-size:13px;margin-top:8px"><b>🧑‍⚖️ 편집장(AI) 검토</b><br>{e(review)}</div>'
+    # 편집장(AI) 검토 — 손댈 것만 보여 준다(고친 건 개수만). "여기 적힌 건 모두 발행 전 고칠 것" (대표 지적 2026-10-11 '고쳣다는건지 고쳐야한다는건지')
+    if new_fmt or old_fmt:
+        if todo:
+            inner += (f'<div style="font-size:13px;margin-top:8px;color:var(--warn);font-weight:700">🧑‍⚖️ 편집장이 짚은 것 — 발행 전 고치세요 ({len(todo)})</div>'
+                      + "".join(f'<div style="font-size:13px;padding:3px 0 3px 10px">⚠️ {e(x)}</div>' for x in todo)
+                      + (f'<div class="muted" style="font-size:11px;margin-top:4px">(편집장이 {len(fixed)}개는 이미 고쳤어요 — 손 안 대도 됨)</div>' if fixed else ''))
+        else:
+            inner += ('<div style="font-size:13px;margin-top:8px;color:var(--ok);font-weight:700">🧑‍⚖️ 편집장 통과 — 발행 전 고칠 것 없음</div>'
+                      + (f'<div class="muted" style="font-size:11px;margin-top:4px">(편집장이 {len(fixed)}개 고침)</div>' if fixed else ''))
     elif human:  # 옛 글(편집장 없음): 코드로 못 재는 항목 안내
         inner += ('<div class="muted" style="font-size:12px;margin-top:8px">코드로 못 재는 항목 — 사람이 확인</div>'
                   + "".join(f'<div style="font-size:13px;padding:2px 0">👀 {e(x)}</div>' for x in human))
