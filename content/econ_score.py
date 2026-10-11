@@ -246,13 +246,13 @@ def naver_part(rank: int | None) -> float:
     return 1.0 if rank <= 3 else 0.75 if rank <= 6 else 0.5 if rank <= 10 else 0.0
 
 
-def _written_recent(days: int) -> tuple[set, list]:
-    """최근 days일 이미 글로 쓴 키워드 core 집합 + 제목 목록 (chosen.yaml). 같은 주제를 또 올리지 않게 (대표 지적 2026-10-10 '2주 전 글이 또 나온다')."""
+def _written_recent(days: int) -> tuple[dict, list]:
+    """최근 days일 이미 글로 쓴 키워드 core → 마지막으로 쓴 날 + (날, 제목) 목록 (chosen.yaml). 같은 주제를 또 올리지 않게 (대표 지적 2026-10-10 '2주 전 글이 또 나온다')."""
     from datetime import datetime, timedelta
     from . import econ_flow as F
     today = F.today()
     since = (datetime.strptime(today, "%Y-%m-%d") - timedelta(days=days)).strftime("%Y-%m-%d")
-    cores: set = set()
+    cores: dict = {}
     titles: list = []
     for f in sorted(F.FLOW.glob("*/*/chosen.yaml")):
         day = f.parent.parent.name
@@ -264,9 +264,9 @@ def _written_recent(days: int) -> tuple[set, list]:
             continue
         kw = (c.get("kw") or "").strip()
         if kw:
-            cores.add(kw.split()[0])
+            cores[kw.split()[0]] = max(day, cores.get(kw.split()[0], ""))
         if c.get("title"):
-            titles.append(c["title"])
+            titles.append((day, c["title"]))
     return cores, titles
 
 
