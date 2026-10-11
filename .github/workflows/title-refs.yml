@@ -4,8 +4,9 @@
 name: 제목 고수 조사
 
 on:
-  schedule:
-    - cron: "47 20 * * 1"   # UTC 월 20:47 = 한국 월 05:47 (대표 결정 2026-10-10: 매일 → 월요일만, 비용)
+  # 자동 제목 고수 분석 중단 (대표 결정 2026-10-11: 비용 0, 저장된 공식 그대로 씀). config 고쳐 올리거나 수동 실행 때만 돈다.
+  # schedule:
+  #   - cron: "47 20 * * 1"   # UTC 월 20:47 = 한국 월 05:47
   push:
     branches: [main]
     paths: ["config/title_masters.yaml"]
