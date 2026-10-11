@@ -591,8 +591,22 @@ CAT_COLOR = {"화제성": "#c2410c", "최신성": "#1d4ed8", "수요": "#15803d"
 PART_LABEL = {"검색": "검색량", "최신": "블로거·어사이드"}
 
 
-def score_table(items: list[dict]) -> str:
-    """키워드 근거 (대표 요청 2026-10-09 '점수표 살려 줘'). 3개 카테고리(화제성·최신성·수요)로 묶어 보여 줌 (대표 결정 2026-10-10)."""
+def score_write_btn(it: dict, done: dict[str, str] | None) -> str:
+    """점수표 줄에서 바로 글로: 상위 아니어도 맘에 들면 제목 후보 만들기 (대표 요청 2026-10-11). 이미 쓴 건 ✅ 글 보기."""
+    e, kwv = html.escape, it["kw"]
+    slug = (done or {}).get(kwv)
+    btn = 'class="ghost small" style="display:inline-block;width:auto;margin:4px 0 0;padding:5px 10px;font-size:12px"'
+    if slug and (POSTS / slug).exists():
+        return f'<a {btn} href="p/{BID}-{desk.slug(slug)}/">✅ 글 보기</a>'
+    if BID == "econ":
+        href = desk.issue_link(f"{LABEL}키워드", kwv, "이 키워드로 제목 후보를 만들어 주세요.")
+        return f'<a {btn} href="{e(href, quote=True)}">✍️ 이 키워드로 글</a>'
+    return f'<button {btn} onclick="pick_{BID}({e(json.dumps(kwv), quote=True)})">✍️ 이 키워드로 글</button>'
+
+
+def score_table(items: list[dict], done: dict[str, str] | None = None) -> str:
+    """키워드 근거 (대표 요청 2026-10-09 '점수표 살려 줘'). 3개 카테고리(화제성·최신성·수요)로 묶어 보여 줌 (대표 결정 2026-10-10).
+    각 줄에 '이 키워드로 글' 버튼 — 상위로 안 뽑혀도 맘에 들면 바로 글로 (대표 요청 2026-10-11)."""
     e = html.escape
     if not items:
         return ""
@@ -634,7 +648,8 @@ def score_table(items: list[dict]) -> str:
         rows.append(f'<div style="padding:7px 0;border-bottom:1px solid var(--line)">'
                     f'<div style="display:flex;justify-content:space-between;gap:8px"><b>{e(it["kw"])}</b>{new_badge(it)}'
                     f'<span class="seal">{it.get("score", "")}</span></div>'
-                    f'<div style="font-size:12px;margin-top:3px">{"".join(cat_bits)}{extra}{neg}</div>{raw_line}{prod_line}{blog_line}{src_line}</div>')
+                    f'<div style="font-size:12px;margin-top:3px">{"".join(cat_bits)}{extra}{neg}</div>{raw_line}{prod_line}{blog_line}{src_line}'
+                    f'{score_write_btn(it, done)}</div>')
     return (f'<details style="margin-top:6px"><summary class="muted">키워드별 점수 ({len(items)}개)</summary>'
             f'<div class="muted" style="font-size:11px;margin-top:4px">세 묶음을 더해 합계 — '
             f'<b style="color:{CAT_COLOR["화제성"]}">화제성</b>(급상승·뉴스·출처) : '
@@ -735,7 +750,7 @@ def flow_html() -> str:
     a = kw.get("aside")
     aside = f'🛰 어사이드 {e(a.get("at", ""))} · {a.get("n", 0)}개' if a else "🛰 어사이드 아직"
     kw_html = (f'<div class="card"><h2>키워드</h2><div class="muted" style="margin:4px 0 6px">{aside}</div>{rows}'
-               f'{score_table(items)}'   # 점수표엔 버튼에 안 보이는 것까지 전체 채점 키워드 (대표 지적 2026-10-10)
+               f'{score_table(items, done)}'   # 점수표엔 버튼에 안 보이는 것까지 전체 채점 키워드 + 줄마다 '이 키워드로 글' (대표 2026-10-10·11)
                f'<a class="btn" style="margin-top:8px;background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(refresh, quote=True)}">🔄 다시 모으기</a>'
                f'<script>{add_js}</script></div>{topic_box}')   # 급상승 블록 제거 (대표 결정 2026-10-10: 메인 키워드 목록에 합침)
     topics = []
