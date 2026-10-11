@@ -178,6 +178,16 @@ def has_product(memo: str) -> bool:
                if "확인 안" not in l and "확인되지" not in l and "미확인" not in l and not l.startswith("- 비슷한"))
 
 
+def worn(memo: str) -> bool:
+    """셀럽이 그 아이템을 실제로 착용·사용한 게 확인됐는지 (대표 결정 2026-10-11: 패션은 '착용 확인된 주제만' 글로).
+    조사 메모의 '착용·사용 제품' 항목이 명백히 '확인 안 됨/없음'이면 False. (섹션 구조가 다르면 막지 않음)"""
+    m = re.search(r"착용[·\s]*사용[^\n]*\n+\s*([^\n]+)", memo)
+    if not m:
+        return True
+    seg = m.group(1).strip().lstrip("-* ").strip()
+    return not (seg.startswith("확인 안") or seg.startswith("확인되지") or seg.startswith("없") or seg == "미확인")
+
+
 def titles(kw: str, memo: str | None = None) -> Path:
     d = F.FLOW / F.today() / F.topic_slug(kw)
     d.mkdir(parents=True, exist_ok=True)
@@ -318,6 +328,19 @@ def produce(slug: str, n: int) -> Path:
     T = F.load(tdir / "titles.yaml")
     pick, kw = T["items"][n - 1], T["keyword"]
     memo = (tdir / "research.md").read_text(encoding="utf-8")
+    person = T.get("person") or kw
+    if not worn(memo):  # 셀럽 착용 미확인이면 글을 쓰지 않는다 (대표 결정 2026-10-11: 확인된 주제만)
+        post = F.POSTS / slug
+        post.mkdir(parents=True, exist_ok=True)
+        (post / "post.md").write_text("\n".join([
+            f"# 발행 패키지 · {kw}", "",
+            f"**상태:** ⚠️ {person} 착용이 확인되지 않아 글을 쓰지 않았어요 — 확인된 셀럽+아이템으로 다시 골라 주세요.",
+            "", "**남은 문제:**",
+            f"- {person}이(가) 실제로 이 아이템을 착용·사용한 사실이 조사에서 확인 안 됨 (패션은 착용 확인된 주제만, 대표 결정 2026-10-11)",
+            "- 제품 정보(가격)는 있어도, 셀럽이 실제로 들었/입었는지 확인 안 되면 '~했다는 소식은 없어요'로 시작하는 애매한 글이 됨",
+            "", "## 제목", "", f"1. ★ {pick['title']} — {pick.get('type', '')}", ""]), encoding="utf-8")
+        print(f"착용 미확인으로 글 안 씀: {kw}")
+        return post
     sys_prompt = prompt()
     from .kunine import WRITE_CHECK  # 편집장이 보는 것 = 처음부터 지킬 것 (고쳐쓰기 줄이기, 2026-10-11)
     ask = (f"키워드(주어): {kw}\n확정 제목: {pick['title']}\n주인공: {T.get('person', '')}\n\n[조사 메모]\n{memo[:10000]}\n\n"
