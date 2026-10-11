@@ -1,5 +1,5 @@
 date: '2026-10-11'
-updated: '11:02'
+updated: '20:32'
 items:
 - kw: 한미약품
   rise: 2.22
@@ -8,6 +8,13 @@ items:
   blog24h: 100
   section: 국내주식
   score: 132
+- kw: 팔란티어
+  rise: 2.09
+  volume: 64300
+  named: true
+  blog24h: 100
+  section: 해외주식
+  score: 124
 - kw: 오픈AI
   rise: 2.29
   volume: 41600
@@ -15,13 +22,6 @@ items:
   blog24h: 100
   section: 해외주식
   score: 122
-- kw: 팔란티어
-  rise: 2.09
-  volume: 64300
-  named: true
-  blog24h: 57
-  section: 해외주식
-  score: 116
 - kw: LG에너지솔루션
   rise: 1.61
   volume: 184600
@@ -29,6 +29,13 @@ items:
   blog24h: 100
   section: 국내주식
   score: 107
+- kw: 일라이릴리
+  rise: 1.5
+  volume: 37600
+  named: true
+  blog24h: 100
+  section: 해외주식
+  score: 91
 - kw: AMD
   rise: 1.34
   volume: 52800
@@ -36,13 +43,6 @@ items:
   blog24h: 100
   section: 해외주식
   score: 83
-- kw: 일라이릴리
-  rise: 1.5
-  volume: 37600
-  named: true
-  blog24h: 55
-  section: 해외주식
-  score: 82
 - kw: 엔화환율
   rise: 0.93
   volume: 5002600
