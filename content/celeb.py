@@ -381,7 +381,12 @@ def produce(slug: str, n: int) -> Path:
         f"**본문:** {len(text_of(a))}자 · 사진 {k - 2}장 + 썸네일", "",
         "## 원문 체크", "", *[f"- {'✅' if ok else '⚠️'} {txt}" for ok, txt in checklist(a, kw, pick)],
         *(["", "### 고쳐쓰기 기록(남긴 것)", *[f"- {x}" for x in fix_log]] if fix_log else []),
-        "", "### 코드로 못 재는 항목 (사람이 확인)", *[f"- 👀 {x}" for x in human_check()], "",
+        *(["", "## 편집장 검토", "",
+           ("✅ 편집장(AI)이 아래 항목을 모두 확인했어요 — 지적 없음." if not ed
+            else "⚠️ 편집장(AI) 지적 (고쳐쓰기 후 남음): " + " / ".join(ed)),
+           "", "### 편집장(AI)이 본 항목 (코드로 못 재는 질)", *[f"- 👀 {x}" for x in human_check()]]
+          if cfg.get("strict_editor") else
+          ["", "### 코드로 못 재는 항목 (사람이 확인)", *[f"- 👀 {x}" for x in human_check()]]), "",
         f"- 카테고리: **{a['area']}**", f"- 태그: {tags}", "",
         "## 제목 (추천 ★)", "", f"1. ★ {pick['title']} — {pick['type']}",
         *[f"{i + 2}. {t['title']} — {t['type']}" for i, t in enumerate(others)], "",

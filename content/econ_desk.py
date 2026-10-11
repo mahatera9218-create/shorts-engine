@@ -302,10 +302,16 @@ def page(p: dict) -> str:
         cl, human = backfill_checklist(p)
         p = {**p, "human": human}
     cl_ok = sum(1 for x in cl if x.startswith("✅"))
+    review = (p.get("review") or "").strip()  # 엄격한 편집장(AI) 검토 판정 (코드로 못 재는 항목을 AI가 봄, 2026-10-11)
+    warn = review.startswith("⚠")
+    rev_html = (f'<div style="font-size:13px;margin-top:8px;padding:7px 9px;border-radius:8px;'
+                f'background:{"rgba(184,110,0,.14)" if warn else "rgba(31,138,76,.14)"}">🧑‍⚖️ {e(review)}</div>') if review else ""
+    human_label = "편집장(AI)이 본 항목" if review else "코드로 못 재는 항목 — 사람이 확인"  # 편집장이 봤으면 '사람이 확인' 딱지 떼기
     cl_html = (f'<div class="card"><h2>원문 체크 <span class="muted" style="font-size:14px">{cl_ok}/{len(cl)}</span></h2>'
                '<div class="muted" style="font-size:12px;margin-bottom:4px">강사 원문 프롬프트대로 됐는지 · ⚠️는 부족한 부분</div>'
                + "".join(f'<div style="font-size:14px;padding:2px 0{";color:var(--warn);font-weight:700" if x.startswith("⚠") else ""}">{e(x)}</div>' for x in cl)
-               + (f'<details style="margin-top:6px"><summary class="muted">코드로 못 재는 항목 — 사람이 확인 ({len(human)}개)</summary>'
+               + rev_html
+               + (f'<details style="margin-top:6px"><summary class="muted">{human_label} ({len(human)}개)</summary>'
                   + "".join(f'<div style="font-size:13px;padding:2px 0">👀 {e(x)}</div>' for x in human) + '</details>' if human else "")
                + '</div>') if cl else ""
     T = topic_titles(p["folder"])
