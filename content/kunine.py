@@ -250,23 +250,29 @@ def produce(slug: str, n: int) -> Path:
     from .econ_score import CFG as _kcfg
     cfg = F.load(_kcfg(), {}) or {}
     ratio = cfg.get("checklist_pass_ratio", 0.8)  # 원문 체크 통과율 목표 (대표 '8/10' → 80%)
-    max_fix = cfg.get("max_rewrite", 1)  # 고쳐쓰기 횟수 (대표 결정 2026-10-10: 1회)
+    max_fix = cfg.get("max_rewrite", 3)  # 고쳐쓰기 최대 횟수 — 글로 고칠 수 있는 건 다 고칠 때까지 (안 줄면 멈춤, 2026-10-11)
     fix_log: list[str] = []
     first_bad: list[str] = []  # 처음에 걸린 것 전부 (고친 것 계산용, 2026-10-11)
+    prev_bad = None
     for attempt in range(max_fix + 1):
         cl = checklist(a, kw, pick)
         fails = [txt for ok, txt in cl if not ok]
         ed = F.editor_review(text_of(a), pick["title"], kw, human_check()) if cfg.get("strict_editor") else []
+        cur_bad = fails + ed
         if attempt == 0:
-            first_bad = fails + ed
+            first_bad = cur_bad
         need = int(len(cl) * ratio + 0.999)
-        if (len(cl) - len(fails) >= need and not ed) or attempt >= max_fix:
+        done = len(cl) - len(fails) >= need and not ed
+        stuck = prev_bad is not None and len(cur_bad) >= prev_bad  # 지난번보다 안 줄면 글만으론 못 고치는 것 → 멈춤(비용 아낌)
+        if done or stuck or attempt >= max_fix:
             break
+        prev_bad = len(cur_bad)
         fix_log.append(f"{attempt + 1}차: 원문 {len(cl) - len(fails)}/{len(cl)}"
                        + (" · 원문부족 " + " / ".join(fails) if fails else "") + (" · 편집장 " + " / ".join(ed) if ed else ""))
-        a = F.claude_json(sys_prompt, ask + "\n\n[반드시 고칠 것 — 아래를 모두 충족]\n" + "\n".join(f"- {b}" for b in fails + ed)
+        a = F.claude_json(sys_prompt, ask + "\n\n[반드시 고칠 것 — 글 수정만으로 고칠 수 있는 건 하나도 남기지 말고 모두 반영. "
+                          "새 사실·외부 자료가 있어야만 고칠 수 있는 것은 그대로 둬도 된다]\n" + "\n".join(f"- {b}" for b in cur_bad)
                           + "\n\n[지난 초안]\n" + json.dumps(a, ensure_ascii=False), BODY, stage=f"고쳐쓰기{attempt + 1}")
-    remaining = fails + ed          # 고쳐쓰기 뒤에도 남은 것
+    remaining = fails + ed          # 고쳐쓰기 뒤에도 남은 것 (글만으론 못 고치는 것 = 사람 확인)
     fixed = [x for x in first_bad if x not in remaining]   # 처음 걸렸다가 고쳐진 것
     left = check(a, kw)
     post = F.POSTS / slug
