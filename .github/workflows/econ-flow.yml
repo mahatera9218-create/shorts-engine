@@ -84,6 +84,7 @@ jobs:
           elif [ "$CMD" = "produce" ]; then python -m content.econ_flow produce "$ARG1" "$ARG2"
           elif [ "$CMD" = "learn" ]; then python -m content.econ_inbox learn
           elif [ "$CMD" = "refs" ]; then python -m content.econ_refs
+          elif [ "$CMD" = "collect" ]; then python -m content.title_collect   # 참고 블로거 제목 전체 수집 (AI 없음, 2026-10-12)
           elif [ "$CMD" = "masters" ]; then python -m content.title_refs   # 제목 고수(경제토르·유미) 조사
           else echo "모르는 명령"; exit 1; fi
       - name: 저장 (econ/ 커밋)
