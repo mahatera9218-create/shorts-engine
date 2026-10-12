@@ -14,6 +14,7 @@
 ━━━━━━━━ 경제 제목 고수 ━━━━━━━━
 blog.naver.com/kka_dream (경제토르)
 blog.naver.com/8starstarstar8 (유미)
+blog.naver.com/kjn811 (대표 추가 2026-10-12, 이름 미정)
 
 ━━━━━━━━ 패션 제목 고수 ━━━━━━━━
 blog.naver.com/qkrrnfjqm (쿠니네패션)
