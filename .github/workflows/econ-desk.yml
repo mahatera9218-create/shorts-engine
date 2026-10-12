@@ -65,3 +65,22 @@ jobs:
           [ -z "$ok" ] && { echo "❌ 경제 발행 도우미를 올리지 못했습니다. Claude에게 알려주세요." >> "$GITHUB_STEP_SUMMARY"; exit 1; }
           echo "## 억선생의 경제판 발행 도우미" >> "$GITHUB_STEP_SUMMARY"
           echo "고정 주소: https://$PROJECT.pages.dev" >> "$GITHUB_STEP_SUMMARY"
+      - name: 시험용(dev) 화면 올리기 — 패션 조사 세트만 (대표 요청 2026-10-12)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          DESK_DEV: "1"
+        run: |
+          [ -z "$CLOUDFLARE_API_TOKEN" ] && exit 0
+          python -m content.econ_desk site-dev
+          ACC=$(printf '%s' "$CLOUDFLARE_ACCOUNT_ID" | grep -oiE '[0-9a-f]{32}' | head -1 || true)
+          [ -z "$ACC" ] && exit 0
+          echo "::add-mask::$ACC"
+          export CLOUDFLARE_ACCOUNT_ID="$ACC"
+          export CLOUDFLARE_API_TOKEN="$(printf '%s' "$CLOUDFLARE_API_TOKEN" | tr -d '[:space:]')"
+          sleep 5
+          if npx --yes wrangler@4 pages deploy site-dev --project-name "$PROJECT" --branch dev --commit-dirty=true | tee dev.log; then
+            echo "시험용 주소: https://dev.$PROJECT.pages.dev" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "⚠️ 시험용(dev) 화면을 올리지 못했습니다 (운영 화면은 정상)" >> "$GITHUB_STEP_SUMMARY"
+          fi
