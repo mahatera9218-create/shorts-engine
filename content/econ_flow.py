@@ -915,6 +915,9 @@ def _run(cmd: str) -> None:
     elif cmd == "outfit":  # 착장 도우미: 연예인 + 인스타 게시물 주소 + 상품 링크 → 글 (2026-10-10)
         from .outfit import write
         write(sys.argv[2])
+    elif cmd == "pack":  # 패션 조사 세트: 조사만 Grok으로 → 클로드 프로젝트에 붙여넣을 글 (대표 결정 2026-10-12)
+        from .celeb_pack import run as pack_run
+        pack_run(sys.argv[2])
     elif cmd == "add":
         add(sys.argv[2])
     elif cmd == "aside":  # 어사이드 목록 → 넣고 다시 채점 → 바로 자동 글 (대표 결정 2026-10-07)

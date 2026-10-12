@@ -812,7 +812,33 @@ def flow_html() -> str:
                      + blog_links(T.get("keyword", "")))
         topics.append(f'<div class="card"><h2>제목 · {e(T.get("keyword", ""))}</h2>{body}'
                       f'<a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(again, quote=True)}">🔄 다시 뽑기</a>{rules_html()}</div>')
-    return kw_html + "".join(topics)
+    return kw_html + (pack_html(today) if BID != "econ" else "") + "".join(topics)
+
+
+def pack_html(today: str) -> str:
+    """패션 조사 세트 (대표 결정 2026-10-12): 키워드 → 조사만 API → '조사 메모 + 출발' 글을 복사 → 클로드 패션 프로젝트에 붙여넣기."""
+    e = html.escape
+    issue = f"https://github.com/{desk.REPO}/issues/new?title="
+    js = ("function packGo(){const v=document.getElementById('pack-in').value.trim();if(!v)return;"
+          f"location.href='{issue}'+encodeURIComponent('[{LABEL}조사] {today}')+'&body='+encodeURIComponent(v)}}")
+    cards = ""
+    d = BLOG_BASE() / "research" / today
+    for t in sorted(d.glob("*.txt")) if d.exists() else []:
+        txt = t.read_text(encoding="utf-8")
+        title = txt.split("\n", 1)[0].strip()
+        cards += (f'<div class="card"><h2>🔎 {e(title)}</h2>'
+                  f'<button onclick="copyText(this,{e(json.dumps(txt), quote=True)})">📋 복사 (클로드 패션 프로젝트에 붙여넣기)</button>'
+                  f'<details><summary class="muted">내용 보기</summary><pre style="white-space:pre-wrap;font:inherit;line-height:1.6">{e(txt)}</pre></details></div>')
+    return (f'<div class="card"><h2>조사 세트</h2><div class="muted" style="margin-bottom:6px">조사만 AI(Grok)가 하고, 글은 클로드 프로젝트가 써요. '
+            f'확인 안 된 정보는 자동으로 빠져요.</div>'
+            f'<textarea id="pack-in" rows="3" style="{TA}" placeholder="한 줄에 하나 (최대 3줄)&#10;예) 전지현 / 10월 공항 / 샤넬 미디움 플랩백"></textarea>'
+            f'<button onclick="packGo()">🔎 조사하기</button>'
+            f'<div class="muted" style="font-size:12px;margin-top:6px">누르면 깃허브 화면이 열려요 → 초록 Create 버튼만 누르면 접수돼요. 2~3분 뒤 아래에 나와요 (새로고침 ↻).</div>'
+            f'<script>{js}</script></div>{cards}')
+
+
+def BLOG_BASE() -> Path:
+    return POSTS.parent
 
 
 def masters_html() -> str:
