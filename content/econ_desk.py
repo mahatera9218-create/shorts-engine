@@ -33,6 +33,7 @@ NAME = "경제 블로그"  # 블로그 이름은 대표가 정함 (2026-10-05)
 KST = ZoneInfo("Asia/Seoul")
 MARK = re.compile(r"^\[(경제|연예|패션)발행완료\]\s*(\d{4}-\d{2}-\d{2}-[\w가-힣-]+)\s*$")
 from .econ_flow import MONTH_CAP_KRW as F_CAP  # 월 상한 (econ_flow와 같게)
+DEV = os.environ.get("DESK_DEV") == "1"  # 시험용 화면(dev 주소): 패션 조사 세트만 보임, 안 쓰는 탭 숨김 (대표 요청 2026-10-12)
 BID, LABEL = "econ", "경제"  # 지금 그리는 블로그 (use()로 바꿈, 2026-10-05 경제·연예·패션 3개)
 
 
@@ -515,6 +516,8 @@ def error_banner() -> str:
 def index(by_blog: dict[str, list[dict]]) -> str:
     from .blogs import all_blogs
     blogs = all_blogs()
+    if DEV:
+        return dev_index()
     now = datetime.now(KST).strftime("%m월 %d일 %H:%M")
     tabs = "".join(f'<a href="#{bid}" data-t="{bid}">{html.escape(b["label"])}</a>' for bid, b in blogs.items())
     secs = "".join(blog_section(b, by_blog.get(bid, [])) for bid, b in blogs.items())
@@ -530,6 +533,19 @@ function tab(){{const h=(location.hash||'#{first}').slice(1);document.querySelec
 document.querySelectorAll('nav.tabs a').forEach(a=>a.classList.toggle('on',a.dataset.t===h))}}addEventListener('hashchange',tab);tab();
 document.querySelectorAll('details.fold').forEach(d=>{{try{{const v=localStorage.getItem('fold:'+d.dataset.k);if(v!==null)d.open=v==='1'}}catch(e){{}}
 d.addEventListener('toggle',()=>{{try{{localStorage.setItem('fold:'+d.dataset.k,d.open?'1':'0')}}catch(e){{}}}})}});</script></body></html>"""
+
+
+def dev_index() -> str:
+    """시험용 화면: 패션 조사 세트만. (경제·성과·어사이드·사진·옛 키워드/제목 칸은 숨김 — 운영 화면은 그대로)"""
+    from .blogs import all_blogs
+    b = all_blogs()["fashion"]
+    use(b)
+    today = datetime.now(KST).strftime("%Y-%m-%d")
+    now = datetime.now(KST).strftime("%m월 %d일 %H:%M")
+    return head("패션 조사 세트 (시험)") + f"""
+<header class="brand"><img src="icon-180.png" alt=""><div><h1>패션 조사 세트</h1><p class="muted">시험용 화면 · {now} 업데이트</p></div></header>
+{error_banner()}{pack_html(today)}
+</main><script>const POST={{"blocks":[],"images":[]}};{desk.JS}</script></body></html>"""
 
 
 FLOW = ROOT / "econ" / "flow"
