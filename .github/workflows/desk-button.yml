@@ -224,7 +224,7 @@ jobs:
        startsWith(github.event.issue.title, '[경제자동') || startsWith(github.event.issue.title, '[패션자동') ||
        startsWith(github.event.issue.title, '[패션링크') || startsWith(github.event.issue.title, '[경제주제') ||
        startsWith(github.event.issue.title, '[패션주제') || startsWith(github.event.issue.title, '[착장') || startsWith(github.event.issue.title, '[경제급상승') ||
-       startsWith(github.event.issue.title, '[패션급상승') || startsWith(github.event.issue.title, '[패션조사') ||
+       startsWith(github.event.issue.title, '[패션급상승') || startsWith(github.event.issue.title, '[패션조사') || startsWith(github.event.issue.title, '[경제수집') ||
        startsWith(github.event.issue.title, '[경제계절상품') || startsWith(github.event.issue.title, '[패션계절상품'))
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -254,6 +254,8 @@ jobs:
               cmd, arg1 = "add", "\n".join(l.strip() for l in b.splitlines() if l.strip() and "Create" not in l)[:800]
               if "어사이드" in t:   # 어사이드가 올린 홈판·인기글 목록 → 네이버 인기 점수 + 바로 자동 글 (대표 결정 2026-10-07)
                   cmd = "aside"
+          elif t.startswith("[경제수집]"):   # 참고 블로거 제목 전체 수집, AI 없음 (2026-10-12)
+              cmd = "collect"
           elif t.startswith("[경제조사]"):   # 패션 조사 세트: 본문 줄마다 '인물 / 시점 / 제품명' (2026-10-12)
               cmd, arg1 = "pack", "\n".join(l.strip() for l in b.splitlines() if l.strip() and "Create" not in l)[:800]
           elif t.startswith("[경제링크]") and blog == "fashion":   # 패션: 상품 링크로 초안 (2026-10-08)
@@ -295,6 +297,7 @@ jobs:
             outfit) msg="연예인 착장 글을 만들고 있어요 (약 10분). 착장 도우미 '오늘 착장 글'에 올라와요.";;
             rising) msg="네이버 급상승 키워드를 다시 찾고 있어요 (약 3분).";;
             season) msg="쇼핑인사이트로 이 계절 인기 상품을 뽑고 있어요 (약 2분).";;
+            collect) msg="참고 블로거 제목을 공개 RSS로 모으고 있어요 (약 1~2분, AI 비용 없음). econ/ref/titles/수집/ 에 저장돼요. Claude에게 '수집한 제목 분류해줘'라고 하세요.";;
             pack) msg="조사 세트를 만들고 있어요 (키워드 1개에 약 2~3분). 도우미 키워드 탭의 '조사 세트'에 올라와요. 복사해서 클로드 패션 프로젝트에 붙여넣으세요.";;
             celebs) msg="오늘 뜨는 연예인을 다시 뽑고 있어요 (약 2분).";;
             topicwrite) msg="입력한 주제로 조사하고 제목을 뽑아 추천 제목으로 글을 쓰고 있어요 (약 10~15분). 도우미 '오늘 글'에 올라와요.";;
