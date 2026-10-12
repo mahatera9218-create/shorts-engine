@@ -1,5 +1,5 @@
 date: '2026-10-12'
-updated: '11:32'
+updated: '22:24'
 items:
 - kw: 오픈AI
   rise: 2.27
@@ -19,9 +19,9 @@ items:
   rise: 1.24
   volume: 38440
   named: true
-  blog24h: 90
+  blog24h: 100
   section: 해외주식
-  score: 74
+  score: 76
 - kw: 아파트
   rise: 1.08
   volume: 55920
