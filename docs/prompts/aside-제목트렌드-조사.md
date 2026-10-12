@@ -15,6 +15,18 @@
 blog.naver.com/kka_dream (경제토르)
 blog.naver.com/8starstarstar8 (유미)
 blog.naver.com/kjn811 (대표 추가 2026-10-12, 이름 미정)
+blog.naver.com/zkfldb888 (쿠니네, 최우선)
+blog.naver.com/balahk (발악)
+blog.naver.com/dutyfrees (달스)
+blog.naver.com/meaning87 (은퇴연구소)
+blog.naver.com/ranto28 (메르)
+blog.naver.com/rmsgud2007 (방구석청년)
+blog.naver.com/ishisheido77 (블룸앤아이유)
+blog.naver.com/antsal (한입재테크)
+blog.naver.com/crazytech (crazytech)
+
+━━━━━━━━ 우리 블로그 (비교용) ━━━━━━━━
+blog.naver.com/eokonomy (우리 경제 블로그, 최근 30개 제목)
 
 ━━━━━━━━ 패션 제목 고수 ━━━━━━━━
 blog.naver.com/qkrrnfjqm (쿠니네패션)
@@ -33,6 +45,8 @@ blog.naver.com/jayuyu
 4. 숫자를 쓰는 방식(전후 비교 '13억→26억', 퍼센트 '-60%', 가격, 나이 등)
 5. 핵심을 가리는 표현('이 가격', '이렇게', '이름 가리기')을 쓰는지
 6. 지난번과 달라진 점이 보이면 한 줄
+
+[추가 비교] 경제 블로거 전체(위 12명)를 한 표로 묶어서, 블로거별로 작은따옴표 비율·숫자 포함 비율·물음표 끝 비율·'~라는데' 끝맺음 비율·가림 표현 비율·평균 글자 수를 적어 줘. 맨 아래에 '우리 블로그(eokonomy)'를 같은 항목으로 적어서 고수들과 어디가 다른지 3줄로 요약해 줘.
 
 다 적으면 두 가지를 해 줘.
 1) 아래 주소를 열어 본문(설명) 칸에 정리한 내용을 전부 붙여넣고 초록색 Create로 올려. 제목 칸은 이미 채워져 있으니 건드리지 마.
