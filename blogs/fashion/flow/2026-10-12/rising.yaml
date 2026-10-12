@@ -1,5 +1,5 @@
 date: '2026-10-12'
-updated: '11:35'
+updated: '22:29'
 items:
 - kw: 김지원
   rise: 4.33
@@ -17,8 +17,8 @@ items:
   rise: 2.2
   volume: 32860
   named: true
-  blog24h: 61
-  score: 112
+  blog24h: 100
+  score: 120
 - kw: 하니
   rise: 1.61
   volume: 53330
@@ -29,8 +29,8 @@ items:
   rise: 1.46
   volume: 134100
   named: true
-  blog24h: 95
-  score: 95
+  blog24h: 100
+  score: 96
 - kw: 제니
   rise: 1.46
   volume: 83260
@@ -41,53 +41,53 @@ items:
   rise: 1.33
   volume: 308000
   named: true
-  blog24h: 91
-  score: 91
-- kw: 안유진
-  rise: 1.24
-  volume: 149900
-  named: true
-  blog24h: 60
-  score: 75
+  blog24h: 100
+  score: 93
 - kw: 서현진
   rise: 1.38
   volume: 69920
   named: true
-  blog24h: 29
-  score: 73
+  blog24h: 100
+  score: 87
+- kw: 안유진
+  rise: 1.24
+  volume: 149900
+  named: true
+  blog24h: 100
+  score: 83
+- kw: 임지연
+  rise: 1.27
+  volume: 64180
+  named: true
+  blog24h: 78
+  score: 76
 - kw: 나연
   rise: 1.29
   volume: 14500
   named: true
   blog24h: 100
   score: 73
-- kw: 슬기
-  rise: 1.23
-  volume: 10570
-  named: true
-  blog24h: 90
-  score: 65
 - kw: 정호연
   rise: 1.39
   volume: 22180
   named: true
-  blog24h: 19
-  score: 65
-- kw: 임지연
-  rise: 1.27
-  volume: 64180
-  named: true
-  blog24h: 24
-  score: 65
+  blog24h: 45
+  score: 70
 - kw: 민지
   rise: 1.27
   volume: 8170
   named: true
-  blog24h: 72
-  score: 63
+  blog24h: 100
+  score: 68
+- kw: 슬기
+  rise: 1.23
+  volume: 10570
+  named: true
+  blog24h: 100
+  score: 67
 - kw: 박은빈
   rise: 1.23
   volume: 84100
   named: true
-  blog24h: 14
-  score: 62
+  blog24h: 31
+  score: 66
