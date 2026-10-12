@@ -1,0 +1,16 @@
+# 참고 블로거 제목 전체 수집 (대표 요청 2026-10-12): 공개 RSS만, AI 비용 0. 수동 실행(Actions → 참고 블로거 제목 수집 → Run workflow).
+# 결과: econ/ref/titles/수집/<날짜>.md → Claude에게 "수집한 제목 분류해줘"
+name: 참고 블로거 제목 수집
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    uses: ./.github/workflows/econ-flow.yml
+    with:
+      cmd: collect
+    secrets: inherit
