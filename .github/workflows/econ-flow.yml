@@ -72,6 +72,7 @@ jobs:
           elif [ "$CMD" = "add" ]; then python -m content.econ_flow add "$ARG1"
           elif [ "$CMD" = "aside" ]; then python -m content.econ_flow aside "$ARG1"   # 어사이드 목록 → 바로 자동 글 (2026-10-07)
           elif [ "$CMD" = "auto" ]; then python -m content.econ_flow auto "$ARG1"     # 10시 자동 글 / 도우미 다시 돌리기(force)
+          elif [ "$CMD" = "pack" ]; then python -m content.econ_flow pack "$ARG1"   # 패션 조사 세트 (2026-10-12)
           elif [ "$CMD" = "link" ]; then python -m content.econ_flow link "$ARG1"     # 패션: 상품 링크로 초안 (2026-10-08)
           elif [ "$CMD" = "rising" ]; then python -m content.econ_flow rising   # 네이버 급상승 탐지 (2026-10-10)
           elif [ "$CMD" = "season" ]; then python -m content.econ_flow season   # 쇼핑인사이트 계절 인기 상품 (2026-10-10)
