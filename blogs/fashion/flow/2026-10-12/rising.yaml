@@ -1,63 +1,93 @@
 date: '2026-10-12'
-updated: 08:55
+updated: '11:35'
 items:
 - kw: 김지원
-  rise: 3.56
+  rise: 4.33
   volume: 335200
   named: true
   blog24h: 100
   score: 134
 - kw: 신민아
-  rise: 3.19
+  rise: 2.86
   volume: 106500
   named: true
   blog24h: 100
   score: 127
+- kw: 한고은
+  rise: 2.2
+  volume: 32860
+  named: true
+  blog24h: 61
+  score: 112
+- kw: 하니
+  rise: 1.61
+  volume: 53330
+  named: true
+  blog24h: 100
+  score: 100
+- kw: 김혜수
+  rise: 1.46
+  volume: 134100
+  named: true
+  blog24h: 95
+  score: 95
 - kw: 제니
-  rise: 1.75
+  rise: 1.46
   volume: 83260
   named: true
   blog24h: 100
-  score: 111
-- kw: 한고은
-  rise: 2.71
-  volume: 32860
+  score: 93
+- kw: 고윤정
+  rise: 1.33
+  volume: 308000
   named: true
-  blog24h: 42
-  score: 109
-- kw: 김혜수
-  rise: 1.53
-  volume: 134100
+  blog24h: 91
+  score: 91
+- kw: 안유진
+  rise: 1.24
+  volume: 149900
   named: true
-  blog24h: 45
-  score: 89
+  blog24h: 60
+  score: 75
 - kw: 서현진
-  rise: 1.47
+  rise: 1.38
   volume: 69920
   named: true
-  blog24h: 20
-  score: 77
+  blog24h: 29
+  score: 73
+- kw: 나연
+  rise: 1.29
+  volume: 14500
+  named: true
+  blog24h: 100
+  score: 73
+- kw: 슬기
+  rise: 1.23
+  volume: 10570
+  named: true
+  blog24h: 90
+  score: 65
+- kw: 정호연
+  rise: 1.39
+  volume: 22180
+  named: true
+  blog24h: 19
+  score: 65
 - kw: 임지연
-  rise: 1.4
+  rise: 1.27
   volume: 64180
   named: true
-  blog24h: 14
-  score: 71
+  blog24h: 24
+  score: 65
 - kw: 민지
-  rise: 1.21
+  rise: 1.27
   volume: 8170
   named: true
-  blog24h: 40
-  score: 53
-- kw: 결혼식하객룩
-  rise: 1.28
-  volume: 53250
-  named: false
-  blog24h: 100
-  score: 45
-- kw: 샤넬스카프
-  rise: 1.2
-  volume: 14300
-  named: false
-  blog24h: 8
-  score: 14
+  blog24h: 72
+  score: 63
+- kw: 박은빈
+  rise: 1.23
+  volume: 84100
+  named: true
+  blog24h: 14
+  score: 62
