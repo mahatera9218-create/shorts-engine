@@ -672,14 +672,19 @@ def fashion_kw_tab(b: dict) -> str:
     rows = ""
     for it in items:
         src = list(dict(it.get("sources") or {}))
-        src_txt = " · ".join(src) + (f" · 블로거 {len(it.get('bloggers') or [])}명" if it.get("bloggers") else "") \
-            + (f" · 어사이드 {it['naver_rank']}위" if it.get("naver_rank") else "")
+        bgs = it.get("bloggers") or []
+        src_txt = " · ".join(src) + (f" · 어사이드 {it['naver_rank']}위" if it.get("naver_rank") else "")
         prod = (it.get("product") or "").strip()
         # 패션 프로젝트 전달용: '인물 / 시점 / 제품' 틀 (제품은 확인된 게 있으면 넣고, 없으면 빈칸으로 둬 대표가 채움)
         ct = f'{it["kw"]} / 오늘 / {prod}' if prod else f'{it["kw"]} / 오늘 / '
+        # 블로거가 있으면 그 블로거 블로그 링크 (대표 요청 2026-10-13) — 네이버 블로그 ID → m.blog.naver.com/{id}
+        blog_line = (f'<div class="muted" style="font-size:12px;margin:-2px 0 6px">블로거: '
+                     + " · ".join(f'<a href="https://m.blog.naver.com/{e(str(bg), quote=True)}" target="_blank" rel="noopener">{e(str(bg))}</a>' for bg in bgs)
+                     + '</div>') if bgs else ""
         rows += (_kw_copy_chip(it, done, ct)
                  + (f'<div class="muted" style="font-size:12px;margin:-2px 0 6px">출처: {e(src_txt)}'
-                    + (f' · 💰 {e(prod)}' if prod else "") + '</div>' if (src_txt or prod) else ""))
+                    + (f' · 💰 {e(prod)}' if prod else "") + '</div>' if (src_txt or prod) else "")
+                 + blog_line)
     a = kw.get("aside")
     aside = f'🛰 어사이드 {e(a.get("at", ""))} · {a.get("n", 0)}개' if a else "🛰 어사이드 아직"
     refresh = desk.issue_link(f"{LABEL}키워드새로", today, "키워드를 다시 모아 주세요.")
