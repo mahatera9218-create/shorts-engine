@@ -918,15 +918,26 @@ def pack_html(today: str) -> str:
     for t in sorted(d.glob("*.txt")) if d.exists() else []:
         txt = t.read_text(encoding="utf-8")
         title = txt.split("\n", 1)[0].strip()
-        cards += (f'<div class="card"><h2>🔎 {e(title)}</h2>'
+        cards += (f'<div class="card pk" data-k="{e(today + "/" + t.stem, quote=True)}"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start">'
+                  f'<h2>🔎 {e(title)}</h2><button class="ghost" style="width:44px;margin:0;padding:6px 0" onclick="pkHide(this)">✕</button></div>'
                   f'<button onclick="copyText(this,{e(json.dumps(txt), quote=True)})">📋 복사 (클로드 패션 프로젝트에 붙여넣기)</button>'
                   f'<details><summary class="muted">내용 보기</summary><pre style="white-space:pre-wrap;font:inherit;line-height:1.6">{e(txt)}</pre></details></div>')
+    # 조사한 것 지우기 (대표 요청 2026-10-13): ✕로 하나씩 / 모두 숨기기 — 이 기기에만 기억, '숨긴 조사 보기'로 되돌림
+    js += ("function pkH(){try{return JSON.parse(localStorage.getItem('hidepk')||'[]')}catch(e){return []}}"
+           "function pkHide(b){const k=b.closest('.pk').dataset.k;const h=pkH();if(!h.includes(k))h.push(k);try{localStorage.setItem('hidepk',JSON.stringify(h))}catch(e){}pkApply()}"
+           "function pkAll(){const h=pkH();document.querySelectorAll('.pk').forEach(d=>{if(!h.includes(d.dataset.k))h.push(d.dataset.k)});"
+           "try{localStorage.setItem('hidepk',JSON.stringify(h))}catch(e){}pkApply()}"
+           "var pkShow=false;function pkApply(){const h=pkH();let n=0;document.querySelectorAll('.pk').forEach(d=>{const x=h.includes(d.dataset.k);if(x)n++;d.style.display=(x&&!pkShow)?'none':''});"
+           "const s=document.getElementById('pk-show');if(s){s.style.display=n?'block':'none';s.textContent=pkShow?'숨긴 조사 다시 숨기기':'숨긴 조사 '+n+'개 보기'}}"
+           "function pkToggle(){pkShow=!pkShow;pkApply()}")
+    pk_ctl = ('<button class="ghost" style="margin:8px 0 0;padding:8px 10px;font-size:14px" onclick="pkAll()">🧹 조사한 것 모두 숨기기</button>'
+              '<a id="pk-show" class="muted" style="display:none;margin-top:6px;font-size:13px;cursor:pointer" onclick="pkToggle()"></a>')
     return (f'<div class="card"><h2>조사 세트</h2><div class="muted" style="margin-bottom:6px">조사만 AI(Grok)가 하고, 글은 클로드 프로젝트가 써요. '
             f'확인 안 된 정보는 자동으로 빠져요.</div>'
             f'<textarea id="pack-in" rows="3" style="{TA}" placeholder="한 줄에 하나 (최대 3줄)&#10;예) 전지현 / 10월 공항 / 샤넬 미디움 플랩백"></textarea>'
             f'<button onclick="packGo()">🔎 조사하기</button>'
             f'<div class="muted" style="font-size:12px;margin-top:6px">누르면 깃허브 화면이 열려요 → 초록 Create 버튼만 누르면 접수돼요. 2~3분 뒤 아래에 나와요 (새로고침 ↻).</div>'
-            f'<script>{js}</script></div>{cards}')
+            f'{pk_ctl}<script>{js}</script></div>{cards}<script>pkApply()</script>')
 
 
 def BLOG_BASE() -> Path:
