@@ -34,7 +34,6 @@ def targets() -> dict[str, tuple[str, str]]:
         m = re.search(r"blog\.naver\.com/([\w-]+)", str(b.get("url", ""))) if isinstance(b, dict) else None
         if m:
             t[m.group(1)] = (f"우리({b.get('name', k)})", "우리")
-    t.setdefault("eokonomy", ("우리? (대표 표기 철자)", "우리"))  # 대표가 적은 철자도 함께 시도 — 되는 쪽이 맞는 주소
     return t
 
 
