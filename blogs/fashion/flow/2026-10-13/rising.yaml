@@ -1,5 +1,5 @@
 date: '2026-10-13'
-updated: '12:45'
+updated: '21:55'
 items:
 - kw: 김지원
   rise: 3.44
@@ -47,23 +47,23 @@ items:
   rise: 1.48
   volume: 14780
   named: true
-  blog24h: 79
-  score: 80
-- kw: 정호연
-  rise: 1.52
-  volume: 22040
-  named: true
-  blog24h: 13
-  score: 72
+  blog24h: 100
+  score: 84
 - kw: 한고은
   rise: 1.32
   volume: 32910
   named: true
-  blog24h: 45
-  score: 68
+  blog24h: 83
+  score: 76
+- kw: 정호연
+  rise: 1.52
+  volume: 22040
+  named: true
+  blog24h: 30
+  score: 75
 - kw: 유니클로세일
   rise: 1.2
   volume: 138800
   named: false
-  blog24h: 36
-  score: 33
+  blog24h: 87
+  score: 43
