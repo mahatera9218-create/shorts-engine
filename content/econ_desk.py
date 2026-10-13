@@ -598,21 +598,116 @@ def plan_tab() -> str:
     return guide + cards + f'<script>{js}planApply()</script>'
 
 
+def _load_kw_today() -> tuple[Path, dict]:
+    """현재 블로그(use로 설정)의 오늘 키워드. 오늘 것이 없으면 가장 최근 날."""
+    today = datetime.now(KST).strftime("%Y-%m-%d")
+    day = FLOW / today
+    if not (day / "keywords.yaml").exists():
+        days = sorted((d for d in FLOW.glob("*") if (d / "keywords.yaml").exists()), reverse=True) if FLOW.exists() else []
+        if days:
+            day = days[0]
+    kw = (yaml.safe_load((day / "keywords.yaml").read_text(encoding="utf-8")) or {}) if (day / "keywords.yaml").exists() else {}
+    return day, kw
+
+
+def _kw_copy_chip(it: dict, done: dict) -> str:
+    """키워드 한 줄: 누르면 복사(프로젝트 붙여넣기용). 이미 쓴 건 ✅ (대표 결정 2026-10-13: 도우미=키워드 도구)."""
+    e = html.escape
+    slug = done.get(it["kw"])
+    dn = bool(slug and (POSTS / slug).exists())
+    sc = f' <span class="seal">{it["score"]}</span>' if "score" in it else ""
+    cls = f"btn kdone-{BID}" if dn else "btn"
+    return (f'<button class="{cls}" style="text-align:left;width:100%;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
+            f'onclick="copyText(this,{e(json.dumps(it["kw"]), quote=True)})">{"✅ " if dn else "📋 "}<b>{e(it["kw"])}</b>{sc}{new_badge(it)}</button>')
+
+
+def _kd_controls() -> tuple[str, str]:
+    """✅ 쓴 키워드 숨기기 버튼 + JS (경제·패션 키워드 탭 공통)."""
+    kd_js = (f"function kdOn(){{try{{return localStorage.getItem('hidekd-{BID}')==='1'}}catch(e){{return false}}}}"
+             f"function kdApply(){{const on=kdOn();document.querySelectorAll('.kdone-{BID}').forEach(d=>{{d.style.display=on?'none':''}});"
+             f"const b=document.getElementById('kdbtn-{BID}');if(b)b.textContent=on?'쓴 키워드 다시 보기':'✅ 쓴 키워드 숨기기'}}"
+             f"function kdToggle(){{try{{localStorage.setItem('hidekd-{BID}',kdOn()?'0':'1')}}catch(e){{}}kdApply()}}kdApply();")
+    kd_btn = f'<button id="kdbtn-{BID}" class="ghost" style="margin:0 0 8px;padding:8px 10px;font-size:14px" onclick="kdToggle()">✅ 쓴 키워드 숨기기</button>'
+    return kd_btn, kd_js
+
+
+def econ_kw_tab(b: dict) -> str:
+    """경제 키워드 전용 (대표 결정 2026-10-13): 섹션별 키워드 + 다시 모으기. 글·제목은 프로젝트에서."""
+    from .econ_sections import pick
+    from .econ_score import CFG as _kcfg
+    from .econ_flow import load as _load
+    use(b)
+    e = html.escape
+    today = datetime.now(KST).strftime("%Y-%m-%d")
+    day, kw = _load_kw_today()
+    items = sorted(kw.get("items", []), key=lambda x: -x.get("score", 0))
+    done = written_today(day)
+    c = _load(_kcfg(), {}) or {}
+    secs = pick(items, c.get("sections", ["국내주식", "해외주식", "금·비트코인", "부동산", "환율", "생활경제"]),
+                c.get("section_n", 3), c.get("min_show", 75))
+    rows = "".join(f'<div class="muted" style="margin:10px 0 2px;font-weight:700">{e(name)}</div>'
+                   + ("".join(_kw_copy_chip(it, done) for it in xs) or '<div class="muted" style="font-size:13px">없음</div>')
+                   for name, xs in secs.items())
+    a = kw.get("aside")
+    aside = f'🛰 어사이드 {e(a.get("at", ""))} · {a.get("n", 0)}개' if a else "🛰 어사이드 아직"
+    refresh = desk.issue_link(f"{LABEL}키워드새로", today, "키워드를 다시 모아 주세요.")
+    kd_btn, kd_js = _kd_controls()
+    n_done = sum(1 for it in items if done.get(it["kw"]) and (POSTS / done[it["kw"]]).exists())
+    return (f'<div class="card"><h2>경제 키워드</h2>'
+            f'<div class="muted" style="margin:4px 0 6px">{e(day.name)} 기준 · {aside} · 누르면 복사돼요(프로젝트에 붙여넣기)</div>'
+            f'{kd_btn}<span class="muted" style="font-size:12px"> 쓴 키워드 {n_done}개</span>{rows}'
+            f'<a class="btn" style="margin-top:10px;background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(refresh, quote=True)}">🔄 다시 모으기</a>'
+            f'<script>{kd_js}</script></div>')
+
+
+def fashion_kw_tab(b: dict) -> str:
+    """패션 키워드 전용 (대표 결정 2026-10-13): 점수 높은 5개 + 다시 모으기. 누르면 복사."""
+    use(b)
+    e = html.escape
+    today = datetime.now(KST).strftime("%Y-%m-%d")
+    day, kw = _load_kw_today()
+    items = sorted(kw.get("items", []), key=lambda x: -x.get("score", 0))[:5]
+    done = written_today(day)
+    rows = ""
+    for it in items:
+        src = list(dict(it.get("sources") or {}))
+        src_txt = " · ".join(src) + (f" · 블로거 {len(it.get('bloggers') or [])}명" if it.get("bloggers") else "") \
+            + (f" · 어사이드 {it['naver_rank']}위" if it.get("naver_rank") else "")
+        prod = (it.get("product") or "").strip()
+        rows += (_kw_copy_chip(it, done)
+                 + (f'<div class="muted" style="font-size:12px;margin:-2px 0 6px">출처: {e(src_txt)}'
+                    + (f' · 💰 {e(prod)}' if prod else "") + '</div>' if (src_txt or prod) else ""))
+    a = kw.get("aside")
+    aside = f'🛰 어사이드 {e(a.get("at", ""))} · {a.get("n", 0)}개' if a else "🛰 어사이드 아직"
+    refresh = desk.issue_link(f"{LABEL}키워드새로", today, "키워드를 다시 모아 주세요.")
+    kd_btn, kd_js = _kd_controls()
+    return (f'<div class="card"><h2>패션 키워드</h2>'
+            f'<div class="muted" style="margin:4px 0 6px">{e(day.name)} 기준 · 점수 높은 5개 · {aside} · 누르면 복사돼요</div>'
+            f'{kd_btn}{rows or "<p class=muted>모은 키워드가 없어요. 아래 다시 모으기를 눌러 주세요.</p>"}'
+            f'<a class="btn" style="margin-top:10px;background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(refresh, quote=True)}">🔄 다시 모으기</a>'
+            f'<script>{kd_js}</script></div>')
+
+
 def index(by_blog: dict[str, list[dict]]) -> str:
     from .blogs import all_blogs
     blogs = all_blogs()
     if DEV:
         return dev_index()
     now = datetime.now(KST).strftime("%m월 %d일 %H:%M")
-    tabs = "".join(f'<a href="#{bid}" data-t="{bid}">{html.escape(b["label"])}</a>' for bid, b in blogs.items())
-    secs = "".join(blog_section(b, by_blog.get(bid, [])) for bid, b in blogs.items())
-    first = next(iter(blogs))
+    econ_b, fash_b = blogs.get("econ"), blogs.get("fashion")
+    first = "plan"
+    # 대표 결정 2026-10-13: 도우미 = 키워드 도구. 보이는 탭 3개(순번·경제 키워드·패션 키워드). 성과는 코드·데이터 유지, 탭만 숨김(#stats 직접 주소로 접근). 어사이드·사진 제거.
+    nav = ('<a href="#plan" data-t="plan">경제 순번</a>'
+           '<a href="#econkw" data-t="econkw">경제 키워드</a>'
+           '<a href="#fashkw" data-t="fashkw">패션 키워드</a>')
+    econ_sec = f'<section class="tab" id="econkw" hidden>{econ_kw_tab(econ_b)}</section>' if econ_b else ""
+    fash_sec = f'<section class="tab" id="fashkw" hidden>{fashion_kw_tab(fash_b)}</section>' if fash_b else ""
     return head(f"{NAME} 발행 도우미") + f"""
-<header class="brand"><img src="icon-180.png" alt=""><div><h1>발행 도우미</h1><p class="muted">{" · ".join(html.escape(b["label"]) for b in blogs.values())} · {now} 업데이트</p></div></header>
-{error_banner()}<nav class="tabs">{tabs}<a href="#plan" data-t="plan">순번</a><a href="#stats" data-t="stats">성과</a><a href="#aside" data-t="aside">어사이드</a><a href="photo/">사진</a></nav>
-{secs}
+<header class="brand"><img src="icon-180.png" alt=""><div><h1>발행 도우미</h1><p class="muted">키워드 도구 · {now} 업데이트</p></div></header>
+{error_banner()}<nav class="tabs">{nav}</nav>
 <section class="tab" id="plan" hidden>{plan_tab()}</section>
-<section class="tab" id="aside" hidden>{aside_tab(blogs)}</section>
+{econ_sec}
+{fash_sec}
 <section class="tab" id="stats" hidden>{compare_html(blogs, by_blog)}</section>
 </main><script>const POST={{"blocks":[],"images":[]}};{desk.JS}
 function tab(){{const h=(location.hash||'#{first}').slice(1);document.querySelectorAll('section.tab').forEach(s=>s.hidden=s.id!==h);
