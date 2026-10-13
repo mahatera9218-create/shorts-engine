@@ -610,15 +610,16 @@ def _load_kw_today() -> tuple[Path, dict]:
     return day, kw
 
 
-def _kw_copy_chip(it: dict, done: dict) -> str:
-    """키워드 한 줄: 누르면 복사(프로젝트 붙여넣기용). 이미 쓴 건 ✅ (대표 결정 2026-10-13: 도우미=키워드 도구)."""
+def _kw_copy_chip(it: dict, done: dict, copytext: str | None = None) -> str:
+    """키워드 한 줄: 누르면 '프로젝트 전달용' 형태로 복사. 이미 쓴 건 ✅ (대표 결정 2026-10-13: 도우미=키워드 도구)."""
     e = html.escape
+    ct = it["kw"] if copytext is None else copytext
     slug = done.get(it["kw"])
     dn = bool(slug and (POSTS / slug).exists())
     sc = f' <span class="seal">{it["score"]}</span>' if "score" in it else ""
     cls = f"btn kdone-{BID}" if dn else "btn"
     return (f'<button class="{cls}" style="text-align:left;width:100%;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
-            f'onclick="copyText(this,{e(json.dumps(it["kw"]), quote=True)})">{"✅ " if dn else "📋 "}<b>{e(it["kw"])}</b>{sc}{new_badge(it)}</button>')
+            f'onclick="copyText(this,{e(json.dumps(ct), quote=True)})">{"✅ " if dn else "📋 "}<b>{e(it["kw"])}</b>{sc}{new_badge(it)}</button>')
 
 
 def _kd_controls() -> tuple[str, str]:
@@ -674,7 +675,9 @@ def fashion_kw_tab(b: dict) -> str:
         src_txt = " · ".join(src) + (f" · 블로거 {len(it.get('bloggers') or [])}명" if it.get("bloggers") else "") \
             + (f" · 어사이드 {it['naver_rank']}위" if it.get("naver_rank") else "")
         prod = (it.get("product") or "").strip()
-        rows += (_kw_copy_chip(it, done)
+        # 패션 프로젝트 전달용: '인물 / 시점 / 제품' 틀 (제품은 확인된 게 있으면 넣고, 없으면 빈칸으로 둬 대표가 채움)
+        ct = f'{it["kw"]} / 오늘 / {prod}' if prod else f'{it["kw"]} / 오늘 / '
+        rows += (_kw_copy_chip(it, done, ct)
                  + (f'<div class="muted" style="font-size:12px;margin:-2px 0 6px">출처: {e(src_txt)}'
                     + (f' · 💰 {e(prod)}' if prod else "") + '</div>' if (src_txt or prod) else ""))
     a = kw.get("aside")
@@ -682,7 +685,7 @@ def fashion_kw_tab(b: dict) -> str:
     refresh = desk.issue_link(f"{LABEL}키워드새로", today, "키워드를 다시 모아 주세요.")
     kd_btn, kd_js = _kd_controls()
     return (f'<div class="card"><h2>패션 키워드</h2>'
-            f'<div class="muted" style="margin:4px 0 6px">{e(day.name)} 기준 · 점수 높은 5개 · {aside} · 누르면 복사돼요</div>'
+            f'<div class="muted" style="margin:4px 0 6px">{e(day.name)} 기준 · 점수 높은 5개 · {aside} · 누르면 <b>인물 / 시점 / 제품</b> 틀로 복사돼요(제품 비면 채워서 붙여넣기)</div>'
             f'{kd_btn}{rows or "<p class=muted>모은 키워드가 없어요. 아래 다시 모으기를 눌러 주세요.</p>"}'
             f'<a class="btn" style="margin-top:10px;background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(refresh, quote=True)}">🔄 다시 모으기</a>'
             f'<script>{kd_js}</script></div>')
