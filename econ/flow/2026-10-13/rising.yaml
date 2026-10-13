@@ -1,5 +1,5 @@
 date: '2026-10-13'
-updated: '12:42'
+updated: '21:52'
 items:
 - kw: 팔란티어
   rise: 1.84
@@ -12,9 +12,9 @@ items:
   rise: 1.39
   volume: 40140
   named: true
-  blog24h: 98
+  blog24h: 100
   section: 해외주식
-  score: 84
+  score: 85
 - kw: 엔화환율
   rise: 0.91
   volume: 5156300
@@ -36,6 +36,13 @@ items:
   blog24h: 100
   section: 환율
   score: 73
+- kw: 위안화환율
+  rise: 1.05
+  volume: 260400
+  named: true
+  blog24h: 78
+  section: 환율
+  score: 71
 - kw: 금리
   rise: 1.03
   volume: 111300
@@ -43,13 +50,6 @@ items:
   blog24h: 100
   section: 생활경제
   score: 69
-- kw: 대만환율
-  rise: 0.91
-  volume: 276100
-  named: true
-  blog24h: 100
-  section: 환율
-  score: 67
 - kw: 아파트
   rise: 1.02
   volume: 55100
