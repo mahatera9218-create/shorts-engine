@@ -547,11 +547,11 @@ document.querySelectorAll('details.fold').forEach(d=>{{try{{const v=localStorage
 d.addEventListener('toggle',()=>{{try{{localStorage.setItem('fold:'+d.dataset.k,d.open?'1':'0')}}catch(e){{}}}})}});</script></body></html>"""
 
 
-PATHS = [   # 패션 키워드가 모이는 경로 (참고용 탭 안내, 2026-10-13 대표 요청)
-    ("블로거 RSS", "참고 블로거 16곳의 최근 36시간 새 글 제목·요약에서 인물·아이템·브랜드·가격", "0원", "다시 모으기 때"),
+PATHS = [   # 패션 키워드가 모이는 경로 (경로 탭 안내, 2026-10-13 대표 요청) — (경로, 내용, 비용, 언제)
+    ("블로거 RSS", "참고 블로거 16곳 최근 36시간 새 글에서 인물·아이템·브랜드·가격", "0원", "다시 모으기 때"),
     ("Grok", "X에서 오늘 화제인 연예인 패션 15개", "약 100~150원", "다시 모으기 때"),
     ("연예 뉴스 RSS", "연합뉴스 연예 · 한국경제 연예 · 매일경제", "0원", "다시 모으기 때"),
-    ("급상승", "네이버 검색량 급상승(공항패션·명품가방 등 씨앗 + 셀럽 이름)", "0원", "자동 하루 3번 (05:30·08:30·14:30)"),
+    ("급상승", "네이버 검색량 급상승 (공항패션·명품가방 씨앗 + 셀럽 이름)", "0원", "자동 하루 3번"),
     ("계절 상품", "쇼핑인사이트 이번 계절 인기 상품을 Grok 질문에 넣음", "0원", "다시 모으기 때"),
     ("대표 입력", "도우미 키워드 넣기 · 단톡방 · 구글 렌즈 캡처", "0원", "항상"),
     ("어사이드", "크리에이터 어드바이저 급상승 · 네이버 패션 인기글 · 블로거 최근 글", "구독", "대표가 실행할 때"),
@@ -560,43 +560,49 @@ PATHS = [   # 패션 키워드가 모이는 경로 (참고용 탭 안내, 2026-1
 
 
 def ref_html(today: str) -> str:
-    """참고용 탭: 오늘(없으면 가장 최근) 패션 키워드 후보를 출처와 함께 보여 주고, 눌러서 조사 세트 칸에 넣는다 + 다시 모으기 + 수집 경로 안내."""
+    """키워드 후보 탭: 오늘(없으면 가장 최근) 패션 키워드 상위 5개를 출처와 함께, 눌러서 조사 세트 칸에 넣는다 + 다시 모으기. 점수는 표시하지 않음."""
     e = html.escape
     days = sorted((d for d in FLOW.glob("*") if (d / "keywords.yaml").exists()), reverse=True) if FLOW.exists() else []
     day = days[0] if days else None
     kw = (yaml.safe_load((day / "keywords.yaml").read_text(encoding="utf-8")) or {}) if day else {}
-    items = sorted(kw.get("items", []), key=lambda x: -x.get("score", 0))[:30]
+    items = sorted(kw.get("items", []), key=lambda x: -x.get("score", 0))[:5]
     rows = ""
     for it in items:
         src = list(dict(it.get("sources") or {}))
         src_txt = " · ".join(src) + (f" · 블로거 {len(it.get('bloggers') or [])}명" if it.get("bloggers") else "") \
             + (f" · 어사이드 {it['naver_rank']}위" if it.get("naver_rank") else "")
         prod = (it.get("product") or "").strip()
-        rows += (f'<div style="padding:7px 0;border-bottom:1px solid var(--line)">'
-                 f'<div style="display:flex;justify-content:space-between;gap:8px"><b>{e(it["kw"])}</b>'
-                 f'<span class="seal">{it.get("score", "")}</span></div>'
-                 f'<div class="muted" style="font-size:12px;margin-top:2px">출처: {e(src_txt or it.get("src", ""))}</div>'
+        rows += (f'<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)">'
+                 f'<div style="flex:1;min-width:0"><b style="word-break:keep-all">{e(it["kw"])}</b>{new_badge(it)}'
+                 f'<div class="muted" style="font-size:12px;margin-top:2px">{e(src_txt or it.get("src", ""))}</div>'
                  + (f'<div class="muted" style="font-size:11px">💰 {e(prod)}</div>' if prod else "")
-                 + (f'<div class="muted" style="font-size:11px">{e(it["why"])}</div>' if it.get("why") else "")
-                 + f'<button class="ghost" style="margin:6px 0 0;padding:6px 10px;font-size:13px" '
-                   f'onclick="fillPack({e(json.dumps(it["kw"]), quote=True)})">조사 세트에 넣기</button></div>')
+                 + f'</div><button class="ghost" style="flex:none;width:auto;margin:0;padding:8px 12px;font-size:13px;white-space:nowrap" '
+                   f'onclick="fillPack({e(json.dumps(it["kw"]), quote=True)})">조사 세트에</button></div>')
     refresh = desk.issue_link(f"{LABEL}키워드새로", today, "키워드를 다시 모아 주세요.")
-    paths = "".join(f'<tr><td style="text-align:left"><b>{e(a)}</b></td><td style="text-align:left">{e(b)}</td><td>{e(c)}</td><td>{e(d)}</td></tr>'
-                    for a, b, c, d in PATHS)
-    return (f'<div class="card"><h2>키워드 후보 · 출처</h2>'
-            f'<div class="muted" style="font-size:12px;margin-bottom:6px">{e(day.name) if day else "아직 없음"} 기준 · 점수 높은 순 30개. '
-            f'조사하기 칸은 <b>키워드를 넣어야</b> 돌아요(비워 두면 안 됨). 키워드가 없으면 아래 <b>다시 모으기</b>로 후보를 먼저 모으세요.</div>'
-            f'<a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line);margin-bottom:6px" href="{e(refresh, quote=True)}">'
-            f'🔄 키워드 다시 모으기 (약 3분 · 약 100~150원)</a>'
-            f'{rows or "<p class=muted>오늘 모은 키워드가 없어요. 다시 모으기를 눌러 주세요.</p>"}</div>'
-            f'<div class="card"><h2>수집 경로</h2><div class="muted" style="font-size:12px;margin-bottom:6px">'
-            f'자동 스케줄은 10/11부터 꺼져 있고(급상승만 자동), 나머지는 다시 모으기를 누를 때 한꺼번에 돌아요.</div>'
-            f'<table style="width:100%;border-collapse:collapse;font-size:12px;text-align:center">'
-            f'<tr><th style="text-align:left">경로</th><th style="text-align:left">내용</th><th>비용</th><th>언제</th></tr>{paths}</table></div>')
+    return (f'<div class="card"><h2>키워드 후보</h2>'
+            f'<div class="muted" style="font-size:12px;margin-bottom:8px">{e(day.name) if day else "아직 없음"} 기준 · 상위 5개. '
+            f'누르면 조사 세트 칸에 들어가요. 조사하기는 <b>키워드를 넣어야</b> 돌아요.</div>'
+            f'{rows or "<p class=muted>오늘 모은 키워드가 없어요. 아래 다시 모으기를 눌러 주세요.</p>"}'
+            f'<a class="btn" style="background:transparent;color:var(--ink);border:1px solid var(--line);margin-top:10px" href="{e(refresh, quote=True)}">'
+            f'🔄 키워드 다시 모으기 (약 3분 · 약 100~150원)</a></div>')
+
+
+def paths_html() -> str:
+    """경로 탭: 키워드가 모이는 길. 줄이 깨지지 않게 한 경로 = 이름·비용·시점은 한 줄(줄바꿈 없음), 설명은 그 아래 (대표 요청 2026-10-13)."""
+    e = html.escape
+    nb = "white-space:nowrap"
+    rows = "".join(
+        f'<div style="padding:9px 0;border-bottom:1px solid var(--line)">'
+        f'<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;{nb}">'
+        f'<b>{e(a)}</b><span class="muted" style="font-size:12px">{e(c)} · {e(d)}</span></div>'
+        f'<div class="muted" style="font-size:12px;margin-top:2px;word-break:keep-all">{e(b)}</div></div>'
+        for a, b, c, d in PATHS)
+    return (f'<div class="card"><h2>수집 경로</h2><div class="muted" style="font-size:12px;margin-bottom:6px;word-break:keep-all">'
+            f'자동 스케줄은 10/11부터 꺼져 있고(급상승만 자동), 나머지는 다시 모으기를 누를 때 한꺼번에 돌아요.</div>{rows}</div>')
 
 
 def dev_index() -> str:
-    """시험용 화면: 패션 조사 세트 + 참고용(키워드 출처). (경제·성과·어사이드·사진·옛 칸은 숨김 — 운영 화면은 그대로)"""
+    """시험용 화면: 패션 조사 세트 + 키워드 후보 + 경로. (경제·성과·어사이드·사진·옛 칸은 숨김 — 운영 화면은 그대로)"""
     from .blogs import all_blogs
     b = all_blogs()["fashion"]
     use(b)
@@ -609,9 +615,10 @@ def dev_index() -> str:
           "location.hash='#pack';setTimeout(()=>{t.focus();t.scrollIntoView({behavior:'smooth',block:'center'})},50)}")
     return head("패션 조사 세트 (시험)") + f"""
 <header class="brand"><img src="icon-180.png" alt=""><div><h1>패션 조사 세트</h1><p class="muted">시험용 화면 · {now} 업데이트</p></div></header>
-{error_banner()}<nav class="tabs"><a href="#pack" data-t="pack">조사 세트</a><a href="#ref" data-t="ref">참고용</a></nav>
+{error_banner()}<nav class="tabs"><a href="#pack" data-t="pack">조사 세트</a><a href="#ref" data-t="ref">키워드 후보</a><a href="#paths" data-t="paths">경로</a></nav>
 <section class="tab" id="pack">{pack_html(today)}</section>
 <section class="tab" id="ref" hidden>{ref_html(today)}</section>
+<section class="tab" id="paths" hidden>{paths_html()}</section>
 </main><script>const POST={{"blocks":[],"images":[]}};{desk.JS}{js}</script></body></html>"""
 
 
