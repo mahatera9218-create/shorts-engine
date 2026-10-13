@@ -1,20 +1,20 @@
 date: '2026-10-13'
-updated: '11:12'
+updated: '12:42'
 items:
 - kw: 팔란티어
   rise: 1.84
   volume: 67600
   named: true
-  blog24h: 98
+  blog24h: 100
   section: 해외주식
-  score: 114
+  score: 115
 - kw: 일라이릴리
   rise: 1.39
   volume: 40140
   named: true
-  blog24h: 81
+  blog24h: 98
   section: 해외주식
-  score: 81
+  score: 84
 - kw: 엔화환율
   rise: 0.91
   volume: 5156300
