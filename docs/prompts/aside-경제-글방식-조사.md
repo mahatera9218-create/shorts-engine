@@ -26,7 +26,7 @@ Claude가 읽고 `econ/ref/`에 저장, '반응 좋은 제목 규칙'은 `config
 → 마지막에 "쿠니네만의 특징 3가지"
 
 [2. 나머지 — 제목·썸네일·반응만 (글 쓰는 방식은 안 봐도 됨)]
-유미 https://blog.naver.com/8starstarstar8 , https://blog.naver.com/balahk , https://blog.naver.com/dutyfrees , https://blog.naver.com/meaning87 , https://blog.naver.com/ranto28 , https://blog.naver.com/rmsgud2007 , https://blog.naver.com/ishisheido77 , https://blog.naver.com/antsal , https://blog.naver.com/crazytech
+유미 https://blog.naver.com/8starstarstar8 , https://blog.naver.com/balahk , https://blog.naver.com/dutyfrees , https://blog.naver.com/meaning87 , https://blog.naver.com/ranto28 , https://blog.naver.com/rmsgud2007 , https://blog.naver.com/ishiseido77 , https://blog.naver.com/antsal , https://blog.naver.com/crazytech
 블로거마다 최근 글 60편의 제목과 공감 수를 보고:
 - 제목 글자 수, 자주 쓰는 장치(숫자·물음표·따옴표·회사 이름·'이유는?'·비교 구도·논란 단어)
 - 썸네일 모양 (글자 얹는지, 무엇을 담나)
