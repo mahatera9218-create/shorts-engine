@@ -525,6 +525,74 @@ def error_banner() -> str:
             f'<div style="margin-top:4px">{e(E.get("reason", ""))}</div></div>')
 
 
+# 순번 탭 — 하루 3포(투자 1 + 넓히기 2) 돌릴 때 헷갈리지 않게, 묶음별 7개 주제 씨앗 (대표 요청 2026-10-13).
+# 키워드 자동 수집과 무관하게 손으로 고르는 '아이디어 보드'. 완료는 하나씩 눌러 없애고, 전체 리셋으로 되돌림.
+PLAN = [
+    ("💹 일반 (국내외 증시·금·비트) — 투자 1칸", [
+        "코스피 오늘 흐름·외국인/기관 수급",
+        "삼성전자·SK하이닉스 등 대형주 이슈",
+        "엔비디아·미국 빅테크 실적·주가",
+        "반도체·2차전지 등 오늘 뜬 테마주",
+        "금 시세 (한 돈·온스)와 배경",
+        "비트코인 시세·ETF·코인 흐름",
+        "고배당주·배당 ETF",
+    ]),
+    ("🏢 부동산 — 넓히기", [
+        "이번 주·이달 청약 예정 단지",
+        "재개발 구역 진행 상황(특정 지역)",
+        "재건축·1기 신도시(분당·일산 등) 이슈",
+        "GTX·지하철 연장 등 교통 인프라 수혜지",
+        "서울·수도권 아파트 실거래가·시세 변동",
+        "전세·월세 시세·전세사기 주의",
+        "주담대 금리·대출 규제(LTV·DSR)",
+    ]),
+    ("🏦 예적금·금리 — 넓히기", [
+        "파킹통장 금리 비교(토스·카카오·OK 등)",
+        "이번 주 고금리 특판 예금",
+        "고금리 적금 추천(청년·일반)",
+        "ISA 계좌 활용·절세",
+        "연금저축·IRP 세액공제",
+        "CMA 통장(증권사) 활용",
+        "금리 바뀔 때 예금 만기·분산 전략",
+    ]),
+    ("👵 중장년 — 넓히기(핵심 독자층)", [
+        "국민연금(예상 수령액·조기/연기 수령)",
+        "나이대별 순자산 평균·상위 몇 %",
+        "건강보험료(피부양자·연금소득 반영)",
+        "퇴직금·퇴직연금(IRP) 수령 전략",
+        "기초연금(수급 조건·금액)",
+        "주택연금(가입 조건·월 수령액)",
+        "노후 생활비·은퇴 필요 자금",
+    ]),
+]
+
+
+def plan_tab() -> str:
+    """오늘 순번 체크리스트 (대표 요청 2026-10-13): 묶음별 7개 주제. 완료는 눌러 없애고(이 기기 기억), '전체 리셋'으로 되돌림."""
+    e = html.escape
+    cards = ""
+    for ci, (name, items) in enumerate(PLAN):
+        rows = "".join(
+            f'<div class="plan-i" data-k="{ci}-{i}" style="display:flex;gap:8px;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line)">'
+            f'<span style="flex:1">{e(it)}</span>'
+            f'<button class="ghost" style="flex:none;width:auto;margin:0;padding:6px 12px;font-size:13px;white-space:nowrap" '
+            f'onclick="planDone(this.closest(\'.plan-i\').dataset.k)">✓ 완료</button></div>'
+            for i, it in enumerate(items))
+        cards += f'<div class="card"><h2>{e(name)}</h2>{rows}</div>'
+    js = ("function pdList(){try{return JSON.parse(localStorage.getItem('plandone')||'[]')}catch(e){return []}}"
+          "function planDone(k){const h=pdList();if(!h.includes(k))h.push(k);try{localStorage.setItem('plandone',JSON.stringify(h))}catch(e){}planApply()}"
+          "function planReset(){try{localStorage.removeItem('plandone')}catch(e){}planApply()}"
+          "function planApply(){const h=pdList();document.querySelectorAll('.plan-i').forEach(d=>{d.style.display=h.includes(d.dataset.k)?'none':'flex'});"
+          "const all=document.querySelectorAll('.plan-i').length;const c=document.getElementById('plan-left');if(c)c.textContent='남은 주제 '+(all-h.length)+'개 / 전체 '+all+'개'}")
+    guide = ('<div class="card"><h2>📋 오늘 순번</h2>'
+             '<div class="muted" style="font-size:13px;word-break:keep-all">하루 3포 = <b>투자 1 + 넓히기 2</b>(매일 다른 두 영역으로). '
+             '쓴 주제는 <b>✓ 완료</b>로 없애고, 네 묶음을 다 돌면 <b>전체 리셋</b>으로 다시 채워요. 이 기기에만 기억돼요.</div>'
+             '<div style="display:flex;gap:10px;align-items:center;margin-top:8px">'
+             '<button class="ghost" style="width:auto;margin:0;padding:8px 12px" onclick="planReset()">🔄 전체 리셋</button>'
+             '<span id="plan-left" class="muted" style="font-size:13px"></span></div></div>')
+    return guide + cards + f'<script>{js}planApply()</script>'
+
+
 def index(by_blog: dict[str, list[dict]]) -> str:
     from .blogs import all_blogs
     blogs = all_blogs()
@@ -536,8 +604,9 @@ def index(by_blog: dict[str, list[dict]]) -> str:
     first = next(iter(blogs))
     return head(f"{NAME} 발행 도우미") + f"""
 <header class="brand"><img src="icon-180.png" alt=""><div><h1>발행 도우미</h1><p class="muted">{" · ".join(html.escape(b["label"]) for b in blogs.values())} · {now} 업데이트</p></div></header>
-{error_banner()}<nav class="tabs">{tabs}<a href="#stats" data-t="stats">성과</a><a href="#aside" data-t="aside">어사이드</a><a href="photo/">사진</a></nav>
+{error_banner()}<nav class="tabs">{tabs}<a href="#plan" data-t="plan">순번</a><a href="#stats" data-t="stats">성과</a><a href="#aside" data-t="aside">어사이드</a><a href="photo/">사진</a></nav>
 {secs}
+<section class="tab" id="plan" hidden>{plan_tab()}</section>
 <section class="tab" id="aside" hidden>{aside_tab(blogs)}</section>
 <section class="tab" id="stats" hidden>{compare_html(blogs, by_blog)}</section>
 </main><script>const POST={{"blocks":[],"images":[]}};{desk.JS}
