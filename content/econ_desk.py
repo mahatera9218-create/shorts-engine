@@ -417,7 +417,7 @@ def blog_section(b: dict, posts: list[dict]) -> str:
     return (f'<section class="tab" id="{bid}" hidden><div class="cols"><div>'
             f'<div class="card"><h2>오늘 글</h2>'
             + (f'<button id="pubbtn-{bid}" class="ghost" style="margin:4px 0 8px;padding:8px 10px;font-size:14px" onclick="togglePub(\'{bid}\')">✅ 발행한 글 숨기기</button>'
-               f'<span class="muted" style="font-size:12px"> 발행 완료 {n_pub}개</span>' if n_pub else "")
+               f'<span class="muted" style="font-size:12px"> 발행 완료 {n_pub}개</span>')   # 오늘 글이 0개여도 버튼은 항상 보임 (대표 지적 2026-10-13)
             + f'{rows or "<p class=muted>없음</p>"}'
             f'<a id="hid-{bid}" class="muted" style="display:none;margin-top:6px;font-size:13px;cursor:pointer"></a></div>'
             f'<script>{js}applyHide("{bid}")</script>'
@@ -701,7 +701,7 @@ def score_write_btn(it: dict, done: dict[str, str] | None) -> str:
     slug = (done or {}).get(kwv)
     btn = 'class="ghost small" style="display:inline-block;width:auto;margin:4px 0 0;padding:5px 10px;font-size:12px"'
     if slug and (POSTS / slug).exists():
-        return f'<a {btn} href="p/{BID}-{desk.slug(slug)}/">✅ 글 보기</a>'
+        return f'<a {btn} href="p/{BID}-{desk.slug(slug)}/" data-kd="1">✅ 글 보기</a>'
     if BID == "econ":
         href = desk.issue_link(f"{LABEL}키워드", kwv, "이 키워드로 제목 후보를 만들어 주세요.")
         return f'<a {btn} href="{e(href, quote=True)}">✍️ 이 키워드로 글</a>'
@@ -749,7 +749,8 @@ def score_table(items: list[dict], done: dict[str, str] | None = None) -> str:
                      if bloggers else "")
         src = " · ".join(dict(it.get("sources") or {}))
         src_line = f'<div class="muted" style="font-size:11px">출처: {e(src)}</div>' if src else ""
-        rows.append(f'<div style="padding:7px 0;border-bottom:1px solid var(--line)">'
+        _dn = (done or {}).get(it["kw"])
+        rows.append(f'<div{f" class=kdone-{BID}" if _dn and (POSTS / _dn).exists() else ""} style="padding:7px 0;border-bottom:1px solid var(--line)">'
                     f'<div style="display:flex;justify-content:space-between;gap:8px"><b>{e(it["kw"])}</b>{new_badge(it)}'
                     f'<span class="seal">{it.get("score", "")}</span></div>'
                     f'<div style="font-size:12px;margin-top:3px">{"".join(cat_bits)}{extra}{neg}</div>{raw_line}{prod_line}{blog_line}{src_line}'
@@ -783,7 +784,8 @@ def kw_row(it: dict, done: dict[str, str]) -> str:
     href = f"p/{BID}-{desk.slug(slug)}/" if slug and (POSTS / slug).exists() else \
         desk.issue_link(f"{LABEL}키워드", it["kw"], "이 키워드로 제목 후보를 만들어 주세요.")
     sc = f' <span class="seal">{it["score"]}</span>' if "score" in it else ""
-    return (f'<a class="btn" style="text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
+    cls = f"btn kdone-{BID}" if slug else "btn"
+    return (f'<a class="{cls}" style="text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
             f'href="{e(href, quote=True)}">{"✅ " if slug else ""}<b>{e(it["kw"])}</b>{sc}{new_badge(it)}</a>')
 
 
@@ -812,7 +814,7 @@ def flow_html() -> str:
             slug = done.get(it["kw"])
             sc = f' <span class="seal">{it["score"]}</span>' if "score" in it else ""
             if slug and (POSTS / slug).exists():
-                return (f'<a class="btn" style="text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
+                return (f'<a class="btn kdone-{BID}" style="text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
                         f'href="p/{BID}-{desk.slug(slug)}/">✅ <b>{e(it["kw"])}</b>{sc}{new_badge(it)}</a>')
             return (f'<button class="ghost" style="text-align:left;width:100%" onclick="pick_{BID}({e(json.dumps(it["kw"]), quote=True)})">'
                     f'<b>{e(it["kw"])}</b>{sc}{new_badge(it)}</button>')
@@ -855,10 +857,17 @@ def flow_html() -> str:
                  '<div class="muted" style="font-size:12px;margin-top:6px">누르면 깃허브 화면이 열려요 → 초록 Create 버튼만 누르면 접수돼요.</div></div>')
     a = kw.get("aside")
     aside = f'🛰 어사이드 {e(a.get("at", ""))} · {a.get("n", 0)}개' if a else "🛰 어사이드 아직"
-    kw_html = (f'<div class="card"><h2>키워드</h2><div class="muted" style="margin:4px 0 6px">{aside}</div>{rows}'
+    n_done = sum(1 for it in items if done.get(it["kw"]) and (POSTS / done[it["kw"]]).exists())
+    kd_js = (f"function kdOn(){{try{{return localStorage.getItem('hidekd-{BID}')==='1'}}catch(e){{return false}}}}"
+             f"function kdApply(){{const on=kdOn();document.querySelectorAll('.kdone-{BID}').forEach(d=>{{d.style.display=on?'none':''}});"
+             f"const b=document.getElementById('kdbtn-{BID}');if(b)b.textContent=on?'쓴 키워드 다시 보기':'✅ 쓴 키워드 숨기기'}}"
+             f"function kdToggle(){{try{{localStorage.setItem('hidekd-{BID}',kdOn()?'0':'1')}}catch(e){{}}kdApply()}}kdApply();")
+    kd_btn = (f'<button id="kdbtn-{BID}" class="ghost" style="margin:0 0 8px;padding:8px 10px;font-size:14px" onclick="kdToggle()">✅ 쓴 키워드 숨기기</button>'
+              f'<span class="muted" style="font-size:12px"> 쓴 키워드 {n_done}개</span>')
+    kw_html = (f'<div class="card"><h2>키워드</h2><div class="muted" style="margin:4px 0 6px">{aside}</div>{kd_btn}{rows}'
                f'{score_table(items, done)}'   # 점수표엔 버튼에 안 보이는 것까지 전체 채점 키워드 + 줄마다 '이 키워드로 글' (대표 2026-10-10·11)
                f'<a class="btn" style="margin-top:8px;background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(refresh, quote=True)}">🔄 다시 모으기</a>'
-               f'<script>{add_js}</script></div>{topic_box}')   # 급상승 블록 제거 (대표 결정 2026-10-10: 메인 키워드 목록에 합침)
+               f'<script>{add_js}{kd_js}</script></div>{topic_box}')   # 급상승 블록 제거 (대표 결정 2026-10-10: 메인 키워드 목록에 합침)
     topics = []
     for t in sorted(day.glob("*/titles.yaml")) if day.exists() else []:
         T = yaml.safe_load(t.read_text(encoding="utf-8")) or {}
