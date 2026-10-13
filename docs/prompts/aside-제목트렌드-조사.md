@@ -32,6 +32,7 @@ blog.naver.com/eokonomy (우리 경제 블로그, 최근 30개 제목)
 blog.naver.com/qkrrnfjqm (쿠니네패션)
 blog.naver.com/ohye1991
 blog.naver.com/jayuyu
+blog.naver.com/kims718 (대표 추가 2026-10-13)
 
 [블로거마다 이렇게 적기]
 ■ (블로거 이름)
