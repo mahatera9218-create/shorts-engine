@@ -38,6 +38,8 @@ ref_bloggers:   # 쿠니네패션(qkrrnfjqm)은 키워드 조사에서 뺌 (대�
   byoung4595: byoung4595   # 대표 추가 2026-10-10
   mythya0730: mythya0730   # 대표 추가 2026-10-10
   kims718: kims718   # 대표 추가 2026-10-13 (키워드·제목 조사 참고)
+  dbsrud1207: dbsrud1207   # 대표 추가 2026-10-13 (키워드용)
+  qkrdmsdhr95: qkrdmsdhr95   # 대표 추가 2026-10-13 (키워드용)
 # 네이버 급상승 탐지 씨앗 (대표 요청 2026-10-10, content/rising.py)
 rising_seeds: [공항패션, 연예인패션, 가을코디, 명품가방, 트렌치코트, 샤넬, 루이비통, 미우미우, 프라다, 니트, 가디건, 레더자켓, 원피스, 하객룩, 출근룩]
 rising_min_volume: 1000
