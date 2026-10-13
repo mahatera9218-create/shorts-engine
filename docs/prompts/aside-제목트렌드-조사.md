@@ -21,7 +21,7 @@ blog.naver.com/dutyfrees (달스)
 blog.naver.com/meaning87 (은퇴연구소)
 blog.naver.com/ranto28 (메르)
 blog.naver.com/rmsgud2007 (방구석청년)
-blog.naver.com/ishisheido77 (블룸앤아이유)
+blog.naver.com/ishiseido77 (블룸앤아이유)
 blog.naver.com/antsal (한입재테크)
 blog.naver.com/crazytech (crazytech)
 
