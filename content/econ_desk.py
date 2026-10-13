@@ -72,7 +72,6 @@ def head(title: str, depth: str = "") -> str:
 <link rel="apple-touch-icon" href="{depth}icon-180.png"><meta name="apple-mobile-web-app-title" content="발행 도우미">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>{e(title)}</title><style>{CSS}</style></head><body>
-<button class="reload" onclick="location.href=location.pathname+'?r='+Date.now()" aria-label="새로고침" title="새로고침">🔄</button>
 <main>"""
 
 
@@ -389,8 +388,15 @@ def blog_section(b: dict, posts: list[dict]) -> str:
     today = datetime.now(KST).strftime("%Y-%m-%d")
     live = sorted((p for p in posts if p["date"] == today), key=lambda p: p["folder"], reverse=True)
     bid = b["id"]
+    def _used(p: dict) -> bool:   # 발행 완료 표시(status.yaml status=used)가 있는 글 (대표 요청 2026-10-13: 발행한 글 숨기기)
+        f = POSTS / p["folder"] / "status.yaml"
+        try:
+            return f.exists() and (yaml.safe_load(f.read_text(encoding="utf-8")) or {}).get("status") == "used"
+        except Exception:  # noqa: BLE001
+            return False
+    n_pub = sum(1 for p in live if _used(p))
     rows = "".join(
-        f'<div class="today-{bid}" data-f="{e(p["folder"], quote=True)}" style="display:flex;gap:6px;align-items:stretch">'
+        f'<div class="today-{bid}" data-pub="{1 if _used(p) else 0}" data-f="{e(p["folder"], quote=True)}" style="display:flex;gap:6px;align-items:stretch">'
         f'<a class="btn" style="flex:1;margin:4px 0;text-align:left;background:var(--card);color:var(--ink);border:1px solid var(--line)" '
         f'href="p/{bid}-{desk.slug(p["folder"])}/">{"" if p["ok"] else "⚠️ "}'
         f'{e(next((x["text"] for x in p["titles"] if x["best"]), p["folder"]))}</a>'
@@ -400,13 +406,19 @@ def blog_section(b: dict, posts: list[dict]) -> str:
           "function hidden_(b){try{return JSON.parse(localStorage.getItem(hideKey(b))||'[]')}catch(e){return []}}"
           "function hideToday(b,el){const f=el.parentNode.dataset.f;const h=hidden_(b);if(!h.includes(f))h.push(f);"
           "try{localStorage.setItem(hideKey(b),JSON.stringify(h))}catch(e){}applyHide(b)}"
-          "function applyHide(b,show){const h=hidden_(b);let n=0;document.querySelectorAll('.today-'+b).forEach(d=>{"
-          "const x=h.includes(d.dataset.f);if(x)n++;d.style.display=(x&&!show)?'none':'flex'});"
+          "function pubOn(b){try{return localStorage.getItem('hidepub-'+b)==='1'}catch(e){return false}}"
+          "function togglePub(b){try{localStorage.setItem('hidepub-'+b,pubOn(b)?'0':'1')}catch(e){}applyHide(b)}"
+          "function applyHide(b,show){const h=hidden_(b);const hp=pubOn(b);let n=0;document.querySelectorAll('.today-'+b).forEach(d=>{"
+          "const x=h.includes(d.dataset.f)||(hp&&d.dataset.pub==='1');if(x)n++;d.style.display=(x&&!show)?'none':'flex'});"
+          "const pb=document.getElementById('pubbtn-'+b);if(pb)pb.textContent=hp?'발행한 글 다시 보기':'✅ 발행한 글 숨기기';"
           "const s=document.getElementById('hid-'+b);if(s){s.style.display=n?'block':'none';s.textContent=show?'숨긴 글 다시 숨기기':'숨긴 글 '+n+'개 보기';"
           "s.onclick=()=>applyHide(b,!show)}}"
           "function showAllHidden(b){try{localStorage.removeItem(hideKey(b))}catch(e){}applyHide(b)}")
     return (f'<section class="tab" id="{bid}" hidden><div class="cols"><div>'
-            f'<div class="card"><h2>오늘 글</h2>{rows or "<p class=muted>없음</p>"}'
+            f'<div class="card"><h2>오늘 글</h2>'
+            + (f'<button id="pubbtn-{bid}" class="ghost" style="margin:4px 0 8px;padding:8px 10px;font-size:14px" onclick="togglePub(\'{bid}\')">✅ 발행한 글 숨기기</button>'
+               f'<span class="muted" style="font-size:12px"> 발행 완료 {n_pub}개</span>' if n_pub else "")
+            + f'{rows or "<p class=muted>없음</p>"}'
             f'<a id="hid-{bid}" class="muted" style="display:none;margin-top:6px;font-size:13px;cursor:pointer"></a></div>'
             f'<script>{js}applyHide("{bid}")</script>'
             f'</div><div>{flow_html()}</div></div></section>')
