@@ -18,7 +18,11 @@ class EconTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             econ_desk.build(Path(d) / "site")
             html = (Path(d) / "site" / "index.html").read_text(encoding="utf-8")
-            self.assertIn("성과", html)
+            # 대표 결정 2026-10-13: 키워드 도구 3탭(순번·경제 키워드·패션 키워드), 성과는 숨겨도 코드엔 남김
+            self.assertIn("경제 순번", html)
+            self.assertIn("경제 키워드", html)
+            self.assertIn("패션 키워드", html)
+            self.assertIn('id="stats"', html)
 
     def test_edit_parse(self):
         from content.edits import parse
