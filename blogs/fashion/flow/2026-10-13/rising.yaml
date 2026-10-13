@@ -1,5 +1,5 @@
 date: '2026-10-13'
-updated: '11:15'
+updated: '12:45'
 items:
 - kw: 김지원
   rise: 3.44
@@ -19,51 +19,51 @@ items:
   named: true
   blog24h: 100
   score: 112
+- kw: 서현진
+  rise: 1.58
+  volume: 71700
+  named: true
+  blog24h: 100
+  score: 100
 - kw: 하니
   rise: 1.6
   volume: 51150
   named: true
   blog24h: 100
   score: 99
-- kw: 서현진
-  rise: 1.58
-  volume: 71700
-  named: true
-  blog24h: 93
-  score: 98
 - kw: 고윤정
   rise: 1.37
   volume: 309500
   named: true
-  blog24h: 99
+  blog24h: 100
   score: 95
 - kw: 김혜수
   rise: 1.33
   volume: 133800
   named: true
-  blog24h: 93
-  score: 87
+  blog24h: 100
+  score: 88
 - kw: 나연
   rise: 1.48
   volume: 14780
   named: true
-  blog24h: 68
-  score: 78
+  blog24h: 79
+  score: 80
 - kw: 정호연
   rise: 1.52
   volume: 22040
   named: true
-  blog24h: 11
-  score: 71
+  blog24h: 13
+  score: 72
 - kw: 한고은
   rise: 1.32
   volume: 32910
   named: true
-  blog24h: 36
-  score: 67
+  blog24h: 45
+  score: 68
 - kw: 유니클로세일
   rise: 1.2
   volume: 138800
   named: false
-  blog24h: 29
-  score: 31
+  blog24h: 36
+  score: 33
