@@ -28,6 +28,13 @@ class PackTest(unittest.TestCase):
         self.assertNotIn("할인가", t)
         self.assertNotIn("확인 안 됨", t.replace("착용 확인: 안 됨", ""))
 
+    def test_render_profile_age(self):
+        d = P.clean({"person": "장원영", "birth": "2004년생", "age": "22세", "worn_confirmed": True})
+        t = P.render("a / b / c", d, "2026-10-13")
+        self.assertIn("인물 프로필(나이): 2004년생 · 만 22세 (2026-10-13 기준)", t)
+        t2 = P.render("a / b / c", P.clean({"person": "a", "birth": "확인 안 됨"}), "2026-10-13")
+        self.assertNotIn("인물 프로필", t2)
+
     def test_worn_false_flag(self):
         t = P.render("a / b / c", P.clean({"person": "a", "worn_confirmed": False}), "2026-10-12")
         self.assertIn("착용 확인: 안 됨", t)
