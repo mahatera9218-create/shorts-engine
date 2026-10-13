@@ -22,7 +22,7 @@ UA = {"User-Agent": "Mozilla/5.0 (compatible; shorts-engine link check)"}
 ASK = """오늘은 {today}(한국 시간)입니다. 패션 블로그 글을 쓰기 위한 조사입니다. 키워드: {kw}
 (형식: 인물 / 시점 / 제품명. 제품명이 없으면 그 인물이 그 시점에 입은 것을 찾으세요.)
 
-웹과 X에서 어제·오늘 나온 기사, 공식 SNS, 브랜드·쇼핑몰 공식 상품 페이지를 확인하고 교차검증하세요.
+{extra}웹과 X에서 어제·오늘 나온 기사, 공식 SNS, 브랜드·쇼핑몰 공식 상품 페이지를 확인하고 교차검증하세요.
 순서: ① 최신 뉴스·기사 ② 그 인물 착용을 다룬 글 ③ 브랜드·쇼핑몰 공식 상품 페이지. 네이버·구글 검색 결과 화면을 긁지 말고, 특정 기사·상품 페이지를 열어 읽으세요.
 글 문장과 사진은 옮기지 말고 사실(누가·언제·무엇·브랜드·가격)만 적으세요.
 
@@ -165,10 +165,11 @@ def render(kw: str, d: dict, today: str) -> str:
     return "\n".join(L)
 
 
-def make(kw: str) -> bool:
-    """키워드 한 줄 → 조사 → 저장. 조사 실패(그록 응답 없음·읽지 못함)면 False."""
+def make(kw: str, extra: str = "") -> bool:
+    """키워드 한 줄(+대표가 준 제품 정보) → 조사 → 저장. 조사 실패(그록 응답 없음·읽지 못함)면 False."""
     today = F.today()
-    raw = F.grok(ASK.format(today=today, kw=kw), days=2, web=True, turns=2)
+    hint = f"[대표가 직접 준 제품 정보 — 이것을 기준 자료로 쓰고 교차검증하세요]\n{extra}\n\n" if extra else ""
+    raw = F.grok(ASK.format(today=today, kw=kw, extra=hint), days=2, web=True, turns=2)
     d = parse(raw)
     if not d:
         print(f"조사 실패: {kw} (Grok 응답이 없거나 읽을 수 없음)")
@@ -185,14 +186,22 @@ def make(kw: str) -> bool:
 
 def run(text: str) -> None:
     """이슈 본문 → 줄마다 키워드(최대 3). 하나라도 되면 성공."""
-    kws = [l.strip() for l in text.splitlines() if l.strip() and not l.strip().startswith("http")][:3]
-    if not kws:
+    jobs: list[tuple[str, list[str]]] = []   # (키워드, 그 아래 대표가 붙인 제품 정보 줄들)
+    for l in (x.strip() for x in text.splitlines()):
+        if not l:
+            continue
+        if " / " in l and not l.startswith(("•", "-", "*", "http")):
+            jobs.append((l, []))
+        elif jobs:   # '/'가 없는 줄 = 위 키워드의 제품 정보 (예: '• 브랜드: ○○', 상품 링크)
+            jobs[-1][1].append(l)
+    jobs = jobs[:3]
+    if not jobs:
         raise SystemExit("키워드가 비어 있어요. 한 줄에 '인물 / 시점 / 제품명'으로 적어 주세요.")
     ok = 0
-    for kw in kws:
+    for kw, info in jobs:
         F.guard()
         try:
-            ok += make(kw)
+            ok += make(kw, "\n".join(info)[:1200])
         except Exception as ex:  # 하나가 실패해도 나머지는 계속
             print(f"조사 실패: {kw}: {ex}")
     if not ok:

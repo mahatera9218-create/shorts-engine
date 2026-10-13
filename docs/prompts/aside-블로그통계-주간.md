@@ -6,7 +6,7 @@
 
 ```text
 네이버 블로그 관리 → 통계에서 두 블로그의 '지난주(월요일~일요일) 7일' 통계를 읽어 줘. 글 문장이나 사진은 옮기지 말고 숫자와 제목만.
-- 경제: blog.naver.com/eokconomy , 패션: blog.naver.com/tenbillionsound
+- 경제: blog.naver.com/eokonomy , 패션: blog.naver.com/tenbillionsound
 
 적는 모양 (한 줄에 하나, 이 모양 그대로, 블로그 자리에는 '경제' 또는 '패션'):
 [통계] 경제 | 시작일~끝일(YYYY-MM-DD~YYYY-MM-DD) | 조회 숫자 | 방문 숫자      ← 7일 합계

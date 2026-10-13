@@ -3,7 +3,7 @@
 econ:
   label: 경제
   name: 억선생의 경제판        # 블로그 이름·프로필은 대표가 직접 고침
-  url: https://blog.naver.com/eokconomy
+  url: https://blog.naver.com/eokonomy
   dir: econ                   # 데이터 폴더 (flow/·posts/)
   prompt: prompts/kunine-blog.md
   addon: prompts/kunine-addon.md
