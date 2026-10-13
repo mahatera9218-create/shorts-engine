@@ -872,7 +872,6 @@ def flow_html() -> str:
     kd_btn = (f'<button id="kdbtn-{BID}" class="ghost" style="margin:0 0 8px;padding:8px 10px;font-size:14px" onclick="kdToggle()">✅ 쓴 키워드 숨기기</button>'
               f'<span class="muted" style="font-size:12px"> 쓴 키워드 {n_done}개</span>')
     kw_html = (f'<div class="card"><h2>키워드</h2><div class="muted" style="margin:4px 0 6px">{aside}</div>{kd_btn}{rows}'
-               f'{score_table(items, done)}'   # 점수표엔 버튼에 안 보이는 것까지 전체 채점 키워드 + 줄마다 '이 키워드로 글' (대표 2026-10-10·11)
                f'<a class="btn" style="margin-top:8px;background:transparent;color:var(--ink);border:1px solid var(--line)" href="{e(refresh, quote=True)}">🔄 다시 모으기</a>'
                f'<script>{add_js}{kd_js}</script></div>{topic_box}')   # 급상승 블록 제거 (대표 결정 2026-10-10: 메인 키워드 목록에 합침)
     topics = []
