@@ -30,6 +30,56 @@ FEEDS = {   # 이름: (묶음, 주소)  — 후보. 결과에 성공/실패가 �
     "서울경제": ("경제", "https://www.sedaily.com/RSSFeed.xml"),
     "이데일리 경제": ("경제", "https://rss.edaily.co.kr/edaily_news.xml"),
 }
+# 마이너·온라인 매체 (대표 지적 2026-10-13: 메이저가 아니라 인터넷 신문사): 홈페이지에서 RSS 주소를 자동으로 찾는다
+SITES = {   # 이름: (묶음, 홈페이지)
+    "위키트리": ("경제", "https://www.wikitree.co.kr"),
+    "인사이트": ("경제", "https://www.insight.co.kr"),
+    "데일리안": ("경제", "https://www.dailian.co.kr"),
+    "뉴데일리": ("경제", "https://biz.newdaily.co.kr"),
+    "머니S": ("경제", "https://moneys.mt.co.kr"),
+    "뉴스핌": ("경제", "https://www.newspim.com"),
+    "뉴스웨이": ("경제", "https://www.newsway.co.kr"),
+    "아주경제": ("경제", "https://www.ajunews.com"),
+    "비즈워치": ("경제", "https://news.bizwatch.co.kr"),
+    "이투데이": ("경제", "https://www.etoday.co.kr"),
+    "아이뉴스24": ("경제", "https://www.inews24.com"),
+    "스타뉴스": ("연예", "https://www.starnewskorea.com"),
+    "마이데일리": ("연예", "https://www.mydaily.co.kr"),
+    "텐아시아": ("연예", "https://www.tenasia.co.kr"),
+    "디스패치": ("연예", "https://www.dispatch.co.kr"),
+    "뉴스엔": ("연예", "https://www.newsen.com"),
+    "OSEN": ("연예", "https://www.osen.co.kr"),
+    "엑스포츠뉴스": ("연예", "https://www.xportsnews.com"),
+    "하퍼스바자": ("연예", "https://www.harpersbazaar.co.kr"),
+    "엘르": ("연예", "https://www.elle.co.kr"),
+    "보그": ("연예", "https://www.vogue.co.kr"),
+    "마리끌레르": ("연예", "https://www.marieclairekorea.com"),
+    "얼루어": ("연예", "https://www.allurekorea.com"),
+}
+LINK = re.compile(r"""<link[^>]+type=["']application/(?:rss|atom)\+xml["'][^>]*>""", re.I)
+HREF = re.compile(r"""href=["']([^"']+)["']""", re.I)
+
+
+def discover(home: str) -> list[str]:
+    """홈페이지 <head>의 RSS 안내(link rel=alternate)와 흔한 주소(/rss·/rss.xml·/feed)에서 RSS 주소 후보를 찾는다."""
+    urls = []
+    try:
+        r = requests.get(home, headers=UA, timeout=20)
+        for tag in LINK.findall(r.text):
+            m = HREF.search(tag)
+            if m:
+                u = m.group(1)
+                urls.append(u if u.startswith("http") else home.rstrip("/") + "/" + u.lstrip("/"))
+    except Exception:
+        pass
+    urls += [home.rstrip("/") + x for x in ("/rss", "/rss.xml", "/feed")]
+    seen, out = set(), []
+    for u in urls:
+        if u not in seen:
+            seen.add(u); out.append(u)
+    return out[:6]
+
+
 # 블로거 훅 단어와 같은 사전 (경제+패션 합친 것)
 CATS = {
     "감정·충격": r"소름|기막힌|충격|난리|발칵|통곡|멘붕|벌벌|덜덜|와르르|뚝뚝|폭락|폭등|폭발|쇼크|환장|피눈물|무섭|위험|지옥|최악|참담|악재|붕괴|급락|급등|터졌|터진|떴다|뜻밖|반전|깜짝|경악|후회|박살|미쳤|대박|논란",
@@ -77,12 +127,35 @@ def run() -> None:
         except Exception as ex:
             print(f"{name} 실패: {type(ex).__name__} {str(ex)[:60]}")
             bad.append(f"{name} ({url}) — {type(ex).__name__}")
+    minor = {}
+    for name, (grp, home) in SITES.items():
+        ok = False
+        for url in discover(home):
+            try:
+                ts = feed(url)
+            except Exception:
+                continue
+            if ts:
+                got[name] = (grp, ts)
+                minor[name] = url
+                print(f"[마이너] {name}: {len(ts)}개 ({url})")
+                ok = True
+                break
+        if not ok:
+            bad.append(f"[마이너] {name} ({home}) — RSS 못 찾음/못 읽음")
     md = [f"# 신문사 제목 수집 ({F.today()}, 공개 RSS · AI 없음)", "",
           "## 훅 단어 비율 (제목 중 해당 단어가 든 비율 %)", "",
-          "| 매체 | 개수 | " + " | ".join(CATS) + " |", "|---|---|" + "---|" * len(CATS)]
+          "| 매체 | 규모 | 개수 | " + " | ".join(CATS) + " |", "|---|---|---|" + "---|" * len(CATS)]
     for name, (grp, ts) in got.items():
         s = stats(ts)
-        md.append(f"| {name} | {len(ts)} | " + " | ".join(f"{s[c]}%" for c in CATS) + " |")
+        md.append(f"| {name} | {'마이너·온라인' if name in minor else '메이저'} | {len(ts)} | " + " | ".join(f"{s[c]}%" for c in CATS) + " |")
+    for sz, label in (("마이너·온라인", "마이너·온라인 매체 합산"), ("메이저", "메이저 매체 합산")):
+        pool = [t for n, (g, ts) in got.items() if (n in minor) == (sz == "마이너·온라인") for t in ts]
+        if pool:
+            s = stats(pool)
+            md.append(f"| **{label}** | | {len(pool)} | " + " | ".join(f"**{s[c]}%**" for c in CATS) + " |")
+    if minor:
+        md += ["", "## 마이너 매체에서 찾은 RSS 주소", ""] + [f"- {n}: {u}" for n, u in minor.items()]
     for grp in ("경제", "연예"):
         allt = [t for g, ts in got.values() if g == grp for t in ts]
         if allt:
