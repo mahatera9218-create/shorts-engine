@@ -7,7 +7,7 @@
 ---
 
 매일 아침, 아래 네이버 블로그 8곳에서 어제·오늘 올라온 글을 블로그마다 1편씩 열어 봐 줘.
-blog.naver.com/balahk, dutyfrees, meaning87, ranto28, rmsgud2007, ishisheido77, antsal, zkfldb888
+blog.naver.com/balahk, dutyfrees, meaning87, ranto28, rmsgud2007, ishiseido77, antsal, zkfldb888
 
 글마다 아래만 적어 줘. 글 내용(문장)은 옮기지 말고 모양만 적어.
 1. 제목, 올린 시각
