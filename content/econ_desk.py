@@ -1106,8 +1106,9 @@ def calibrate_html(blogs: dict) -> str:
             pv = c.get("predict") if c else None
             if c and c.get("section"):
                 sec_hit.setdefault(c["section"], []).append(views)
-            if c:  # 제목 방식별·새 방식 전후 (대표 결정 2026-10-11). 'style'이 저장된 글 = 새 방식(10-11 이후) 글
-                sty_hit.setdefault(c.get("style") or title_style(t), []).append(views)
+            # 제목 방식별: 구독 프로젝트로 쓴 글은 chosen.yaml이 없으므로 제목 글자로 직접 판정 (대표 결정 2026-10-13, 버무린형=3번째 방식)
+            sty_hit.setdefault(title_style(t), []).append(views)
+            if c:  # 새 방식 전후 (대표 결정 2026-10-11). 'style'이 저장된 글 = 새 방식(10-11 이후) 글
                 era_hit.setdefault("새 방식" if c.get("style") else "이전", []).append(views)
             rows.append((t, pv, views, c.get("section") if c else "", c.get("type") if c else ""))
         rows.sort(key=lambda x: -(x[2] or 0))
@@ -1124,7 +1125,7 @@ def calibrate_html(blogs: dict) -> str:
                 avg = sorted(((k, round(sum(v) / len(v))) for k, v in sec_hit.items()), key=lambda x: -x[1])
                 body += ('<div class="muted" style="font-size:12px;margin-top:6px">섹션별 평균 조회: '
                          + " · ".join(f"{e(k)} {v:,}" for k, v in avg) + "</div>")
-            for label, hit, order in (("제목 방식별 평균 조회", sty_hit, ["속마음형", "숫자형"]),
+            for label, hit, order in (("제목 방식별 평균 조회", sty_hit, ["속마음형", "숫자형", "버무린형"]),
                                       ("새 방식 전·후 평균 조회", era_hit, ["이전", "새 방식"])):
                 if hit:
                     body += (f'<div style="font-size:13px;margin-top:6px"><b>{label}</b>: '

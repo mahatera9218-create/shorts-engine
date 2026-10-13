@@ -37,9 +37,18 @@ TITLE_STYLE = (
     "- 최종 BEST는 두 방식 중 홈판에서 더 눌릴 것을 고른다.\n")
 
 
+HIDE = re.compile(r"이렇게|이것|이곳|이 신호|이 가격|이 때|이 날|이 회의|이 \d|이 종목")  # 가림 표현
+BLEND_END = re.compile(r"(는데|이유)[\s.!…]*['‘’\"“”]*$")  # '~라는데·~다는데' 또는 '~는 이유' 끝맺음
+
+
 def title_style(title: str) -> str:
-    """제목 방식 판정: 따옴표가 있으면 속마음형, 없으면 숫자형 (2주 비교용, 2026-10-11)."""
-    return "속마음형" if re.search(r"['‘’\"“”]", title) else "숫자형"
+    """제목 방식 판정 (성과 비교용): 버무린형 = 작은따옴표 속마음 + '~라는데/~는 이유' 끝맺음 + 가림 표현 + 물음표 끝 아님
+    (대표 결정 2026-10-13, 3번째 방식). 따옴표만 있으면 속마음형, 없으면 숫자형."""
+    t = title.strip()
+    if (re.search(r"['‘’]", t) and not re.search(r"[“”\"]", t) and BLEND_END.search(t) and HIDE.search(t)
+            and not re.search(r"\?['‘’\"“”]*$", t)):
+        return "버무린형"
+    return "속마음형" if re.search(r"['‘’\"“”]", t) else "숫자형"
 
 
 REF_LINE = "참조문헌: 뉴스, 언론보도 및 공식자료"  # 강사 지정 문구, Q&A 뒤에 정확히 한 번
