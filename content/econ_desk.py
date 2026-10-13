@@ -1288,7 +1288,7 @@ def build(out: Path) -> list[dict]:
         "icons": [{"src": f"icon-{s}.png", "sizes": f"{s}x{s}", "type": "image/png"} for s in (192, 512)]},
         ensure_ascii=False), encoding="utf-8")
     (out / "robots.txt").write_text("User-agent: *\nDisallow: /\n", encoding="utf-8")
-    (out / "_headers").write_text("/*\n  X-Robots-Tag: noindex, nofollow, noarchive\n", encoding="utf-8")
+    (out / "_headers").write_text("/*\n  X-Robots-Tag: noindex, nofollow, noarchive\n  Cache-Control: no-cache, must-revalidate\n", encoding="utf-8")  # 새로고침 버튼을 없앴으니 열 때마다 최신 화면 (대표 2026-10-13)
     return everything
 
 
