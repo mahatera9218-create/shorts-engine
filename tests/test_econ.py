@@ -137,5 +137,14 @@ class EconTest(unittest.TestCase):
         self.assertEqual(title_style("삼성전자 성과급 '7.5억 받는다던데...' 실제 통장엔 얼마"), "속마음형")
         self.assertEqual(title_style("삼성전자 성과급 7.5억이라더니, 세후는 3.4억대 추산"), "숫자형")
 
+    def test_title_style_blend(self):
+        from content.kunine import title_style
+        self.assertEqual(title_style("삼성전자 주가 '107조 벌었는데 왜 못 올라' 외국인이 '이것' 보고 있다는데"), "버무린형")
+        self.assertEqual(title_style("현대차 주가 '32만원도 위태롭다' 개미들이 '이 가격' 앞에서 망설이는 이유"), "버무린형")
+        self.assertEqual(title_style("금값 시세 '안전자산이라 믿고 샀는데..' 순금 1돈, 지금 팔면 얼마 남을까?"), "속마음형")
+        self.assertEqual(title_style("SK하이닉스, 반도체 “공급부족 정말 2030년까지 이어질까?”"), "속마음형")
+        self.assertEqual(title_style("원달러 환율 1330원대 지지 여부부터 확인하세요"), "숫자형")
+
+
 if __name__ == "__main__":
     unittest.main()
