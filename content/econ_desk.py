@@ -564,40 +564,44 @@ AREAS = {
     ],
 }
 # 중장년 중 유입 센 소재만 (대표 2026-10-14: 상속세 등 건조한 건 순번에서 뺌). 펼침에 이것만 보임.
-MIDAGE_CORE = [
-    "나이대별 순자산 평균·상위 몇 %",
-    "국민연금(예상 수령액·조기/연기 수령)",
-    "주택연금(가입 조건·월 수령액)",
-    "기초연금(수급 조건·금액)",
-    "노후 생활비·은퇴 필요 자금",
+# 세무·절세 주제 (대표 2026-10-14): 세무절세는 날마다 '부동산 절세'와 '금융 절세'를 번갈아 — 광고(세무사·절세) 궁합도 좋음.
+TAX_REALTY = [
+    "양도소득세 계산·1주택 비과세 요건",
+    "종합부동산세(종부세) 기준·계산",
+    "취득세·재산세 정리",
+    "상속·증여세 절세·공제",
 ]
-# 순번 조합 7개 (대표 2026-10-14): 증시+부동산 메인, 중장년(센 소재)은 주 1회만. 예적금 제외.
-# 이유: 주제가 '재테크·자산'으로 뚜렷해야 애드포스트 매칭·업체 광고(원고·협찬)에 유리.
-COMBOS = [
-    ["부동산"],
-    ["부동산"],
-    ["부동산"],
-    ["부동산", "중장년"],
-    ["부동산"],
-    ["부동산"],
-    ["부동산"],
+TAX_FINANCE = [
+    "ISA 계좌 절세·만기 활용",
+    "연금저축·IRP 세액공제",
+    "금융소득종합과세 기준·대비",
+    "배당소득세·절세 전략",
 ]
+# 순번 조합 7개 (대표 2026-10-14): 증시+부동산+세무절세 1:1:1. 세무절세는 부동산 절세/금융 절세를 번갈아.
+# 이유: 주제가 '재테크·자산·세금'으로 뚜렷해야 애드포스트·업체 광고(세무사·절세·부동산)에 유리.
+
+
+def _combos() -> list[tuple[str, list[tuple[str, list[str]]]]]:
+    out = []
+    for i in range(7):
+        tax = ("세무·절세(부동산)", TAX_REALTY) if i % 2 == 0 else ("세무·절세(금융)", TAX_FINANCE)
+        out.append((f"{i + 1}. 증시 + 부동산 + 세무절세",
+                    [("부동산", AREAS["부동산"]), tax]))   # 증시는 펼침에서 제외 (대표 지시)
+    return out
 
 
 def plan_tab() -> str:
-    """경제 순번 (대표 요청 2026-10-13): 하루 3포 '증시 + 넓히기 2' 조합 7개. 조합을 펼치면 영역별 주제가 나옴(증시 제외). ✓완료로 없애고 전체 리셋으로 복구."""
+    """경제 순번 (대표 요청 2026-10-14): 하루 3포 '증시 + 부동산 + 세무절세' 1:1:1 조합 7개. 세무절세는 부동산/금융 절세 번갈아. 조합을 펼치면 영역별 주제(증시 제외). ✓완료로 없애고 전체 리셋으로 복구."""
     e = html.escape
     cards = ""
-    for ci, areas in enumerate(COMBOS):
-        title = f"{ci + 1}. 증시 + " + " + ".join(areas)
+    for ci, (title, blocks) in enumerate(_combos()):
         body = ""
-        for area in areas:   # 증시는 펼침에서 제외 (대표 지시). 중장년은 센 소재만.
-            topics = MIDAGE_CORE if area == "중장년" else AREAS.get(area, [])
+        for label, topics in blocks:
             chips = "".join(
                 f'<button class="ghost" style="text-align:left;width:100%;margin:3px 0;padding:7px 10px;font-size:13px" '
                 f'onclick="copyText(this,{e(json.dumps(t), quote=True)})">📋 {e(t)}</button>'
                 for t in topics)
-            body += f'<div class="muted" style="font-weight:700;margin:8px 0 2px">{e(area)}</div>{chips}'
+            body += f'<div class="muted" style="font-weight:700;margin:8px 0 2px">{e(label)}</div>{chips}'
         cards += (f'<div class="card plan-i" data-k="combo-{ci}">'
                   f'<div style="display:flex;justify-content:space-between;align-items:center;gap:8px">'
                   f'<b style="font-size:16px">{title}</b>'
@@ -610,7 +614,7 @@ def plan_tab() -> str:
           "function planApply(){const h=pdList();document.querySelectorAll('.plan-i').forEach(d=>{d.style.display=h.includes(d.dataset.k)?'none':''});"
           "const all=document.querySelectorAll('.plan-i').length;const c=document.getElementById('plan-left');if(c)c.textContent='남은 조합 '+(all-h.length)+'개 / 전체 '+all+'개'}")
     guide = ('<div class="card"><h2>📋 경제 순번</h2>'
-             '<div class="muted" style="font-size:13px;word-break:keep-all"><b>증시 + 부동산</b> 메인, 중장년(순자산·연금 같은 센 소재)은 주 1회만 섞어요. '
+             '<div class="muted" style="font-size:13px;word-break:keep-all">하루 3포 = <b>증시 + 부동산 + 세무절세</b> (1:1:1). 세무절세는 날마다 부동산 절세·금융 절세를 번갈아요. '
              '조합을 펼치면 영역별 주제가 나오고(증시는 뺌), 주제를 누르면 복사돼요. '
              '쓴 조합은 <b>✓ 완료</b>로 없애고, 다 돌면 <b>전체 리셋</b>으로 복구해요. 이 기기에만 기억돼요.</div>'
              '<div style="display:flex;gap:10px;align-items:center;margin-top:8px">'
