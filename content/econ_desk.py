@@ -581,27 +581,70 @@ TAX_FINANCE = [   # 관심도 높은 순 (추정, 대표 요청 2026-10-14)
 # 이유: 주제가 '재테크·자산·세금'으로 뚜렷해야 애드포스트·업체 광고(세무사·절세·부동산)에 유리.
 
 
-def _combos() -> list[tuple[str, list[tuple[str, list[str]]]]]:
+def _seasonal_boost(kw: str, month: int) -> int:
+    """세무 계절성 (대표 요청 2026-10-14): 연말정산·종부세철에 해당 주제를 끌어올림. 트렌드 보조."""
+    b = 0
+    if month in (11, 12, 1) and re.search(r"ISA|연금|IRP|연말정산|금융소득|배당", kw, re.I):
+        b += 20   # 연말정산·금융 절세 시즌
+    if month in (11, 12) and re.search(r"종부세|종합부동산세|보유세", kw):
+        b += 20   # 종부세 고지·납부철
+    if month in (5, 6) and re.search(r"양도소득세|양도세|종합소득세", kw):
+        b += 15   # 5월 종소세·양도 관심
+    return b
+
+
+def _live_topics(kind: str, fallback: list[str], month: int, n: int = 6) -> tuple[list[str], bool]:
+    """수집된 경제 키워드를 분류·점수순(+계절보정)으로 정렬해 kind에 맞는 상위 n개. 데이터가 적으면 추정 리스트로 대체.
+    kind: '부동산'(세무 제외) | '세무-부동산' | '세무-금융'. 두 번째 값 = 실데이터면 True."""
+    from .econ_sections import section as _sec, tax_kind as _tax
+    _, kw = _load_kw_today()   # 호출 전에 use(econ)
+    items = kw.get("items", [])
+    ranked = sorted(items, key=lambda x: -(x.get("score", 0) + _seasonal_boost(x.get("kw", ""), month)))
+    picked = []
+    for it in ranked:
+        tk = _tax(it)
+        ok = (tk == "" and _sec(it) == "부동산") if kind == "부동산" else (tk == kind)
+        if ok and it.get("kw") not in picked:
+            picked.append(it["kw"])
+        if len(picked) >= n:
+            break
+    return (picked, True) if len(picked) >= 2 else (fallback, False)
+
+
+def _combos(month: int) -> list[tuple[str, list[tuple[str, list[str], bool]]]]:
     out = []
     for i in range(7):
-        tax = ("세무·절세(부동산)", TAX_REALTY) if i % 2 == 0 else ("세무·절세(금융)", TAX_FINANCE)
+        realty, r_live = _live_topics("부동산", AREAS["부동산"], month)
+        if i % 2 == 0:
+            tax, t_live = _live_topics("세무-부동산", TAX_REALTY, month)
+            tax_label = "세무·절세(부동산)"
+        else:
+            tax, t_live = _live_topics("세무-금융", TAX_FINANCE, month)
+            tax_label = "세무·절세(금융)"
         out.append((f"{i + 1}. 증시 + 부동산 + 세무절세",
-                    [("부동산", AREAS["부동산"]), tax]))   # 증시는 펼침에서 제외 (대표 지시)
+                    [("부동산", realty, r_live), (tax_label, tax, t_live)]))   # 증시는 펼침에서 제외 (대표 지시)
     return out
 
 
 def plan_tab() -> str:
-    """경제 순번 (대표 요청 2026-10-14): 하루 3포 '증시 + 부동산 + 세무절세' 1:1:1 조합 7개. 세무절세는 부동산/금융 절세 번갈아. 조합을 펼치면 영역별 주제(증시 제외). ✓완료로 없애고 전체 리셋으로 복구."""
+    """경제 순번 (대표 요청 2026-10-14): 하루 3포 '증시 + 부동산 + 세무절세' 1:1:1 조합 7개. 세무절세는 부동산/금융 절세 번갈아.
+    주제는 수집된 키워드를 관심도(화제성 중심)+계절보정 순으로 정렬; 수집 데이터가 없으면 추정 리스트. ✓완료로 없애고 전체 리셋으로 복구."""
+    from .blogs import all_blogs
     e = html.escape
+    use(all_blogs()["econ"])   # 순번은 경제 블로그 키워드 기준
+    today = datetime.now(KST).strftime("%Y-%m-%d")
+    month = datetime.now(KST).month
+    refresh = desk.issue_link("경제키워드새로", today, "부동산·세무 키워드를 다시 모아 주세요.")
     cards = ""
-    for ci, (title, blocks) in enumerate(_combos()):
+    for ci, (title, blocks) in enumerate(_combos(month)):
         body = ""
-        for label, topics in blocks:
+        for label, topics, live in blocks:
+            tag = ' <span class="muted" style="font-weight:400;font-size:12px">· 오늘 관심도순</span>' if live else ' <span class="muted" style="font-weight:400;font-size:12px">· 추정순</span>'
             chips = "".join(
                 f'<button class="ghost" style="text-align:left;width:100%;margin:3px 0;padding:7px 10px;font-size:13px" '
                 f'onclick="copyText(this,{e(json.dumps(t), quote=True)})">📋 {e(t)}</button>'
                 for t in topics)
-            body += f'<div class="muted" style="font-weight:700;margin:8px 0 2px">{e(label)}</div>{chips}'
+            body += f'<div class="muted" style="font-weight:700;margin:8px 0 2px">{e(label)}{tag}</div>{chips}'
         cards += (f'<div class="card plan-i" data-k="combo-{ci}">'
                   f'<div style="display:flex;justify-content:space-between;align-items:center;gap:8px">'
                   f'<b style="font-size:16px">{title}</b>'
@@ -616,8 +659,10 @@ def plan_tab() -> str:
     guide = ('<div class="card"><h2>📋 경제 순번</h2>'
              '<div class="muted" style="font-size:13px;word-break:keep-all">하루 3포 = <b>증시 + 부동산 + 세무절세</b> (1:1:1). 세무절세는 날마다 부동산 절세·금융 절세를 번갈아요. '
              '조합을 펼치면 영역별 주제가 나오고(증시는 뺌), 주제를 누르면 복사돼요. '
+             '<b>지금 수집</b>을 누르면 오늘 부동산·세무 키워드를 모아 순서를 관심도순으로 맞춰요(약 2~3분 뒤 반영). '
              '쓴 조합은 <b>✓ 완료</b>로 없애고, 다 돌면 <b>전체 리셋</b>으로 복구해요. 이 기기에만 기억돼요.</div>'
-             '<div style="display:flex;gap:10px;align-items:center;margin-top:8px">'
+             '<div style="display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap">'
+             f'<a class="btn" style="width:auto;margin:0;padding:8px 12px" href="{e(refresh, quote=True)}">🛰 지금 수집(부동산·세무)</a>'
              '<button class="ghost" style="width:auto;margin:0;padding:8px 12px" onclick="planReset()">🔄 전체 리셋</button>'
              '<span id="plan-left" class="muted" style="font-size:13px"></span></div></div>')
     return guide + cards + f'<script>{js}planApply()</script>'

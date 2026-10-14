@@ -51,9 +51,9 @@ class EconTest(unittest.TestCase):
             out = econ_score.score(items, src)
         # 출처(화제성)에서 블로거는 뺀다(최신성으로 감). 청년: Grok6+국내뉴스2=8, 금값: Grok6. 쿠니네(zkfldb888)는 0점.
         self.assertEqual(out[0]["kw"], "청년미래적금")
-        self.assertEqual(out[0]["parts"]["출처"], 11)  # 그날 1등 = 출처 만점(w 출처 11, 화제성:최신성:수요 2:1:1 2026-10-10)
-        self.assertEqual(out[1]["parts"]["출처"], round(11 * 6 / 8))  # Grok만(6) / 1등(8)
-        self.assertEqual(out[0]["score"], 11)  # 블로거·어사이드 없어 최신성 0, 뉴스·검색 없음 → 출처만. 환산 없음(2:1:1)
+        self.assertEqual(out[0]["parts"]["출처"], 10)  # 그날 1등 = 출처 만점(w 출처 10, 화제성 더 무겁게 2026-10-14)
+        self.assertEqual(out[1]["parts"]["출처"], round(10 * 6 / 8))  # Grok만(6) / 1등(8)
+        self.assertEqual(out[0]["score"], 10)  # 블로거·어사이드 없어 최신성 0, 뉴스·검색 없음 → 출처만
 
     def test_score_aside_rank(self):
         from unittest import mock
