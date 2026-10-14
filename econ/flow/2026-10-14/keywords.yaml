@@ -1,0 +1,652 @@
+date: '2026-10-14'
+updated: '13:22'
+items:
+- kw: 코스피 급락 원인
+  core: 코스피
+  area: 국내주식
+  why: 급락 뒤 반등했으나 5000선 하락론, 빚투 34조, 국민연금 책임론 등이 논란
+  person: ''
+  product: ''
+  rows:
+  - G1
+  - B4
+  - B10
+  - B20
+  - N14
+  - N70
+  - N74
+  - N79
+  - N98
+  - N86
+  - N72
+  - N59
+  src: Grok, 국내뉴스, 블로거
+  bloggers:
+  - 달스
+  - 방구석청년
+  - 은퇴연구소
+  sources:
+    Grok: 1
+    블로거: 3
+    국내뉴스: 8
+  score: 100
+  parts:
+    급상승: 30
+    출처: 6
+    뉴스: 20
+    검색: 15
+    최신: 25
+    유튜브: 8
+  new: true
+  surge: true
+  stats:
+    뉴스24h: 100
+    뉴스6h: 100
+    블로그24h: 100
+    월검색: 7211000
+    상승: 2.15
+    유튜브7일: 112870
+- kw: 중국 CXMT 반도체 충격
+  core: CXMT
+  area: 국내주식
+  why: D램 신기술 발표로 삼성전자·SK하이닉스·마이크론이 동반 급락하며 실질 위협인지가 쟁점
+  person: ''
+  product: ''
+  rows:
+  - G3
+  - B16
+  - N15
+  - N85
+  - N94
+  - N97
+  - Y76
+  - Y77
+  - Y79
+  - Y83
+  - Y85
+  src: Grok, 국내뉴스, 블로거, 해외뉴스
+  bloggers:
+  - 메르
+  sources:
+    Grok: 1
+    블로거: 1
+    국내뉴스: 4
+    해외뉴스: 5
+  score: 83
+  parts:
+    급상승: 30
+    출처: 8
+    뉴스: 20
+    검색: 9
+    최신: 8
+    유튜브: 8
+  new: true
+  surge: true
+  stats:
+    뉴스24h: 100
+    뉴스6h: 100
+    블로그24h: 100
+    월검색: 29090
+    상승: 25.16
+    유튜브7일: 25510
+- kw: SK하이닉스 주가 전망
+  core: SK하이닉스
+  area: 국내주식
+  why: 급락 뒤 반등했지만 140만~150만원 지지 여부와 레버리지 ETF 손실이 화제
+  person: ''
+  product: ''
+  rows:
+  - R4
+  - B5
+  - B31
+  - B34
+  - B44
+  - N54
+  - N99
+  - N110
+  src: 국내뉴스, 급상승, 블로거
+  bloggers:
+  - 달스
+  - 소드킴
+  - 유미
+  - 한입재테크
+  sources:
+    급상승: 1
+    블로거: 4
+    국내뉴스: 3
+  score: 78
+  parts:
+    급상승: 17
+    출처: 5
+    뉴스: 20
+    검색: 15
+    최신: 25
+    반복: -12
+    유튜브: 8
+  new: false
+  surge: false
+  stats:
+    뉴스24h: 100
+    뉴스6h: 100
+    블로그24h: 100
+    월검색: 6409300
+    상승: 1.57
+    유튜브7일: 102961
+- kw: 국민연금 조기수령 손익분기점
+  core: 국민연금
+  area: 생활경제
+  why: 1964~67년생 조기수령 관심이 폭증하고 수령 나이에 따른 수령액 차이가 화제
+  person: ''
+  product: ''
+  rows:
+  - B7
+  - B8
+  - B22
+  - B35
+  - B45
+  - N77
+  src: 국내뉴스, 블로거
+  bloggers:
+  - 블룸앤아이유
+  - 소드킴
+  - 유미
+  - 은퇴연구소
+  sources:
+    블로거: 5
+    국내뉴스: 1
+  score: 78
+  parts:
+    급상승: 12
+    출처: 1
+    뉴스: 20
+    검색: 12
+    최신: 25
+    유튜브: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 100
+    뉴스6h: 100
+    블로그24h: 52
+    월검색: 210400
+    상승: 1.41
+    유튜브7일: 53592
+- kw: 삼성전자 주가 전망
+  core: 삼성전자
+  area: 국내주식
+  why: CXMT 충격으로 급락한 뒤 반등하자 저점 여부와 외국인 지분율, 자사주 요구까지 논쟁이 이어짐
+  person: 삼성 이재용
+  product: ''
+  rows:
+  - W8
+  - B12
+  - B13
+  - B14
+  - B26
+  - B38
+  - B43
+  - B46
+  - N54
+  - N59
+  - N64
+  - N76
+  - N93
+  - N110
+  - Y75
+  src: 국내뉴스, 블로거, 인기종목, 해외뉴스
+  bloggers:
+  - 메르
+  - 소드킴
+  - 유미
+  - 은퇴연구소
+  - 한입재테크
+  sources:
+    인기종목: 1
+    블로거: 7
+    국내뉴스: 6
+    해외뉴스: 1
+  score: 74
+  parts:
+    급상승: 11
+    출처: 7
+    뉴스: 20
+    검색: 15
+    최신: 25
+    반복: -12
+    유튜브: 8
+  new: false
+  surge: false
+  stats:
+    뉴스24h: 100
+    뉴스6h: 100
+    블로그24h: 100
+    월검색: 10707300
+    상승: 1.37
+    유튜브7일: 318425
+- kw: 미국 CPI 발표
+  core: 미국 CPI
+  area: 미국주식
+  why: 물가 상승 가속 우려 속 CPI 발표를 앞두고 시장이 관망세
+  person: ''
+  product: ''
+  rows:
+  - Y2
+  - Y14
+  - Y15
+  - Y82
+  - Y105
+  - Y107
+  src: 해외뉴스
+  bloggers: []
+  sources:
+    해외뉴스: 6
+  score: 68
+  parts:
+    급상승: 30
+    출처: 3
+    뉴스: 20
+    검색: 7
+    유튜브: 8
+  new: true
+  surge: true
+  stats:
+    뉴스24h: 100
+    뉴스6h: 100
+    블로그24h: 100
+    월검색: 6060
+    상승: 7.13
+    유튜브7일: 37527
+- kw: 셀트리온 주가
+  core: 셀트리온
+  area: 국내주식
+  why: 인기 종목이자 급상승 검색어로 올라옴
+  person: ''
+  product: ''
+  rows:
+  - W7
+  - R5
+  src: 급상승, 인기종목
+  bloggers: []
+  sources:
+    인기종목: 1
+    급상승: 1
+  score: 67
+  parts:
+    급상승: 20
+    출처: 6
+    뉴스: 20
+    검색: 13
+    유튜브: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 100
+    뉴스6h: 100
+    블로그24h: 78
+    월검색: 361800
+    상승: 1.67
+    유튜브7일: 21365
+- kw: 금값 전망
+  core: 금값
+  area: 금
+  why: 금값 약세 원인과 큰손 매집 여부, 연준 금리 인상 신호가 맞물림
+  person: ''
+  product: ''
+  rows:
+  - G7
+  - B15
+  - B32
+  - Y39
+  - Y40
+  - Y41
+  - Y43
+  - Y64
+  src: Grok, 블로거, 해외뉴스
+  bloggers:
+  - 메르
+  - 유미
+  sources:
+    Grok: 1
+    블로거: 2
+    해외뉴스: 5
+  score: 55
+  parts:
+    급상승: 1
+    출처: 5
+    뉴스: 9
+    검색: 15
+    최신: 17
+    유튜브: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 45
+    뉴스6h: 25
+    블로그24h: 100
+    월검색: 920300
+    상승: 1.04
+    유튜브7일: 37200
+- kw: 현대차 주가 전망
+  core: 현대차
+  area: 국내주식
+  why: 고점 대비 큰 폭 하락 뒤 호재 기대와 인도 투자 소식이 나옴
+  person: ''
+  product: ''
+  rows:
+  - W1
+  - B27
+  - Y93
+  src: 블로거, 인기종목, 해외뉴스
+  bloggers:
+  - 한입재테크
+  sources:
+    인기종목: 1
+    블로거: 1
+    해외뉴스: 1
+  score: 53
+  parts:
+    급상승: 11
+    출처: 4
+    뉴스: 20
+    검색: 14
+    최신: 8
+    반복: -12
+    유튜브: 8
+  new: false
+  surge: false
+  stats:
+    뉴스24h: 100
+    뉴스6h: 100
+    블로그24h: 100
+    월검색: 682000
+    상승: 1.37
+    유튜브7일: 104005
+- kw: 비트코인 시세 전망
+  core: 비트코인
+  area: 비트코인
+  why: 중국 6만 BTC 몰수 절차, 10만달러 복귀 확률, 숏 청산 등 이슈가 많음
+  person: 스트래티지 마이클 세일러
+  product: ''
+  rows:
+  - W9
+  - W10
+  - G8
+  - N102
+  - N105
+  - N106
+  - Y57
+  - Y58
+  - Y59
+  - Y61
+  - Y65
+  - Y67
+  - Y68
+  - Y69
+  - Y70
+  - Y72
+  - Y73
+  src: Grok, 국내뉴스, 인기종목, 해외뉴스
+  bloggers: []
+  sources:
+    인기종목: 2
+    Grok: 1
+    국내뉴스: 3
+    해외뉴스: 11
+  score: 45
+  parts:
+    급상승: 0
+    출처: 10
+    뉴스: 20
+    검색: 15
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 100
+    뉴스6h: 98
+    블로그24h: 100
+    월검색: 1287300
+    상승: 0.98
+- kw: 테슬라 주가 전망
+  core: 테슬라
+  area: 미국주식
+  why: 로드스터 2세대 공개 기대와 스페이스X 합병 가능성 전망이 겹침
+  person: 댄 아이브스
+  product: ''
+  rows:
+  - W3
+  - G4
+  - N11
+  src: Grok, 국내뉴스, 인기종목
+  bloggers: []
+  sources:
+    인기종목: 1
+    Grok: 1
+    국내뉴스: 1
+  score: 41
+  parts:
+    급상승: 0
+    출처: 6
+    뉴스: 20
+    검색: 15
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 100
+    뉴스6h: 51
+    블로그24h: 100
+    월검색: 844700
+    상승: 1.01
+- kw: 주택담보대출 금리
+  core: 주택담보대출
+  area: 부동산
+  why: 신규 가계대출 절반이 4.5% 이상으로 이자 부담이 커짐
+  person: ''
+  product: ''
+  rows:
+  - G9
+  - G10
+  - G11
+  - R14
+  - R15
+  src: Grok, 급상승
+  bloggers: []
+  sources:
+    Grok: 3
+    급상승: 2
+  score: 41
+  parts:
+    급상승: 5
+    출처: 5
+    뉴스: 20
+    검색: 11
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 100
+    뉴스6h: 38
+    블로그24h: 100
+    월검색: 92100
+    상승: 1.18
+- kw: 국제유가 상승
+  core: 유가
+  area: 생활경제
+  why: 중동 긴장과 이란 이슈로 유가와 기름값 부담이 이어짐
+  person: ''
+  product: ''
+  rows:
+  - G15
+  - N12
+  - Y89
+  - Y94
+  - Y95
+  src: Grok, 국내뉴스, 해외뉴스
+  bloggers: []
+  sources:
+    Grok: 1
+    국내뉴스: 1
+    해외뉴스: 3
+  score: 41
+  parts:
+    급상승: 2
+    출처: 5
+    뉴스: 20
+    검색: 14
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 100
+    뉴스6h: 100
+    블로그24h: 100
+    월검색: 515600
+    상승: 1.05
+- kw: 이더리움 전망
+  core: 이더리움
+  area: 비트코인
+  why: ETF 자금 유출 속에서도 낙관론이 나오고 하락 경고도 공존함
+  person: 비트마인 톰 리
+  product: ''
+  rows:
+  - W4
+  - W5
+  - N108
+  - Y81
+  src: 국내뉴스, 인기종목, 해외뉴스
+  bloggers: []
+  sources:
+    인기종목: 2
+    국내뉴스: 1
+    해외뉴스: 1
+  score: 37
+  parts:
+    급상승: 0
+    출처: 4
+    뉴스: 20
+    검색: 13
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 100
+    뉴스6h: 82
+    블로그24h: 100
+    월검색: 397500
+    상승: 0.93
+- kw: 엔비디아 주가 전망
+  core: 엔비디아
+  area: 미국주식
+  why: 오픈웨이트 AI 행보와 5년 후 전망 기사가 나옴
+  person: ''
+  product: ''
+  rows:
+  - W6
+  - Y21
+  - Y23
+  - Y27
+  src: 인기종목, 해외뉴스
+  bloggers: []
+  sources:
+    인기종목: 1
+    해외뉴스: 3
+  score: 37
+  parts:
+    급상승: 0
+    출처: 5
+    뉴스: 20
+    검색: 12
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 100
+    뉴스6h: 100
+    블로그24h: 100
+    월검색: 214300
+    상승: 0.84
+- kw: 원달러 환율
+  core: 원달러 환율
+  area: 환율
+  why: 관세와 달러 변동으로 환율 검색이 급상승함
+  person: ''
+  product: ''
+  rows:
+  - G12
+  - R10
+  - R11
+  - N10
+  - N46
+  src: Grok, 국내뉴스, 급상승
+  bloggers: []
+  sources:
+    Grok: 1
+    급상승: 2
+    국내뉴스: 2
+  score: 32
+  parts:
+    급상승: 4
+    출처: 6
+    뉴스: 20
+    검색: 14
+    반복: -12
+  new: false
+  surge: false
+  stats:
+    뉴스24h: 100
+    뉴스6h: 100
+    블로그24h: 100
+    월검색: 477800
+    상승: 1.12
+- kw: 월배당 ETF
+  core: 월배당 ETF
+  area: 미국주식
+  why: 매달 현금흐름과 ISA 계좌에 담기 좋은 ETF에 관심이 몰림
+  person: ''
+  product: ''
+  rows:
+  - B1
+  - B37
+  src: 블로거
+  bloggers:
+  - 발악
+  - 유미
+  sources:
+    블로거: 2
+  score: 24
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 1
+    검색: 6
+    최신: 17
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 4
+    뉴스6h: 0
+    블로그24h: 100
+    월검색: 4390
+    상승: 0.56
+- kw: 한화에어로스페이스 주가
+  core: 한화에어로스페이스
+  area: 국내주식
+  why: 인기 종목으로 최근 24시간 기사가 많이 나옴
+  person: ''
+  product: ''
+  rows:
+  - W2
+  src: 인기종목
+  bloggers: []
+  sources:
+    인기종목: 1
+  score: 24
+  parts:
+    급상승: 0
+    출처: 3
+    뉴스: 20
+    검색: 13
+    반복: -12
+  new: false
+  surge: false
+  stats:
+    뉴스24h: 100
+    뉴스6h: 100
+    블로그24h: 75
+    월검색: 267500
+    상승: 0.91
