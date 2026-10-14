@@ -571,14 +571,15 @@ MIDAGE_CORE = [
     "기초연금(수급 조건·금액)",
     "노후 생활비·은퇴 필요 자금",
 ]
-# 순번 조합 7개 (대표 2026-10-14): 증시+부동산 기본, 중장년(센 소재)만 주 2회 섞음. 예적금은 순번에서 뺌.
+# 순번 조합 7개 (대표 2026-10-14): 증시+부동산 메인, 중장년(센 소재)은 주 1회만. 예적금 제외.
+# 이유: 주제가 '재테크·자산'으로 뚜렷해야 애드포스트 매칭·업체 광고(원고·협찬)에 유리.
 COMBOS = [
     ["부동산"],
     ["부동산"],
+    ["부동산"],
     ["부동산", "중장년"],
     ["부동산"],
     ["부동산"],
-    ["부동산", "중장년"],
     ["부동산"],
 ]
 
@@ -609,7 +610,7 @@ def plan_tab() -> str:
           "function planApply(){const h=pdList();document.querySelectorAll('.plan-i').forEach(d=>{d.style.display=h.includes(d.dataset.k)?'none':''});"
           "const all=document.querySelectorAll('.plan-i').length;const c=document.getElementById('plan-left');if(c)c.textContent='남은 조합 '+(all-h.length)+'개 / 전체 '+all+'개'}")
     guide = ('<div class="card"><h2>📋 경제 순번</h2>'
-             '<div class="muted" style="font-size:13px;word-break:keep-all"><b>증시 + 부동산</b> 기본, 중장년(순자산·연금 같은 센 소재)만 가끔 섞어요. '
+             '<div class="muted" style="font-size:13px;word-break:keep-all"><b>증시 + 부동산</b> 메인, 중장년(순자산·연금 같은 센 소재)은 주 1회만 섞어요. '
              '조합을 펼치면 영역별 주제가 나오고(증시는 뺌), 주제를 누르면 복사돼요. '
              '쓴 조합은 <b>✓ 완료</b>로 없애고, 다 돌면 <b>전체 리셋</b>으로 복구해요. 이 기기에만 기억돼요.</div>'
              '<div style="display:flex;gap:10px;align-items:center;margin-top:8px">'
