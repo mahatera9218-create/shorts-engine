@@ -563,15 +563,23 @@ AREAS = {
         "노인·시니어 일자리",
     ],
 }
-# 하루 3포 조합 7개: 증시 1칸 고정 + 넓히기 2영역. 1번 = 오늘 발행한 조합(증시+부동산+중장년), 대표 지정 2026-10-13.
+# 중장년 중 유입 센 소재만 (대표 2026-10-14: 상속세 등 건조한 건 순번에서 뺌). 펼침에 이것만 보임.
+MIDAGE_CORE = [
+    "나이대별 순자산 평균·상위 몇 %",
+    "국민연금(예상 수령액·조기/연기 수령)",
+    "주택연금(가입 조건·월 수령액)",
+    "기초연금(수급 조건·금액)",
+    "노후 생활비·은퇴 필요 자금",
+]
+# 순번 조합 7개 (대표 2026-10-14): 증시+부동산 기본, 중장년(센 소재)만 주 2회 섞음. 예적금은 순번에서 뺌.
 COMBOS = [
-    ("부동산", "중장년"),   # 1 (오늘)
-    ("부동산", "예적금"),
-    ("중장년", "예적금"),
-    ("부동산", "중장년"),
-    ("중장년", "예적금"),
-    ("부동산", "예적금"),
-    ("부동산", "중장년"),
+    ["부동산"],
+    ["부동산"],
+    ["부동산", "중장년"],
+    ["부동산"],
+    ["부동산"],
+    ["부동산", "중장년"],
+    ["부동산"],
 ]
 
 
@@ -579,14 +587,15 @@ def plan_tab() -> str:
     """경제 순번 (대표 요청 2026-10-13): 하루 3포 '증시 + 넓히기 2' 조합 7개. 조합을 펼치면 영역별 주제가 나옴(증시 제외). ✓완료로 없애고 전체 리셋으로 복구."""
     e = html.escape
     cards = ""
-    for ci, (a, b) in enumerate(COMBOS):
-        title = f"{ci + 1}. 증시 + {a} + {b}" + (" <span class=\"muted\">(오늘)</span>" if ci == 0 else "")
+    for ci, areas in enumerate(COMBOS):
+        title = f"{ci + 1}. 증시 + " + " + ".join(areas)
         body = ""
-        for area in (a, b):   # 증시는 펼침에서 제외 (대표 지시)
+        for area in areas:   # 증시는 펼침에서 제외 (대표 지시). 중장년은 센 소재만.
+            topics = MIDAGE_CORE if area == "중장년" else AREAS.get(area, [])
             chips = "".join(
                 f'<button class="ghost" style="text-align:left;width:100%;margin:3px 0;padding:7px 10px;font-size:13px" '
                 f'onclick="copyText(this,{e(json.dumps(t), quote=True)})">📋 {e(t)}</button>'
-                for t in AREAS.get(area, []))
+                for t in topics)
             body += f'<div class="muted" style="font-weight:700;margin:8px 0 2px">{e(area)}</div>{chips}'
         cards += (f'<div class="card plan-i" data-k="combo-{ci}">'
                   f'<div style="display:flex;justify-content:space-between;align-items:center;gap:8px">'
@@ -600,8 +609,8 @@ def plan_tab() -> str:
           "function planApply(){const h=pdList();document.querySelectorAll('.plan-i').forEach(d=>{d.style.display=h.includes(d.dataset.k)?'none':''});"
           "const all=document.querySelectorAll('.plan-i').length;const c=document.getElementById('plan-left');if(c)c.textContent='남은 조합 '+(all-h.length)+'개 / 전체 '+all+'개'}")
     guide = ('<div class="card"><h2>📋 경제 순번</h2>'
-             '<div class="muted" style="font-size:13px;word-break:keep-all">하루 3포 = <b>증시 1 + 넓히기 2</b> 조합. '
-             '1번이 오늘 발행한 조합이에요. 조합을 펼치면 영역별 주제가 나오고(증시는 뺌), 주제를 누르면 복사돼요. '
+             '<div class="muted" style="font-size:13px;word-break:keep-all"><b>증시 + 부동산</b> 기본, 중장년(순자산·연금 같은 센 소재)만 가끔 섞어요. '
+             '조합을 펼치면 영역별 주제가 나오고(증시는 뺌), 주제를 누르면 복사돼요. '
              '쓴 조합은 <b>✓ 완료</b>로 없애고, 다 돌면 <b>전체 리셋</b>으로 복구해요. 이 기기에만 기억돼요.</div>'
              '<div style="display:flex;gap:10px;align-items:center;margin-top:8px">'
              '<button class="ghost" style="width:auto;margin:0;padding:8px 12px" onclick="planReset()">🔄 전체 리셋</button>'
