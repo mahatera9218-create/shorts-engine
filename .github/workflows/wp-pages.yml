@@ -1,0 +1,63 @@
+# 워드프레스 필수 페이지 올리기 (개인정보·약관·면책·연락처·소개)
+# - 수동 실행: Actions → 워드프레스 필수 페이지 → Run workflow
+# - reports/구글-페이지/*.md 를 각각 '고정 페이지(page)'로 올린다. slug=파일이름.
+# - 비밀 값(WP_URL·WP_USER·WP_APP_PASSWORD)은 GitHub Secrets에만.
+# - 안전장치: 이메일 자리표({{EMAIL}})가 남아 있으면 발행을 멈춘다(미완성 페이지 방지).
+name: 워드프레스 필수 페이지
+
+on:
+  workflow_dispatch:
+    inputs:
+      status:
+        description: "상태 (공개=바로 노출 / 초안=검토 후 대표가 공개)"
+        type: choice
+        options: [공개, 초안]
+        default: 공개
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wp-publish
+  cancel-in-progress: false
+
+jobs:
+  pages:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TZ: Asia/Seoul
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: 준비
+        run: pip install -r requirements.txt
+      - name: 점검 (테스트)
+        run: python -m unittest tests.test_wp
+      - name: 자리표 확인 (이메일 안 채웠으면 멈춤)
+        run: |
+          if grep -rl "{{EMAIL}}" reports/구글-페이지/ >/dev/null 2>&1; then
+            echo "❌ 아직 이메일 자리표({{EMAIL}})가 남아 있습니다. Claude에게 이메일을 알려 채운 뒤 실행하세요." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+      - name: 페이지 발행
+        env:
+          WP_URL: ${{ secrets.WP_URL }}
+          WP_USER: ${{ secrets.WP_USER }}
+          WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
+        run: |
+          if [ "${{ inputs.status }}" = "초안" ]; then ST=draft; else ST=publish; fi
+          {
+            echo "## 필수 페이지 발행 결과"
+            echo ""
+          } >> "$GITHUB_STEP_SUMMARY"
+          for f in reports/구글-페이지/*.md; do
+            slug="$(basename "$f" .md)"
+            echo "— $slug"
+            python -m content.wp --file "$f" --type page --slug "$slug" --status "$ST" \
+              | tee -a "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+          done

@@ -292,8 +292,8 @@ def _figure_html(source_url: str, alt: str) -> str:
 
 def publish(title: str, content_html: str, *, status: str = "draft",
             slug: str | None = None, excerpt: str | None = None,
-            featured_media: int | None = None) -> dict:
-    """WP REST로 글을 올린다. 성공하면 {id, link, status}를, 실패하면 설명과 함께 예외.
+            featured_media: int | None = None, kind: str = "post") -> dict:
+    """WP REST로 글(post) 또는 페이지(page)를 올린다. 성공하면 {id, link, status}.
 
     비밀 값은 넣지 않는다. 오류에도 URL 경로까지만 남긴다.
     """
@@ -304,7 +304,7 @@ def publish(title: str, content_html: str, *, status: str = "draft",
         payload["excerpt"] = excerpt
     if featured_media:
         payload["featured_media"] = featured_media
-    endpoint = f"{_api_base()}/posts"
+    endpoint = f"{_api_base()}/{'pages' if kind == 'page' else 'posts'}"
     try:
         resp = requests.post(endpoint, headers=_auth_header(), json=payload, timeout=30)
     except requests.RequestException as e:
@@ -324,6 +324,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--status", choices=["draft", "publish"], default="draft",
                     help="draft=워드프레스 초안(기본), publish=바로 공개(대표 지시 때만)")
     ap.add_argument("--slug", default=None, help="주소 slug (없으면 워드프레스가 자동)")
+    ap.add_argument("--type", choices=["post", "page"], default="post",
+                    help="post=글(기본), page=고정 페이지(개인정보·약관 등)")
     ap.add_argument("--dry-run", action="store_true", help="올리지 않고 제목·HTML만 출력")
     args = ap.parse_args(argv)
 
@@ -373,8 +375,9 @@ def main(argv: list[str] | None = None) -> int:
     content_html = md_to_html(body, images)
 
     result = publish(title, content_html, status=args.status, slug=args.slug,
-                     featured_media=featured_media)
-    where = "초안으로 올림(워드프레스에서 검토 후 공개)" if result["status"] == "draft" else "공개됨"
+                     featured_media=featured_media, kind=args.type)
+    kind_label = "페이지" if args.type == "page" else "글"
+    where = f"{kind_label} 초안으로 올림(워드프레스에서 검토 후 공개)" if result["status"] == "draft" else f"{kind_label} 공개됨"
     print(f"[완료] {where}\n  제목: {title}\n  글 번호: {result['id']}\n  주소: {result['link']}")
     return 0
 

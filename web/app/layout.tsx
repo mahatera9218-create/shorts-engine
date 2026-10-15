@@ -48,7 +48,7 @@ export default function RootLayout({
             </Link>
             <nav className="nav">
               <Link href="/">홈</Link>
-              <Link href="/p/소개">소개</Link>
+              <Link href="/p/about">소개</Link>
             </nav>
           </div>
         </header>
@@ -56,10 +56,11 @@ export default function RootLayout({
         <footer className="site-footer">
           <div className="container">
             <div style={{ marginBottom: 10 }}>
-              <Link href="/p/개인정보처리방침">개인정보처리방침</Link>
-              <Link href="/p/이용약관">이용약관</Link>
-              <Link href="/p/면책조항">면책조항</Link>
-              <Link href="/p/연락처">연락처</Link>
+              <Link href="/p/privacy">개인정보처리방침</Link>
+              <Link href="/p/terms">이용약관</Link>
+              <Link href="/p/disclaimer">면책조항</Link>
+              <Link href="/p/contact">연락처</Link>
+              <Link href="/p/about">소개</Link>
             </div>
             © {new Date().getFullYear()} {SITE_NAME}. 일반 정보 제공 목적이며 개별
             사안은 전문가 확인을 권합니다.
