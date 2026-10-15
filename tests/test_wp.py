@@ -45,6 +45,26 @@ class WpTest(unittest.TestCase):
         assert "&lt;b&gt;" in out
         assert "&amp;" in out
 
+    def test_blockquote_box(self):
+        out = wp.md_to_html("> **핵심**\n> 한 줄 요약.")
+        assert "<blockquote" in out
+        assert "<strong>핵심</strong>" in out
+        assert "한 줄 요약." in out
+
+    def test_figure_tokens_found(self):
+        body = "앞 문단.\n\n[[도식:세율표]]\n\n[[도식:계산:60000000]]\n\n[[도식:세율표]]"
+        toks = wp.figure_tokens(body)
+        assert toks == ["세율표", "계산:60000000"]  # 등장 순서, 중복 제거
+
+    def test_figure_placeholder_without_images(self):
+        out = wp.md_to_html("[[도식:세율표]]")
+        assert "발행 시" in out  # 업로드 전에는 자리표 안내
+
+    def test_figure_uses_uploaded_html(self):
+        imgs = {"세율표": '<figure id="X"></figure>'}
+        out = wp.md_to_html("[[도식:세율표]]", imgs)
+        assert '<figure id="X"></figure>' in out
+
     def test_parse_real_draft(self):
         draft = wp.ROOT / "reports" / "구글글-초안" / "01-소득세율표.md"
         if not draft.exists():
