@@ -23,7 +23,8 @@ from market.common import ROOT, missing_secrets
 from content import wp
 
 QUEUE = ROOT / "reports" / "구글글-초안"
-PUBLISH_PROB = float(os.environ.get("DRIP_PROB", "0.6"))  # 매 실행 공개 확률(불규칙 간격용)
+PUBLISH_PROB = float(os.environ.get("DRIP_PROB", "0.7"))  # 매 실행 공개 확률(불규칙 간격용)
+DAILY_MAX = int(os.environ.get("DRIP_DAILY_MAX", "3"))     # 하루 상한(2~3편 목표)
 
 
 def next_draft(existing: set[str]) -> tuple[Path | None, str | None]:
@@ -62,9 +63,14 @@ def main(argv: list[str] | None = None) -> int:
         print("대기 중 글 없음(모두 발행됐거나 slug 없는 초안뿐).")
         return 0
 
-    if not args.force and random.random() > PUBLISH_PROB:
-        print(f"이번엔 건너뜀(불규칙 간격). 다음 대상 대기: {f.name}")
-        return 0
+    if not args.force:
+        today = wp.published_today_kst()
+        if today >= DAILY_MAX:
+            print(f"오늘 목표 채움({today}/{DAILY_MAX}편). 다음 대상 대기: {f.name}")
+            return 0
+        if random.random() > PUBLISH_PROB:
+            print(f"이번엔 건너뜀(불규칙 간격, 오늘 {today}/{DAILY_MAX}). 다음 대상: {f.name}")
+            return 0
 
     result = wp.publish_file(f, status="publish", slug=slug, verbose=True)
     print(f"[드립 발행] {f.name} → #{result.get('id')} {result.get('link')}")

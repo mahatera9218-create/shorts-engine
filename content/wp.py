@@ -292,6 +292,21 @@ def upload_image(path: Path, *, alt: str = "") -> dict:
     return {"id": mid, "source_url": media.get("source_url")}
 
 
+def published_today_kst() -> int:
+    """오늘(KST) '공개'된 글 수. 드립 하루 상한 체크용. 실패 시 0."""
+    from datetime import datetime, timedelta, timezone
+    today = datetime.now(timezone(timedelta(hours=9))).strftime("%Y-%m-%d")
+    try:
+        r = requests.get(f"{_api_base()}/posts",
+                         params={"per_page": 50, "status": "publish", "orderby": "date",
+                                 "order": "desc", "_fields": "date"}, timeout=20)
+    except requests.RequestException:
+        return 0
+    if r.status_code != 200:
+        return 0
+    return sum(1 for p in r.json() if str(p.get("date", ""))[:10] == today)
+
+
 def existing_slugs() -> set[str]:
     """이미 올라간 글(공개·초안·대기·예약 포함)의 slug 집합. 중복 발행 방지용."""
     try:

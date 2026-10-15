@@ -12,11 +12,13 @@ on:
         type: boolean
         default: false
   schedule:
-    # 불규칙한 KST 시각(UTC): 08:17 / 12:43 / 16:09 / 20:31. 매 실행 확률 게이트로 몰리지 않게.
-    - cron: "17 23 * * *"
-    - cron: "43 3 * * *"
-    - cron: "9 7 * * *"
-    - cron: "31 11 * * *"
+    # 불규칙한 KST 시각(UTC). 매 실행 확률 게이트 + 하루 상한(기본 3)으로 2~3편이 몰리지 않게.
+    - cron: "17 23 * * *"   # KST 08:17
+    - cron: "41 1 * * *"    # KST 10:41
+    - cron: "43 3 * * *"    # KST 12:43
+    - cron: "9 7 * * *"     # KST 16:09
+    - cron: "31 10 * * *"   # KST 19:31
+    - cron: "53 12 * * *"   # KST 21:53
 
 permissions:
   contents: read
