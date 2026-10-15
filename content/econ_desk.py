@@ -766,6 +766,57 @@ def fashion_kw_tab(b: dict) -> str:
             f'<script>{kd_js}</script></div>')
 
 
+WP_URL_DEFAULT = "https://astacgroup.com"  # 워드프레스(구글 블로그) 주소. WP_URL env로 덮어쓸 수 있음.
+
+
+def _wp_published(limit: int = 30) -> list[dict] | None:
+    """워드프레스에 '공개'된 글 목록(공개 REST, 인증 불필요). 실패하면 None."""
+    base = (os.environ.get("WP_URL") or WP_URL_DEFAULT).rstrip("/")
+    try:
+        import requests
+        r = requests.get(f"{base}/wp-json/wp/v2/posts",
+                         params={"per_page": limit, "orderby": "date", "order": "desc",
+                                 "_fields": "date,link,title"}, timeout=15)
+        if r.status_code != 200:
+            return None
+        return r.json()
+    except Exception:  # noqa: BLE001  (도우미가 깨지지 않게 조용히 실패)
+        return None
+
+
+def adsense_tab() -> str:
+    """애드센스 탭: 워드프레스에 언제 무엇을 올렸는지(공개 글) 로그 + 대기 초안 수."""
+    e = html.escape
+    posts = _wp_published()
+    queue_dir = ROOT / "reports" / "구글글-초안"
+    queued = sorted(queue_dir.glob("*.md")) if queue_dir.exists() else []
+    if posts is None:
+        log = '<div class="muted">워드프레스 글 목록을 불러오지 못했어요(사이트 점검 중일 수 있어요).</div>'
+        n_pub: object = "?"
+    elif not posts:
+        log = '<div class="muted">아직 공개된 글이 없어요. 드립 발행기가 올리면 여기에 쌓여요.</div>'
+        n_pub = 0
+    else:
+        n_pub = len(posts)
+        rows = []
+        for p in posts:
+            d = str(p.get("date", ""))[:16].replace("T", " ")
+            title = e(re.sub(r"<[^>]+>", "", p.get("title", {}).get("rendered", "")))
+            link = e(str(p.get("link", "")), quote=True)
+            rows.append(f'<tr><td class="muted" style="white-space:nowrap;padding:6px 8px 6px 0">{d}</td>'
+                        f'<td style="padding:6px 0"><a href="{link}" target="_blank" rel="noopener">{title}</a></td></tr>')
+        log = ('<table style="width:100%;border-collapse:collapse;font-size:14px">'
+               '<tr><th style="text-align:left;padding-bottom:4px">올린 때</th>'
+               '<th style="text-align:left;padding-bottom:4px">제목</th></tr>'
+               + "".join(rows) + '</table>')
+    note = ('<div class="muted" style="font-size:13px;margin:8px 0 10px">'
+            '애드센스 검토 중에는 글을 꾸준히 채워 두는 게 좋아요. '
+            '드립 발행기가 대기 글을 불규칙한 시각에 하나씩 자동 공개합니다.</div>')
+    return (f'<div class="card"><h2>애드센스 발행 로그</h2>'
+            f'<div class="muted" style="margin:4px 0 6px">공개된 글 {n_pub}개 · 대기 중 초안 {len(queued)}개</div>'
+            f'{note}{log}</div>')
+
+
 def index(by_blog: dict[str, list[dict]]) -> str:
     from .blogs import all_blogs
     blogs = all_blogs()
@@ -777,7 +828,8 @@ def index(by_blog: dict[str, list[dict]]) -> str:
     # 대표 결정 2026-10-13: 도우미 = 키워드 도구. 보이는 탭 3개(순번·경제 키워드·패션 키워드). 성과는 코드·데이터 유지, 탭만 숨김(#stats 직접 주소로 접근). 어사이드·사진 제거.
     nav = ('<a href="#plan" data-t="plan">경제 순번</a>'
            '<a href="#econkw" data-t="econkw">경제 키워드</a>'
-           '<a href="#fashkw" data-t="fashkw">패션 키워드</a>')
+           '<a href="#fashkw" data-t="fashkw">패션 키워드</a>'
+           '<a href="#adsense" data-t="adsense">애드센스</a>')
     econ_sec = f'<section class="tab" id="econkw" hidden>{econ_kw_tab(econ_b)}</section>' if econ_b else ""
     fash_sec = f'<section class="tab" id="fashkw" hidden>{fashion_kw_tab(fash_b)}</section>' if fash_b else ""
     return head(f"{NAME} 발행 도우미") + f"""
@@ -786,6 +838,7 @@ def index(by_blog: dict[str, list[dict]]) -> str:
 <section class="tab" id="plan" hidden>{plan_tab()}</section>
 {econ_sec}
 {fash_sec}
+<section class="tab" id="adsense" hidden>{adsense_tab()}</section>
 <section class="tab" id="stats" hidden>{compare_html(blogs, by_blog)}</section>
 </main><script>const POST={{"blocks":[],"images":[]}};{desk.JS}
 function tab(){{const h=(location.hash||'#{first}').slice(1);document.querySelectorAll('section.tab').forEach(s=>s.hidden=s.id!==h);

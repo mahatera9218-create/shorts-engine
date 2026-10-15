@@ -37,6 +37,7 @@ jobs:
         env:  # 인물 사진 후보 (네이버 이미지 검색 API, 2026-10-06)
           NCP_APIGW_API_KEY_ID: ${{ secrets.NCP_APIGW_API_KEY_ID }}
           NCP_APIGW_API_KEY: ${{ secrets.NCP_APIGW_API_KEY }}
+          WP_URL: ${{ secrets.WP_URL }}  # 애드센스 탭 발행 로그(공개 글 목록) 조회용
         run: |
           pip install -r requirements.txt
           python -m content.econ_desk site-econ
