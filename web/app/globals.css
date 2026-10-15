@@ -1,10 +1,11 @@
 :root {
   --bg: #ffffff;
   --fg: #1a1d24;
-  --muted: #6b7280;
+  --muted: #545b69; /* 대비 강화(AA): 흰 배경에서 4.5:1 이상 */
   --line: #e7e9ee;
   --accent: #0e111a;
-  --gold: #c99a2e;
+  --gold: #8a6d12; /* 라이트 모드: 흰 배경에서 글자로 읽히게 진한 금색 */
+  --gold-visual: #c99a2e; /* 테두리·장식용 밝은 금색 */
   --maxw: 760px;
 }
 
@@ -202,8 +203,9 @@ a {
   :root {
     --bg: #0e111a;
     --fg: #e8eaed;
-    --muted: #9aa3b2;
+    --muted: #a7b0bf; /* 어두운 배경 대비 강화 */
     --line: #232733;
+    --gold: #eab93c; /* 어두운 배경에선 밝은 금색이 대비 좋음 */
   }
   .site-header {
     background: rgba(14, 17, 26, 0.92);
