@@ -1,0 +1,57 @@
+# 구글 글 드립 자동 공개 (애드센스 검토 기간 자연스럽게 채우기)
+# - 대기 글(reports/구글글-초안/*.md)을 불규칙한 시각에 하나씩 '공개'로 올린다.
+# - 중복은 slug로 거른다. 끄려면 이 워크플로를 비활성화하면 즉시 멈춤.
+# - 발행 뒤 도우미(애드센스 탭)를 다시 빌드해 로그를 갱신한다.
+name: 구글 글 드립 공개
+
+on:
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "지금 바로 1편 (확률 무시)"
+        type: boolean
+        default: false
+  schedule:
+    # 불규칙한 KST 시각(UTC): 08:17 / 12:43 / 16:09 / 20:31. 매 실행 확률 게이트로 몰리지 않게.
+    - cron: "17 23 * * *"
+    - cron: "43 3 * * *"
+    - cron: "9 7 * * *"
+    - cron: "31 11 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wp-publish
+  cancel-in-progress: false
+
+jobs:
+  drip:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TZ: Asia/Seoul
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: 준비
+        run: pip install -r requirements.txt
+      - name: 점검 (테스트)
+        run: python -m unittest tests.test_wp
+      - name: 드립 발행
+        env:
+          WP_URL: ${{ secrets.WP_URL }}
+          WP_USER: ${{ secrets.WP_USER }}
+          WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
+        run: |
+          if [ "${{ inputs.force }}" = "true" ]; then FLAG=--force; else FLAG=""; fi
+          python -m content.wp_drip $FLAG | tee -a "$GITHUB_STEP_SUMMARY"
+
+  # 발행 뒤 도우미(애드센스 탭 로그)를 갱신
+  refresh-desk:
+    needs: drip
+    uses: ./.github/workflows/econ-desk.yml
+    secrets: inherit

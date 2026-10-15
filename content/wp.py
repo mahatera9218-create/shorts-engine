@@ -27,6 +27,7 @@ import requests
 from market.common import ROOT, missing_secrets, secret
 
 TITLE_RE = re.compile(r"^제목\s*[:：]\s*(.+)$")
+SLUG_RE = re.compile(r"^슬러그\s*[:：]\s*([A-Za-z0-9][A-Za-z0-9-]*)$")
 BOLD_RE = re.compile(r"\*\*(.+?)\*\*")
 ORDERED_RE = re.compile(r"^\d+\.\s+(.+)$")
 BULLET_RE = re.compile(r"^[-*]\s+(.+)$")
@@ -52,11 +53,21 @@ def parse_draft(path: Path) -> tuple[str, str]:
         break
     if not title:
         raise ValueError(f"초안 첫 줄에 '제목: ...'이 없다: {path}")
-    # 제목 바로 뒤의 구분선(---)·빈 줄은 본문에서 뺀다.
+    # 제목 바로 뒤의 '슬러그:' 줄·구분선(---)·빈 줄은 본문에서 뺀다.
     body_lines = lines[start:]
-    while body_lines and (not body_lines[0].strip() or body_lines[0].strip() == "---"):
+    while body_lines and (not body_lines[0].strip() or body_lines[0].strip() == "---"
+                          or SLUG_RE.match(body_lines[0].strip())):
         body_lines.pop(0)
     return title, "\n".join(body_lines).strip()
+
+
+def draft_slug(path: Path) -> str | None:
+    """초안 윗부분의 '슬러그: xxx' 줄에서 slug를 읽는다(없으면 None)."""
+    for line in path.read_text(encoding="utf-8").splitlines()[:6]:
+        m = SLUG_RE.match(line.strip())
+        if m:
+            return m.group(1)
+    return None
 
 
 # ---------------------------------------------------------------- 마크다운 → HTML
@@ -281,6 +292,19 @@ def upload_image(path: Path, *, alt: str = "") -> dict:
     return {"id": mid, "source_url": media.get("source_url")}
 
 
+def existing_slugs() -> set[str]:
+    """이미 올라간 글(공개·초안·대기·예약 포함)의 slug 집합. 중복 발행 방지용."""
+    try:
+        r = requests.get(f"{_api_base()}/posts",
+                         params={"per_page": 100, "status": "publish,draft,pending,future",
+                                 "_fields": "slug"}, headers=_auth(), timeout=20)
+    except requests.RequestException:
+        return set()
+    if r.status_code != 200:
+        return set()
+    return {p.get("slug", "") for p in r.json() if p.get("slug")}
+
+
 def _figure_html(source_url: str, alt: str) -> str:
     cap = html.escape(alt)
     return ('<figure class="wp-block-image size-large" style="margin:1.5em 0;text-align:center;">'
@@ -314,6 +338,32 @@ def publish(title: str, content_html: str, *, status: str = "draft",
         raise RuntimeError(f"워드프레스 발행 실패 HTTP {resp.status_code}: {resp.text[:300]}")
     data = resp.json()
     return {"id": data.get("id"), "link": data.get("link"), "status": data.get("status")}
+
+
+def publish_file(path: Path, *, status: str = "draft", slug: str | None = None,
+                 kind: str = "post", verbose: bool = False) -> dict:
+    """초안 .md 한 편을 통째로 발행: 파싱 → 도식 생성·업로드·삽입 → WP 발행.
+
+    도식 생성·업로드가 필요하므로 비밀 값(WORDPRESS)이 있어야 한다. 결과 dict 반환.
+    """
+    title, body = parse_draft(path)
+    tokens = figure_tokens(body)
+    images: dict[str, str] = {}
+    featured_media: int | None = None
+    if tokens:
+        tmp = Path(tempfile.mkdtemp(prefix="wp_fig_"))
+        for tok in tokens:
+            png = render_figure(tok, tmp)
+            alt = _figure_alt(tok)
+            up = upload_image(png, alt=alt)
+            images[tok] = _figure_html(up["source_url"], alt)
+            if featured_media is None and up.get("id"):
+                featured_media = up["id"]
+            if verbose:
+                print(f"[도식 업로드] {tok} → media #{up.get('id')}")
+    content_html = md_to_html(body, images)
+    return publish(title, content_html, status=status, slug=slug,
+                   featured_media=featured_media, kind=kind)
 
 
 # ---------------------------------------------------------------- CLI
@@ -359,23 +409,7 @@ def main(argv: list[str] | None = None) -> int:
               + "\n→ GitHub Secrets에 WP_URL·WP_USER·WP_APP_PASSWORD를 넣어야 한다.", file=sys.stderr)
         return 3
 
-    # 도식 생성 → 미디어 업로드 → 본문에 삽입. 첫 도식은 대표 이미지(featured)로.
-    images: dict[str, str] = {}
-    featured_media: int | None = None
-    if tokens:
-        tmp = Path(tempfile.mkdtemp(prefix="wp_fig_"))
-        for tok in tokens:
-            png = render_figure(tok, tmp)
-            alt = _figure_alt(tok)
-            up = upload_image(png, alt=alt)
-            images[tok] = _figure_html(up["source_url"], alt)
-            if featured_media is None and up.get("id"):
-                featured_media = up["id"]
-            print(f"[도식 업로드] {tok} → media #{up.get('id')}")
-    content_html = md_to_html(body, images)
-
-    result = publish(title, content_html, status=args.status, slug=args.slug,
-                     featured_media=featured_media, kind=args.type)
+    result = publish_file(path, status=args.status, slug=args.slug, kind=args.type, verbose=True)
     kind_label = "페이지" if args.type == "page" else "글"
     where = f"{kind_label} 초안으로 올림(워드프레스에서 검토 후 공개)" if result["status"] == "draft" else f"{kind_label} 공개됨"
     print(f"[완료] {where}\n  제목: {title}\n  글 번호: {result['id']}\n  주소: {result['link']}")

@@ -65,6 +65,29 @@ class WpTest(unittest.TestCase):
         out = wp.md_to_html("[[도식:세율표]]", imgs)
         assert '<figure id="X"></figure>' in out
 
+    def test_draft_slug_read_and_skipped(self):
+        with tempfile.TemporaryDirectory() as d:
+            p = Path(d) / "draft.md"
+            p.write_text("제목: 제목\n슬러그: my-slug-2026\n\n본문.\n", encoding="utf-8")
+            assert wp.draft_slug(p) == "my-slug-2026"
+            title, body = wp.parse_draft(p)
+            assert title == "제목"
+            assert "슬러그" not in body  # 슬러그 줄은 본문에서 빠진다
+            assert body.startswith("본문.")
+
+    def test_draft_slug_absent(self):
+        with tempfile.TemporaryDirectory() as d:
+            p = Path(d) / "draft.md"
+            p.write_text("제목: 제목\n\n본문.\n", encoding="utf-8")
+            assert wp.draft_slug(p) is None
+
+    def test_queued_google_drafts_have_slugs(self):
+        qdir = wp.ROOT / "reports" / "구글글-초안"
+        if not qdir.exists():
+            self.skipTest("큐 없음")
+        for f in qdir.glob("*.md"):
+            assert wp.draft_slug(f), f"슬러그 없는 초안(드립 중복방지 불가): {f.name}"
+
     def test_parse_real_draft(self):
         draft = wp.ROOT / "reports" / "구글글-초안" / "01-소득세율표.md"
         if not draft.exists():
