@@ -75,6 +75,20 @@ class WpTest(unittest.TestCase):
             assert "슬러그" not in body  # 슬러그 줄은 본문에서 빠진다
             assert body.startswith("본문.")
 
+    def test_draft_category_read_and_skipped(self):
+        with tempfile.TemporaryDirectory() as d:
+            p = Path(d) / "draft.md"
+            p.write_text("제목: 제목\n슬러그: s\n분류: saving\n\n본문.\n", encoding="utf-8")
+            assert wp.draft_category(p) == "saving"
+            _, body = wp.parse_draft(p)
+            assert "분류" not in body and body.startswith("본문.")
+
+    def test_draft_category_invalid_is_none(self):
+        with tempfile.TemporaryDirectory() as d:
+            p = Path(d) / "draft.md"
+            p.write_text("제목: 제목\n분류: nonsense\n\n본문.\n", encoding="utf-8")
+            assert wp.draft_category(p) is None
+
     def test_draft_slug_absent(self):
         with tempfile.TemporaryDirectory() as d:
             p = Path(d) / "draft.md"

@@ -1,10 +1,10 @@
-import Link from "next/link";
-import { getPosts, stripHtml, formatDate, SITE_NAME, SITE_DESC } from "@/lib/wp";
+import { getPosts, SITE_NAME, SITE_DESC } from "@/lib/wp";
+import PostCard from "@/components/PostCard";
 
 export const revalidate = 600;
 
 export default async function Home() {
-  const posts = await getPosts(20);
+  const posts = await getPosts(24);
 
   return (
     <div className="container">
@@ -19,22 +19,11 @@ export default async function Home() {
           나타납니다.
         </p>
       ) : (
-        <ul className="post-list">
+        <div className="post-grid">
           {posts.map((post) => (
-            <li key={post.id}>
-              <Link href={`/${post.slug}`} className="post-card">
-                <div className="post-card-meta">{formatDate(post.date)}</div>
-                <h2
-                  className="post-card-title"
-                  dangerouslySetInnerHTML={{ __html: post.title.rendered }}
-                />
-                <p className="post-card-excerpt">
-                  {stripHtml(post.excerpt.rendered).slice(0, 120)}
-                </p>
-              </Link>
-            </li>
+            <PostCard key={post.id} post={post} />
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );
