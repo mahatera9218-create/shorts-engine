@@ -1,5 +1,6 @@
 """자동 글쓰기의 코드 부분(숫자 충돌 규칙, 숫자 검사, 계산 입력) 테스트. 키 없이 돈다."""
 import unittest
+from unittest.mock import patch
 
 from content import receipt
 from content.autopost import build_data, check_post, resolve, unknown_numbers
@@ -53,7 +54,9 @@ class ContentTest(unittest.TestCase):
         assert round(n["per"]["hits"]) == round(22_000_000 * 1356.7 / 149)
 
     def test_build_data_rejects_missing_or_absurd(self):
-        assert build_data({"player": "가"}, _ex(), _facts(salary=22_000_000, games=1, hits=1), CFG)[0] is None  # 환율 없음
+        # 환율 없음: 뉴스에 환율이 없고 ECB 보조 환율도 못 구하면 None (ecb_fx를 None으로 고정해 네트워크와 무관하게 검사)
+        with patch("content.autopost.ecb_fx", return_value=None):
+            assert build_data({"player": "가"}, _ex(), _facts(salary=22_000_000, games=1, hits=1), CFG)[0] is None
         assert build_data({"player": "가"}, _ex(), _facts(salary=113_000_000_0, fx_krw_per_usd=1356.7, games=1, hits=1), CFG)[0] is None
         assert build_data({"player": "가"}, _ex("KRW"), _facts(salary=2_000_000_000, games=30), CFG)[1] == "연봉을 나눌 기록이 2개 미만"
 
