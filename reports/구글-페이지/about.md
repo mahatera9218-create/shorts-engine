@@ -23,4 +23,4 @@
 
 ## 문의
 
-- 이메일: {{EMAIL}}
+- 이메일: mahatera9218@gmail.com
