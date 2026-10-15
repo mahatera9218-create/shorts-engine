@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import Link from "next/link";
 import "./globals.css";
-import { SITE_NAME, SITE_URL, SITE_DESC } from "@/lib/wp";
+import { SITE_NAME, SITE_URL, SITE_DESC, CATEGORY_ORDER } from "@/lib/wp";
 
 const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT || "";
 
@@ -47,7 +47,11 @@ export default function RootLayout({
               억선생의 <span>경제판</span>
             </Link>
             <nav className="nav">
-              <Link href="/">홈</Link>
+              {CATEGORY_ORDER.map((c) => (
+                <Link key={c.slug} href={`/category/${c.slug}`}>
+                  {c.name}
+                </Link>
+              ))}
               <Link href="/p/about" prefetch={false}>
                 소개
               </Link>

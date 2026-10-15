@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   getPostBySlug,
   getAllPostSlugs,
+  getRelated,
   featuredImage,
+  postCategory,
   stripHtml,
   formatDate,
 } from "@/lib/wp";
+import PostCard from "@/components/PostCard";
 
 export const revalidate = 600;
 export const dynamicParams = true;
@@ -48,15 +52,47 @@ export default async function PostPage({
   if (!post) notFound();
 
   const title = stripHtml(post.title.rendered);
+  const cat = postCategory(post);
+  const related = await getRelated(post, 3);
 
   return (
     <article className="container article">
+      {cat ? (
+        <Link href={`/category/${cat.slug}`} className="post-card-cat">
+          {cat.name}
+        </Link>
+      ) : null}
       <h1 dangerouslySetInnerHTML={{ __html: post.title.rendered }} />
-      <div className="meta">{formatDate(post.date)}</div>
+      <div className="byline">
+        <Link href="/p/about" className="byline-author">
+          억선생
+        </Link>
+        <span className="byline-sep">·</span>
+        <span>{formatDate(post.date)}</span>
+      </div>
+
       <div
         className="article-body"
         dangerouslySetInnerHTML={{ __html: post.content.rendered }}
       />
+
+      <div className="byline-foot">
+        글쓴이 <Link href="/p/about">억선생</Link> · 증시·부동산·세금 정보를 공식
+        자료로 정리합니다. 이 글은 일반 정보이며 개별 사안은 국세청(126)·세무
+        전문가 확인을 권합니다.
+      </div>
+
+      {related.length > 0 ? (
+        <section className="related">
+          <h2>함께 보면 좋은 글</h2>
+          <div className="post-grid">
+            {related.map((p) => (
+              <PostCard key={p.id} post={p} />
+            ))}
+          </div>
+        </section>
+      ) : null}
+
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -64,6 +100,7 @@ export default async function PostPage({
             "@context": "https://schema.org",
             "@type": "Article",
             headline: title,
+            author: { "@type": "Person", name: "억선생" },
             datePublished: post.date,
             dateModified: post.modified,
           }),

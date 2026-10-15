@@ -28,6 +28,13 @@ from market.common import ROOT, missing_secrets, secret
 
 TITLE_RE = re.compile(r"^제목\s*[:：]\s*(.+)$")
 SLUG_RE = re.compile(r"^슬러그\s*[:：]\s*([A-Za-z0-9][A-Za-z0-9-]*)$")
+CATEGORY_RE = re.compile(r"^분류\s*[:：]\s*([A-Za-z0-9-]+)$")
+# 카테고리 slug → 표시 이름 (세무 클러스터). 발행 시 WP 카테고리를 만들어 붙인다.
+CAT_NAMES = {
+    "realty": "부동산·상속 세금",
+    "saving": "절세·연금",
+    "life": "생활·4대보험",
+}
 BOLD_RE = re.compile(r"\*\*(.+?)\*\*")
 ORDERED_RE = re.compile(r"^\d+\.\s+(.+)$")
 BULLET_RE = re.compile(r"^[-*]\s+(.+)$")
@@ -53,10 +60,11 @@ def parse_draft(path: Path) -> tuple[str, str]:
         break
     if not title:
         raise ValueError(f"초안 첫 줄에 '제목: ...'이 없다: {path}")
-    # 제목 바로 뒤의 '슬러그:' 줄·구분선(---)·빈 줄은 본문에서 뺀다.
+    # 제목 바로 뒤의 '슬러그:'·'분류:' 줄·구분선(---)·빈 줄은 본문에서 뺀다.
     body_lines = lines[start:]
     while body_lines and (not body_lines[0].strip() or body_lines[0].strip() == "---"
-                          or SLUG_RE.match(body_lines[0].strip())):
+                          or SLUG_RE.match(body_lines[0].strip())
+                          or CATEGORY_RE.match(body_lines[0].strip())):
         body_lines.pop(0)
     return title, "\n".join(body_lines).strip()
 
@@ -66,6 +74,15 @@ def draft_slug(path: Path) -> str | None:
     for line in path.read_text(encoding="utf-8").splitlines()[:6]:
         m = SLUG_RE.match(line.strip())
         if m:
+            return m.group(1)
+    return None
+
+
+def draft_category(path: Path) -> str | None:
+    """초안 윗부분의 '분류: realty|saving|life' 줄에서 카테고리 slug를 읽는다."""
+    for line in path.read_text(encoding="utf-8").splitlines()[:6]:
+        m = CATEGORY_RE.match(line.strip())
+        if m and m.group(1) in CAT_NAMES:
             return m.group(1)
     return None
 
@@ -320,6 +337,26 @@ def existing_slugs() -> set[str]:
     return {p.get("slug", "") for p in r.json() if p.get("slug")}
 
 
+def ensure_category(slug: str) -> int | None:
+    """카테고리 slug에 해당하는 WP 카테고리 id. 없으면 만들어서 돌려준다."""
+    name = CAT_NAMES.get(slug)
+    if not name:
+        return None
+    base = _api_base()
+    try:
+        r = requests.get(f"{base}/categories", params={"slug": slug, "_fields": "id,slug"},
+                         headers=_auth(), timeout=20)
+        if r.status_code == 200 and r.json():
+            return r.json()[0].get("id")
+        c = requests.post(f"{base}/categories", headers=_auth_header(),
+                          json={"name": name, "slug": slug}, timeout=20)
+        if c.status_code in (200, 201):
+            return c.json().get("id")
+    except requests.RequestException:
+        return None
+    return None
+
+
 def _figure_html(source_url: str, alt: str) -> str:
     cap = html.escape(alt)
     return ('<figure class="wp-block-image size-large" style="margin:1.5em 0;text-align:center;">'
@@ -331,7 +368,8 @@ def _figure_html(source_url: str, alt: str) -> str:
 
 def publish(title: str, content_html: str, *, status: str = "draft",
             slug: str | None = None, excerpt: str | None = None,
-            featured_media: int | None = None, kind: str = "post") -> dict:
+            featured_media: int | None = None, kind: str = "post",
+            categories: list[int] | None = None) -> dict:
     """WP REST로 글(post) 또는 페이지(page)를 올린다. 성공하면 {id, link, status}.
 
     비밀 값은 넣지 않는다. 오류에도 URL 경로까지만 남긴다.
@@ -343,6 +381,8 @@ def publish(title: str, content_html: str, *, status: str = "draft",
         payload["excerpt"] = excerpt
     if featured_media:
         payload["featured_media"] = featured_media
+    if categories:
+        payload["categories"] = categories
     endpoint = f"{_api_base()}/{'pages' if kind == 'page' else 'posts'}"
     try:
         resp = requests.post(endpoint, headers=_auth_header(), json=payload, timeout=30)
@@ -386,8 +426,14 @@ def publish_file(path: Path, *, status: str = "draft", slug: str | None = None,
             if verbose:
                 print(f"[표지 업로드] media #{up.get('id')}")
     content_html = md_to_html(body, images)
+    categories = None
+    if kind == "post":
+        cat_slug = draft_category(path)
+        cid = ensure_category(cat_slug) if cat_slug else None
+        if cid:
+            categories = [cid]
     return publish(title, content_html, status=status, slug=slug,
-                   featured_media=featured_media, kind=kind)
+                   featured_media=featured_media, kind=kind, categories=categories)
 
 
 # ---------------------------------------------------------------- CLI

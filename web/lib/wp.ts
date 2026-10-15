@@ -33,7 +33,15 @@ export interface WpPost {
       media_details?: { width?: number; height?: number };
     }>;
     author?: Array<{ name?: string }>;
+    "wp:term"?: Array<Array<{ id: number; name: string; slug: string; taxonomy: string }>>;
   };
+}
+
+export interface WpCategory {
+  id: number;
+  name: string;
+  slug: string;
+  count: number;
 }
 
 async function wpGet<T>(path: string): Promise<T | null> {
@@ -72,6 +80,66 @@ export async function getPageBySlug(slug: string): Promise<WpPost | null> {
 export async function getAllPostSlugs(): Promise<string[]> {
   const posts = await getPosts(100);
   return posts.map((p) => p.slug).filter(Boolean);
+}
+
+// 고정 카테고리 순서(네비게이션용). 실제 글 수는 WP에서 받아 합친다.
+export const CATEGORY_ORDER: Array<{ slug: string; name: string }> = [
+  { slug: "realty", name: "부동산·상속 세금" },
+  { slug: "saving", name: "절세·연금" },
+  { slug: "life", name: "생활·4대보험" },
+];
+
+export async function getCategories(): Promise<WpCategory[]> {
+  const data = await wpGet<WpCategory[]>(`/categories?per_page=50&_fields=id,name,slug,count`);
+  return (data ?? []).filter((c) => c.count > 0);
+}
+
+export async function getCategoryBySlug(slug: string): Promise<WpCategory | null> {
+  const data = await wpGet<WpCategory[]>(`/categories?slug=${encodeURIComponent(slug)}`);
+  return data && data.length > 0 ? data[0] : null;
+}
+
+export async function getPostsByCategory(catId: number, perPage = 20): Promise<WpPost[]> {
+  const data = await wpGet<WpPost[]>(
+    `/posts?categories=${catId}&per_page=${perPage}&_embed&orderby=date&order=desc`,
+  );
+  return data ?? [];
+}
+
+export function postCategory(
+  post: WpPost,
+): { name: string; slug: string } | null {
+  const terms = post._embedded?.["wp:term"]?.flat() ?? [];
+  const cat = terms.find((t) => t.taxonomy === "category");
+  return cat ? { name: cat.name, slug: cat.slug } : null;
+}
+
+// 관련 글: 같은 카테고리 우선, 모자라면 최신에서 채운다(현재 글 제외).
+export async function getRelated(post: WpPost, n = 3): Promise<WpPost[]> {
+  const out: WpPost[] = [];
+  const seen = new Set<number>([post.id]);
+  const cat = postCategory(post);
+  if (cat) {
+    const c = await getCategoryBySlug(cat.slug);
+    if (c) {
+      for (const p of await getPostsByCategory(c.id, n + 1)) {
+        if (!seen.has(p.id)) {
+          out.push(p);
+          seen.add(p.id);
+        }
+      }
+    }
+  }
+  if (out.length < n) {
+    for (const p of await getPosts(n + 3)) {
+      if (out.length >= n) break;
+      if (!seen.has(p.id)) {
+        out.push(p);
+        seen.add(p.id);
+      }
+    }
+  }
+  return out.slice(0, n);
 }
 
 export async function getAllPageSlugs(): Promise<string[]> {

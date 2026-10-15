@@ -87,8 +87,11 @@ def generate_one(llm, topic: dict, existing_slugs: list[str], idx: int) -> Path:
                        effort="high", max_tokens=12000, stage="구글글")
     title = out["title"].strip()
     body = out["body_markdown"].strip()
+    cat = topic.get("cat", "")
+    cat_line = f"분류: {cat}\n" if cat else ""
     path = QUEUE / f"{idx:02d}-{topic['slug']}.md"
-    path.write_text(f"제목: {title}\n슬러그: {topic['slug']}\n\n---\n\n{body}\n", encoding="utf-8")
+    path.write_text(f"제목: {title}\n슬러그: {topic['slug']}\n{cat_line}\n---\n\n{body}\n",
+                    encoding="utf-8")
     return path
 
 
