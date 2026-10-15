@@ -42,6 +42,9 @@ KICKOFF.md의 규칙을 지키면서 "1주차 작업"을 순서대로 진행해�
    | `NCP_APIGW_API_KEY` | NAVER API HUB Client Secret |
    | `YOUTUBE_API_KEY` | 유튜브 Data API 키 |
    | `ANTHROPIC_API_KEY` | Claude API 키 (2주차부터) |
+   | `WP_URL` | 워드프레스(구글 블로그) 주소, 예: https://astacgroup.com |
+   | `WP_USER` | 워드프레스 로그인 아이디 |
+   | `WP_APP_PASSWORD` | 워드프레스 애플리케이션 비밀번호 (REST 발행용) |
 
 3. **허용된 통로로만 수집한다 (2026-09-29 DECISIONS로 갱신).** 공식 API·RSS처럼 제공자가 허용한 통로로 수집한다. 사실(점수·순위·금액)은 인용하고, 기사 문장·사진은 복제하지 않는다. 네이버·구글 검색 결과 페이지 직접 크롤링 금지. 네이버 검색·데이터랩은 NAVER API HUB 방식(인증 헤더 `X-NCP-APIGW-API-KEY-ID`, `X-NCP-APIGW-API-KEY`)이며, 엔드포인트는 네이버 클라우드 공식 문서에서 확인한다.
 4. **계산은 코드로.** 점수 계산·표 생성에 LLM을 쓰지 않는다 (14.1).

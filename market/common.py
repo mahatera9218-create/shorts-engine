@@ -21,6 +21,7 @@ SECRET_GROUPS = {
     "naver_hub": ["NCP_APIGW_API_KEY_ID", "NCP_APIGW_API_KEY"],
     "youtube": ["YOUTUBE_API_KEY"],
     "anthropic": ["ANTHROPIC_API_KEY"],
+    "wordpress": ["WP_URL", "WP_USER", "WP_APP_PASSWORD"],
 }
 
 
