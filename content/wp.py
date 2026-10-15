@@ -365,8 +365,8 @@ def publish_file(path: Path, *, status: str = "draft", slug: str | None = None,
     tokens = figure_tokens(body)
     images: dict[str, str] = {}
     featured_media: int | None = None
+    tmp = Path(tempfile.mkdtemp(prefix="wp_fig_"))
     if tokens:
-        tmp = Path(tempfile.mkdtemp(prefix="wp_fig_"))
         for tok in tokens:
             png = render_figure(tok, tmp)
             alt = _figure_alt(tok)
@@ -376,6 +376,15 @@ def publish_file(path: Path, *, status: str = "draft", slug: str | None = None,
                 featured_media = up["id"]
             if verbose:
                 print(f"[도식 업로드] {tok} → media #{up.get('id')}")
+    # 대표 이미지가 없으면(글·페이지 공통) 제목 표지 카드를 코드로 만들어 썸네일로 쓴다.
+    if featured_media is None and kind == "post":
+        from content import tax_cards
+        cover = tax_cards.cover_card(tmp / "cover.png", title)
+        up = upload_image(cover, alt=title)
+        if up.get("id"):
+            featured_media = up["id"]
+            if verbose:
+                print(f"[표지 업로드] media #{up.get('id')}")
     content_html = md_to_html(body, images)
     return publish(title, content_html, status=status, slug=slug,
                    featured_media=featured_media, kind=kind)

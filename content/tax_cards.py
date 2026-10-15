@@ -104,13 +104,11 @@ def rate_table_card(out: Path, year: str = "2026", w: int = 1080, h: int = 1080)
 
 def _calc(base: int, cfg: dict) -> dict:
     """과세표준 base에 대한 산출세액·지방소득세 (코드 계산, 정확)."""
-    prev = 0
     for upper, rate, deduct in cfg["brackets"]:
         if upper is None or base <= upper:
             tax = round(base * rate - deduct)
             local = round(tax * cfg["local_rate"])
             return {"rate": rate, "deduct": deduct, "tax": tax, "local": local, "total": tax + local}
-        prev = upper
     raise ValueError(base)
 
 
@@ -131,6 +129,47 @@ def calc_card(out: Path, base: int, w: int = 1080, h: int = 720) -> Path:
     center_text(d, (w / 2, int(h * 0.92)), "출처: 국세청 · 2026년 기준 · 공제 전 가정 예시", font("mono", int(w * 0.02)), GRAY)
     out.parent.mkdir(parents=True, exist_ok=True)
     im.save(out)
+    return out
+
+
+def _wrap(d: ImageDraw.ImageDraw, text: str, f, max_w: float) -> list[str]:
+    """한글 제목을 폭에 맞춰 줄바꿈(글자 단위, 공백 우선)."""
+    lines: list[str] = []
+    cur = ""
+    for ch in text:
+        trial = cur + ch
+        if d.textlength(trial, font=f) <= max_w or not cur:
+            cur = trial
+        else:
+            lines.append(cur)
+            cur = ch
+    if cur:
+        lines.append(cur)
+    return lines
+
+
+def cover_card(out: Path, title: str, w: int = 1200, h: int = 630) -> Path:
+    """글 제목을 브랜드(남색·금색)로 그린 대표 이미지/썸네일. 저작권 0, 글자만 정확히."""
+    im = Image.new("RGB", (w, h), BG)
+    d = ImageDraw.Draw(im)
+    pad = 84
+    d.text((pad, 74), "억선생의 경제판", font=font("b", 40), fill=GOLD)
+    d.rectangle((pad, 140, pad + 128, 150), fill=GOLD)
+    size = 76
+    f = font("xb", size)
+    lines = _wrap(d, title.strip(), f, w - 2 * pad)
+    while len(lines) > 3 and size > 46:
+        size -= 6
+        f = font("xb", size)
+        lines = _wrap(d, title.strip(), f, w - 2 * pad)
+    lh = size * 1.32
+    y = (h - lh * len(lines)) / 2 + 36
+    for ln in lines:
+        d.text((pad, y), ln, font=f, fill=WHITE)
+        y += lh
+    d.text((pad, h - 86), "세무·절세·연금 정보", font=font("b", 30), fill=GRAY)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    im.save(out, "PNG")
     return out
 
 
