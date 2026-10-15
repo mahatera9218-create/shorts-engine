@@ -4,7 +4,9 @@ import Link from "next/link";
 import "./globals.css";
 import { SITE_NAME, SITE_URL, SITE_DESC, CATEGORY_ORDER } from "@/lib/wp";
 
-const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT || "";
+// 애드센스 게시자 ID(공개 값). env로 덮어쓸 수 있음.
+const ADSENSE_CLIENT =
+  process.env.NEXT_PUBLIC_ADSENSE_CLIENT || "ca-pub-6435261744776184";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
