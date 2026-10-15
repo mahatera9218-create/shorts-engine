@@ -16,6 +16,7 @@ from zoneinfo import ZoneInfo
 # 달러 / 100만 토큰. 캐시 읽기는 입력가의 10%, 캐시 쓰기는 125%.
 PRICE = {
     "claude-opus-5-5": {"input": 4.0, "output": 20.0, "cache_read": 0.4, "cache_write": 5.0},
+    "claude-opus-4-8": {"input": 4.0, "output": 20.0, "cache_read": 0.4, "cache_write": 5.0},
     "claude-sonnet-5-5": {"input": 2.0, "output": 10.0, "cache_read": 0.2, "cache_write": 2.5},
 }
 

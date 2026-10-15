@@ -83,8 +83,8 @@ def generate_one(llm, topic: dict, existing_slugs: list[str], idx: int) -> Path:
     system = _system(existing_slugs)
     prompt = (f"주제: {topic['topic']}\n슬러그(참고): {topic['slug']}\n"
               "이 주제로 구글 블로그 글 1편을 써라. body_markdown과 title만 채운다.")
-    out = llm.ask_json(system, prompt, SCHEMA, model="claude-sonnet-5-5",
-                       effort="medium", max_tokens=12000, stage="구글글")
+    out = llm.ask_json(system, prompt, SCHEMA, model="claude-opus-4-8",
+                       effort="high", max_tokens=12000, stage="구글글")
     title = out["title"].strip()
     body = out["body_markdown"].strip()
     path = QUEUE / f"{idx:02d}-{topic['slug']}.md"
