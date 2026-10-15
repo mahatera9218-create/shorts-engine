@@ -1,0 +1,72 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · 대형 로켓 하단의 엔진부",
+  "make": true,
+  "file": "",
+  "desc": "Square realistic documentary photograph of the base of a large rocket booster with its engine cluster close-up on a launch pad, natural daylight, sharp focus, single subject filling the frame, no text, no logos",
+  "brand": "",
+  "size": "1024x1024",
+  "prompt": "Square 1:1 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Square realistic documentary photograph of the base of a large rocket booster with its engine cluster close-up on a launch pad, natural daylight, sharp focus, single subject filling the frame, no text, no logos No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 2,
+  "label": "지붕 위에 설치된 위성 안테나",
+  "make": true,
+  "file": "",
+  "desc": "Realistic news-style photograph of a satellite internet dish mounted on a rural rooftop under a clear sky, natural light, single dish in sharp focus, no text, no logos",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic news-style photograph of a satellite internet dish mounted on a rural rooftop under a clear sky, natural light, single dish in sharp focus, no text, no logos No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 3,
+  "label": "뉴욕 나스닥 거래소 건물",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photograph of the Nasdaq MarketSite building exterior in Times Square, New York, daytime, natural light, wide shot, no readable numbers",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic photograph of the Nasdaq MarketSite building exterior in Times Square, New York, daytime, natural light, wide shot, no readable numbers No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 4,
+  "label": "증시 화면을 지켜보는 트레이더들",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photograph of a trading floor with several anonymous traders seen from behind watching large screens without readable numbers, natural indoor light",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic photograph of a trading floor with several anonymous traders seen from behind watching large screens without readable numbers, natural indoor light No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 5,
+  "label": "기업 가치를 계산하는 책상 풍경",
+  "make": true,
+  "file": "",
+  "desc": "Realistic close-up photograph of a calculator and financial paperwork on a desk beside a coffee cup, natural window light, no readable text or numbers",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic close-up photograph of a calculator and financial paperwork on a desk beside a coffee cup, natural window light, no readable text or numbers No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 6,
+  "label": "빈 이사회 회의실",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photograph of a corporate boardroom with an empty long table and leather chairs, large window with daylight, no people, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic photograph of a corporate boardroom with an empty long table and leather chairs, large window with daylight, no people, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 7,
+  "label": "일정을 확인하는 달력",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photograph of a wall calendar on an office desk with a pen beside it, natural light, no readable numbers or text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic photograph of a wall calendar on an office desk with a pen beside it, natural light, no readable numbers or text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ }
+]

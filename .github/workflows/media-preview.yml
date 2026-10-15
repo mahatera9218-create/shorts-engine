@@ -74,6 +74,18 @@ jobs:
       - name: 캐시 표시
         if: always()
         run: mkdir -p .cache && date > .cache/media.txt
+      - name: 새 영상 넘기기 (같은 실행의 도우미 배포용. 없으면 도우미가 옛 영상을 덮어쓴다, 2026-10-03)
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: media-new
+          path: |
+            posts/*/clip.mp4
+            shorts/*/video.mp4
+            .cache/media.txt
+          if-no-files-found: ignore
+          retention-days: 3
       - name: 영상 캐시 저장
         if: always()
         continue-on-error: true

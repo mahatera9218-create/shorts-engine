@@ -1,0 +1,286 @@
+keyword: SK하이닉스 주가 전망
+person: SK하이닉스
+mode: 쿠니네
+made: '22:10'
+items:
+- title: SK하이닉스 주가 전망, '168만원인데 목표가는 400만원?' 괴리 어디서 올까
+  type: 비교형
+  rank: 1
+  best: true
+  chars: 45
+  style: 속마음형
+  flags: []
+- title: SK하이닉스 '실적은 역대급인데 주가는 왜 제자리' 비교해 보니
+  type: 비교형
+  rank: null
+  best: false
+  chars: 35
+  style: 속마음형
+  flags: []
+- title: SK하이닉스 주가 전망, 종가 168만원 vs 컨센서스 314만원 격차
+  type: 비교형
+  rank: null
+  best: false
+  chars: 39
+  style: 숫자형
+  flags: []
+- title: SK하이닉스 목표가 400만원과 470만원, 증권사별 차이 한눈에
+  type: 비교형
+  rank: null
+  best: false
+  chars: 36
+  style: 숫자형
+  flags: []
+- title: SK하이닉스 주가 전망, '지금 들어가도 될까' 고민이면 이것부터
+  type: 실행형
+  rank: null
+  best: false
+  chars: 36
+  style: 속마음형
+  flags: []
+- title: SK하이닉스 '10월 말 실적 전에 팔아야 하나' 확인할 3가지
+  type: 실행형
+  rank: null
+  best: true
+  chars: 35
+  style: 속마음형
+  flags: []
+- title: SK하이닉스 주가 전망, 3Q 실적 발표 앞두고 체크할 숫자 4개
+  type: 실행형
+  rank: null
+  best: false
+  chars: 36
+  style: 숫자형
+  flags: []
+- title: SK하이닉스 10월 28일경 실적 발표, 영업이익 75조 기준선 확인
+  type: 실행형
+  rank: null
+  best: false
+  chars: 38
+  style: 숫자형
+  flags: []
+- title: SK하이닉스 '자사주 매입하면 주주한테 뭐가 달라지나' 정리
+  type: 이득형
+  rank: null
+  best: false
+  chars: 33
+  style: 속마음형
+  flags: []
+- title: SK하이닉스 주가 전망, '주주환원 90조' 보유자에게 의미는
+  type: 이득형
+  rank: null
+  best: true
+  chars: 34
+  style: 속마음형
+  flags: []
+- title: SK하이닉스 자사주 40조 매입 진행, 2026년 최소 90조 추정
+  type: 이득형
+  rank: null
+  best: false
+  chars: 37
+  style: 숫자형
+  flags: []
+- title: SK하이닉스 영업이익률 78% 추정, 주주 몫은 어디까지일까
+  type: 이득형
+  rank: null
+  best: false
+  chars: 33
+  style: 숫자형
+  flags: []
+- title: SK하이닉스 '테마섹이 왜 하이닉스를 보나' 8% 급등 뒤 숨은 질문
+  type: 궁금형
+  rank: null
+  best: true
+  chars: 38
+  style: 속마음형
+  flags: []
+- title: SK하이닉스 주가 전망, 'HBM 호황인데 왜 흔들렸을까' 이유는
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 36
+  style: 속마음형
+  flags: []
+- title: SK하이닉스 테마섹 직접투자 검토 보도, 주가 8% 급등 배경
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 34
+  style: 숫자형
+  flags: []
+- title: SK하이닉스 3Q 영업이익 75.1조 추정, 매출은 얼마로 보나
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 35
+  style: 숫자형
+  flags: []
+- title: SK하이닉스 주가 전망, '고점 아니냐' 불안할 때 보는 위험 요인
+  type: 위협형
+  rank: null
+  best: true
+  chars: 37
+  style: 속마음형
+  flags: []
+- title: SK하이닉스 '환율 떨어지면 실적 깎인다던데' 사실일까
+  type: 위협형
+  rank: null
+  best: false
+  chars: 30
+  style: 속마음형
+  flags: []
+- title: SK하이닉스 하루 -2.44% 하락, 외국인 매도 논란 짚어보기
+  type: 위협형
+  rank: null
+  best: false
+  chars: 35
+  style: 숫자형
+  flags: []
+- title: SK하이닉스 ROE 60%대 정점 뒤 하락, 놓치기 쉬운 리스크
+  type: 위협형
+  rank: null
+  best: false
+  chars: 35
+  style: 숫자형
+  flags: []
+- title: SK하이닉스 '실적 좋으면 주가도 오른다더니' 이번엔 달랐다
+  type: 반전형
+  rank: null
+  best: true
+  chars: 33
+  style: 속마음형
+  flags: []
+- title: SK하이닉스 주가 전망, '이미 다 반영됐다' 말이 놓친 부분
+  type: 반전형
+  rank: null
+  best: false
+  chars: 34
+  style: 속마음형
+  flags: []
+- title: SK하이닉스 -2.44% 하락한 날, 8% 급등 소식이 뒤따른 사연
+  type: 반전형
+  rank: null
+  best: false
+  chars: 37
+  style: 숫자형
+  flags: []
+- title: SK하이닉스 저평가라는 증권가 vs 168만원 주가, 반전 포인트
+  type: 반전형
+  rank: null
+  best: false
+  chars: 36
+  style: 숫자형
+  flags: []
+- title: SK하이닉스 주가 전망, '이 숫자 보면 저평가 논리 이해된다'
+  type: 확신형
+  rank: null
+  best: false
+  chars: 35
+  style: 속마음형
+  flags: []
+- title: SK하이닉스 '증권가는 왜 한목소리로 매수일까' 근거 정리
+  type: 확신형
+  rank: null
+  best: true
+  chars: 32
+  style: 속마음형
+  flags: []
+- title: SK하이닉스 컨센서스 상승 여력 80%대, 증권가 논리 해부
+  type: 확신형
+  rank: null
+  best: false
+  chars: 33
+  style: 숫자형
+  flags: []
+- title: SK하이닉스 HBM4 4분기 확대 기대, 실적 전망을 받치는 근거
+  type: 확신형
+  rank: null
+  best: false
+  chars: 36
+  style: 숫자형
+  flags: []
+- title: SK하이닉스 주가 8% 급등, '또 시작이냐' 개인투자자 술렁
+  type: 자극형
+  rank: null
+  best: false
+  chars: 34
+  style: 속마음형
+  flags: []
+- title: SK하이닉스 주가 전망, '내 계좌만 왜 이래' 괴리 논란 커졌다
+  type: 자극형
+  rank: null
+  best: true
+  chars: 36
+  style: 속마음형
+  flags: []
+- title: SK하이닉스 하루 8% 급등, 테마섹 보도 하나에 시장 출렁
+  type: 자극형
+  rank: null
+  best: false
+  chars: 33
+  style: 숫자형
+  flags: []
+- title: SK하이닉스 영업이익률 78.4%, 믿기 힘든 숫자 논란
+  type: 자극형
+  rank: null
+  best: false
+  chars: 31
+  style: 숫자형
+  flags: []
+groups:
+- type: 비교형
+  idx:
+  - 0
+  - 1
+  - 2
+  - 3
+  best: 0
+- type: 실행형
+  idx:
+  - 4
+  - 5
+  - 6
+  - 7
+  best: 5
+- type: 이득형
+  idx:
+  - 8
+  - 9
+  - 10
+  - 11
+  best: 9
+- type: 궁금형
+  idx:
+  - 12
+  - 13
+  - 14
+  - 15
+  best: 12
+- type: 위협형
+  idx:
+  - 16
+  - 17
+  - 18
+  - 19
+  best: 16
+- type: 반전형
+  idx:
+  - 20
+  - 21
+  - 22
+  - 23
+  best: 20
+- type: 확신형
+  idx:
+  - 24
+  - 25
+  - 26
+  - 27
+  best: 25
+- type: 자극형
+  idx:
+  - 28
+  - 29
+  - 30
+  - 31
+  best: 29

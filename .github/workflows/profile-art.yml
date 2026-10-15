@@ -1,0 +1,44 @@
+# 블로그 프로필 사진 후보 → reports/브랜드/프로필/  (content/profile_art.py를 고쳐 main에 올리면)
+name: 프로필 사진 후보
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["content/profile_art.py"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: repo-reports
+  cancel-in-progress: false
+
+jobs:
+  profile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: 준비
+        run: pip install -r requirements.txt
+      - name: 그리기
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python -m content.profile_art
+      - name: 결과 저장 (reports/ 커밋)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/
+          git diff --cached --quiet && exit 0
+          git commit -m "프로필 사진 후보 $(date +%F)"
+          for i in 1 2 3; do
+            git pull --rebase --autostash -X theirs origin "${GITHUB_REF_NAME}" && git push && exit 0
+            sleep $((i * 5))
+          done
+          exit 1

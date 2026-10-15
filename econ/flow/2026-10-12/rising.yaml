@@ -1,0 +1,38 @@
+date: '2026-10-12'
+updated: '22:24'
+items:
+- kw: 오픈AI
+  rise: 2.27
+  volume: 40600
+  named: true
+  blog24h: 100
+  section: 해외주식
+  score: 121
+- kw: 팔란티어
+  rise: 1.67
+  volume: 64400
+  named: true
+  blog24h: 100
+  section: 해외주식
+  score: 104
+- kw: 일라이릴리
+  rise: 1.24
+  volume: 38440
+  named: true
+  blog24h: 100
+  section: 해외주식
+  score: 76
+- kw: 아파트
+  rise: 1.08
+  volume: 55920
+  named: true
+  blog24h: 100
+  section: 부동산
+  score: 68
+- kw: 아파트매매
+  rise: 0.99
+  volume: 33780
+  named: true
+  blog24h: 100
+  section: 부동산
+  score: 60

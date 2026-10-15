@@ -1,0 +1,72 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · 간판이 크게 보이는 마이크론 사옥 정면",
+  "make": true,
+  "file": "thumb.jpg",
+  "desc": "Square close-up photograph of the Micron Technology building facade with the large Micron logo sign centered, shot from a low angle, half of the frame bright golden light and the other half in cool dark shadow suggesting mixed signals, high contrast, cinematic lighting, realistic news photo, no other text",
+  "brand": "Micron Technology",
+  "size": "1024x1024",
+  "prompt": "Square 1:1 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Square close-up photograph of the Micron Technology building facade with the large Micron logo sign centered, shot from a low angle, half of the frame bright golden light and the other half in cool dark shadow suggesting mixed signals, high contrast, cinematic lighting, realistic news photo, no other text This must clearly be Micron Technology: show its real, accurate corporate signage — the actual Micron Technology logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 2,
+  "label": "미국 아이다호주 보이시에 있는 마이크론 본사 전경",
+  "make": true,
+  "file": "img2.jpg",
+  "desc": "Wide aerial photograph of the Micron Technology headquarters campus in Boise, Idaho, large office and fab buildings with the Micron logo visible, clear sunny day, press photo style",
+  "brand": "Micron Technology",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Wide aerial photograph of the Micron Technology headquarters campus in Boise, Idaho, large office and fab buildings with the Micron logo visible, clear sunny day, press photo style This must clearly be Micron Technology: show its real, accurate corporate signage — the actual Micron Technology logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 3,
+  "label": "서버용 D램과 HBM 메모리 칩 클로즈업",
+  "make": true,
+  "file": "img3.jpg",
+  "desc": "Close-up photograph of a DRAM memory module and HBM chips on a dark circuit board, sharp focus, cool blue lighting, realistic news photo, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Close-up photograph of a DRAM memory module and HBM chips on a dark circuit board, sharp focus, cool blue lighting, realistic news photo, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 4,
+  "label": "반도체 공장 클린룸에서 일하는 작업자들",
+  "make": true,
+  "file": "img4.jpg",
+  "desc": "Photograph of a modern semiconductor fab cleanroom with engineers in white suits seen from behind, wafers on automated carriers, realistic documentary style, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Photograph of a modern semiconductor fab cleanroom with engineers in white suits seen from behind, wafers on automated carriers, realistic documentary style, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 5,
+  "label": "증시 시세 화면을 바라보는 트레이더",
+  "make": true,
+  "file": "img5.jpg",
+  "desc": "Photograph of a Wall Street trading floor screens glowing in blue and green, anonymous traders seen from behind, realistic news photo, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Photograph of a Wall Street trading floor screens glowing in blue and green, anonymous traders seen from behind, realistic news photo, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 6,
+  "label": "삼성전자 기흥 반도체 캠퍼스 전경",
+  "make": true,
+  "file": "img6.jpg",
+  "desc": "Aerial view of the Samsung Electronics Giheung semiconductor campus, large grey fab building with the blue SAMSUNG logo, sunny day, press photo style",
+  "brand": "Samsung Electronics",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Aerial view of the Samsung Electronics Giheung semiconductor campus, large grey fab building with the blue SAMSUNG logo, sunny day, press photo style This must clearly be Samsung Electronics: show its real, accurate corporate signage — the actual Samsung Electronics logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 7,
+  "label": "SK하이닉스 이천 캠퍼스 전경",
+  "make": true,
+  "file": "img7.jpg",
+  "desc": "Wide aerial photograph of the SK hynix Icheon campus, large fab buildings with the SK hynix sign visible, clear day, news photo style",
+  "brand": "SK hynix",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Wide aerial photograph of the SK hynix Icheon campus, large fab buildings with the SK hynix sign visible, clear day, news photo style This must clearly be SK hynix: show its real, accurate corporate signage — the actual SK hynix logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ }
+]

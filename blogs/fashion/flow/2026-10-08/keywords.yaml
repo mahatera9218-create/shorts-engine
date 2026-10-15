@@ -1,0 +1,775 @@
+date: '2026-10-08'
+updated: '20:23'
+items:
+- kw: 신민아 미니스커트 셋업 루이비통
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 2
+  score: 41
+  parts:
+    네이버: 35
+    최신: 6
+    출처: 0
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 1
+    뉴스6h: 1
+    블로그24h: 50
+    월검색: 10
+- kw: 리사 러플 드레스 루이비통
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 3
+  score: 41
+  parts:
+    네이버: 35
+    최신: 6
+    출처: 0
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 1
+    뉴스6h: 1
+    블로그24h: 70
+    월검색: 10
+- kw: 수지 트러커 스웨터 셀린느 295만원
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 1
+  score: 35
+  parts:
+    네이버: 35
+    최신: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 5
+    월검색: 10
+- kw: 리사 루이비통
+  core: 리사 루이비통
+  area: 드라마 패션
+  why: 파리 루이비통 쇼 참석, 공주 같은 룩과 루이비통 가방 현지 반응 · 루이비통
+  person: 블랙핑크 리사
+  rows:
+  - B6
+  - B15
+  - B29
+  - B33
+  - S36
+  src: 뉴스검색, 블로거
+  bloggers:
+  - cocoleenice
+  - jayuyu
+  - ohye1991
+  sources:
+    블로거: 4
+    뉴스검색: 1
+  score: 28
+  parts:
+    네이버: 0
+    최신: 12
+    출처: 11
+    뉴스: 2
+    검색: 3
+  stats:
+    뉴스24h: 5
+    뉴스6h: 2
+    블로그24h: 100
+    월검색: 840
+- kw: 전도연 샤넬 드레스
+  core: 전도연 샤넬
+  area: 드라마 패션
+  why: 부국제 '가능한 사랑' 레드카펫·오픈토크 샤넬 트위드 재킷과 드레스, 풀뱅 앞머리까지 화제 · 샤넬
+  person: 배우 전도연
+  rows:
+  - B8
+  - B17
+  - B18
+  - B50
+  - B54
+  src: 블로거, 블로거새글
+  bloggers:
+  - by-nyong
+  - goodface0863
+  - lub_hong
+  - ohye1991
+  sources:
+    블로거새글: 3
+    블로거: 2
+  score: 27
+  parts:
+    네이버: 0
+    최신: 6
+    출처: 20
+    뉴스: 1
+    검색: 0
+  stats:
+    뉴스24h: 2
+    뉴스6h: 1
+    블로그24h: 100
+    월검색: 15
+- kw: 젠데이아 커스텀 드레스 루이비통
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 4
+  score: 26
+  parts:
+    네이버: 26
+    최신: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 19
+    월검색: 10
+- kw: 고윤정 화이트 스커트 샤넬 1019만원
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 5
+  score: 26
+  parts:
+    네이버: 26
+    최신: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 0
+    월검색: 10
+- kw: 김현주 블랙 벨벳 드레스 나임칸 1132만원
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 6
+  score: 26
+  parts:
+    네이버: 26
+    최신: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 9
+    월검색: 10
+- kw: 김민하 샤넬 원피스
+  core: 김민하 샤넬
+  area: 드라마 패션
+  why: 부국제 개막식 진행, 17kg 감량 후 2년 전과 비교되는 블랙 샤넬 드레스 · 샤넬
+  person: 배우 김민하
+  rows:
+  - B11
+  - B40
+  - B43
+  - B60
+  src: 블로거, 블로거새글
+  bloggers:
+  - djdjdj8206
+  - merryeeun
+  - ohye1991
+  - semingg
+  sources:
+    블로거: 3
+    블로거새글: 1
+  score: 22
+  parts:
+    네이버: 0
+    최신: 6
+    출처: 14
+    뉴스: 2
+    검색: 0
+  stats:
+    뉴스24h: 3
+    뉴스6h: 1
+    블로그24h: 22
+    월검색: 15
+- kw: 신민아 루이비통
+  core: 신민아 루이비통
+  area: 드라마 패션
+  why: 파리패션위크 루이비통 쇼 앰버서더 착장, 재킷·스커트 셋업 화제 · 루이비통
+  person: 배우 신민아
+  rows:
+  - B6
+  - B19
+  - B32
+  - B34
+  src: 블로거
+  bloggers:
+  - cocoleenice
+  - goodface0863
+  - jayuyu
+  sources:
+    블로거: 4
+  score: 19
+  parts:
+    네이버: 0
+    최신: 6
+    출처: 9
+    뉴스: 2
+    검색: 2
+  stats:
+    뉴스24h: 3
+    뉴스6h: 1
+    블로그24h: 100
+    월검색: 390
+- kw: 노정의 드레스
+  core: 노정의 드레스
+  area: 드라마 패션
+  why: 부국제 블랙·핑크 인형 같은 드레스 실루엣 화제
+  person: 배우 노정의
+  rows:
+  - B45
+  - S38
+  - S39
+  src: 뉴스검색, 블로거
+  bloggers:
+  - djdjdj8206
+  sources:
+    블로거: 1
+    뉴스검색: 2
+  score: 19
+  parts:
+    네이버: 0
+    최신: 12
+    출처: 6
+    뉴스: 1
+    검색: 0
+  stats:
+    뉴스24h: 2
+    뉴스6h: 2
+    블로그24h: 28
+    월검색: 10
+- kw: 고현정 원피스 발렌티노
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 7
+  score: 18
+  parts:
+    네이버: 18
+    최신: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 17
+    월검색: 10
+- kw: 채정안 미니 포춘백 르메르
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 8
+  score: 18
+  parts:
+    네이버: 18
+    최신: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 5
+    월검색: 10
+- kw: 문가영 베스트 롱스커트 샤넬
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 9
+  score: 18
+  parts:
+    네이버: 18
+    최신: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 29
+    월검색: 10
+- kw: 김서형 베이지 트렌치코트
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 10
+  score: 18
+  parts:
+    네이버: 18
+    최신: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 100
+    월검색: 10
+- kw: 카리나 가방
+  core: 카리나 가방
+  area: 가방
+  why: 공항패션 글로니 레더 숄더백, MLB 볼캡 화제
+  person: 에스파 카리나
+  rows:
+  - G7
+  - G8
+  - B30
+  - S18
+  src: Grok, 뉴스검색, 블로거
+  bloggers:
+  - cocoleenice
+  sources:
+    Grok: 2
+    블로거: 1
+    뉴스검색: 1
+  score: 14
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 9
+    뉴스: 2
+    검색: 3
+  stats:
+    뉴스24h: 3
+    뉴스6h: 0
+    블로그24h: 68
+    월검색: 690
+- kw: 김도연 샤넬 드레스
+  core: 김도연 샤넬
+  area: 드라마 패션
+  why: 영화 '도라'로 부국제 레드카펫 블랙 샤넬 드레스 · 샤넬
+  person: 배우 김도연
+  rows:
+  - B25
+  - S37
+  src: 뉴스검색, 블로거새글
+  bloggers:
+  - cocoleenice
+  sources:
+    블로거새글: 1
+    뉴스검색: 1
+  score: 13
+  parts:
+    네이버: 0
+    최신: 6
+    출처: 6
+    뉴스: 1
+    검색: 0
+  stats:
+    뉴스24h: 2
+    뉴스6h: 1
+    블로그24h: 68
+    월검색: 20
+- kw: 수지 가방
+  core: 수지 가방
+  area: 가방
+  why: 수지 피드 패브릭 저렴이 가방 정보 요청 폭발, 셀린느 신상 17백·플레어백 · 셀린느
+  person: 배우 수지
+  rows:
+  - B4
+  - B48
+  - B61
+  src: 블로거
+  bloggers:
+  - djdjdj8206
+  - jayuyu
+  - merryeeun
+  sources:
+    블로거: 3
+  score: 13
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 9
+    뉴스: 0
+    검색: 4
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 100
+    월검색: 1150
+- kw: 김희애 로에베
+  core: 김희애 로에베
+  area: 데일리룩
+  why: 김희애·송강 로에베 공항룩, 59세 일상 셔츠 룩 화제 · 로에베
+  person: 배우 김희애
+  rows:
+  - S6
+  - S45
+  src: 뉴스검색
+  bloggers: []
+  sources:
+    뉴스검색: 2
+  score: 10
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 3
+    뉴스: 4
+    검색: 3
+  stats:
+    뉴스24h: 7
+    뉴스6h: 0
+    블로그24h: 77
+    월검색: 720
+- kw: 젠데이아 루이비통
+  core: 젠데이아 루이비통
+  area: 드라마 패션
+  why: 루이비통 쇼 앞자리 모먼트로 해외 커뮤니티 화제
+  person: 젠데이아
+  rows:
+  - B2
+  - B6
+  src: 블로거, 블로거새글
+  bloggers:
+  - jayuyu
+  sources:
+    블로거새글: 1
+    블로거: 1
+  score: 9
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 8
+    뉴스: 1
+    검색: 0
+  stats:
+    뉴스24h: 2
+    뉴스6h: 0
+    블로그24h: 28
+    월검색: 45
+- kw: 한선화 드레스
+  core: 한선화 드레스
+  area: 드라마 패션
+  why: 부국제 레드카펫 드레스 베스트·워스트 논쟁
+  person: 배우 한선화
+  rows:
+  - B14
+  - B42
+  src: 블로거
+  bloggers:
+  - ohye1991
+  - semingg
+  sources:
+    블로거: 2
+  score: 6
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 6
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 1
+    뉴스6h: 0
+    블로그24h: 67
+    월검색: 15
+- kw: 고현정 발렌티노
+  core: 고현정 발렌티노
+  area: 드라마 패션
+  why: 파리 발렌티노 쇼 현장 패션 화제 · 발렌티노
+  person: 배우 고현정
+  rows:
+  - B37
+  src: 블로거
+  bloggers:
+  - cocoleenice
+  sources:
+    블로거: 1
+  score: 6
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 3
+    뉴스: 1
+    검색: 2
+  stats:
+    뉴스24h: 2
+    뉴스6h: 0
+    블로그24h: 95
+    월검색: 480
+- kw: 김현주 머메이드 드레스
+  core: 김현주 드레스
+  area: 드라마 패션
+  why: 부국제 레드카펫 블랙 머메이드 드레스 화제
+  person: 배우 김현주
+  rows:
+  - B13
+  - B20
+  src: 블로거
+  bloggers:
+  - goodface0863
+  - ohye1991
+  sources:
+    블로거: 2
+  score: 6
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 6
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 4
+    월검색: 10
+- kw: 조이 가방
+  core: 조이 가방
+  area: 가방
+  why: 공항패션 히에타 모나 가방, 페인오어플레져 레더 자켓, 마크모크 부츠 착용 화제
+  person: 레드벨벳 조이
+  rows:
+  - G4
+  - G5
+  - G6
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 3
+  score: 5
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 4
+    뉴스: 0
+    검색: 1
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 83
+    월검색: 250
+- kw: 전지현 생로랑
+  core: 전지현 공항패션
+  area: 드라마 패션
+  why: 46세 생로랑 오버사이즈 레더 재킷 공항패션 · 생로랑
+  person: 배우 전지현
+  rows:
+  - B38
+  src: 블로거
+  bloggers:
+  - cocoleenice
+  sources:
+    블로거: 1
+  score: 5
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 3
+    뉴스: 0
+    검색: 2
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 67
+    월검색: 490
+- kw: 김서형 트렌치코트
+  core: 김서형 트렌치코트
+  area: 의류
+  why: 가을 베이지 트렌치코트 데일리룩 재조명
+  person: 배우 김서형
+  rows:
+  - B71
+  - S4
+  src: 뉴스검색, 블로거
+  bloggers:
+  - tjthdus94
+  sources:
+    블로거: 1
+    뉴스검색: 1
+  score: 5
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 5
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 9
+    월검색: 10
+- kw: 박진영 국감 패션
+  core: 박진영 자켓
+  area: 의류
+  why: 국감 시스루 코디 재킷 화제
+  person: JYP 박진영
+  rows:
+  - B9
+  src: 블로거새글
+  bloggers:
+  - ohye1991
+  sources:
+    블로거새글: 1
+  score: 5
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 5
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 100
+    월검색: 10
+- kw: 하츠투하츠 지우 공항패션
+  core: 지우 가방
+  area: 가방
+  why: 클로에 스몰 마르씨 가방, 앤더슨벨 부츠 등 착용 화제
+  person: 하츠투하츠 지우
+  rows:
+  - G1
+  - G2
+  - G12
+  - G13
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 4
+  score: 4
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 4
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 22
+    월검색: 25
+- kw: 하츠투하츠 주은 가방
+  core: 주은 가방
+  area: 가방
+  why: 메종 마르지엘라 호보 가방, 홀터넥 나시·진·집업 공항패션
+  person: 하츠투하츠 주은
+  rows:
+  - G3
+  - G11
+  - G14
+  - G15
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 4
+  score: 4
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 4
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 1
+    월검색: 10
+- kw: 이부진 원피스
+  core: 이부진 원피스
+  area: 데일리룩
+  why: 17만원대 원피스로 명품급 분위기 · 17만원대
+  person: 호텔신라 이부진
+  rows:
+  - B46
+  src: 블로거
+  bloggers:
+  - djdjdj8206
+  sources:
+    블로거: 1
+  score: 4
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 3
+    뉴스: 0
+    검색: 1
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 9
+    월검색: 210
+- kw: 빽가 샤넬 시계
+  core: 빽가 샤넬 시계
+  area: 시계·주얼리
+  why: 코요태 계약 기념 구매 1,300만원대 샤넬 시계 · 샤넬
+  person: 코요태 빽가
+  rows:
+  - B73
+  src: 블로거
+  bloggers:
+  - tjthdus94
+  sources:
+    블로거: 1
+  score: 3
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 3
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 1
+    월검색: 10
+aside:
+  at: '20:23'
+  n: 10
+  list:
+  - 수지 트러커 스웨터 셀린느 295만원
+  - 신민아 미니스커트 셋업 루이비통
+  - 리사 러플 드레스 루이비통
+  - 젠데이아 커스텀 드레스 루이비통
+  - 고윤정 화이트 스커트 샤넬 1019만원
+  - 김현주 블랙 벨벳 드레스 나임칸 1132만원
+  - 고현정 원피스 발렌티노
+  - 채정안 미니 포춘백 르메르
+  - 문가영 베스트 롱스커트 샤넬
+  - 김서형 베이지 트렌치코트

@@ -1,0 +1,72 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · 먹구름 아래 황금빛으로 빛나는 비트코인 실물 코인",
+  "make": true,
+  "file": "thumb.jpg",
+  "desc": "Dramatic square close-up photograph of a single gold bitcoin coin in the center, glowing golden backlight against dark stormy clouds with a faint red warning glow, low angle, high contrast, cinematic lighting, no text, no letters",
+  "brand": "",
+  "size": "1024x1024",
+  "prompt": "Square 1:1 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Dramatic square close-up photograph of a single gold bitcoin coin in the center, glowing golden backlight against dark stormy clouds with a faint red warning glow, low angle, high contrast, cinematic lighting, no text, no letters No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 2,
+  "label": "가상자산 시세 화면이 켜진 트레이더 책상",
+  "make": true,
+  "file": "img2.jpg",
+  "desc": "Realistic news-style photograph of a trader's desk with several monitors showing blurred candlestick screens in a dim office, warm light from the screens, no readable text, no logos",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic news-style photograph of a trader's desk with several monitors showing blurred candlestick screens in a dim office, warm light from the screens, no readable text, no logos No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 3,
+  "label": "어두운 배경 위에 놓인 비트코인 실물 코인",
+  "make": true,
+  "file": "img3.jpg",
+  "desc": "Close-up realistic photograph of a physical gold-colored bitcoin coin standing on a dark reflective surface, dramatic side lighting, no text, no letters",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Close-up realistic photograph of a physical gold-colored bitcoin coin standing on a dark reflective surface, dramatic side lighting, no text, no letters No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 4,
+  "label": "미국 워싱턴 연방준비제도 청사 외관",
+  "make": true,
+  "file": "img4.jpg",
+  "desc": "Realistic photograph of the exterior of the Federal Reserve Marriner S. Eccles building in Washington DC, white marble facade, clear daylight, wide angle",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photograph of the exterior of the Federal Reserve Marriner S. Eccles building in Washington DC, white marble facade, clear daylight, wide angle No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 5,
+  "label": "달러 지폐 다발과 금괴",
+  "make": true,
+  "file": "img5.jpg",
+  "desc": "Realistic photograph of a US dollar banknote bundle on a table next to a small gold bar, soft natural light, shallow depth of field, no readable text or numbers",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photograph of a US dollar banknote bundle on a table next to a small gold bar, soft natural light, shallow depth of field, no readable text or numbers No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 6,
+  "label": "해 질 녘 금융가 고층 빌딩 전경",
+  "make": true,
+  "file": "img6.jpg",
+  "desc": "Realistic wide photograph of a modern financial district skyline at dusk with glass towers and golden sky, no logos, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic wide photograph of a modern financial district skyline at dusk with glass towers and golden sky, no logos, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 7,
+  "label": "스마트폰으로 시세를 확인하는 직장인 뒷모습",
+  "make": true,
+  "file": "img7.jpg",
+  "desc": "Realistic photograph of an anonymous office worker seen from behind looking at a phone with a city window in the background, soft natural light, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photograph of an anonymous office worker seen from behind looking at a phone with a city window in the background, soft natural light, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ }
+]

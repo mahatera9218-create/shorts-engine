@@ -1,0 +1,147 @@
+keyword: 원희 샤넬 가방
+person: 원희
+mode: 연예패션
+made: '16:17'
+items:
+- title: '"샤넬 공주 맞네" 원희 파리 샤넬 버킷백'
+  type: 그룹 2
+  rank: 1
+  best: true
+  chars: 23
+  flags: []
+- title: '"블랙 옷에 이 가방이라고?" 샤넬 버킷백 든 아이돌'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 29
+  flags: []
+- title: '"가방 하나로 분위기가 달라지네" 1238만원대 버킷백'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: '"포니테일에 이렇게 들었구나" 샤넬 가방 든 파리 현장'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: '"캐주얼한데 고급스러운데?" 골드 장식 샤넬 라지백'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: '"이 가방이 눈에 들어오네" 파리에서 포착된 신인 아이돌'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 31
+  flags:
+  - 31자(30자 넘음)
+- title: '"이 가격이라고?" 원희 1238만원대 샤넬 가방'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 27
+  flags: []
+- title: '"블랙에 이렇게 매치하네" 원희 샤넬 라지 버킷백'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 27
+  flags: []
+- title: '"애착 가방 될 것 같은데" 원희 샤넬 데일리백'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 26
+  flags: []
+- title: '"멀리서도 눈에 띄네" 원희 파리 샤넬 가방 착장'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 27
+  flags: []
+- title: '"ILLIT 멤버들도 탐낼 만한데?" 샤넬 라지 버킷백'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: '"윤아도 부러워할 가방인데?" 샤넬 골드 버킷백'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 26
+  flags: []
+- title: '"민주도 들고 싶어 할 듯" 1238만원대 샤넬 가방'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 29
+  flags: []
+- title: '"모카가 보면 탐내겠는데?" 샤넬 블랙 코디 가방'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 27
+  flags: []
+- title: '"이로하도 좋아할 스타일" 샤넬 버킷백 파리룩'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 25
+  flags: []
+- title: 평범한 블랙인데... 가방 하나로 분위기 달라진 원희 ㄷㄷ
+  type: jayuyu식 방식
+  rank: null
+  best: false
+  chars: 32
+  flags:
+  - 32자(30자 넘음)
+- title: 원희 샤넬 버킷백 1238만원... 가방이 다 했네
+  type: jayuyu식 방식
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: 샤넬 공주 소리 나올 만하네 (ft. 파리 현장)
+  type: jayuyu식 방식
+  rank: null
+  best: false
+  chars: 27
+  flags:
+  - 괄호
+groups:
+- type: 그룹 1 주인공 숨김
+  idx:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  best: null
+- type: 그룹 2 이름 노출
+  idx:
+  - 0
+  - 6
+  - 7
+  - 8
+  - 9
+  best: null
+- type: 그룹 3 관련 인물
+  idx:
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  best: null
+- type: jayuyu식
+  idx:
+  - 15
+  - 16
+  - 17
+  best: null

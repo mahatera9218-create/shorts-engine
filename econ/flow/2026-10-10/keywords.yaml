@@ -1,0 +1,558 @@
+date: '2026-10-10'
+updated: '23:47'
+items:
+- kw: 청년미래적금 가입
+  core: 청년미래적금
+  area: 생활경제
+  why: 대표 지정 키워드, 청년 대상 적금 가입 조건과 방법 문의가 꾸준함
+  person: ''
+  product: ''
+  rows:
+  - D1
+  src: 어사이드
+  bloggers: []
+  naver_rank: 5
+  sources:
+    어사이드: 1
+  score: 75
+  parts:
+    네이버: 15
+    급상승: 17
+    최신: 2
+    출처: 0
+    뉴스: 1
+    검색: 32
+    유튜브: 8
+  new: true
+  surge: true
+  stats:
+    뉴스24h: 8
+    뉴스6h: 2
+    블로그24h: 100
+    월검색: 679300
+    상승: 3.66
+    유튜브7일: 13129
+- kw: 국제유가 기름값
+  core: 국제유가
+  area: 생활경제
+  why: 브렌트유 103달러 고공행진인데 국내 기름값은 21주째 하락
+  person: ''
+  product: ''
+  rows:
+  - G15
+  - R12
+  - R13
+  - N5
+  - N25
+  - Y99
+  src: Grok, 국내뉴스, 급상승, 해외뉴스
+  bloggers: []
+  sources:
+    Grok: 1
+    급상승: 2
+    국내뉴스: 2
+    해외뉴스: 1
+  score: 70
+  parts:
+    네이버: 0
+    급상승: 1
+    최신: 9
+    출처: 7
+    뉴스: 12
+    검색: 33
+    유튜브: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 100
+    뉴스6h: 9
+    블로그24h: 100
+    월검색: 1813800
+    상승: 1.08
+    유튜브7일: 40752
+- kw: SK하이닉스 주가 하락
+  core: SK하이닉스
+  area: 국내주식
+  why: 세 달 만에 33% 급락, 90만원 빠지며 코스피 시총 상위주도 동반 하락
+  person: ''
+  product: ''
+  rows:
+  - D3
+  - W5
+  - N58
+  - N40
+  src: 국내뉴스, 어사이드, 인기종목
+  bloggers: []
+  naver_rank: 2
+  sources:
+    어사이드: 1
+    인기종목: 1
+    국내뉴스: 2
+  score: 66
+  parts:
+    네이버: 20
+    급상승: 3
+    최신: 10
+    출처: 4
+    뉴스: 12
+    검색: 33
+    반복: -24
+    유튜브: 8
+  new: false
+  surge: false
+  stats:
+    뉴스24h: 100
+    뉴스6h: 14
+    블로그24h: 100
+    월검색: 6424000
+    상승: 1.15
+    유튜브7일: 96673
+- kw: 미국 증시 S&P500 나스닥 반등
+  core: S&P500
+  area: 미국주식
+  why: S&P500·나스닥 +0.6% 반등, VIX 하락, 연말 상승 전망 및 서학개미 ETF 관심
+  person: ''
+  product: ''
+  rows:
+  - G5
+  - G6
+  - G3
+  - N36
+  - Y1
+  - Y20
+  - Y72
+  - Y4
+  - Y52
+  - Y91
+  src: Grok, 국내뉴스, 해외뉴스
+  bloggers: []
+  sources:
+    Grok: 3
+    국내뉴스: 1
+    해외뉴스: 6
+  score: 64
+  parts:
+    네이버: 0
+    급상승: 4
+    최신: 6
+    출처: 6
+    뉴스: 12
+    검색: 28
+    유튜브: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 100
+    뉴스6h: 6
+    블로그24h: 100
+    월검색: 232900
+    상승: 1.26
+    유튜브7일: 63726
+- kw: 삼성전자 주가 전망
+  core: 삼성전자
+  area: 국내주식
+  why: 분기 영업이익 100조 시대인데 주가는 부진, 극단적 저평가 논란
+  person: ''
+  product: ''
+  rows:
+  - D5
+  - W2
+  - N41
+  - N63
+  src: 국내뉴스, 어사이드, 인기종목
+  bloggers: []
+  naver_rank: 1
+  sources:
+    어사이드: 1
+    인기종목: 1
+    국내뉴스: 2
+  score: 61
+  parts:
+    네이버: 20
+    급상승: 4
+    최신: 10
+    출처: 4
+    뉴스: 12
+    검색: 33
+    반복: -30
+    유튜브: 8
+  new: false
+  surge: false
+  stats:
+    뉴스24h: 100
+    뉴스6h: 16
+    블로그24h: 100
+    월검색: 10584500
+    상승: 1.24
+    유튜브7일: 299590
+- kw: 금값 시세
+  core: 금값
+  area: 금
+  why: 금값 27% 폭락 뒤 은행 판매 급증, 안전자산 모아가기 분석 지속
+  person: ''
+  product: ''
+  rows:
+  - D6
+  - G7
+  - N33
+  src: Grok, 국내뉴스, 어사이드
+  bloggers: []
+  naver_rank: 7
+  sources:
+    어사이드: 1
+    Grok: 1
+    국내뉴스: 1
+  score: 58
+  parts:
+    네이버: 10
+    급상승: 0
+    최신: 2
+    출처: 3
+    뉴스: 2
+    검색: 33
+    유튜브: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 19
+    뉴스6h: 2
+    블로그24h: 100
+    월검색: 882900
+    상승: 0.96
+    유튜브7일: 42860
+- kw: 최태원 호남 반도체
+  core: 최태원 호남 반도체
+  area: 국내주식
+  why: 어사이드 키워드, 반도체 투자 이슈
+  person: SK 최태원
+  product: ''
+  rows:
+  - D7
+  src: 어사이드
+  bloggers: []
+  naver_rank: 6
+  sources:
+    어사이드: 1
+  score: 43
+  parts:
+    네이버: 15
+    급상승: 0
+    최신: 4
+    출처: 0
+    뉴스: 3
+    검색: 21
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 25
+    뉴스6h: 4
+    블로그24h: 100
+    월검색: 31940
+    상승: 1.0
+- kw: 원달러 환율 엔화
+  core: 원달러 환율
+  area: 환율
+  why: 1342.8원대 환율과 엔화 움직임, 해외직구·여행 비용 영향
+  person: ''
+  product: ''
+  rows:
+  - G12
+  - G13
+  - R7
+  - R9
+  - R11
+  src: Grok, 급상승
+  bloggers: []
+  sources:
+    Grok: 2
+    급상승: 3
+  score: 43
+  parts:
+    네이버: 0
+    급상승: 3
+    최신: 1
+    출처: 5
+    뉴스: 4
+    검색: 30
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 31
+    뉴스6h: 1
+    블로그24h: 100
+    월검색: 485800
+    상승: 1.17
+- kw: 주택담보대출 금리
+  core: 주택담보대출
+  area: 부동산
+  why: 주담대 검색 급상승, 은행권 예금금리 인상 경쟁과 연준 추가 인상 가능성
+  person: ''
+  product: ''
+  rows:
+  - R14
+  - G14
+  - N29
+  - G10
+  src: Grok, 국내뉴스, 급상승
+  bloggers: []
+  sources:
+    급상승: 1
+    Grok: 2
+    국내뉴스: 1
+  score: 37
+  parts:
+    네이버: 0
+    급상승: 0
+    최신: 3
+    출처: 6
+    뉴스: 4
+    검색: 24
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 35
+    뉴스6h: 3
+    블로그24h: 100
+    월검색: 91000
+    상승: 0.96
+- kw: 경기 아파트값 10억
+  core: 경기 아파트
+  area: 부동산
+  why: 경기권 아파트값 10억 선 관련 관심, 아파트 키워드 급상승과 연결
+  person: ''
+  product: ''
+  rows:
+  - D11
+  - R15
+  - G9
+  - G11
+  src: Grok, 급상승, 어사이드
+  bloggers: []
+  naver_rank: 9
+  sources:
+    어사이드: 1
+    급상승: 1
+    Grok: 2
+  score: 35
+  parts:
+    네이버: 10
+    급상승: 0
+    최신: 10
+    출처: 5
+    뉴스: 10
+    검색: 0
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 80
+    뉴스6h: 15
+    블로그24h: 100
+    월검색: 80
+    상승: 1.0
+- kw: 엔비디아 주가
+  core: 엔비디아
+  area: 미국주식
+  why: 인기 종목, AI 인프라 역할 확대와 투자 AI 기업 IPO 무산 등 이슈
+  person: ''
+  product: ''
+  rows:
+  - W1
+  - Y35
+  - Y79
+  - Y22
+  - N74
+  src: 국내뉴스, 인기종목, 해외뉴스
+  bloggers: []
+  sources:
+    인기종목: 1
+    해외뉴스: 3
+    국내뉴스: 1
+  score: 35
+  parts:
+    네이버: 0
+    급상승: 3
+    최신: 10
+    출처: 6
+    뉴스: 12
+    검색: 28
+    반복: -24
+  new: false
+  surge: false
+  stats:
+    뉴스24h: 100
+    뉴스6h: 17
+    블로그24h: 100
+    월검색: 218600
+    상승: 1.2
+- kw: 비트코인 시세
+  core: 비트코인
+  area: 비트코인
+  why: 82500달러 회복, 이란 리스크 완화 기대와 금리 상승 압박 공존
+  person: ''
+  product: ''
+  rows:
+  - W3
+  - W4
+  - G8
+  - Y53
+  - Y60
+  - Y65
+  - Y71
+  - Y59
+  - Y68
+  src: Grok, 인기종목, 해외뉴스
+  bloggers: []
+  sources:
+    인기종목: 2
+    Grok: 1
+    해외뉴스: 6
+  score: 35
+  parts:
+    네이버: 0
+    급상승: 2
+    최신: 10
+    출처: 8
+    뉴스: 12
+    검색: 33
+    반복: -30
+  new: false
+  surge: false
+  stats:
+    뉴스24h: 100
+    뉴스6h: 18
+    블로그24h: 100
+    월검색: 1289500
+    상승: 1.1
+- kw: 청약통장 해지
+  core: 청약통장
+  area: 부동산
+  why: 청약통장 해지 여부를 고민하는 사람들의 검색 수요
+  person: ''
+  product: ''
+  rows:
+  - D8
+  src: 어사이드
+  bloggers: []
+  naver_rank: 10
+  sources:
+    어사이드: 1
+  score: 33
+  parts:
+    네이버: 10
+    급상승: 0
+    최신: 3
+    출처: 0
+    뉴스: 1
+    검색: 19
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 11
+    뉴스6h: 3
+    블로그24h: 100
+    월검색: 19290
+    상승: 0.72
+- kw: 코스피 박스권 전망
+  core: 코스피
+  area: 국내주식
+  why: 미장 반등에도 6625선 하락, 코스닥 선전과 파킹형 ETF 유입 등 박스권 장세
+  person: ''
+  product: ''
+  rows:
+  - G1
+  - N1
+  - N4
+  - N50
+  - N52
+  - N35
+  src: Grok, 국내뉴스
+  bloggers: []
+  sources:
+    Grok: 1
+    국내뉴스: 5
+  score: 33
+  parts:
+    네이버: 0
+    급상승: 4
+    최신: 6
+    출처: 6
+    뉴스: 8
+    검색: 33
+    반복: -24
+  new: false
+  surge: false
+  stats:
+    뉴스24h: 69
+    뉴스6h: 6
+    블로그24h: 100
+    월검색: 6833400
+    상승: 1.22
+- kw: 테슬라 주가
+  core: 테슬라
+  area: 미국주식
+  why: 국내 보유 주식수 3% 감소 추정, 테슬라 반등 및 FSD 명칭 변경
+  person: ''
+  product: ''
+  rows:
+  - W9
+  - G4
+  - Y18
+  - Y98
+  src: Grok, 인기종목, 해외뉴스
+  bloggers: []
+  sources:
+    인기종목: 1
+    Grok: 1
+    해외뉴스: 2
+  score: 27
+  parts:
+    네이버: 0
+    급상승: 0
+    최신: 7
+    출처: 7
+    뉴스: 5
+    검색: 32
+    반복: -24
+  new: false
+  surge: false
+  stats:
+    뉴스24h: 45
+    뉴스6h: 7
+    블로그24h: 100
+    월검색: 847300
+    상승: 0.93
+- kw: 이더리움 전망
+  core: 이더리움
+  area: 비트코인
+  why: 위기론 반박 및 연말 전망 하향, 비트마인 매수 한도 접근
+  person: ''
+  product: ''
+  rows:
+  - W6
+  - W7
+  - N69
+  - Y56
+  - Y66
+  src: 국내뉴스, 인기종목, 해외뉴스
+  bloggers: []
+  sources:
+    인기종목: 2
+    국내뉴스: 1
+    해외뉴스: 2
+  score: 27
+  parts:
+    네이버: 0
+    급상승: 0
+    최신: 9
+    출처: 5
+    뉴스: 7
+    검색: 30
+    반복: -24
+  new: false
+  surge: false
+  stats:
+    뉴스24h: 61
+    뉴스6h: 9
+    블로그24h: 100
+    월검색: 405100
+    상승: 1.0

@@ -1,0 +1,601 @@
+date: '2026-10-11'
+updated: '21:22'
+items:
+- kw: 한고은 패션
+  core: 한고은
+  area: 데일리룩
+  why: 급상승, 50대 극세사 몸매로 근황 화제
+  person: 한고은
+  product: ''
+  rows:
+  - R3
+  - B29
+  src: 급상승, 블로거
+  bloggers:
+  - semingg
+  sources:
+    급상승: 1
+    블로거: 1
+  score: 76
+  parts:
+    급상승: 23
+    출처: 11
+    뉴스: 1
+    검색: 21
+    최신: 12
+    유튜브: 8
+  new: true
+  surge: true
+  stats:
+    뉴스24h: 1
+    뉴스6h: 1
+    블로그24h: 90
+    월검색: 33740
+    상승: 2.71
+    유튜브7일: 3232
+- kw: 샤넬 스카프
+  core: 샤넬스카프
+  area: 데일리룩
+  why: 급상승 검색어, 샤넬 패션쇼 관련 화제 이어짐
+  person: ''
+  product: ''
+  rows:
+  - R10
+  - B53
+  - B41
+  src: 급상승, 블로거, 블로거새글
+  bloggers:
+  - by-nyong
+  - tjthdus94
+  sources:
+    급상승: 1
+    블로거새글: 1
+    블로거: 1
+  score: 64
+  parts:
+    급상승: 5
+    출처: 11
+    뉴스: 0
+    검색: 18
+    최신: 25
+    유튜브: 5
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 32
+    월검색: 14150
+    상승: 1.2
+    유튜브7일: 48
+- kw: 결혼식 하객룩
+  core: 결혼식하객룩
+  area: 데일리룩
+  why: 급상승 검색어, 톱스타 총출동 결혼식 하객룩 화제
+  person: ''
+  product: ''
+  rows:
+  - R9
+  - B44
+  src: 급상승, 블로거새글
+  bloggers:
+  - merryeeun
+  sources:
+    급상승: 1
+    블로거새글: 1
+  score: 61
+  parts:
+    급상승: 6
+    출처: 11
+    뉴스: 1
+    검색: 23
+    최신: 12
+    유튜브: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 1
+    뉴스6h: 0
+    블로그24h: 100
+    월검색: 52880
+    상승: 1.28
+    유튜브7일: 3889
+- kw: 고현정 니트
+  core: 고현정 니트
+  area: 의류
+  why: 채령과 같은 니트를 입어 화제, 패션위크 슬림핏도 주목
+  person: 고현정
+  product: ''
+  rows:
+  - B1
+  - B29
+  src: 블로거, 블로거새글
+  bloggers:
+  - jayuyu
+  - semingg
+  sources:
+    블로거새글: 1
+    블로거: 1
+  score: 37
+  parts:
+    급상승: 3
+    출처: 0
+    뉴스: 0
+    검색: 5
+    최신: 25
+    유튜브: 4
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 21
+    월검색: 370
+    상승: 1.11
+    유튜브7일: 29
+- kw: 이현주 크로스백
+  core: 이현주 가방
+  area: 가방
+  why: Mori Dimsum Bag, BADBLUE 가방 착용으로 손민수 화제
+  person: 이현주
+  product: Mori Dimsum Bag, BADBLUE
+  rows:
+  - G4
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 30
+  parts:
+    급상승: 0
+    출처: 11
+    뉴스: 0
+    검색: 0
+    제품: 15
+    유튜브: 4
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 0
+    월검색: 10
+    상승: 1.0
+    유튜브7일: 24
+- kw: 주은 말리부백
+  core: 주은 가방
+  area: 가방
+  why: 하츠투하츠 주은이 MALIBU BAG MINI를 들고 나와 화제
+  person: 하츠투하츠 주은
+  product: MALIBU BAG MINI
+  rows:
+  - G1
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 29
+  parts:
+    급상승: 0
+    출처: 11
+    뉴스: 0
+    검색: 0
+    제품: 15
+    유튜브: 3
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 2
+    월검색: 15
+    상승: 1.0
+    유튜브7일: 11
+- kw: 윤유선 원피스
+  core: 윤유선 원피스
+  area: 데일리룩
+  why: 블루 스트라이프 셔츠 원피스에 보테가베네타 가방 가을룩
+  person: 윤유선
+  product: 보테가베네타 가방
+  rows:
+  - B54
+  src: 블로거새글
+  bloggers:
+  - tjthdus94
+  sources:
+    블로거새글: 1
+  score: 28
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+    최신: 12
+    제품: 15
+    유튜브: 1
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 6
+    월검색: 25
+    상승: 1.0
+    유튜브7일: 1
+- kw: 김희애 파리 패션위크
+  core: 김희애 패션
+  area: 데일리룩
+  why: 59세 김희애 파리 패션위크 참석 기사
+  person: 김희애
+  product: ''
+  rows:
+  - S7
+  src: 뉴스검색
+  bloggers: []
+  sources:
+    뉴스검색: 1
+  score: 28
+  parts:
+    급상승: 8
+    출처: 4
+    뉴스: 6
+    검색: 5
+    유튜브: 5
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 7
+    뉴스6h: 4
+    블로그24h: 100
+    월검색: 440
+    상승: 1.34
+    유튜브7일: 46
+- kw: 주은 원피스
+  core: 주은 원피스
+  area: 의류
+  why: STUDY SKY WAIST BELT DRESS 착장 구매 문의가 이어짐
+  person: 하츠투하츠 주은
+  product: STUDY SKY WAIST BELT DRESS
+  rows:
+  - G2
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 27
+  parts:
+    급상승: 0
+    출처: 11
+    뉴스: 0
+    검색: 0
+    제품: 15
+    유튜브: 1
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 7
+    월검색: 10
+    상승: 1.0
+    유튜브7일: 2
+- kw: 이현주 케이프자켓
+  core: 이현주 자켓
+  area: 의류
+  why: WASHED CAPE JACKET(TUOMIO) 착용으로 화제
+  person: 이현주
+  product: WASHED CAPE JACKET(TUOMIO)
+  rows:
+  - G3
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 26
+  parts:
+    급상승: 0
+    출처: 11
+    뉴스: 0
+    검색: 0
+    제품: 15
+    유튜브: 0
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 0
+    월검색: 10
+    상승: 1.0
+    유튜브7일: 0
+- kw: 전지현 에르메스
+  core: 전지현 가방
+  area: 가방
+  why: 한국 여배우 최초 에르메스 협찬 이야기와 포쉐트메티스 후기
+  person: 전지현
+  product: ''
+  rows:
+  - B50
+  src: 블로거
+  bloggers:
+  - merryeeun
+  sources:
+    블로거: 1
+  score: 18
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 0
+    검색: 6
+    최신: 12
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 7
+    월검색: 560
+    상승: 0.7
+- kw: 차정원 가을룩
+  core: 차정원 패션
+  area: 데일리룩
+  why: 셔츠+베스트+화이트백 가을 레이어드 룩
+  person: 차정원
+  product: ''
+  rows:
+  - B11
+  src: 블로거새글
+  bloggers:
+  - cocoleenice
+  sources:
+    블로거새글: 1
+  score: 18
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 1
+    검색: 5
+    최신: 12
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 1
+    뉴스6h: 0
+    블로그24h: 25
+    월검색: 370
+    상승: 0.82
+- kw: 조여정 시계
+  core: 조여정 시계
+  area: 시계·주얼리
+  why: 부산국제영화제 오픈토크 데님 룩에 6천만원 시계 반전
+  person: 조여정
+  product: ''
+  rows:
+  - B66
+  src: 블로거
+  bloggers:
+  - mythya0730
+  sources:
+    블로거: 1
+  score: 15
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 0
+    검색: 3
+    최신: 12
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 19
+    월검색: 230
+    상승: 0.49
+- kw: 카리나 볼캡
+  core: 카리나 패션
+  area: 데일리룩
+  why: 네이비 볼캡 셀카와 호피 끈나시 롱스커트 반전룩
+  person: 카리나
+  product: ''
+  rows:
+  - B30
+  - B32
+  src: 블로거새글
+  bloggers:
+  - djdjdj8206
+  sources:
+    블로거새글: 2
+  score: 15
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 0
+    검색: 3
+    최신: 12
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 37
+    월검색: 250
+    상승: 0.91
+- kw: 이세영 부산국제영화제 브라운 스커트
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 1
+  score: 15
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+    최신: 15
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 78
+    월검색: 10
+    상승: 1.0
+- kw: 장원영 회색 오프숄더 디올 리본
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 2
+  score: 15
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+    최신: 15
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 10
+    월검색: 10
+    상승: 1.0
+- kw: 차예련 고터 1만원 잠옷
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 3
+  score: 15
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+    최신: 15
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 2
+    월검색: 10
+    상승: 1.0
+- kw: 김혜은 가방
+  core: 김혜은 가방
+  area: 가방
+  why: 에르메스 가죽으로 직접 만든 켈리백 느낌 가방 공개
+  person: 김혜은
+  product: ''
+  rows:
+  - B55
+  src: 블로거
+  bloggers:
+  - tjthdus94
+  sources:
+    블로거: 1
+  score: 12
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+    최신: 12
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 5
+    월검색: 15
+    상승: 1.0
+- kw: 고현정 채령 터틀넥 아비에무아 18만7천원
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 4
+  score: 11
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+    최신: 11
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 4
+    월검색: 10
+    상승: 1.0
+- kw: 진 에스콰이어 알로 화보
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 5
+  score: 11
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+    최신: 11
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 2
+    월검색: 10
+    상승: 1.0
+- kw: 안나 공항패션 원피스
+  core: 안나 원피스
+  area: 의류
+  why: MEOVV 안나의 공항 화이트 트위드 원피스가 실시간 화제
+  person: MEOVV 안나
+  product: ''
+  rows:
+  - G5
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 11
+  parts:
+    급상승: 0
+    출처: 11
+    뉴스: 0
+    검색: 0
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 86
+    월검색: 85
+    상승: 1.0
+aside:
+  at: '21:22'
+  n: 5
+  list:
+  - 이세영 부산국제영화제 브라운 스커트
+  - 장원영 회색 오프숄더 디올 리본
+  - 차예련 고터 1만원 잠옷
+  - 고현정 채령 터틀넥 아비에무아 18만7천원
+  - 진 에스콰이어 알로 화보

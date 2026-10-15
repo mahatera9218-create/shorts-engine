@@ -49,7 +49,7 @@ def prose_paragraphs(text: str) -> list[str]:
     paras = [p.strip() for p in text.strip().split("\n\n") if p.strip()]
     out = []
     for i, p in enumerate(paras):
-        if i == 0 or p.startswith(("[", "기준")) or "판매 수수료" in p:
+        if i == 0 or p.startswith(("[", "기준", "※", "#")) or "판매 수수료" in p:  # ※ 면책·## 소제목도 뺀다 (2026-10-05)
             continue
         if len(sentences(p)) <= 1 and p.rstrip().endswith("?"):
             continue

@@ -1,0 +1,72 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · 엔비디아 본사 건물",
+  "make": true,
+  "file": "thumb.jpg",
+  "desc": "Square photograph of the NVIDIA headquarters building in Santa Clara, California centered in frame, glass facade with the green NVIDIA logo, clear daylight, photojournalism style",
+  "brand": "NVIDIA",
+  "size": "1024x1024",
+  "prompt": "Square 1:1 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Square photograph of the NVIDIA headquarters building in Santa Clara, California centered in frame, glass facade with the green NVIDIA logo, clear daylight, photojournalism style This must clearly be NVIDIA: show its real, accurate corporate signage — the actual NVIDIA logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 2,
+  "label": "미국 캘리포니아 산타클라라의 엔비디아 본사 건물",
+  "make": true,
+  "file": "img2.jpg",
+  "desc": "Wide daytime photograph of the NVIDIA headquarters campus in Santa Clara, California, modern glass building with the green NVIDIA logo visible, clear blue sky, photojournalism style",
+  "brand": "NVIDIA",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Wide daytime photograph of the NVIDIA headquarters campus in Santa Clara, California, modern glass building with the green NVIDIA logo visible, clear blue sky, photojournalism style This must clearly be NVIDIA: show its real, accurate corporate signage — the actual NVIDIA logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 3,
+  "label": "데이터센터 서버 랙에 들어간 GPU 장비",
+  "make": true,
+  "file": "img3.jpg",
+  "desc": "Close-up photograph of a computer graphics card GPU on a dark server rack inside a data center, cool blue light, realistic news photo, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Close-up photograph of a computer graphics card GPU on a dark server rack inside a data center, cool blue light, realistic news photo, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 4,
+  "label": "주식 시장 화면을 바라보는 트레이더들의 뒷모습",
+  "make": true,
+  "file": "img4.jpg",
+  "desc": "Photograph of a Wall Street trading floor style scene seen from behind, anonymous traders watching large screens with blurred green and red lights, realistic news photo, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Photograph of a Wall Street trading floor style scene seen from behind, anonymous traders watching large screens with blurred green and red lights, realistic news photo, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 5,
+  "label": "달러 지폐 다발",
+  "make": true,
+  "file": "img5.jpg",
+  "desc": "Stack of US dollar bills and coins on a desk with soft natural light, shallow depth of field, realistic photo, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Stack of US dollar bills and coins on a desk with soft natural light, shallow depth of field, realistic photo, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 6,
+  "label": "스마트폰으로 주식 시세를 확인하는 투자자의 손",
+  "make": true,
+  "file": "img6.jpg",
+  "desc": "Photograph of a person's hand holding a smartphone showing a blurred stock app in a modern office, natural window light, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Photograph of a person's hand holding a smartphone showing a blurred stock app in a modern office, natural window light, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 7,
+  "label": "대규모 AI 데이터센터 단지 전경",
+  "make": true,
+  "file": "img7.jpg",
+  "desc": "Aerial photograph of a large data center complex surrounded by flat land at sunset, realistic documentary style, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Aerial photograph of a large data center complex surrounded by flat land at sunset, realistic documentary style, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ }
+]

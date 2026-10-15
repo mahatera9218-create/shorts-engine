@@ -1,4 +1,12 @@
 # 선수 사진 장부 (content/playerphoto.py가 채움, 틀린 사진은 none: true로 바꾸면 다시 안 씀)
+고영표:
+  artist: OSEN SPORTS
+  checked: '2026-10-03'
+  file: 고영표 야구 선수.jpg
+  license: CC BY 3.0
+  page: https://commons.wikimedia.org/wiki/File:%EA%B3%A0%EC%98%81%ED%91%9C_%EC%95%BC%EA%B5%AC_%EC%84%A0%EC%88%98.jpg
+  qid: Q16219743
+  thumb: https://upload.wikimedia.org/wikipedia/commons/6/6f/%EA%B3%A0%EC%98%81%ED%91%9C_%EC%95%BC%EA%B5%AC_%EC%84%A0%EC%88%98.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled
 김도영:
   checked: '2026-09-30'
   none: true
@@ -11,10 +19,26 @@
   page: https://commons.wikimedia.org/wiki/File:%EA%B9%80%ED%98%9C%EC%84%B1_%EC%84%A0%EC%88%98.jpg
   qid: Q31180625
   thumb: https://thumb.wikimedia.org/wikipedia/commons/thumb/1/11/%EA%B9%80%ED%98%9C%EC%84%B1_%EC%84%A0%EC%88%98.jpg/1280px-%EA%B9%80%ED%98%9C%EC%84%B1_%EC%84%A0%EC%88%98.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
+나성범:
+  artist: OSEN SPORTS
+  checked: '2026-10-04'
+  file: 나성범 선수.jpg
+  license: CC BY 3.0
+  page: https://commons.wikimedia.org/wiki/File:%EB%82%98%EC%84%B1%EB%B2%94_%EC%84%A0%EC%88%98.jpg
+  qid: Q6956451
+  thumb: https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f6/%EB%82%98%EC%84%B1%EB%B2%94_%EC%84%A0%EC%88%98.jpg/1280px-%EB%82%98%EC%84%B1%EB%B2%94_%EC%84%A0%EC%88%98.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
 노시환:
   checked: '2026-10-01'
   none: true
   why: 위키데이터에 종목이 맞는 사진 없음
+라민 야말:
+  artist: Bryan Berlin
+  checked: '2026-10-03'
+  file: Lamine Yamal Argentina v Spain 19 July 2026-214 (cropped).jpg
+  license: CC BY-SA 4.0
+  page: https://commons.wikimedia.org/wiki/File:Lamine_Yamal_Argentina_v_Spain_19_July_2026-214_(cropped).jpg
+  qid: Q113704154
+  thumb: https://thumb.wikimedia.org/wikipedia/commons/thumb/3/31/Lamine_Yamal_Argentina_v_Spain_19_July_2026-214_%28cropped%29.jpg/1280px-Lamine_Yamal_Argentina_v_Spain_19_July_2026-214_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
 류현진:
   artist: Derral Chen on Flickr (Original version)  佾珜 (Crop)
   checked: '2026-09-30'
@@ -27,6 +51,10 @@
   checked: '2026-09-30'
   none: true
   why: 위키데이터에 종목이 맞는 사진 없음
+애런 저지:
+  checked: '2026-10-04'
+  none: true
+  why: 위키데이터에 종목이 맞는 사진 없음
 양의지:
   artist: MFDICE의 이것저것
   checked: '2026-09-30'
@@ -35,6 +63,14 @@
   page: https://commons.wikimedia.org/wiki/File:151208._2015_KBO_%EA%B3%A8%EB%93%A0_%EA%B8%80%EB%9F%AC%EB%B8%8C_%EC%8B%9C%EC%83%81%EC%8B%9D._62.jpg
   qid: Q11258796
   thumb: https://upload.wikimedia.org/wikipedia/commons/2/25/151208._2015_KBO_%EA%B3%A8%EB%93%A0_%EA%B8%80%EB%9F%AC%EB%B8%8C_%EC%8B%9C%EC%83%81%EC%8B%9D._62.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled
+원태인:
+  artist: LionsTV
+  checked: '2026-10-03'
+  file: 원태인 선수.jpg
+  license: CC BY 3.0
+  page: https://commons.wikimedia.org/wiki/File:%EC%9B%90%ED%83%9C%EC%9D%B8_%EC%84%A0%EC%88%98.jpg
+  qid: Q63252809
+  thumb: https://thumb.wikimedia.org/wikipedia/commons/thumb/2/25/%EC%9B%90%ED%83%9C%EC%9D%B8_%EC%84%A0%EC%88%98.jpg/1280px-%EC%9B%90%ED%83%9C%EC%9D%B8_%EC%84%A0%EC%88%98.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail
 이정후:
   artist: Trainholic
   checked: '2026-09-30'

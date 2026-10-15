@@ -1,0 +1,608 @@
+date: '2026-10-07'
+updated: '17:02'
+items:
+- kw: 전도연 샤넬 드레스
+  core: 전도연 샤넬
+  area: 드라마 패션
+  why: 부국제 레드카펫 블랙 오프숄더 샤넬 드레스, 조여정과 겹친 룩까지 반응 폭발
+  person: 배우 전도연
+  rows:
+  - D3
+  - B6
+  - B17
+  - B43
+  - B55
+  - S31
+  - S32
+  - S34
+  - S35
+  - S36
+  src: 뉴스검색, 대표, 블로거, 블로거새글
+  bloggers:
+  - by-nyong
+  - jayuyu
+  - lub_hong
+  - semingg
+  sources:
+    대표: 1
+    블로거: 2
+    블로거새글: 2
+    뉴스검색: 5
+  score: 85
+  parts:
+    네이버: 0
+    최신: 25
+    출처: 20
+    뉴스: 10
+    검색: 0
+  stats:
+    뉴스24h: 39
+    뉴스6h: 31
+    블로그24h: 41
+    월검색: 10
+- kw: 김혜자 한복 부산국제영화제
+  core: 김혜자 한복
+  area: 데일리룩
+  why: 드레스 대신 한복으로 부국제 개막식에 선 데뷔 65년차 국민배우, 건강 이상설도 일축
+  person: 배우 김혜자
+  rows:
+  - D1
+  - B67
+  - N50
+  src: 국내뉴스, 대표, 블로거새글
+  bloggers:
+  - merryeeun
+  sources:
+    대표: 1
+    블로거새글: 1
+    국내뉴스: 1
+  score: 68
+  parts:
+    네이버: 0
+    최신: 25
+    출처: 9
+    뉴스: 10
+    검색: 0
+  stats:
+    뉴스24h: 58
+    뉴스6h: 12
+    블로그24h: 100
+    월검색: 10
+- kw: 신민아 루이비통
+  core: 신민아 루이비통
+  area: 의류
+  why: 파리 루이비통 쇼 참석, 공항패션 합계 1억대로 화제
+  person: 배우 신민아
+  rows:
+  - B3
+  - B7
+  - B19
+  - B22
+  - B24
+  - S15
+  src: 뉴스검색, 블로거, 블로거새글
+  bloggers:
+  - cocoleenice
+  - goodface0863
+  - jayuyu
+  sources:
+    블로거새글: 4
+    블로거: 1
+    뉴스검색: 1
+  score: 65
+  parts:
+    네이버: 0
+    최신: 25
+    출처: 12
+    뉴스: 3
+    검색: 2
+  stats:
+    뉴스24h: 6
+    뉴스6h: 4
+    블로그24h: 100
+    월검색: 310
+- kw: 김민하 샤넬 드레스
+  core: 김민하 샤넬
+  area: 드라마 패션
+  why: 부국제 레드카펫 샤넬 드레스, 김도연과 함께 화제
+  person: 배우 김민하
+  rows:
+  - B11
+  - S32
+  - S34
+  - S35
+  - S36
+  src: 뉴스검색, 블로거
+  bloggers:
+  - ohye1991
+  sources:
+    블로거: 1
+    뉴스검색: 4
+  score: 63
+  parts:
+    네이버: 0
+    최신: 25
+    출처: 6
+    뉴스: 10
+    검색: 0
+  stats:
+    뉴스24h: 41
+    뉴스6h: 32
+    블로그24h: 32
+    월검색: 15
+- kw: 한선화 미니드레스
+  core: 한선화 드레스
+  area: 의류
+  why: 부국제 골드 미니드레스 제니팩햄, 베스트·워스트 드레서 논쟁
+  person: 배우 한선화
+  rows:
+  - D10
+  - B5
+  - B9
+  - B42
+  src: 대표, 블로거, 블로거새글
+  bloggers:
+  - jayuyu
+  - ohye1991
+  - semingg
+  sources:
+    대표: 1
+    블로거: 1
+    블로거새글: 2
+  score: 42
+  parts:
+    네이버: 0
+    최신: 6
+    출처: 13
+    뉴스: 8
+    검색: 0
+  stats:
+    뉴스24h: 15
+    뉴스6h: 1
+    블로그24h: 59
+    월검색: 10
+- kw: 리사 루이비통
+  core: 리사 루이비통
+  area: 의류
+  why: 블랙 레더 미니드레스로 파리 루이비통 쇼에서 현지 반응 폭발
+  person: 블랙핑크 리사
+  rows:
+  - D7
+  - B3
+  - B10
+  - B19
+  - B23
+  src: 대표, 블로거새글
+  bloggers:
+  - cocoleenice
+  - goodface0863
+  - jayuyu
+  - ohye1991
+  sources:
+    대표: 1
+    블로거새글: 4
+  score: 37
+  parts:
+    네이버: 0
+    최신: 6
+    출처: 14
+    뉴스: 1
+    검색: 3
+  stats:
+    뉴스24h: 2
+    뉴스6h: 1
+    블로그24h: 57
+    월검색: 780
+- kw: 장원영 디올
+  core: 장원영 디올
+  area: 의류
+  why: 시퀸 파티룩 디올로 화제
+  person: 아이브 장원영
+  rows:
+  - D4
+  - B54
+  - B65
+  src: 대표, 블로거, 블로거새글
+  bloggers:
+  - djdjdj8206
+  - merryeeun
+  sources:
+    대표: 1
+    블로거: 1
+    블로거새글: 1
+  score: 35
+  parts:
+    네이버: 0
+    최신: 6
+    출처: 10
+    뉴스: 0
+    검색: 7
+  stats:
+    뉴스24h: 1
+    뉴스6h: 1
+    블로그24h: 100
+    월검색: 14380
+- kw: 고현정 발렌티노 가방
+  core: 고현정 발렌티노
+  area: 가방
+  why: 발렌티노 파리 패션위크 참석 착장
+  person: 배우 고현정
+  rows:
+  - B12
+  - B27
+  src: 블로거, 블로거새글
+  bloggers:
+  - cocoleenice
+  - ohye1991
+  sources:
+    블로거: 1
+    블로거새글: 1
+  score: 35
+  parts:
+    네이버: 0
+    최신: 12
+    출처: 5
+    뉴스: 4
+    검색: 2
+  stats:
+    뉴스24h: 8
+    뉴스6h: 2
+    블로그24h: 65
+    월검색: 420
+- kw: 채정안 파리패션위크
+  core: 채정안 패션
+  area: 데일리룩
+  why: 파리 패션위크 착장 화제, 시스루 이너 수트룩
+  person: 배우 채정안
+  rows:
+  - B38
+  - B44
+  - B53
+  src: 블로거
+  bloggers:
+  - cocoleenice
+  - djdjdj8206
+  - semingg
+  sources:
+    블로거: 3
+  score: 35
+  parts:
+    네이버: 0
+    최신: 12
+    출처: 6
+    뉴스: 3
+    검색: 2
+  stats:
+    뉴스24h: 6
+    뉴스6h: 2
+    블로그24h: 100
+    월검색: 330
+- kw: 수지 가방
+  core: 수지 가방
+  area: 가방
+  why: 여행룩 패브릭 가방 정보 요청 폭발, 셀린느 트위드 재킷도 화제
+  person: 배우 수지
+  rows:
+  - B1
+  - B32
+  - B37
+  - B49
+  src: 블로거, 블로거새글
+  bloggers:
+  - cocoleenice
+  - djdjdj8206
+  - jayuyu
+  sources:
+    블로거새글: 2
+    블로거: 2
+  score: 31
+  parts:
+    네이버: 0
+    최신: 6
+    출처: 10
+    뉴스: 0
+    검색: 4
+  stats:
+    뉴스24h: 1
+    뉴스6h: 1
+    블로그24h: 100
+    월검색: 1140
+- kw: 원희 샤넬 가방
+  core: 원희 샤넬
+  area: 가방
+  why: 제니 대신 샤넬 파리 패션위크에 참석한 아일릿 원희, 버킷백 1238만원·가을겨울 라지 호보백이 화제
+  person: 아일릿 원희
+  rows:
+  - D2
+  - B8
+  - B15
+  - B21
+  - B29
+  - B46
+  - B50
+  - B59
+  src: 대표, 블로거
+  bloggers:
+  - by-nyong
+  - cocoleenice
+  - djdjdj8206
+  - goodface0863
+  - jayuyu
+  - ohye1991
+  - semingg
+  sources:
+    대표: 1
+    블로거: 7
+  score: 28
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 11
+    뉴스: 4
+    검색: 3
+  stats:
+    뉴스24h: 8
+    뉴스6h: 0
+    블로그24h: 100
+    월검색: 1030
+- kw: 지우 미우미우 가방
+  core: 미우미우 가방
+  area: 가방
+  why: 하츠투하츠 지우 공항패션으로 화제, 끌로에 숄더백도 함께 언급
+  person: 하츠투하츠 지우
+  rows:
+  - G1
+  - G2
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 2
+  score: 28
+  parts:
+    네이버: 0
+    최신: 6
+    출처: 3
+    뉴스: 0
+    검색: 9
+  stats:
+    뉴스24h: 1
+    뉴스6h: 1
+    블로그24h: 1
+    월검색: 54760
+- kw: 안유진 라코스테
+  core: 안유진 라코스테
+  area: 의류
+  why: 니트·데님스커트 라코스테 룩, 파리 출국길 이틀 연속 룩에 반응 갈려
+  person: 아이브 안유진
+  rows:
+  - D9
+  - B45
+  - B61
+  - S44
+  src: 뉴스검색, 대표, 블로거
+  bloggers:
+  - by-nyong
+  - semingg
+  sources:
+    대표: 1
+    블로거: 2
+    뉴스검색: 1
+  score: 26
+  parts:
+    네이버: 0
+    최신: 6
+    출처: 10
+    뉴스: 0
+    검색: 1
+  stats:
+    뉴스24h: 1
+    뉴스6h: 1
+    블로그24h: 36
+    월검색: 250
+- kw: 기은세 레드 니트
+  core: 기은세 니트
+  area: 데일리룩
+  why: 레드 니트와 베이지 와이드 팬츠 가을 데일리룩
+  person: 배우 기은세
+  rows:
+  - B33
+  - S18
+  src: 뉴스검색, 블로거
+  bloggers:
+  - cocoleenice
+  sources:
+    블로거: 1
+    뉴스검색: 1
+  score: 26
+  parts:
+    네이버: 0
+    최신: 12
+    출처: 3
+    뉴스: 2
+    검색: 0
+  stats:
+    뉴스24h: 4
+    뉴스6h: 2
+    블로그24h: 19
+    월검색: 95
+- kw: 슬기 아식스 스니커즈
+  core: 아식스 하이퍼싱크
+  area: 신발
+  why: 레드벨벳 슬기 공항패션 스니커즈, 아식스 x 키코 운동화 후기도 함께
+  person: 레드벨벳 슬기
+  rows:
+  - G5
+  - B2
+  src: Grok, 블로거새글
+  bloggers:
+  - jayuyu
+  sources:
+    Grok: 1
+    블로거새글: 1
+  score: 20
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 6
+    뉴스: 0
+    검색: 7
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 3
+    월검색: 10920
+- kw: 카리나 트렌치코트
+  core: 카리나 트렌치코트
+  area: 의류
+  why: 블랙 트렌치코트에 젠틀몬스터 선글라스 조합, 가죽 재킷 기사에도 이름 등장
+  person: 에스파 카리나
+  rows:
+  - D6
+  - B74
+  - S12
+  src: 뉴스검색, 대표, 블로거
+  bloggers:
+  - wlstjs9754
+  sources:
+    대표: 1
+    블로거: 1
+    뉴스검색: 1
+  score: 12
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 8
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 8
+    월검색: 15
+- kw: 이시영 미우미우
+  core: 이시영 미우미우
+  area: 의류
+  why: 미우미우 스쿨룩
+  person: 배우 이시영
+  rows:
+  - D8
+  - G1
+  src: Grok, 대표
+  bloggers: []
+  sources:
+    대표: 1
+    Grok: 1
+  score: 12
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 8
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 2
+    월검색: 25
+- kw: 전지현 생로랑 공항패션
+  core: 전지현 공항패션
+  area: 데일리룩
+  why: 생로랑 오버사이즈 레더 재킷 공항패션
+  person: 배우 전지현
+  rows:
+  - B28
+  - S43
+  - S45
+  src: 뉴스검색, 블로거새글
+  bloggers:
+  - cocoleenice
+  sources:
+    블로거새글: 1
+    뉴스검색: 2
+  score: 12
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 5
+    뉴스: 1
+    검색: 2
+  stats:
+    뉴스24h: 2
+    뉴스6h: 0
+    블로그24h: 82
+    월검색: 480
+- kw: 한소희 부쉐론 귀걸이
+  core: 한소희 귀걸이
+  area: 시계·주얼리
+  why: 후프 귀걸이 부쉐론 1270만원
+  person: 배우 한소희
+  rows:
+  - D5
+  src: 대표
+  bloggers: []
+  sources:
+    대표: 1
+  score: 9
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 5
+    뉴스: 0
+    검색: 1
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 3
+    월검색: 190
+- kw: 이혜영 아크네 가죽 재킷
+  core: 이혜영 가죽재킷
+  area: 의류
+  why: 아크네 스튜디오 쇼 참석, 화사와 같은 가죽 재킷
+  person: 배우 이혜영
+  rows:
+  - B60
+  - S12
+  src: 뉴스검색, 블로거
+  bloggers:
+  - by-nyong
+  sources:
+    블로거: 1
+    뉴스검색: 1
+  score: 5
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 3
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 12
+    월검색: 10
+- kw: 차정원 워크재킷
+  core: 차정원 재킷
+  area: 의류
+  why: 네이비 워크재킷에 연두색 스니커즈, 가죽 재킷 기사에도 등장
+  person: 배우 차정원
+  rows:
+  - B34
+  - S12
+  src: 뉴스검색, 블로거
+  bloggers:
+  - cocoleenice
+  sources:
+    블로거: 1
+    뉴스검색: 1
+  score: 5
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 3
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 1
+    뉴스6h: 0
+    블로그24h: 4
+    월검색: 10

@@ -1,0 +1,182 @@
+keyword: 수지 트러커 스웨터 셀린느 295만원
+person: 수지
+mode: 연예패션
+made: '22:21'
+items:
+- title: “청바지랑 이 조합 괜찮은데?” 결국 수지 셀린느 울 캐시미어 니트
+  type: 그룹 2
+  rank: 1
+  best: true
+  chars: 37
+  flags:
+  - 37자(35자 넘음)
+- title: “그냥 흰 니트 아니야?” 뜻밖의 파리에서 눈길 끈 셀린느 앰버서더
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 37
+  flags:
+  - 37자(35자 넘음)
+- title: “청바지에 이렇게 입는구나” 결국 파리 쇼장에서 눈길 끈 흰 스웨터
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 37
+  flags:
+  - 37자(35자 넘음)
+- title: “남성 니트인데 왜 어울리지?” 돌연 파리 여행에서 눈에 띈 트러커 니트
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 40
+  flags:
+  - 40자(35자 넘음)
+- title: 셀린느 쇼장에서 본 흰 니트, 평범해 보였는데 알고 보니 울 캐시미어?
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 39
+  flags:
+  - 39자(35자 넘음)
+- title: “저 니트 어디 거야?” 마침내 정체 드러난 파리 여행 속 셀린느 스웨터
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 40
+  flags:
+  - 40자(35자 넘음)
+- title: “니트가 이렇게 예뻤나?” 수지 셀린느 트러커 스웨터 파리 패션위크
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 37
+  flags:
+  - 37자(35자 넘음)
+- title: “남성 니트가 더 예쁜데?” 뜻밖의 수지 셀린느 트러커 스웨터
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: 수지 파리 여행룩 흰 니트 한 장, 왜 이렇게 고급스러워 보이지?
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 36
+  flags:
+  - 36자(35자 넘음)
+- title: “저 스웨터 얼마야?” 마침내 정체 드러난 수지 셀린느 파리룩
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: “앰버서더는 뭘 입었을까?” 끝내 공개된 셀린느 쇼 참석 흰 니트
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 36
+  flags:
+  - 36자(35자 넘음)
+- title: “셀린느 쇼 가는 날엔 이렇게?” 돌연 눈길 끈 앰버서더의 파리 니트
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 38
+  flags:
+  - 38자(35자 넘음)
+- title: “앰버서더가 입으면 다르네” 뜻밖의 셀린느 울 캐시미어 스웨터
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: 셀린느 글로벌 앰버서더의 파리 여행룩, 청바지에 흰 니트 이 조합
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 36
+  flags:
+  - 36자(35자 넘음)
+- title: “쇼장에서도 눈에 띄겠네?” 셀린느 앰버서더가 고른 트러커 니트
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: “저 니트 어디 거야?” 뜻밖의 수지 셀린느 파리 여행룩
+  type: 쿠니네패션식 방식
+  rank: null
+  best: false
+  chars: 31
+  flags: []
+- title: “흰 니트 한 장으로 끝났네” 결국 수지 셀린느 트러커 스웨터
+  type: 쿠니네패션식 방식
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: “남성 니트가 이렇게 어울려?” 마침내 수지 셀린느 패션
+  type: 쿠니네패션식 방식
+  rank: null
+  best: false
+  chars: 31
+  flags: []
+- title: 요즘 파리에서 반응 좋은 수지 셀린느 흰 니트... 남성 니트 맞아?
+  type: ohye1991식 방식
+  rank: null
+  best: false
+  chars: 38
+  flags:
+  - 38자(35자 넘음)
+- title: “저 스웨터 뭐야?” 파리 쇼장에서 눈에 띄었다는 셀린느 앰버서더 니트
+  type: ohye1991식 방식
+  rank: null
+  best: false
+  chars: 39
+  flags:
+  - 39자(35자 넘음)
+- title: 남성 니트를 여성이 입으면 이렇게 달라지네... 수지 셀린느 파리룩
+  type: ohye1991식 방식
+  rank: null
+  best: false
+  chars: 37
+  flags:
+  - 37자(35자 넘음)
+groups:
+- type: 그룹 1 주인공 숨김
+  idx:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  best: null
+- type: 그룹 2 이름 노출
+  idx:
+  - 6
+  - 0
+  - 7
+  - 8
+  - 9
+  best: null
+- type: 그룹 3 관련 인물
+  idx:
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  best: null
+- type: 쿠니네패션식
+  idx:
+  - 15
+  - 16
+  - 17
+  best: null
+- type: ohye1991식
+  idx:
+  - 18
+  - 19
+  - 20
+  best: null

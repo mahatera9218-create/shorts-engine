@@ -1,0 +1,114 @@
+keyword: 이연희 루이비통 가방
+person: 이연희
+mode: 연예패션
+made: '17:28'
+items:
+- title: '"이 가방 얼마야?" 이연희 루이비통 알마 BB, 정가 288만원 보고 다시 봤다'
+  type: 가격 의외성형
+  rank: 1
+  best: true
+  chars: 45
+  flags: []
+- title: '"이 가방 대체 뭐길래?" 이연희 루이비통 알마 BB가 눈길 끄는 이유'
+  type: 구어체 감탄·반문형
+  rank: null
+  best: false
+  chars: 39
+  flags: []
+- title: 처음엔 그냥 클래식 가방인 줄 알았는데 이연희 루이비통 알마 BB 정체는 이거였네
+  type: 첫인상 착각·정체 반전형
+  rank: null
+  best: false
+  chars: 45
+  flags: []
+- title: 골드 패드록 하나 달았을 뿐인데 이연희 루이비통 가방 분위기가 확 달라지네
+  type: 작은 디테일의 큰 변화형
+  rank: null
+  best: false
+  chars: 41
+  flags: []
+- title: '"그 배우 가방 뭐야?" 40대 클래식 무드가 어울리는 루이비통 알마 BB 스타일링'
+  type: 나이·이미지 의외성형
+  rank: null
+  best: false
+  chars: 46
+  flags: []
+- title: 같은 모노그램 가방인데 왜 이렇게 다르지? 이연희 vs 다른 스타일 알마 BB 비교
+  type: 같은 옷·다른 사람 비교형
+  rank: null
+  best: false
+  chars: 46
+  flags: []
+- title: 공항이나 행사장에 들고 나가도 어색하지 않을까? 이연희 루이비통 가방으로 보는 상황별 코디
+  type: 상황·현장 중심형
+  rank: null
+  best: false
+  chars: 50
+  flags: []
+- title: 이렇게 들면 되겠네, 이연희 루이비통 가방 느낌 내는 데일리룩 손민수 포인트
+  type: 따라 입고 싶은 손민수형
+  rank: null
+  best: false
+  chars: 42
+  flags: []
+- title: 1934년 디자인을 잇는 가방이라고? 루이비통 알마 BB가 아직도 클래식인 이유
+  type: 의외의 브랜드 발견형
+  rank: null
+  best: false
+  chars: 44
+  flags: []
+- title: 분위기가 달라졌네, 이연희 루이비통 가방 하나로 완성하는 단정한 클래식 룩
+  type: 새로운 스타일 변화형
+  rank: null
+  best: false
+  chars: 41
+  flags: []
+- title: 출근룩에 뭘 들어야 할지 고민이라면? 이연희 루이비통 알마 BB 사이즈와 수납력 체크
+  type: 독자 고민 해결형
+  rank: null
+  best: false
+  chars: 47
+  flags: []
+- title: 이 조합은 생각 못 했는데... 모노그램 가방에 미니멀 아우터 매치하면 생기는 변화
+  type: 의외의 조합·레이어드형
+  rank: null
+  best: false
+  chars: 46
+  flags: []
+- title: 사진만 보고 지나쳤는데 이연희 루이비통 가방 디테일, 스트랩 길이까지 보니 달랐다
+  type: 공개된 사진 속 숨은 정보형
+  rank: null
+  best: false
+  chars: 45
+  flags: []
+- title: 이번 가을엔 이게 다르네, 이연희 루이비통 가방처럼 크로스백으로 메는 알마 BB 활용법
+  type: 트렌드·계절 변화형
+  rank: null
+  best: false
+  chars: 48
+  flags: []
+- title: 처음엔 평범해 보였는데... 다시 보니 이연희 루이비통 가방이 유독 눈에 들어온 까닭
+  type: 시선 집중·감정 대비형
+  rank: null
+  best: false
+  chars: 47
+  flags: []
+groups:
+- type: 제목 후보
+  idx:
+  - 1
+  - 2
+  - 0
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  best: null

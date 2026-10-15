@@ -1,0 +1,124 @@
+keyword: 김고은 울 크레이프 자켓 샤넬 1710만원
+person: 김고은
+mode: 연예패션
+made: '12:48'
+items:
+- title: '"이 재킷 얼마야?" 결국 눈길 끈 김고은 샤넬 울 크레이프 자켓'
+  type: 그룹 2
+  rank: 1
+  best: true
+  chars: 36
+  flags:
+  - 36자(35자 넘음)
+- title: '"저 재킷 어디 거지?" 결국 눈길 끈 울 크레이프 샤넬 자켓'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: '"단정한데 왜 이렇게 고급스럽지?" 뜻밖의 샤넬 크레이프 재킷'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: '"샤넬이 이렇게 담백할 수 있나?" 돌연 눈에 들어온 울 재킷'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: '"가격 알고 다시 봤네" 마침내 베일 벗은 그 배우의 샤넬 자켓'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: '"같은 재킷인데 분위기가 다르네" 여배우가 고른 울 크레이프 룩'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: '"샤넬이 이렇게 단정했나?" 뜻밖의 김고은 울 크레이프 재킷 룩'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: '"역시 본인이 제일 잘 입네" 마침내 김고은 샤넬 재킷 착장 공개'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 36
+  flags:
+  - 36자(35자 넘음)
+- title: 김고은 샤넬 자켓 가격 1710만원이라니... 돌연 시선 끈 크레이프 소재
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 41
+  flags:
+  - 41자(35자 넘음)
+- title: '"저게 1710만원이라고?" 끝내 궁금해진 김고은 샤넬 울 재킷'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: '"박지훈도 놀랄 클래식인데?" 결국 눈길 끈 샤넬 울 크레이프 자켓'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 37
+  flags:
+  - 37자(35자 넘음)
+- title: '"도깨비 속 그 분위기 그대로네" 뜻밖의 샤넬 재킷 착장 반응'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: '"공유가 봤다면 한마디 했겠네" 돌연 화제 된 울 크레이프 재킷'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: '"작품 속 단정함이 그대로네" 마침내 돌아온 샤넬 크레이프 룩'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: '"유미의 세포들 그 느낌이네" 끝내 다시 보게 된 샤넬 울 재킷'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+groups:
+- type: 그룹 1 주인공 숨김
+  idx:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  best: null
+- type: 그룹 2 이름 노출
+  idx:
+  - 0
+  - 6
+  - 7
+  - 8
+  - 9
+  best: null
+- type: 그룹 3 관련 인물
+  idx:
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  best: null

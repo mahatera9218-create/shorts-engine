@@ -1,61 +1,190 @@
 # 확인된 올해 연봉 (대표 결정 2026-09-30): 뉴스 요약문에 올해 연봉 1년치가 없으면 여기 값을 쓴다.
 # 공식 발표·보도로 확인한 값만, 출처·기준일과 함께. 계약 총액을 연수로 나눈 값·추측 금지.
 # 뉴스에서 연봉이 뽑히면 뉴스 값이 우선이고, 여기 값과 다르면 발행 패키지에 차이가 표시된다.
-# currency: KRW | USD (달러는 그날 환율로 원화 환산). 시즌이 바뀌면(보통 1~2월 연봉 발표) 새로 확인해 고친다.
+# 대표가 이슈에 댓글로 알려 준 값은 estimate: true (추정치)로 넣는다 (content/salarycomment.py, 2026-10-03).
+# currency: KRW | USD | EUR | GBP (외화는 그날 환율로 원화 환산). 시즌이 바뀌면 새로 확인해 고친다.
 season: 2026
 players:
-  김도영:   {amount: 250000000,  currency: KRW, basis: "2026시즌 연봉 재계약 (50% 삭감), KIA 발표 보도", as_of: 2026-01-15,
-             source: "https://www.newspim.com/news/view/20260115001029"}
-  노시환:   {amount: 1000000000, currency: KRW, basis: "2026시즌 연봉 계약 (다년 계약은 2027년부터), 보도", as_of: 2026-01-21,
-             source: "https://v.daum.net/v/20260121181225160"}
-  원태인:   {amount: 1000000000, currency: KRW, basis: "2026시즌 연봉 계약, 보도", as_of: 2026-01-20,
-             source: "https://dgmbc.com/NewsArticle/814083"}
-  류현진:   {amount: 2100000000, currency: KRW, basis: "KBO 발표 2026 연봉 순위 (8년 170억 계약 중 2026년), 보도", as_of: 2026-03-18,
-             source: "https://v.daum.net/v/20260318142802406"}
-  김광현:   {amount: 1500000000, currency: KRW, basis: "KBO 발표 2026 연봉, 보도", as_of: 2026-03-18,
-             source: "https://v.daum.net/v/20260318142802406"}
-  양의지:   {amount: 4200000000, currency: KRW, basis: "KBO 발표 2026 연봉 1위, 보도", as_of: 2026-03-18,
-             source: "https://v.daum.net/v/20260318142802406"}
-  고영표:   {amount: 2600000000, currency: KRW, basis: "KBO 발표 2026 연봉 2위, 보도", as_of: 2026-03-18,
-             source: "https://v.daum.net/v/20260318142802406"}
-  최정:     {amount: 2200000000, currency: KRW, basis: "KBO 발표 2026 연봉 3위, 보도", as_of: 2026-03-18,
-             source: "https://v.daum.net/v/20260318142802406"}
-  박세웅:   {amount: 2100000000, currency: KRW, basis: "KBO 발표 2026 연봉 공동 4위, 보도", as_of: 2026-03-18,
-             source: "https://v.daum.net/v/20260318142802406"}
-  제임스 네일: {amount: 2300000000, currency: KRW, basis: "KBO 발표 2026 연봉 3위, 보도", as_of: 2026-03-18,
-             source: "https://www.ggilbo.com/news/articleView.html?idxno=1138406"}
-  오지환:   {amount: 1400000000, currency: KRW, basis: "KBO 발표 2026 연봉 (야수 3위), 보도", as_of: 2026-03-18,
-             source: "https://www.ggilbo.com/news/articleView.html?idxno=1138406"}
-  김재환:   {amount: 1000000000, currency: KRW, basis: "KBO 발표 2026 연봉, 보도", as_of: 2026-03-18,
-             source: "https://www.ggilbo.com/news/articleView.html?idxno=1138406"}
-  구창모:   {amount: 900000000,  currency: KRW, basis: "KBO 발표 2026 연봉 (800% 인상), 보도", as_of: 2026-03-18,
-             source: "https://www.ggilbo.com/news/articleView.html?idxno=1138406"}
-  스테픈 커리:   {amount: 62587158, currency: USD, basis: "2026-27시즌 연봉 1위, 보도", as_of: 2026-09-01,
-             source: "https://sports.yahoo.com/articles/nbas-25-highest-paid-players-073002492.html"}
-  니콜라 요키치: {amount: 59033114, currency: USD, basis: "2026-27시즌 연봉 2위, 보도", as_of: 2026-09-01,
-             source: "https://sports.yahoo.com/articles/nbas-25-highest-paid-players-073002492.html"}
-  제이슨 테이텀: {amount: 58456566, currency: USD, basis: "2026-27시즌 연봉, 보도", as_of: 2026-09-01,
-             source: "https://sports.yahoo.com/articles/nbas-25-highest-paid-players-073002492.html"}
-  조엘 엠비드:   {amount: 57985752, currency: USD, basis: "2026-27시즌 연봉, 보도", as_of: 2026-09-01,
-             source: "https://sports.yahoo.com/articles/nbas-25-highest-paid-players-073002492.html"}
-  데빈 부커:     {amount: 57078728, currency: USD, basis: "2026-27시즌 연봉, 보도", as_of: 2026-09-01,
-             source: "https://sports.yahoo.com/articles/nbas-25-highest-paid-players-073002492.html"}
-  칼앤서니 타운스: {amount: 57078728, currency: USD, basis: "2026-27시즌 연봉, 보도", as_of: 2026-09-01,
-             source: "https://sports.yahoo.com/articles/nbas-25-highest-paid-players-073002492.html"}
-  문동주:   {amount: 220000000,  currency: KRW, basis: "2026시즌 연봉 계약 (120% 인상), 보도", as_of: 2026-01-21,
-             source: "https://v.daum.net/v/YPC2Yu6bGV"}
-  오타니 쇼헤이: {amount: 2000000, currency: USD, basis: "10년 7억 달러 계약 중 2026년 실제 지급 연봉 (나머지 지급 유예)", as_of: 2026-04-01,
-             source: "https://www.sportico.com/personalities/athletes/2026/mlb-highest-paid-players-2026-shohei-ohtani-1234887383/"}
-  애런 저지: {amount: 40000000, currency: USD, basis: "9년 계약 중 2026년 연봉", as_of: 2026-04-01,
-             source: "https://www.sportico.com/personalities/athletes/2026/mlb-highest-paid-players-2026-shohei-ohtani-1234887383/"}
-  야마모토 요시노부: {amount: 12000000, currency: USD, basis: "12년 계약 중 2026년 기본 연봉 (계약금 제외)", as_of: 2026-04-01,
-             source: "https://www.spotrac.com/mlb/player/_/id/82039/yoshinobu-yamamoto"}
-  김하성:   {amount: 20000000, currency: USD, basis: "애틀랜타 1년 2000만 달러 계약, 보도", as_of: 2025-12-30,
-             source: "https://www.newsis.com/view/NISX20251230_0003459636"}
-  김혜성:   {amount: 3750000,  currency: USD, basis: "다저스 3년 1250만 달러 계약 중 2026년 연봉, 보도", as_of: 2025-01-04,
-             source: "https://www.hankyung.com/article/2025010453707"}
-  이정후:   {amount: 22000000, currency: USD, basis: "샌프란시스코 6년 계약 중 2026시즌 연봉, 보도", as_of: 2026-09-27,
-             source: "http://www.osen.co.kr/article/G1112882569"}
-  송성문:   {amount: 2750000,  currency: USD, basis: "샌디에이고 4년 계약 중 2026시즌 연봉 (스포트랙 기준), 보도", as_of: 2026-08-26,
-             source: "https://isplus.com/article/view/isp202608260087"}
-# 확인 못 함 (넣지 않음): 양현종(2+1년 총액 45억, 연도별 미공개), 구자욱, 해외축구(주급 보도만), 골프(상금은 뉴스에서)
+  고영표:
+    amount: 2600000000
+    as_of: 2026-03-18
+    basis: KBO 발표 2026 연봉 2위, 보도
+    currency: KRW
+    source: https://v.daum.net/v/20260318142802406
+  구창모:
+    amount: 900000000
+    as_of: 2026-03-18
+    basis: KBO 발표 2026 연봉 (800% 인상), 보도
+    currency: KRW
+    source: https://www.ggilbo.com/news/articleView.html?idxno=1138406
+  김광현:
+    amount: 1500000000
+    as_of: 2026-03-18
+    basis: KBO 발표 2026 연봉, 보도
+    currency: KRW
+    source: https://v.daum.net/v/20260318142802406
+  김도영:
+    amount: 250000000
+    as_of: 2026-01-15
+    basis: 2026시즌 연봉 재계약 (50% 삭감), KIA 발표 보도
+    currency: KRW
+    source: https://www.newspim.com/news/view/20260115001029
+  김재환:
+    amount: 1000000000
+    as_of: 2026-03-18
+    basis: KBO 발표 2026 연봉, 보도
+    currency: KRW
+    source: https://www.ggilbo.com/news/articleView.html?idxno=1138406
+  김하성:
+    amount: 20000000
+    as_of: 2025-12-30
+    basis: 애틀랜타 1년 2000만 달러 계약, 보도
+    currency: USD
+    source: https://www.newsis.com/view/NISX20251230_0003459636
+  김혜성:
+    amount: 3750000
+    as_of: 2025-01-04
+    basis: 다저스 3년 1250만 달러 계약 중 2026년 연봉, 보도
+    currency: USD
+    source: https://www.hankyung.com/article/2025010453707
+  나성범:
+    amount: 800000000
+    as_of: '2026-10-04'
+    basis: 추정치(공식 발표 아님), 대표 제공
+    currency: KRW
+    estimate: true
+    source: 대표 제공
+  노시환:
+    amount: 1000000000
+    as_of: 2026-01-21
+    basis: 2026시즌 연봉 계약 (다년 계약은 2027년부터), 보도
+    currency: KRW
+    source: https://v.daum.net/v/20260121181225160
+  니콜라 요키치:
+    amount: 59033114
+    as_of: 2026-09-01
+    basis: 2026-27시즌 연봉 2위, 보도
+    currency: USD
+    source: https://sports.yahoo.com/articles/nbas-25-highest-paid-players-073002492.html
+  데빈 부커:
+    amount: 57078728
+    as_of: 2026-09-01
+    basis: 2026-27시즌 연봉, 보도
+    currency: USD
+    source: https://sports.yahoo.com/articles/nbas-25-highest-paid-players-073002492.html
+  류현진:
+    amount: 2100000000
+    as_of: 2026-03-18
+    basis: KBO 발표 2026 연봉 순위 (8년 170억 계약 중 2026년), 보도
+    currency: KRW
+    source: https://v.daum.net/v/20260318142802406
+  문동주:
+    amount: 220000000
+    as_of: 2026-01-21
+    basis: 2026시즌 연봉 계약 (120% 인상), 보도
+    currency: KRW
+    source: https://v.daum.net/v/YPC2Yu6bGV
+  박세웅:
+    amount: 2100000000
+    as_of: 2026-03-18
+    basis: KBO 발표 2026 연봉 공동 4위, 보도
+    currency: KRW
+    source: https://v.daum.net/v/20260318142802406
+  송성문:
+    amount: 2750000
+    as_of: 2026-08-26
+    basis: 샌디에이고 4년 계약 중 2026시즌 연봉 (스포트랙 기준), 보도
+    currency: USD
+    source: https://isplus.com/article/view/isp202608260087
+  스테픈 커리:
+    amount: 62587158
+    as_of: 2026-09-01
+    basis: 2026-27시즌 연봉 1위, 보도
+    currency: USD
+    source: https://sports.yahoo.com/articles/nbas-25-highest-paid-players-073002492.html
+  애런 저지:
+    amount: 40000000
+    as_of: 2026-04-01
+    basis: 9년 계약 중 2026년 연봉
+    currency: USD
+    source: https://www.sportico.com/personalities/athletes/2026/mlb-highest-paid-players-2026-shohei-ohtani-1234887383/
+  야마모토 요시노부:
+    amount: 12000000
+    as_of: 2026-04-01
+    basis: 12년 계약 중 2026년 기본 연봉 (계약금 제외)
+    currency: USD
+    source: https://www.spotrac.com/mlb/player/_/id/82039/yoshinobu-yamamoto
+  양의지:
+    amount: 4200000000
+    as_of: 2026-03-18
+    basis: KBO 발표 2026 연봉 1위, 보도
+    currency: KRW
+    source: https://v.daum.net/v/20260318142802406
+  엄지성:
+    amount: 260000
+    as_of: 2026-10-03
+    basis: 추정치(공식 발표 아님). 스완지시티(잉글랜드 2부), capology 추정 2026-27 주급 약 £5천·연 약 £26만
+    currency: GBP
+    estimate: true
+    source: https://www.capology.com/player/ji-sung-eom-37385/
+  오지환:
+    amount: 1400000000
+    as_of: 2026-03-18
+    basis: KBO 발표 2026 연봉 (야수 3위), 보도
+    currency: KRW
+    source: https://www.ggilbo.com/news/articleView.html?idxno=1138406
+  오타니 쇼헤이:
+    amount: 2000000
+    as_of: 2026-04-01
+    basis: 10년 7억 달러 계약 중 2026년 실제 지급 연봉 (나머지 지급 유예)
+    currency: USD
+    source: https://www.sportico.com/personalities/athletes/2026/mlb-highest-paid-players-2026-shohei-ohtani-1234887383/
+  원태인:
+    amount: 1000000000
+    as_of: 2026-01-20
+    basis: 2026시즌 연봉 계약, 보도
+    currency: KRW
+    source: https://dgmbc.com/NewsArticle/814083
+  이정후:
+    amount: 22000000
+    as_of: 2026-09-27
+    basis: 샌프란시스코 6년 계약 중 2026시즌 연봉, 보도
+    currency: USD
+    source: http://www.osen.co.kr/article/G1112882569
+  임찬규:
+    amount: 2600000000
+    as_of: '2026-10-04'
+    basis: 추정치(공식 발표 아님), 대표 제공
+    currency: KRW
+    estimate: true
+    source: 대표 제공
+  제이슨 테이텀:
+    amount: 58456566
+    as_of: 2026-09-01
+    basis: 2026-27시즌 연봉, 보도
+    currency: USD
+    source: https://sports.yahoo.com/articles/nbas-25-highest-paid-players-073002492.html
+  제임스 네일:
+    amount: 2300000000
+    as_of: 2026-03-18
+    basis: KBO 발표 2026 연봉 3위, 보도
+    currency: KRW
+    source: https://www.ggilbo.com/news/articleView.html?idxno=1138406
+  조엘 엠비드:
+    amount: 57985752
+    as_of: 2026-09-01
+    basis: 2026-27시즌 연봉, 보도
+    currency: USD
+    source: https://sports.yahoo.com/articles/nbas-25-highest-paid-players-073002492.html
+  최정:
+    amount: 2200000000
+    as_of: 2026-03-18
+    basis: KBO 발표 2026 연봉 3위, 보도
+    currency: KRW
+    source: https://v.daum.net/v/20260318142802406
+  칼앤서니 타운스:
+    amount: 57078728
+    as_of: 2026-09-01
+    basis: 2026-27시즌 연봉, 보도
+    currency: USD
+    source: https://sports.yahoo.com/articles/nbas-25-highest-paid-players-073002492.html

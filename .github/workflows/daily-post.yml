@@ -29,18 +29,36 @@ on:
         description: "마케터 번호만 (비우면 3명 모두)"
         type: string
         required: false
+      event:
+        description: "오늘의 사건 한 줄 (첫 문단 훅, 선택)"
+        type: string
+        required: false
+      team:
+        description: "소속 (종목·동명이인 판별, 선택)"
+        type: string
+        required: false
+      trend:
+        description: "생활 물가 비교를 당일 검색량 상위 상품으로"
+        type: boolean
+        default: false
   workflow_call:   # 발행 도우미 버튼 (desk-button.yml)
     inputs:
       mode: {type: string, default: 실제}
       again: {type: boolean, default: false}
       count: {type: string, default: "1"}      # 예전 입력 (1 = 한 마케터, 그 밖 = 모두)
       marketer: {type: string, default: ""}    # 다시 뽑기: 버린 글의 마케터
+      topic: {type: string, default: ""}       # 대표 지정 선수 (도우미 '이 선수로 지금 쓰기', 2026-10-03)
+      theme: {type: string, default: ""}       # 테마 고정 (지정 글은 receipt)
+      event: {type: string, default: ""}       # 지정 선수의 오늘 사건 한 줄 (첫 문단 훅)
+      trend: {type: boolean, default: false}   # 생활 물가 비교를 당일 검색량 상위 상품으로
+      team: {type: string, default: ""}        # 지정 선수 소속 (종목·동명이인 판별)
   push:       # 지금 쓰기 (2026-10-02): GitHub 예약이 안 돌면 config/write_now.yaml을 바꿔 올려 3명 모두 쓰게 한다
     branches: [main]
     paths: ["config/write_now.yaml"]
-  schedule:   # GitHub 예약 실행은 몇 시간씩 늦게 시작할 때가 있다 (9/30은 06:47 예약이 09:45에 시작, 10/1은 07시까지 시작 안 함)
-    - cron: "13 20 * * *"   # UTC 20:13 = 한국 05:13 (일찍 걸어 둔다)
-    - cron: "37 22 * * *"   # UTC 22:37 = 한국 07:37 예비
+  # 예약 실행 멈춤 (2026-10-04, 경제 블로그 전환): 스포츠 글을 더 쓰지 않는다. 경제 자동 글쓰기가 준비되면 새 워크플로로 건다.
+  # schedule:
+  #   - cron: "13 20 * * *"   # UTC 20:13 = 한국 05:13
+  #   - cron: "37 22 * * *"   # UTC 22:37 = 한국 07:37 예비
 
 permissions:
   contents: write
@@ -159,11 +177,16 @@ jobs:
           NCP_APIGW_API_KEY: ${{ secrets.NCP_APIGW_API_KEY }}
           TOPIC: ${{ inputs.topic }}
           THEME: ${{ inputs.theme }}
+          EVENT: ${{ inputs.event }}
+          PTEAM: ${{ inputs.team }}
           AUTOPOST_SKIP: ${{ runner.temp }}/skip.json   # 여러 번 시도할 때 이미 실패한 선수는 다시 모으지 않음
         run: |
           args=(--marketer "${{ matrix.marketer }}" --target 1 --tries 2)   # 2번 안에 못 쓰면 그 마케터는 오늘 쉰다 (비용 효율)
           [ -n "$TOPIC" ] && args+=(--topic "$TOPIC")
           [ -n "$THEME" ] && args+=(--theme "$THEME")
+          [ -n "$EVENT" ] && args+=(--event "$EVENT")
+          [ -n "$PTEAM" ] && args+=(--team "$PTEAM")
+          [ "${{ inputs.trend }}" = "true" ] && args+=(--trend)
           [ "${{ inputs.again }}" = "true" ] && args+=(--again)
           python -m content.autopost "${args[@]}"
       - name: 결과 넘기기 준비 (오늘 글 폴더와 같이 고치는 장부만)
@@ -229,8 +252,7 @@ jobs:
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: python -m content.shorts_stats | tee -a "$GITHUB_STEP_SUMMARY"
-      - name: 유튜브 쇼츠 A·B·C (코드 계산만, Claude 비용 없음. 실패해도 글은 저장)
-        if: ${{ !inputs.again }}
+      - name: 유튜브 쇼츠 (글마다 그 주제로, 코드 계산만. 지금 쓰기에서도 돈다, 2026-10-03)
         continue-on-error: true
         env:
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}

@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ["config/ad_keywords.yaml"]
+    paths: ["config/ad_keywords.yaml", "config/econ_ad_keywords.yaml"]
 
 permissions:
   contents: write
@@ -34,7 +34,8 @@ jobs:
           NAVER_AD_API_KEY: ${{ secrets.NAVER_AD_API_KEY }}
           NAVER_AD_SECRET_KEY: ${{ secrets.NAVER_AD_SECRET_KEY }}
           NAVER_AD_CUSTOMER_ID: ${{ secrets.NAVER_AD_CUSTOMER_ID }}
-        run: python -m market.ad_value | tee -a "$GITHUB_STEP_SUMMARY"
+        run: |   # 경제 블로그 전환 (2026-10-04): 경제 광고주 묶음을 잰다. 스포츠 묶음은 --config ad_keywords.yaml
+          python -m market.ad_value --config econ_ad_keywords.yaml --tag 경제 | tee -a "$GITHUB_STEP_SUMMARY"
       - name: 결과 저장 (reports/ 커밋)
         run: |
           git config user.name "github-actions[bot]"

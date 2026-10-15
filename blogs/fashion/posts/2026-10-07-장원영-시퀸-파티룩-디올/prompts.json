@@ -1,0 +1,112 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · 디올 쇼 후 파티룩을 선보인 장원영",
+  "make": true,
+  "file": "",
+  "size": "1024x1024",
+  "person": true,
+  "desc": "",
+  "find": "장원영",
+  "prompt": "[실제 사진 찾기] 장원영 — 디올 쇼 후 파티룩을 선보인 장원영"
+ },
+ {
+  "n": 2,
+  "label": "디올 쇼 현장에 참석한 장원영",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "장원영",
+  "prompt": "[실제 사진 찾기] 장원영 — 디올 쇼 현장에 참석한 장원영"
+ },
+ {
+  "n": 3,
+  "label": "파리에서 디올 행사에 함께한 장원영",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "장원영 디올 파리",
+  "prompt": "[실제 사진 찾기] 장원영 디올 파리 — 파리에서 디올 행사에 함께한 장원영"
+ },
+ {
+  "n": 4,
+  "label": "은은하게 빛나는 블랙 시퀸 미니드레스 이미지",
+  "make": true,
+  "file": "img4.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Editorial still life of a black sequined mini dress on a velvet hanger, fine shimmering sequins catching soft light, short fitted silhouette, thin straps, no logos, no people, dark marble surface with a single white orchid",
+  "find": "블랙 시퀸 미니드레스",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Editorial still life of a black sequined mini dress on a velvet hanger, fine shimmering sequins catching soft light, short fitted silhouette, thin straps, no logos, no people, dark marble surface with a single white orchid Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 5,
+  "label": "블랙 시퀸 소재의 반짝임 클로즈업",
+  "make": true,
+  "file": "img5.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Macro close-up of black sequin fabric with small overlapping sequins reflecting warm light, subtle gradient of shine, no logos, no people, styled on dark satin with a thin silver chain",
+  "find": "시퀸 소재 클로즈업",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Macro close-up of black sequin fabric with small overlapping sequins reflecting warm light, subtle gradient of shine, no logos, no people, styled on dark satin with a thin silver chain Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 6,
+  "label": "에펠탑 야경 앞의 장원영 파티룩",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "장원영 파티룩",
+  "prompt": "[실제 사진 찾기] 장원영 파티룩 — 에펠탑 야경 앞의 장원영 파티룩"
+ },
+ {
+  "n": 7,
+  "label": "블랙 하이힐 이미지",
+  "make": true,
+  "file": "img7.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Elegant black strappy high-heeled sandals photographed as a magazine still life, slim stiletto heel, glossy leather, delicate ankle strap, no logos, no people, on pale stone floor with soft evening light and a small crystal earring beside",
+  "find": "블랙 스트랩 하이힐",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Elegant black strappy high-heeled sandals photographed as a magazine still life, slim stiletto heel, glossy leather, delicate ankle strap, no logos, no people, on pale stone floor with soft evening light and a small crystal earring beside Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 8,
+  "label": "블랙 미니드레스 스타일링 예시",
+  "make": true,
+  "file": "img8.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Flat lay styling of a black mini dress with silver drop earrings, a small black clutch and black heels on cream linen, soft natural window light, minimal and elegant, no logos, no people",
+  "find": "블랙 미니드레스 스타일링",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Flat lay styling of a black mini dress with silver drop earrings, a small black clutch and black heels on cream linen, soft natural window light, minimal and elegant, no logos, no people Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 9,
+  "label": "드레스에 어울리는 실버 이어링 이미지",
+  "make": true,
+  "file": "img9.jpg",
+  "size": "1536x1024",
+  "person": false,
+  "desc": "Pair of silver drop earrings with small crystals resting on black silk, shallow depth of field, soft highlights, no logos, no people, a folded ivory napkin in background",
+  "find": "실버 드롭 이어링",
+  "prompt": "Landscape 3:2 image. Luxury fashion magazine editorial still-life photograph, soft natural studio daylight, refined styling on cream linen or warm stone, quiet-luxury mood, ultra-detailed textures of fabric, knit, leather and metal hardware, true-to-life colors, shallow depth of field, high-end catalog quality. Pair of silver drop earrings with small crystals resting on black silk, shallow depth of field, soft highlights, no logos, no people, a folded ivory napkin in background Product only, no people, no hands, no face. No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 10,
+  "label": "디올 앰버서더로 함께한 장원영과 지수",
+  "make": true,
+  "file": "",
+  "size": "1536x1024",
+  "person": true,
+  "desc": "",
+  "find": "장원영 지수 디올",
+  "prompt": "[실제 사진 찾기] 장원영 지수 디올 — 디올 앰버서더로 함께한 장원영과 지수"
+ }
+]

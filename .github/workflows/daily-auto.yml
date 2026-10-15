@@ -1,0 +1,37 @@
+# 매일 키워드 모으기 (대표 결정 2026-10-07, 2026-10-09부터 자동 글 없음: 키워드·제목은 대표가 고름)
+# - 05:17 경제·패션 키워드 모으기·채점 (06시 전에 끝나게)
+# - 어사이드가 키워드를 올리면 desk-button.yml이 넣고 다시 채점
+name: 매일 자동 글
+
+on:
+  workflow_dispatch:   # 수동 실행만 남김 (Actions → 매일 자동 글 → Run). refs(블로거)→keywords 순서로 돈다
+  # 자동 키워드 모으기 중단 (대표 결정 2026-10-11: 단톡방 키워드로 전환, API 비용 0). 필요하면 위 workflow_dispatch로 수동 실행.
+  # schedule:
+  #   - cron: "40 20 * * *"   # UTC 20:40 = 한국 05:40 (9시 발행용)
+  #   - cron: "40 23 * * *"   # UTC 23:40 = 한국 08:40 (12시 발행용)
+  #   - cron: "40 5 * * *"    # UTC 05:40 = 한국 14:40 (18시 발행용)
+
+permissions:
+  contents: write
+
+jobs:
+  # 경제 참고 블로거(대표 지정, config/econ_refs.yaml) 어제오늘 새 글 제목을 먼저 모은다 (최신성 신호, 대표 결정 2026-10-10).
+  # AI 없음·0원(공개 RSS). 패션은 키워드 모으기 때 블로거 RSS를 바로 읽어 따로 필요 없음.
+  refs:
+    uses: ./.github/workflows/econ-flow.yml
+    with:
+      cmd: refs
+      blog: econ
+    secrets: inherit
+  run:
+    needs: refs
+    if: ${{ always() }}   # 블로거 조사가 실패해도 키워드는 모은다
+    strategy:
+      fail-fast: false
+      matrix:
+        blog: [econ, fashion]
+    uses: ./.github/workflows/econ-flow.yml
+    with:
+      cmd: keywords
+      blog: ${{ matrix.blog }}
+    secrets: inherit

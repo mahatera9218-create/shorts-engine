@@ -137,6 +137,58 @@ class ApiHub:
             time.sleep(0.1)
         return out
 
+    def rise(self, keywords: list[str], recent: int = 3, base: int = 11) -> dict[str, dict]:
+        """최근 며칠 검색 상승 (착장 도우미 '오늘 뜨는 연예인', 2026-10-10). 일 단위 검색어 트렌드 최근 recent+base일로
+        {키워드: {"rise": 최근 recent일 평균 ÷ 그 전 base일 평균, "level": 최근 평균(그 요청 안 상대값)}}. 값이 없으면 빠짐."""
+        end = date.today() - timedelta(days=1)
+        start = end - timedelta(days=recent + base - 1)
+        out: dict[str, dict] = {}
+        for i in range(0, len(keywords), MAX_GROUPS):
+            batch = keywords[i:i + MAX_GROUPS]
+            body = {"startDate": start.isoformat(), "endDate": end.isoformat(), "timeUnit": "date",
+                    "keywordGroups": [{"groupName": k, "keywords": [k]} for k in batch]}
+            data = request_json("POST", self.base + self.paths["search_trend"],
+                                headers={**self._headers(), "Content-Type": "application/json"}, json=body)
+            for res in data.get("results", []):
+                vals = [float(p.get("ratio", 0)) for p in res.get("data", [])]
+                if len(vals) < recent + 1:
+                    continue
+                now, before = vals[-recent:], vals[:-recent]
+                b = sum(before) / len(before) if before else 0.0
+                n = sum(now) / len(now)
+                out[res.get("title", "")] = {"rise": round(n / b, 2) if b > 0 else (9.9 if n > 0 else 0.0), "level": round(n, 1)}
+            time.sleep(0.1)
+        return out
+
+    def shopping_rank(self, category: str, keywords: list[str], anchor: str, recent: int = 7, base: int = 21) -> dict[str, dict]:
+        """쇼핑 인사이트 분야(category) 안에서 상품 키워드들의 '지금 많이 찾는 정도'(계절 인기)와 최근 상승률.
+        데이터랩은 한 요청 안 키워드끼리만 상대값(최대 100)이라, 모든 배치에 anchor를 함께 넣어 anchor=100으로 맞춰 배치 간 비교 가능하게 한다.
+        {상품: {"level": 지금 인기(anchor 기준), "rise": 최근 recent일 ÷ 그 전 base일}}. (대표 요청 2026-10-10 '계절 인기 상품 + 셀럽')."""
+        end = date.today() - timedelta(days=1)
+        start = end - timedelta(days=recent + base - 1)
+        others = [k for k in keywords if k != anchor]
+        out: dict[str, dict] = {}
+        for i in range(0, len(others), MAX_GROUPS - 1):
+            batch = [anchor] + others[i:i + MAX_GROUPS - 1]
+            body = {"startDate": start.isoformat(), "endDate": end.isoformat(), "timeUnit": "date",
+                    "category": category, "keyword": [{"name": k, "param": [k]} for k in batch]}
+            data = request_json("POST", self.base + self.paths["shopping_keywords"],
+                                headers={**self._headers(), "Content-Type": "application/json"}, json=body)
+            levels = {}
+            for res in data.get("results", []):
+                vals = [float(p.get("ratio", 0)) for p in res.get("data", [])]
+                title = res.get("title", "")
+                now = sum(vals[-recent:]) / recent if len(vals) >= recent else (sum(vals) / len(vals) if vals else 0.0)
+                before = sum(vals[:-recent]) / max(1, len(vals) - recent) if len(vals) > recent else 0.0
+                levels[title] = (now, round(now / before, 2) if before > 0 else (9.9 if now > 0 else 0.0))
+            an = levels.get(anchor, (0.0, 0.0))[0] or 1.0  # anchor를 100으로
+            for k, (now, rise) in levels.items():
+                if k == anchor:
+                    continue
+                out[k] = {"level": round(now / an * 100, 1), "rise": rise}
+            time.sleep(0.1)
+        return out
+
     def shopping_category(self, name: str, category: str, months: int = 12) -> dict:
         """쇼핑 인사이트 분야별 클릭 추이. HUB 경로 미확인 → 카테고리 코드가 있을 때만 호출."""
         end = date.today().replace(day=1) - timedelta(days=1)

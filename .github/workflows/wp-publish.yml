@@ -1,0 +1,75 @@
+# 워드프레스 발행 (구글 블로그 astacgroup.com)
+# - 수동 실행: GitHub 앱/브라우저 → Actions → 워드프레스 발행 → Run workflow
+#   · 글파일: 올릴 초안 경로 (예: reports/구글글-초안/01-소득세율표.md)
+#   · 상태: 초안(기본, 워드프레스에서 검토 후 대표가 공개) / 공개(바로 노출)
+# - 비밀 값(WP_URL·WP_USER·WP_APP_PASSWORD)은 GitHub Secrets에만 있다.
+# - 원칙: 바깥 공개는 대표 버튼. 그래서 기본은 '초안'이고, 공개는 대표가 고를 때만.
+name: 워드프레스 발행
+
+on:
+  workflow_dispatch:
+    inputs:
+      file:
+        description: "올릴 글파일 경로"
+        type: string
+        default: "reports/구글글-초안/01-소득세율표.md"
+      status:
+        description: "상태 (초안=워드프레스에 초안으로만, 공개=바로 노출)"
+        type: choice
+        options: [초안, 공개]
+        default: 초안
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wp-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TZ: Asia/Seoul
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: 준비
+        run: pip install -r requirements.txt
+
+      - name: 점검 (테스트)
+        run: python -m unittest tests.test_wp
+
+      - name: 발행
+        env:
+          WP_URL: ${{ secrets.WP_URL }}
+          WP_USER: ${{ secrets.WP_USER }}
+          WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
+        run: |
+          if [ "${{ inputs.status }}" = "공개" ]; then
+            ST=publish
+          else
+            ST=draft
+          fi
+          python -m content.wp --file "${{ inputs.file }}" --status "$ST" | tee /tmp/wp_out.txt
+
+      - name: 결과 요약
+        if: always()
+        run: |
+          {
+            echo "## 워드프레스 발행 결과"
+            echo ""
+            if [ -f /tmp/wp_out.txt ]; then
+              echo '```'
+              cat /tmp/wp_out.txt
+              echo '```'
+            else
+              echo "발행 단계가 실행되지 못했습니다. (비밀 값 또는 파일 경로 확인)"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,14 @@
+key: C-kbo-game
+title: 2026 KBO 연봉 TOP 5 1경기에 버는 돈
+unit: 1경기에 버는 돈
+div: 144
+league: kbo
+kind: C
+q: 1위 예상했나요?
+basis: 확인 연봉표(config/salaries.yaml, 발표·보도), 환율 1달러 = 1,358.4원 (2026-10-02)
+names:
+- 양의지
+- 고영표
+- 최정
+- 류현진
+- 박세웅

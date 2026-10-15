@@ -1,0 +1,283 @@
+keyword: 테슬라 주가 전망
+person: ''
+mode: 쿠니네
+made: '15:43'
+items:
+- title: 테슬라 주가 전망, 목표가 $480 VS $157 왜 이렇게 갈릴까?
+  type: 비교형
+  rank: 1
+  best: true
+  chars: 38
+  flags: []
+- title: 테슬라 주가 전망, 10월 21일 실적에서 뭘 증명해야 할까?
+  type: 궁금형
+  rank: 2
+  best: true
+  chars: 34
+  flags: []
+- title: 테슬라 주가 전망, 인도량 beat인데 작년보다는 줄었다
+  type: 반전형
+  rank: 3
+  best: true
+  chars: 31
+  flags: []
+- title: 테슬라 주가 전망, 10월 21일 실적 전에 확인할 3가지 숫자
+  type: 실행형
+  rank: 4
+  best: true
+  chars: 35
+  flags: []
+- title: 테슬라 주가 전망, 인도량만 보고 놓치기 쉬운 마진 변수
+  type: 위협형
+  rank: 5
+  best: true
+  chars: 31
+  flags: []
+- title: 테슬라 주가 전망 인도량 486,532대 VS 컨센서스 46.2만대
+  type: 비교형
+  rank: null
+  best: false
+  chars: 37
+  flags: []
+- title: 테슬라 주가 전망, 인도량 beat VS 작년보다 2% 감소 뭘 볼까
+  type: 비교형
+  rank: null
+  best: false
+  chars: 38
+  flags: []
+- title: 테슬라 주가 전망 $370 vs $378, 인도량 발표 뒤 사흘 변화
+  type: 비교형
+  rank: null
+  best: false
+  chars: 38
+  flags: []
+- title: 테슬라 주가 전망 RBC 매수 VS JP모건 중립, 시각 차이
+  type: 비교형
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: 테슬라 주가 전망 볼 때 인도량보다 마진부터 확인하세요
+  type: 실행형
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: 테슬라 주가 전망, 증권사 목표가 보는 순서 이렇게 잡으세요
+  type: 실행형
+  rank: null
+  best: false
+  chars: 33
+  flags: []
+- title: 테슬라 주가 전망 확인할 때 실적 발표 시간부터 체크하세요
+  type: 실행형
+  rank: null
+  best: false
+  chars: 32
+  flags: []
+- title: 테슬라 주가 전망, 로보택시 소식은 규모부터 따져보세요
+  type: 실행형
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: 테슬라 주가 전망, 목표가 평균 $391~411 상승 여력 3~10% 계산법
+  type: 이득형
+  rank: null
+  best: true
+  chars: 42
+  flags: []
+- title: 테슬라 주가 전망 볼 때 인도량·마진 같이 보면 달라지는 해석
+  type: 이득형
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: 테슬라 주가 전망, 증권가 목표가 격차 읽으면 보이는 기준
+  type: 이득형
+  rank: null
+  best: false
+  chars: 32
+  flags: []
+- title: 테슬라 주가 전망 실적 전 알아두면 뉴스 해석이 쉬워지는 숫자
+  type: 이득형
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: 테슬라 주가 전망, 에너지저장 13.7GWh까지 봐야 하는 이유
+  type: 이득형
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: 테슬라 주가 전망 인도량 깜짝인데 왜 상승 여력은 3~10%일까
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: 테슬라 주가 전망 P/E 300배 넘는 고평가 논란, 근거는?
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: 테슬라 주가 전망 로보택시가 실적에 반영되려면 얼마나 걸릴까
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 33
+  flags: []
+- title: 테슬라 주가 전망, 증권사 목표가는 왜 $157부터 $480일까?
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 36
+  flags: []
+- title: 테슬라 주가 전망 실적 발표 전 간과하기 쉬운 에너지저장 부진
+  type: 위협형
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: 테슬라 주가 전망, 고평가 부담이 실적 앞에서 커질 수 있는 조건
+  type: 위협형
+  rank: null
+  best: false
+  chars: 36
+  flags: []
+- title: 테슬라 주가 전망 AI 기대만 믿다 놓치기 쉬운 숫자들
+  type: 위협형
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: 테슬라 주가 전망, 작년 대비 인도량 2% 감소 놓치지 마세요
+  type: 위협형
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: 테슬라 주가 전망 목표가 올랐는데 상승 여력은 의외로 작았다
+  type: 반전형
+  rank: null
+  best: false
+  chars: 33
+  flags: []
+- title: 테슬라 주가 전망 인도량이 주인공인 줄 알았는데 AI가 더 중요?
+  type: 반전형
+  rank: null
+  best: false
+  chars: 36
+  flags: []
+- title: 테슬라 주가 전망, 생산보다 판매가 2만대 넘게 많았다
+  type: 반전형
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: 테슬라 주가 전망 로보택시 확대에도 규모는 아직 제한적이었다
+  type: 반전형
+  rank: null
+  best: false
+  chars: 33
+  flags: []
+- title: 테슬라 주가 전망 '486,532대' 깜짝 인도량, 그런데 YoY는 -2%?
+  type: 경제토르식
+  rank: null
+  best: false
+  chars: 42
+  flags: []
+- title: 테슬라 주가 전망 '목표가 $157 vs $480' 이렇게 갈리는 이유
+  type: 경제토르식
+  rank: null
+  best: false
+  chars: 39
+  flags: []
+- title: 테슬라 주가 전망, 10월 21일 실적 '마진' 숫자 보고 판단해도 늦지 않을까?
+  type: 경제토르식
+  rank: null
+  best: false
+  chars: 45
+  flags: []
+- title: 테슬라 주가 전망 '$378.73 마감' 10월 21일 실적 앞두고 갈린다는데?
+  type: 유미식
+  rank: null
+  best: false
+  chars: 44
+  flags: []
+- title: 테슬라 주가 전망 '인도량 깜짝' 했는데 'AI 프리미엄' 증명은 아직이라는 이유
+  type: 유미식
+  rank: null
+  best: false
+  chars: 45
+  flags: []
+- title: 테슬라 주가 전망 '목표가 $157부터 $480까지' 증권가 시각 극과 극이라는데?
+  type: 유미식
+  rank: null
+  best: false
+  chars: 46
+  flags:
+  - 46자(45자 넘음)
+groups:
+- type: 비교형
+  idx:
+  - 0
+  - 5
+  - 6
+  - 7
+  - 8
+  best: 0
+- type: 실행형
+  idx:
+  - 3
+  - 9
+  - 10
+  - 11
+  - 12
+  best: 3
+- type: 이득형
+  idx:
+  - 13
+  - 14
+  - 15
+  - 16
+  - 17
+  best: 13
+- type: 궁금형
+  idx:
+  - 1
+  - 18
+  - 19
+  - 20
+  - 21
+  best: 1
+- type: 위협형
+  idx:
+  - 4
+  - 22
+  - 23
+  - 24
+  - 25
+  best: 4
+- type: 반전형
+  idx:
+  - 2
+  - 26
+  - 27
+  - 28
+  - 29
+  best: 2
+- type: 경제토르식
+  idx:
+  - 30
+  - 31
+  - 32
+  best: null
+- type: 유미식
+  idx:
+  - 33
+  - 34
+  - 35
+  best: null

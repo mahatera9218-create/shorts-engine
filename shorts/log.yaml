@@ -31,3 +31,81 @@
   key: C-kbo-month
   title: 2026 KBO 연봉 TOP 5 월급으로 치면
   discarded: true
+- date: '2026-10-02'
+  kind: A
+  key: A-대니엘
+  title: 대니엘 1이닝에 버는 돈, 얼마?
+  folder: 2026-10-02-A-대니엘
+- date: '2026-10-02'
+  kind: B
+  key: B-kbo1-커리
+  title: KBO 연봉 1위 vs 커리
+  folder: 2026-10-02-B-kbo1-커리
+  video_id: hbpw84tTKAU
+  uploaded: '2026-09-30'
+- date: '2026-10-02'
+  kind: C
+  key: C-kbo-day
+  title: 2026 KBO 연봉 TOP 5 하루에 버는 돈
+  folder: 2026-10-02-C-kbo-day
+  video_id: 52ga_LTBhoI
+  uploaded: '2026-09-30'
+- date: '2026-10-02'
+  kind: B
+  key: B-kbo5-커리
+  title: KBO 연봉 TOP 5 합계 vs 커리
+  folder: 2026-10-02-B-kbo5-커리
+- date: '2026-10-02'
+  kind: C
+  key: C-kbo-game
+  title: 2026 KBO 연봉 TOP 5 1경기에 버는 돈
+  folder: 2026-10-02-C-kbo-game
+- date: '2026-10-03'
+  kind: C
+  key: C-kbo-top5
+  title: 2026 KBO 연봉 순위 TOP 5
+  folder: 2026-10-03-C-kbo-top5
+- date: '2026-10-03'
+  kind: A
+  key: A-야말
+  title: 야말 1골에 버는 돈, 얼마?
+  folder: 2026-10-03-A-야말
+- date: '2026-10-03'
+  kind: A
+  key: A-고영표
+  title: 고영표 1승에 버는 돈, 얼마?
+  folder: 2026-10-03-A-고영표
+  video_id: tx0Q5T4F14E
+  uploaded: '2026-10-03'
+- date: '2026-10-03'
+  kind: A
+  key: A-고영표
+  title: 고영표 1승에 버는 돈, 얼마?
+  folder: 2026-10-03-A-고영표
+- date: '2026-10-03'
+  kind: A
+  key: A-고영표
+  title: 고영표 1승에 버는 돈, 얼마?
+  folder: 2026-10-03-A-고영표
+- date: '2026-10-03'
+  kind: A
+  key: A-고영표
+  title: 고영표 1승에 버는 돈, 얼마?
+  folder: 2026-10-03-A-고영표
+- date: '2026-10-03'
+  kind: A
+  key: A-엄지성
+  title: 엄지성 1골에 버는 돈, 얼마?
+  folder: 2026-10-03-A-엄지성
+  video_id: XMX5w3-fZb4
+  uploaded: '2026-10-03'
+- date: '2026-10-04'
+  kind: A
+  key: A-저지
+  title: 저지 홈런 1개에 버는 돈, 얼마?
+  folder: 2026-10-04-A-저지
+- date: '2026-10-04'
+  kind: A
+  key: A-나성범
+  title: 나성범 홈런 1개에 버는 돈, 얼마?
+  folder: 2026-10-04-A-나성범

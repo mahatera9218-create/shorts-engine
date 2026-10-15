@@ -1,0 +1,142 @@
+keyword: JYP 신사옥 철회
+person: JYP
+mode: 쿠니네
+made: '20:53'
+items:
+- title: JYP 신사옥 철회, 755억 땅은 대체 어떻게 되나?
+  type: 궁금형
+  rank: 1
+  best: true
+  chars: 30
+  flags: []
+- title: JYP 신사옥 철회, 755억 땅 vs 960억 성내동 건물
+  type: 비교형
+  rank: null
+  best: true
+  chars: 33
+  flags: []
+- title: JYP 신사옥 철회 전과 후, 고덕에서 성내동으로 달라진 계획
+  type: 비교형
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: JYP 신사옥 철회, 서울시 반박 이후 확인할 3가지
+  type: 실행형
+  rank: null
+  best: false
+  chars: 29
+  flags: []
+- title: JYP 신사옥 철회 후 755억 땅, 지켜볼 대목은 따로 있다
+  type: 실행형
+  rank: null
+  best: true
+  chars: 34
+  flags: []
+- title: JYP 신사옥 철회, 960억 건물 매입이 남긴 계산서
+  type: 이득형
+  rank: null
+  best: true
+  chars: 30
+  flags: []
+- title: JYP 신사옥 철회로 성내동이 얻게 된 것, 고덕이 잃은 것
+  type: 이득형
+  rank: null
+  best: false
+  chars: 33
+  flags: []
+- title: JYP 신사옥 철회, 공원이 바뀐 게 왜 문제였을까?
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 29
+  flags: []
+- title: JYP 신사옥 철회 논란, 서울시가 '호도 말라' 한 까닭
+  type: 위협형
+  rank: null
+  best: true
+  chars: 32
+  flags: []
+- title: JYP 신사옥 철회, 책임 공방 번지면 남는 부담은?
+  type: 위협형
+  rank: null
+  best: false
+  chars: 29
+  flags: []
+- title: JYP 신사옥 철회, 절차상 문제는 없다는데 왜 접었나
+  type: 반전형
+  rank: null
+  best: true
+  chars: 30
+  flags: []
+- title: JYP 신사옥 철회, 허가까지 받고도 '성내동에 남는다'
+  type: 반전형
+  rank: null
+  best: false
+  chars: 31
+  flags: []
+- title: JYP 신사옥 철회, 쟁점은 공원 용도 변경 하나로 모인다
+  type: 확신형
+  rank: null
+  best: true
+  chars: 32
+  flags: []
+- title: JYP 신사옥 철회, 사생활 보호와 공공 개발의 충돌이다
+  type: 확신형
+  rank: null
+  best: false
+  chars: 31
+  flags: []
+- title: JYP 신사옥 철회, 755억 땅 두고 서울시와 정면 충돌
+  type: 자극형
+  rank: null
+  best: true
+  chars: 32
+  flags: []
+- title: JYP 신사옥 철회 '갑자기?' 고덕 주민들 기대 접었다
+  type: 자극형
+  rank: null
+  best: false
+  chars: 31
+  flags: []
+groups:
+- type: 비교형
+  idx:
+  - 1
+  - 2
+  best: 1
+- type: 실행형
+  idx:
+  - 3
+  - 4
+  best: 4
+- type: 이득형
+  idx:
+  - 5
+  - 6
+  best: 5
+- type: 궁금형
+  idx:
+  - 0
+  - 7
+  best: 0
+- type: 위협형
+  idx:
+  - 8
+  - 9
+  best: 8
+- type: 반전형
+  idx:
+  - 10
+  - 11
+  best: 10
+- type: 확신형
+  idx:
+  - 12
+  - 13
+  best: 12
+- type: 자극형
+  idx:
+  - 14
+  - 15
+  best: 14

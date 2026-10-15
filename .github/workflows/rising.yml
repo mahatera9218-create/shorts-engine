@@ -1,0 +1,25 @@
+# 네이버 급상승 탐지 — 어사이드 없이 공식 API로 하루 3번 (대표 요청 2026-10-10, content/rising.py)
+# 정각은 GitHub가 늦게 돌려서 :23분. 한국 05:23·11:23·17:23
+name: 네이버 급상승
+
+on:
+  schedule:
+    - cron: "30 20 * * *"   # UTC 20:30 = 한국 05:30 (9시 발행용, 키워드 직전)
+    - cron: "30 23 * * *"   # UTC 23:30 = 한국 08:30 (12시 발행용)
+    - cron: "30 5 * * *"    # UTC 05:30 = 한국 14:30 (18시 발행용)
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    strategy:
+      fail-fast: false
+      max-parallel: 1   # 두 블로그가 같은 저장소에 차례로 커밋
+      matrix:
+        blog: [econ, fashion]
+    uses: ./.github/workflows/econ-flow.yml
+    with:
+      cmd: rising
+      blog: ${{ matrix.blog }}
+    secrets: inherit

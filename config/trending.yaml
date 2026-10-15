@@ -1,6 +1,254 @@
 # 자동 생성 (content/trending.py). 손으로 고치지 않는다.
-updated: '2026-10-02'
+updated: '2026-10-04'
 players:
+- name: 김혜성
+  short: 김혜성
+  sport: mlb
+  team: LA 다저스
+  why: 마이너리거에서 다저스 NLDS 로스터에 전격 합류
+  source: 14
+  date: '2026-10-04'
+  link: https://www.spotvnews.co.kr/news/articleView.html?idxno=1011251
+- name: 김민솔
+  short: 김민솔
+  sport: golf
+  team: ''
+  why: 시즌 마지막 메이저 대회 이틀 연속 선두
+  source: 60
+  date: '2026-10-04'
+  link: http://www.newsroad.co.kr/news/articleView.html?idxno=65242
+- name: 듀렌
+  short: 듀렌
+  sport: nba
+  team: 디트로이트 피스톤스
+  why: 5년 2억 달러 계약으로 디트로이트 잔류
+  source: 73
+  date: '2026-10-04'
+  link: https://m.sports.naver.com/basketball/article/065/0000302208
+- name: 이강인
+  short: 이강인
+  sport: laliga
+  team: 아틀레티코 마드리드
+  why: 이적 후 처음으로 9월 이달의 선수 선정
+  source: 57
+  date: '2026-10-04'
+  link: http://www.stoo.com/article.php?aid=109215916338
+- name: 김하성
+  short: 김하성
+  sport: mlb
+  team: 애틀랜타 브레이브스
+  why: NLDS 1차전 선발 출전, 호수비 선보이며 코리안더비 성사
+  source: 24
+  date: '2026-10-04'
+  link: https://www.mydaily.co.kr/page/view/2026100409033092591
+- name: 유해란
+  short: 유해란
+  sport: golf
+  team: ''
+  why: KLPGA 하이트진로 챔피언십 3라운드 단독 선두, 4년 6개월 만의 KLPGA 우승 도전
+  source: 68
+  date: '2026-10-04'
+  link: https://www.g-enews.com/view.php?ud=202610031611472950daecd3dad5_1
+- name: 무라카미
+  short: 무라카미
+  sport: mlb
+  team: 시카고 화이트삭스
+  why: ALDS 1차전 결승 투런포로 팀 승리 이끎
+  source: 26
+  date: '2026-10-04'
+  link: https://www.newsis.com/view/NISX20261004_0003813798
+- name: 고영표
+  short: 고영표
+  sport: kbo
+  team: KT 위즈
+  why: 롯데전 9이닝 완봉승으로 개인 한 시즌 최다승, KT 매직넘버 4
+  source: 3
+  date: '2026-10-04'
+  link: http://www.thesportstimes.co.kr/news/articleView.html?idxno=376194
+- name: 구창모
+  short: 구창모
+  sport: kbo
+  team: NC 다이노스
+  why: SSG전 6이닝 호투로 개인 한 시즌 최다승 신기록, NC 토종 최다승 타이
+  source: 16
+  date: '2026-10-04'
+  link: http://www.osen.co.kr/article/G1112887043
+- name: 켈리
+  short: 켈리
+  sport: kbo
+  team: ''
+  why: LG를 떠난 에이스가 잠실로 돌아온다는 소식
+  source: 4
+  date: '2026-10-04'
+  link: https://www.starnewskorea.com/sports/2026/10/04/2026100312094991144
+- name: 애런 저지
+  short: 저지
+  sport: mlb
+  team: 뉴욕 양키스
+  why: 종아리 부상으로 ALDS 로스터에서 제외
+  source: 12
+  date: '2026-10-04'
+  link: http://www.osen.co.kr/article/G1112887165
+- name: 오현규
+  short: 오현규
+  sport: epl
+  team: 베식타스
+  why: 토트넘이 내년 겨울 영입을 검토한다는 보도
+  source: 80
+  date: '2026-10-04'
+  link: https://www.goal.com/kr/뉴스/a/bltd769d1ab91a2f21c
+- name: 무라카미 무네타카
+  short: 무라카미
+  sport: mlb
+  team: 시카고 화이트삭스
+  why: ALDS 1차전에서 포스트시즌 첫 홈런이 결승 투런포, 팀의 3-0 승리 견인
+  source: 21
+  date: '2026-10-04'
+  link: https://www.dailysportshankook.co.kr/news/articleView.html?idxno=434115
+- name: 전상현
+  short: 전상현
+  sport: kbo
+  team: KIA 타이거즈
+  why: 8·9회 2이닝 무실점으로 5-4 승리를 지켜냄
+  source: 4
+  date: '2026-10-04'
+  link: https://www.xportsnews.com/article/2203870
+- name: 스쿠벌
+  short: 스쿠벌
+  sport: mlb
+  team: LA 다저스
+  why: NLDS 1차전 6이닝 7K 1실점 호투로 다저스의 5-3 승리 견인
+  source: 9
+  date: '2026-10-04'
+  link: https://sports.khan.co.kr/article/202610040807003?pt=nv
+- name: 사토 테루아키
+  short: 사토
+  sport: kbo
+  team: ''
+  why: 타격 10관왕이 유력해 시즌 후 빅리그 포스팅 도전 기대
+  source: 12
+  date: '2026-10-04'
+  link: https://www.spotvnews.co.kr/news/articleView.html?idxno=1011237
+- name: 조던 호킨스
+  short: 호킨스
+  sport: nba
+  team: 멤피스 그리즐리스
+  why: 트레이드 영입 직후 멤피스에서 방출 예정
+  source: 26
+  date: '2026-10-04'
+  link: http://www.rookie.co.kr/news/articleView.html?idxno=127672
+- name: 곽빈
+  short: 곽빈
+  sport: kbo
+  team: 두산 베어스
+  why: 투수 2관왕 유력, MVP 후보로 거론
+  source: 75
+  date: '2026-10-04'
+  link: https://www.ohmynews.com/NWS_Web/View/at_pg.aspx?CNTN_CD=A0003272266&CMPT_CD=P0010&utm_source=naver&utm_medium=newsearch&utm_campaign=naver_news
+- name: 김태훈
+  short: 김태훈
+  sport: kbo
+  team: 삼성 라이온즈
+  why: 개인 통산 100홀드 달성, KBO 역대 23번째
+  source: 8
+  date: '2026-10-04'
+  link: http://www.osen.co.kr/article/G1112887172
+- name: 드루 라스무센
+  short: 라스무센
+  sport: mlb
+  team: 탬파베이
+  why: ALDS 1차전 8이닝 10K 역투로 승리 이끎
+  source: 25
+  date: '2026-10-04'
+  link: https://www.newsis.com/view/NISX20261004_0003813812
+- name: 레이 커
+  short: 레이 커
+  sport: mlb
+  team: 애틀랜타 브레이브스
+  why: 편의점 알바 출신 32세 좌완, 포스트시즌 호투로 화제
+  source: 23
+  date: '2026-10-03'
+  link: https://www.starnewskorea.com/sports/2026/10/03/2026100309341882072
+- name: 마이클 해리스 2세
+  short: 해리스
+  sport: mlb
+  team: 애틀랜타
+  why: 와일드카드 시리즈에서 스리런 홈런으로 애틀랜타의 NLDS 진출에 기여
+  source: 51
+  date: '2026-10-03'
+  link: http://www.stoo.com/article.php?aid=109202030443
+- name: 김민성
+  short: 김민성
+  sport: kbo
+  team: 롯데 자이언츠
+  why: 20년 만에 현역 은퇴, 9일 사직에서 은퇴식
+  source: 40
+  date: '2026-10-03'
+  link: https://www.joongangenews.com/news/articleView.html?idxno=552494
+- name: 타릭 스쿠발
+  short: 스쿠발
+  sport: mlb
+  team: LA 다저스
+  why: 야마모토 대신 애틀랜타와의 NLDS 1차전 선발로 낙점, 사이영상 2연패 투수
+  source: 16
+  date: '2026-10-03'
+  link: http://www.osen.co.kr/article/G1112886518
+- name: 스즈키
+  short: 스즈키
+  sport: mlb
+  team: 시카고 컵스
+  why: FA 시장에서 컵스를 떠날 가능성과 행선지에 관심 집중
+  source: 25
+  date: '2026-10-03'
+  link: https://www.sportschosun.com/baseball/2026-10-02/202610020100013710000620
+- name: 앤더슨
+  short: 앤더슨
+  sport: mlb
+  team: ''
+  why: KBO 출신 역수출 투수로 미국 매체가 1000만 달러대 옵션 행사를 주장
+  source: 44
+  date: '2026-10-03'
+  link: http://www.osen.co.kr/article/G1112886375
+- name: 감보아
+  short: 감보아
+  sport: mlb
+  team: ''
+  why: 롯데에서 방출된 뒤 메이저리그 포스트시즌 무대까지 밟은 인생역전 시즌
+  source: 12
+  date: '2026-10-03'
+  link: https://www.spotvnews.co.kr/news/articleView.html?idxno=1011109
+- name: 송민혁
+  short: 송민혁
+  sport: golf
+  team: ''
+  why: KPGA 현대해상 최경주 인비테이셔널 첫날 65타 돌풍, 챔피언조 진출
+  source: 76
+  date: '2026-10-03'
+  link: https://www.g-enews.com/view.php?ud=202610011758202721daecd3dad5_1
+- name: 샘 힐리어드
+  short: 샘
+  sport: kbo
+  team: kt wiz
+  why: 9월 대폭발로 정규리그 MVP 0순위로 부상
+  source: 50
+  date: '2026-10-03'
+  link: https://www.nocutnews.co.kr/news/6586319?utm_source=naver&utm_medium=article&utm_campaign=20261002104922
+- name: 제일렌 듀렌
+  short: 듀렌
+  sport: nba
+  team: 디트로이트 피스톤스
+  why: 5년 2억 달러에 디트로이트 재계약
+  source: 59
+  date: '2026-10-03'
+  link: https://m.sports.naver.com/basketball/article/065/0000302208
+- name: 배상문
+  short: 배상문
+  sport: golf
+  team: ''
+  why: 17년 만의 KPGA투어 우승 도전, 챔피언조 편성
+  source: 77
+  date: '2026-10-03'
+  link: https://www.g-enews.com/view.php?ud=202610011424358957daecd3dad5_1
 - name: 김현수
   short: 김현수
   sport: kbo
@@ -9,14 +257,6 @@ players:
   source: 39
   date: '2026-10-02'
   link: https://www.news1.kr/sports/baseball/6308287
-- name: 김혜성
-  short: 김혜성
-  sport: mlb
-  team: LA 다저스
-  why: 메이저리그 콜업 후 디비전 시리즈 PS 로스터 합류 여부에 관심 집중
-  source: 2
-  date: '2026-10-02'
-  link: https://www.spotvnews.co.kr/news/articleView.html?idxno=1010893
 - name: 힐리어드
   short: 힐리어드
   sport: kbo
@@ -37,58 +277,26 @@ players:
   short: 최원준
   sport: kbo
   team: KT 위즈
-  why: 올 시즌 프로야구 최고의 급등주로 꼽히며 트레이드 성공 사례로 화제
-  source: 10
+  why: 올 시즌 프로야구 최고의 급등주로 꼽히며 활약
+  source: 13
   date: '2026-10-02'
   link: https://www.joongang.co.kr/article/25466505
-- name: 무라카미
-  short: 무라카미
-  sport: mlb
-  team: 시카고 화이트삭스
-  why: 메이저리그 데뷔 시즌 35홈런 77타점을 올리고 PS 승리 뒤 인터뷰로 화제
-  source: 26
-  date: '2026-10-02'
-  link: https://mhnse.com/news/articleView.html?idxno=1569065
 - name: 하피냐
   short: 하피냐
   sport: laliga
   team: 바르셀로나
-  why: 시즌 초반 8경기 14골 활약에 쿠르투아가 극찬
-  source: 31
+  why: 시즌 초반 8경기 14골, 쿠르투아도 극찬
+  source: 40
   date: '2026-10-02'
   link: https://sports.khan.co.kr/article/202610020500003?pt=nv
-- name: 이강인
-  short: 이강인
-  sport: laliga
-  team: 아틀레티코 마드리드
-  why: 시즌 초반 맹활약으로 아틀레티코 연계 플레이의 핵심으로 극찬
-  source: 46
-  date: '2026-10-02'
-  link: https://www.mydaily.co.kr/page/view/2026100109532757896
 - name: 리디아 고
   short: 리디아 고
   sport: golf
   team: ''
-  why: 롯데 챔피언십에서 소렌스탐을 제치고 LPGA 통산 상금 1위에 도전
-  source: 37
+  why: 롯데 챔피언십에서 소렌스탐을 넘어 LPGA 통산 상금 1위 도전
+  source: 47
   date: '2026-10-02'
-  link: https://www.topstarnews.net/news/articleView.html?idxno=16233488
-- name: 김민솔
-  short: 김민솔
-  sport: golf
-  team: ''
-  why: KLPGA 하이트진로 챔피언십 1라운드 2언더파로 단독 선두
-  source: 62
-  date: '2026-10-02'
-  link: https://news.sbs.co.kr/news/endPage.do?news_id=N1008779600&plink=ORI&cooper=NAVER
-- name: 송민혁
-  short: 송민혁
-  sport: golf
-  team: ''
-  why: KPGA 최경주 인비테이셔널 첫날 65타 돌풍
-  source: 58
-  date: '2026-10-02'
-  link: https://www.g-enews.com/view.php?ud=202610011758202721daecd3dad5_1
+  link: https://www.maniareport.com/view.php?ud=2026100209551521756cf2d78c68_19
 - name: 양의지
   short: 양의지
   sport: kbo
@@ -97,22 +305,78 @@ players:
   source: 14
   date: '2026-10-02'
   link: https://www.starnewskorea.com/sports/2026/10/02/2026100119530919772
-- name: 김도영
-  short: 김도영
-  sport: kbo
-  team: KIA 타이거즈
-  why: 시즌 41호 홈런으로 KIA 구단 한 시즌 최다 홈런 신기록 경신
-  source: 47
-  date: '2026-09-30'
-  link: https://news.jtbc.co.kr/article/NB12320587?influxDiv=NAVER
 - name: 손흥민
   short: 손흥민
   sport: soccer
   team: LAFC
-  why: A매치 58골·공식전 300골 달성
-  source: 56
-  date: '2026-09-30'
-  link: https://www.ohmynews.com/NWS_Web/View/at_pg.aspx?CNTN_CD=A0003271090&CMPT_CD=P0010&utm_source=naver&utm_medium=newsearch&utm_campaign=naver_news
+  why: 토트넘 시절 최고의 순간을 밝혀 화제
+  source: 55
+  date: '2026-10-02'
+  link: https://www.starnewskorea.com/sports/2026/10/01/2026100110090964063
+- name: 구자욱
+  short: 구자욱
+  sport: kbo
+  team: 삼성 라이온즈
+  why: 가을야구 직전 또 부상으로 포스트시즌 출전에 빨간불
+  source: 2
+  date: '2026-10-02'
+  link: https://www.sportschosun.com/baseball/2026-10-02/202610020100011290000451
+- name: 데이비스 대니엘
+  short: 대니엘
+  sport: kbo
+  team: KT 위즈
+  why: 6이닝 13K 투구로 가을야구 1선발 후보로 부상
+  source: 8
+  date: '2026-10-02'
+  link: https://www.newspim.com/news/view/20261001000699
+- name: 이정후
+  short: 이정후
+  sport: mlb
+  team: 샌프란시스코 자이언츠
+  why: 투수 영입을 위한 트레이드설 거론
+  source: 32
+  date: '2026-10-02'
+  link: https://www.mydaily.co.kr/page/view/2026100114203782413
+- name: 김도영
+  short: 김도영
+  sport: kbo
+  team: KIA
+  why: 힐리어드와 홈런 공동 선두를 이루며 MVP 경쟁
+  source: 3
+  date: '2026-10-02'
+  link: https://www.bntnews.co.kr/article/view/bnt202610020173
+- name: 허인서
+  short: 허인서
+  sport: kbo
+  team: 한화
+  why: 타격 성적 압도적, 골든글러브 포수 유력
+  source: 1
+  date: '2026-10-02'
+  link: https://www.segye.com/newsView/20261002505544?OutUrl=naver
+- name: 에릭 페디
+  short: 페디
+  sport: mlb
+  team: 화이트삭스
+  why: 포스트시즌 2이닝 무실점 호투로 팀의 21년 만의 시리즈 승리를 이끎
+  source: 30
+  date: '2026-10-02'
+  link: http://www.osen.co.kr/article/G1112886133
+- name: 미저라우스키
+  short: 미저라우스키
+  sport: mlb
+  team: 컵스
+  why: 데뷔 2년 차에 사실상 만장일치 사이영상 수상 유력
+  source: 34
+  date: '2026-10-02'
+  link: https://sports.donga.com/sports/article/all/20261002/134773864/1
+- name: 데폴라
+  short: 데폴라
+  sport: mlb
+  team: LA 다저스
+  why: 오타니 공백을 메우며 놀라운 활약, NLDS에서도 기대
+  source: 37
+  date: '2026-10-02'
+  link: https://sports.donga.com/sports/article/all/20261002/134773490/1
 - name: 야말
   short: 야말
   sport: laliga
@@ -137,14 +401,6 @@ players:
   source: 33
   date: '2026-09-30'
   link: https://www.edaily.co.kr/News/Read?newsId=02820806645585368&mediaCodeNo=257&utm_source=naver&utm_medium=referral&utm_campaign=news_syndication&utm_content=original_article
-- name: 유해란
-  short: 유해란
-  sport: golf
-  team: ''
-  why: LPGA 메이저 2승을 거두고 2년 2개월 만에 국내 무대 출전
-  source: 36
-  date: '2026-09-30'
-  link: https://view.asiae.co.kr/article/2026093009024704654
 - name: 라이언 폭스
   short: 폭스
   sport: golf

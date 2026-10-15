@@ -1,0 +1,72 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · 오픈AI 매출 쇼크로 흔들린 AI 관련주를 상징하는 어두운 데이터센터",
+  "make": true,
+  "file": "",
+  "desc": "Square cinematic photograph of a large dark data center server aisle filled with black racks, glowing red warning lights in the shadows and cold blue tone, low heavy storm-cloud mood, dramatic contrast, no text, shows AI stocks shaken by a revenue shock",
+  "brand": "",
+  "size": "1024x1024",
+  "prompt": "Square 1:1 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Square cinematic photograph of a large dark data center server aisle filled with black racks, glowing red warning lights in the shadows and cold blue tone, low heavy storm-cloud mood, dramatic contrast, no text, shows AI stocks shaken by a revenue shock No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 2,
+  "label": "AI 관련주 급락 하루를 상징하는 뉴욕 금융가 저녁 거리",
+  "make": true,
+  "file": "",
+  "desc": "Realistic news-style photograph of a dim financial district street at dusk in New York, cool blue tone, anonymous office workers seen from behind walking past a bank building, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic news-style photograph of a dim financial district street at dusk in New York, cool blue tone, anonymous office workers seen from behind walking past a bank building, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 3,
+  "label": "AI 인프라를 상징하는 데이터센터 서버실",
+  "make": true,
+  "file": "",
+  "desc": "Close-up realistic photograph of a modern data center server aisle with rows of black racks and blue indicator lights, cinematic lighting, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Close-up realistic photograph of a modern data center server aisle with rows of black racks and blue indicator lights, cinematic lighting, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 4,
+  "label": "서로 다른 회계 기준을 상징하는 서류 더미",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photograph of a desk with two stacks of paper documents side by side and a pair of glasses, soft window light, no readable text, business office",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic photograph of a desk with two stacks of paper documents side by side and a pair of glasses, soft window light, no readable text, business office No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 5,
+  "label": "AI 관련주 하락이 나타난 미국 증시를 상징하는 거래소 건물",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photograph of a stock exchange building facade in New York with flags, overcast sky, low cold blue tone, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic photograph of a stock exchange building facade in New York with flags, overcast sky, low cold blue tone, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 6,
+  "label": "기업 고객 성장을 상징하는 사무실 풍경",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photograph of a busy modern office open space with anonymous employees working at computers seen from behind, natural daylight, no text on screens",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic photograph of a busy modern office open space with anonymous employees working at computers seen from behind, natural daylight, no text on screens No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 7,
+  "label": "AI 인프라 투자 부담을 상징하는 건설 현장",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photograph of cranes and steel frame of a large data center under construction at dusk, dramatic clouds, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Realistic documentary photograph of the real subject exactly as it looks in real life — the actual company building, product, trading floor, official chart or news scene described. True to the article, natural light, sharp focus. No decorative, staged or fictional elements. Realistic photograph of cranes and steel frame of a large data center under construction at dusk, dramatic clouds, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ }
+]

@@ -1,0 +1,52 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · 밝음과 어둠이 갈리는 비트코인 실물 모형",
+  "make": true,
+  "file": "thumb.jpg",
+  "desc": "Square cinematic close-up of a single physical bitcoin coin model filling the frame, half lit by bright warm light and half sunk in dark cold shadow to suggest a crossroads, high contrast, saturated colors, no text",
+  "brand": "",
+  "size": "1024x1024",
+  "prompt": "Square 1:1 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Square cinematic close-up of a single physical bitcoin coin model filling the frame, half lit by bright warm light and half sunk in dark cold shadow to suggest a crossroads, high contrast, saturated colors, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 2,
+  "label": "붉은 화면이 켜진 트레이딩 데스크",
+  "make": true,
+  "file": "img2.jpg",
+  "desc": "Realistic news-style photograph of a trader's desk with several monitors glowing red in a dim office, shallow depth of field, no readable text or numbers, cool blue and red tones",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic news-style photograph of a trader's desk with several monitors glowing red in a dim office, shallow depth of field, no readable text or numbers, cool blue and red tones No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 3,
+  "label": "어두운 배경 위의 비트코인 모형",
+  "make": true,
+  "file": "img3.jpg",
+  "desc": "Close-up photograph of a physical bitcoin coin model lying on a dark reflective surface under dramatic cold light, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Close-up photograph of a physical bitcoin coin model lying on a dark reflective surface under dramatic cold light, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 4,
+  "label": "밝음과 어둠으로 갈린 갈림길",
+  "make": true,
+  "file": "img4.jpg",
+  "desc": "Photograph of a forked road at dusk, one side bathed in warm light and the other in dark shadow, strong contrast, no people, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Photograph of a forked road at dusk, one side bathed in warm light and the other in dark shadow, strong contrast, no people, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 5,
+  "label": "쌓여 있는 암호화폐 코인",
+  "make": true,
+  "file": "img5.jpg",
+  "desc": "Realistic photograph of gold-colored crypto coins stacked in front of a blurred red-and-green market display, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photograph of gold-colored crypto coins stacked in front of a blurred red-and-green market display, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ }
+]

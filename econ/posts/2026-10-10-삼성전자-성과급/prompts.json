@@ -1,0 +1,72 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · 삼성전자 사옥 간판",
+  "make": true,
+  "file": "",
+  "desc": "Square close-up of the Samsung Electronics building facade with the large blue SAMSUNG logo centered, shot from a low angle, half of the frame bright sunlight and half in deep shadow with a strong light split, high contrast cinematic look",
+  "brand": "Samsung Electronics",
+  "size": "1024x1024",
+  "prompt": "Square 1:1 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Square close-up of the Samsung Electronics building facade with the large blue SAMSUNG logo centered, shot from a low angle, half of the frame bright sunlight and half in deep shadow with a strong light split, high contrast cinematic look This must clearly be Samsung Electronics: show its real, accurate corporate signage — the actual Samsung Electronics logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 2,
+  "label": "삼성전자 기흥 반도체 캠퍼스 전경",
+  "make": true,
+  "file": "",
+  "desc": "Aerial view of the Samsung Electronics Giheung semiconductor campus, large grey fab building with the blue SAMSUNG logo, clear sunny day, press photo style",
+  "brand": "Samsung Electronics",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Aerial view of the Samsung Electronics Giheung semiconductor campus, large grey fab building with the blue SAMSUNG logo, clear sunny day, press photo style This must clearly be Samsung Electronics: show its real, accurate corporate signage — the actual Samsung Electronics logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 3,
+  "label": "사내 공지를 확인하는 직장인의 손",
+  "make": true,
+  "file": "",
+  "desc": "Close-up of an office worker's hands holding a printed company notice on a desk in a bright Korean office, no readable text, natural light, documentary style",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Close-up of an office worker's hands holding a printed company notice on a desk in a bright Korean office, no readable text, natural light, documentary style No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 4,
+  "label": "서울 서초동 삼성전자 사옥",
+  "make": true,
+  "file": "",
+  "desc": "Wide aerial photograph of the Samsung Electronics Seocho office tower in Gangnam, Seoul, tall blue glass skyscraper with the SAMSUNG logo near the top, sunny day, Han river in the background",
+  "brand": "Samsung Electronics",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Wide aerial photograph of the Samsung Electronics Seocho office tower in Gangnam, Seoul, tall blue glass skyscraper with the SAMSUNG logo near the top, sunny day, Han river in the background This must clearly be Samsung Electronics: show its real, accurate corporate signage — the actual Samsung Electronics logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 5,
+  "label": "자사주 지급을 상징하는 주식 증서와 계산기",
+  "make": true,
+  "file": "",
+  "desc": "Stack of generic share certificates and a calculator on a wooden desk, warm natural light, no readable text or numbers, realistic photo",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Stack of generic share certificates and a calculator on a wooden desk, warm natural light, no readable text or numbers, realistic photo No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 6,
+  "label": "출근하는 직장인들의 뒷모습",
+  "make": true,
+  "file": "",
+  "desc": "Silhouettes of employees walking into a large modern corporate building lobby at dawn, seen from behind, cool and warm contrast lighting, no logos or text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Silhouettes of employees walking into a large modern corporate building lobby at dawn, seen from behind, cool and warm contrast lighting, no logos or text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 7,
+  "label": "지급 일정을 확인하는 사무실 달력",
+  "make": true,
+  "file": "",
+  "desc": "Wall calendar on an office wall with a pen resting on it, soft daylight, no readable numbers or text, realistic photo",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Wall calendar on an office wall with a pen resting on it, soft daylight, no readable numbers or text, realistic photo No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ }
+]

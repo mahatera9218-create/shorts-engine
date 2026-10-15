@@ -1,0 +1,234 @@
+keyword: 나스닥 하락 이유
+person: ''
+mode: 쿠니네
+made: '20:56'
+items:
+- title: 나스닥 하락 이유, OpenAI만이 아니라 따로 있다
+  type: 반전형
+  rank: 1
+  best: true
+  chars: 29
+  flags: []
+- title: 나스닥 하락 이유, AI 버블 우려가 현실이 된 걸까?
+  type: 궁금형
+  rank: 2
+  best: true
+  chars: 30
+  flags: []
+- title: 나스닥 -1.25% S&P -0.47%, 하락 이유 격차 어디서 났나
+  type: 비교형
+  rank: 3
+  best: false
+  chars: 38
+  flags: []
+- title: 나스닥 하락 이유, 내 연금 속 AI 비중 괜찮을까?
+  type: 위협형
+  rank: 4
+  best: true
+  chars: 29
+  flags: []
+- title: 나스닥 하락 이유, 내 계좌 확인 전 이 3가지부터 보세요
+  type: 실행형
+  rank: 5
+  best: true
+  chars: 32
+  flags: []
+- title: 나스닥 하락 이유, OpenAI 매출 70B vs 50B 뭐가 달랐나
+  type: 비교형
+  rank: null
+  best: false
+  chars: 38
+  flags: []
+- title: 나스닥 하락 이유 비교, AI 악재 vs 유가·금리 뭐가 더 컸나
+  type: 비교형
+  rank: null
+  best: false
+  chars: 36
+  flags: []
+- title: 나스닥 하락 이유, 반도체 -3.4% 다우 +0.1% 갈린 사정
+  type: 비교형
+  rank: null
+  best: true
+  chars: 35
+  flags: []
+- title: 나스닥 하락 이유, 사상 최고치 직후 vs 오늘 뭐가 달라졌나
+  type: 비교형
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: 나스닥 하락 이유 알았다면 반도체 비중부터 점검하세요
+  type: 실행형
+  rank: null
+  best: false
+  chars: 29
+  flags: []
+- title: 나스닥 하락 이유, 유가와 10년물 금리 이 순서로 확인
+  type: 실행형
+  rank: null
+  best: false
+  chars: 31
+  flags: []
+- title: 나스닥 하락 이유 헷갈릴 때 보는 지표 3가지
+  type: 실행형
+  rank: null
+  best: false
+  chars: 25
+  flags: []
+- title: 나스닥 하락 이유, 실적 시즌 전 체크할 일정과 숫자
+  type: 실행형
+  rank: null
+  best: false
+  chars: 29
+  flags: []
+- title: 나스닥 하락 이유, 원인을 나눠 보면 대응이 달라집니다
+  type: 이득형
+  rank: null
+  best: true
+  chars: 30
+  flags: []
+- title: 나스닥 하락 이유 구분하면 불안 매도를 줄일 수 있다
+  type: 이득형
+  rank: null
+  best: false
+  chars: 29
+  flags: []
+- title: 나스닥 하락 이유, AI 쇼크와 금리 압박 구분법
+  type: 이득형
+  rank: null
+  best: false
+  chars: 27
+  flags: []
+- title: 나스닥 하락 이유 알면 반도체 낙폭 해석이 쉬워집니다
+  type: 이득형
+  rank: null
+  best: false
+  chars: 29
+  flags: []
+- title: 나스닥 하락 이유, 수치로 보면 과잉 반응인지 보입니다
+  type: 이득형
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: 나스닥 하락 이유, OpenAI 매출 20B 차이 때문일까?
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 33
+  flags: []
+- title: 나스닥 하락 이유, 7주 만의 최악 낙폭 대체 왜?
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: 나스닥 하락 이유, 유가 104달러가 진짜 변수일까?
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 29
+  flags: []
+- title: 나스닥 하락 이유, 내일 반등은 가능한 걸까?
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 25
+  flags: []
+- title: 나스닥 하락 이유, 10년물 5%대 금리가 부담인 까닭
+  type: 위협형
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: 나스닥 하락 이유 경고, 반도체 쏠림 놓치기 쉬운 점
+  type: 위협형
+  rank: null
+  best: false
+  chars: 29
+  flags: []
+- title: 나스닥 하락 이유, 유가 급등이 금리 불안 다시 건드렸다
+  type: 위협형
+  rank: null
+  best: false
+  chars: 31
+  flags: []
+- title: 나스닥 하락 이유, 오라클 -5.5%가 보내는 신호
+  type: 위협형
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: 나스닥 하락 이유, 매출 실망인 줄 알았는데 계산 차이?
+  type: 반전형
+  rank: null
+  best: false
+  chars: 31
+  flags: []
+- title: 나스닥 하락 이유, AI 악재인 줄 알았는데 유가도 있었다
+  type: 반전형
+  rank: null
+  best: false
+  chars: 32
+  flags: []
+- title: 나스닥 하락 이유, 다우는 올랐는데 나스닥만 왜 빠졌나
+  type: 반전형
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: 나스닥 하락 이유, 최고치 뒤 급락 생각과 달랐다
+  type: 반전형
+  rank: null
+  best: false
+  chars: 27
+  flags: []
+groups:
+- type: 비교형
+  idx:
+  - 5
+  - 6
+  - 2
+  - 7
+  - 8
+  best: 7
+- type: 실행형
+  idx:
+  - 4
+  - 9
+  - 10
+  - 11
+  - 12
+  best: 4
+- type: 이득형
+  idx:
+  - 13
+  - 14
+  - 15
+  - 16
+  - 17
+  best: 13
+- type: 궁금형
+  idx:
+  - 18
+  - 19
+  - 1
+  - 20
+  - 21
+  best: 1
+- type: 위협형
+  idx:
+  - 22
+  - 23
+  - 24
+  - 25
+  - 3
+  best: 3
+- type: 반전형
+  idx:
+  - 0
+  - 26
+  - 27
+  - 28
+  - 29
+  best: 0

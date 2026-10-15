@@ -1,0 +1,299 @@
+keyword: 2차전지 ETF 배터리주
+person: ''
+mode: 쿠니네
+made: '21:34'
+items:
+- title: 2차전지 ETF '레버리지 오래 들면 안 된다던데' 복리 함정 경고
+  type: 위협형
+  rank: 1
+  best: true
+  chars: 37
+  style: 속마음형
+  flags: []
+- title: 2차전지 ETF '반도체 쉬는 사이 전지가 앞섰다던데' 두 지수 차이는
+  type: 비교형
+  rank: null
+  best: false
+  chars: 39
+  style: 속마음형
+  flags: []
+- title: 배터리주 '반도체 대신 갈아타도 되나' 지수 성과 비교
+  type: 비교형
+  rank: null
+  best: false
+  chars: 30
+  style: 속마음형
+  flags:
+  - 키워드 '2차전지' 없음
+- title: 2차전지 ETF 상위 10개 중 8개, 반도체 AI지수 4.88%와 격차 얼마나
+  type: 비교형
+  rank: null
+  best: false
+  chars: 44
+  style: 숫자형
+  flags: []
+- title: K-AI 2차전지 10.79% vs AI반도체 4.88%, 배터리주가 2배 넘게 앞섰다
+  type: 비교형
+  rank: null
+  best: true
+  chars: 48
+  style: 숫자형
+  flags:
+  - 48자(45자 넘음)
+- title: 2차전지 ETF '지금 들어가도 늦은 건 아닐까' 확인할 3가지
+  type: 실행형
+  rank: null
+  best: true
+  chars: 35
+  style: 속마음형
+  flags: []
+- title: 배터리주 '레버리지는 어떻게 들어야 하나' 보유 전 점검 항목
+  type: 실행형
+  rank: null
+  best: false
+  chars: 34
+  style: 속마음형
+  flags:
+  - 키워드 '2차전지' 없음
+- title: 2차전지 ETF 10월 1~8일 +19.94%, 레버리지 담기 전 볼 숫자
+  type: 실행형
+  rank: null
+  best: false
+  chars: 41
+  style: 숫자형
+  flags: []
+- title: LG에너지솔루션 3분기 영업이익 +25.7%, 배터리주 보기 전 체크리스트
+  type: 실행형
+  rank: null
+  best: false
+  chars: 41
+  style: 숫자형
+  flags:
+  - 키워드 '2차전지' 없음
+- title: 2차전지 ETF '개별 종목보다 낫다던데' 분산 효과는 실제 어떨까
+  type: 이득형
+  rank: null
+  best: false
+  chars: 37
+  style: 속마음형
+  flags: []
+- title: 배터리주 '한 종목 고르기 어려운데' ETF로 묶으면 달라지는 점
+  type: 이득형
+  rank: null
+  best: false
+  chars: 36
+  style: 속마음형
+  flags:
+  - 키워드 '2차전지' 없음
+- title: 2차전지 ETF 일반형과 레버리지형, 내 돈 1000만원 기준 변동 차이
+  type: 이득형
+  rank: null
+  best: true
+  chars: 40
+  style: 숫자형
+  flags: []
+- title: 2차전지 ETF 1주일 +18~19%, 이 수익이 연말까지 이어질지 따져보니
+  type: 이득형
+  rank: null
+  best: false
+  chars: 42
+  style: 숫자형
+  flags: []
+- title: 2차전지 ETF '왜 갑자기 전지만 오르지' AI 데이터센터와 ESS의 연결고리
+  type: 궁금형
+  rank: null
+  best: true
+  chars: 44
+  style: 속마음형
+  flags: []
+- title: 배터리주 'ESS가 뭐길래 다시 뜨나' 실적에는 언제 잡힐까
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 33
+  style: 속마음형
+  flags:
+  - 키워드 '2차전지' 없음
+- title: LG에너지솔루션 3분기 영업이익 전분기比 +567.3%, 대체 무슨 일이었나
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 42
+  style: 숫자형
+  flags:
+  - 키워드 '2차전지' 없음
+- title: 2차전지 ETF 상위권에 전고체·실리콘 음극재까지, 2027년 기대가 뭘까
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 41
+  style: 숫자형
+  flags: []
+- title: 배터리주 '이미 오른 거 아닌가' 선반영 논란과 확인할 지점
+  type: 위협형
+  rank: null
+  best: false
+  chars: 33
+  style: 속마음형
+  flags:
+  - 키워드 '2차전지' 없음
+- title: 2차전지 레버리지 ETF +19.94% 뒤에 숨은 변동성 위험
+  type: 위협형
+  rank: null
+  best: false
+  chars: 34
+  style: 숫자형
+  flags: []
+- title: CATL 배터리 특허 1위, LG엔솔 추월 보도에 배터리주 기대가 흔들릴까
+  type: 위협형
+  rank: null
+  best: false
+  chars: 41
+  style: 숫자형
+  flags:
+  - 키워드 '2차전지' 없음
+- title: 2차전지 ETF '반도체가 쉬면 같이 쉬는 줄 알았는데' 정반대였다
+  type: 반전형
+  rank: null
+  best: false
+  chars: 37
+  style: 속마음형
+  flags: []
+- title: 배터리주 '끝난 줄 알았던 섹터' 10월 초 달라진 흐름
+  type: 반전형
+  rank: null
+  best: false
+  chars: 31
+  style: 속마음형
+  flags:
+  - 키워드 '2차전지' 없음
+- title: 2차전지 ETF 수익률 상위 10개 중 8개, 반도체 약세가 만든 반전
+  type: 반전형
+  rank: null
+  best: false
+  chars: 39
+  style: 숫자형
+  flags: []
+- title: 반도체 모멘텀 꺾인 10월, 2차전지 ETF가 +19.94%로 앞서간 이유
+  type: 반전형
+  rank: null
+  best: true
+  chars: 41
+  style: 숫자형
+  flags: []
+- title: 2차전지 ETF '이번엔 ESS가 다르다던데' 근거부터 따져봤다
+  type: 확신형
+  rank: null
+  best: false
+  chars: 35
+  style: 속마음형
+  flags: []
+- title: 배터리주 'LG엔솔 부활 신호라는 말' 숫자로 확인하면 보이는 것
+  type: 확신형
+  rank: null
+  best: false
+  chars: 36
+  style: 속마음형
+  flags:
+  - 키워드 '2차전지' 없음
+- title: 2차전지 ETF, 증권가는 올해 말 수주·내년 ESS 이익 개선에 주목한다
+  type: 확신형
+  rank: null
+  best: true
+  chars: 41
+  style: 숫자형
+  flags: []
+- title: LG에너지솔루션 분기 최대 매출, 배터리주 반등을 뒷받침하는 숫자 3개
+  type: 확신형
+  rank: null
+  best: false
+  chars: 39
+  style: 숫자형
+  flags:
+  - 키워드 '2차전지' 없음
+- title: 2차전지 ETF '이게 하루아침에 이렇게 오른다고?' 레버리지의 속사정
+  type: 자극형
+  rank: null
+  best: false
+  chars: 39
+  style: 속마음형
+  flags: []
+- title: 배터리주 '반도체 팔고 전지로 몰렸다' 개미 심리 뜯어보니
+  type: 자극형
+  rank: null
+  best: false
+  chars: 32
+  style: 속마음형
+  flags:
+  - 키워드 '2차전지' 없음
+- title: 2차전지 ETF 일주일 +19.94%, 레버리지 수익률이 더 놀라운 이유
+  type: 자극형
+  rank: null
+  best: false
+  chars: 40
+  style: 숫자형
+  flags: []
+- title: 수익률 상위 10개 중 8개가 2차전지, 이 쏠림 논란 어디까지 갈까
+  type: 자극형
+  rank: null
+  best: true
+  chars: 38
+  style: 숫자형
+  flags: []
+groups:
+- type: 비교형
+  idx:
+  - 1
+  - 2
+  - 3
+  - 4
+  best: 4
+- type: 실행형
+  idx:
+  - 5
+  - 6
+  - 7
+  - 8
+  best: 5
+- type: 이득형
+  idx:
+  - 9
+  - 10
+  - 11
+  - 12
+  best: 11
+- type: 궁금형
+  idx:
+  - 13
+  - 14
+  - 15
+  - 16
+  best: 13
+- type: 위협형
+  idx:
+  - 0
+  - 17
+  - 18
+  - 19
+  best: 0
+- type: 반전형
+  idx:
+  - 20
+  - 21
+  - 22
+  - 23
+  best: 23
+- type: 확신형
+  idx:
+  - 24
+  - 25
+  - 26
+  - 27
+  best: 26
+- type: 자극형
+  idx:
+  - 28
+  - 29
+  - 30
+  - 31
+  best: 31

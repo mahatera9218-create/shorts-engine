@@ -94,6 +94,14 @@ BRIEF_KEYS = {"reader": "독자", "reader_question": "독자의 질문", "promis
               "why_naver": "네이버·광고주 기대에 맞는 이유",
               "ad_fit": "기대하는 광고 묶음과 그걸 부르는 문맥"}
 
+PRODUCT_RULES = """너는 상품 기사 요약문에서 이 제품의 현재 판매가 하나를 뽑는 도우미다 (당일 검색량 상위 소비재, 2026-10-03).
+- 요청한 제품(모델·용량이 맞는 것)의 **출고가·시작가·공식가·최저가** 중 하나를 원화 정수로.
+- 중고가·할부 월 납입금·보상/카드 할인가·해외가는 쓰지 않는다. 모델이 다르면 found=false.
+- price_krw는 원 단위 정수 (예: 150만원 → 1500000). 기사에 적힌 숫자만, 계산·추측 금지.
+- deal_date는 기사 날짜(YYYY-MM 또는 YYYY-MM-DD, 없으면 빈 문자열). source는 기사 번호 [n].
+"""
+
+
 REGION_RULES = """너는 부동산 기사 요약문에서 지역 아파트 평균 매매가격 하나를 뽑는 도우미다.
 - 요청한 지역(시·광역시) 전체의 아파트 평균 매매가격(한국부동산원·KB부동산 통계를 인용한 보도)만 쓴다.
 - 중위가격·전세·월세·분양가·특정 단지·구 단위·㎡당(평당) 가격·다른 지역은 쓰지 않는다. 확실하지 않으면 found=false.
@@ -212,7 +220,23 @@ WRITE_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"(닉네�
 - 문단마다 하나: 첫 문단(검색 답 한 줄)·사진/표 자리·질문 한 줄 소제목·"기준:" 줄을 뺀 모든 문단에 글쓴이의 의도·감정·생각·의견이 드러나는 말을 하나 이상
   (예: 저는, 제가 계산해 보니, 솔직히, 의외였던 건, 궁금했던 건, 아쉬운 건, ~것 같아요, ~네요, 제 눈엔, 우리). 같은 말을 돌려 쓰지 말고 문단마다 다르게.
   숫자 문장 뒤에 그 숫자를 보고 든 생각을 붙이는 식이면 된다. 코드 검사에서 걸린다.
-- 대표 한마디 자리: 마무리 문단 바로 앞에 "[대표 한마디]" 한 줄을 넣는다 (대표가 이 선수에 대한 자기 생각·기억을 한두 문장 쓴다. 안 쓰면 지운다).
+
+대표 지시 9가지 (2026-10-02, 코드 검사에서 걸린다)
+1. 제목: 키워드 나열 말고 검색하는 사람이 물어볼 질문 그대로 (위 '제목').
+2. 첫 줄에 결론부터: 첫 문단은 제목 질문의 숫자 답 한 줄. 배경 설명(왜 이 선수인지, 시즌 이야기)은 뒤로.
+3. 같은 키워드 여러 번 박지 않기: '이름 + 연봉'은 본문에 3번까지. 나머지는 "올해 몸값", "이 금액"처럼 바꿔 말한다.
+4. 글쓴이의 생각·의견·반응은 네가 직접 쓴다 (대표가 쓸 칸 없음, 2026-10-03: 바로 발행). 단, 하지 않은 경험(직접 봤다·갔다·만났다·샀다·먹었다)은 지어내지 않는다 — 광고가 붙는 글이라 공정위 기만광고·네이버 저품질 위험. 생각·의견·가치관은 마음껏, 경험은 금지.
+5. "많이·대부분·상당히·엄청" 같은 막연한 양 대신 숫자 (예: "143경기 중 140경기", "열 명 중 일곱"). 숫자표에 없는 숫자는 만들지 않는다. 숫자가 없으면 그 말을 뺀다.
+6. 표 하나는 꼭: '[표 1: …]' 자리 (항목 8~10개는 코드가 맞춘다).
+7. 표를 이미지로 대신하지 않는다: 카드 이미지는 보조이고, 표는 '[표 1]' 자리의 네이버 표다.
+8. 질문형 소제목 2~3개: 한 줄짜리 질문 문단, 바로 다음 문장이 숫자 답 (AI 브리핑이 그 답을 잘라 간다).
+9. 긴 대시(—, –) 쓰지 않는다. 쉼표나 마침표로.
+
+오늘의 사건 훅 (대표 결정 2026-10-03: 경기 직후 검색을 잡되 우리 각도로)
+- 숫자표에 '오늘의 사건'이 있으면: 제목과 첫 문단을 그 사건에 건다. 그다음 바로 우리 계산(연봉 쪼개기)으로 넘어간다.
+  예: 사건 "어제 끝내기 홈런" → 제목 "OO 어제 끝내기 홈런, 그 한 방 연봉으로 얼마일까?", 첫 문단 "어제 끝낸 그 손끝 한 방이 연봉으로 치면 1,458만원이에요." (사건 + 계산 결론 숫자를 첫 문단에 같이).
+- 사건은 사실만 한 줄로 (점수·기록·이적설 등 뉴스에 나온 것). 기사 문장을 복제하지 않고, 사건을 길게 설명하지 않는다 (우리 글은 결과 중계가 아니라 계산이다).
+- 사건으로 끌고 왔으니 본문은 평소처럼 연봉 쪼개기·표·계산 방법으로 채운다 (정보 이득은 계산에서 나온다).
 
 네이버 AI 브리핑 (검색 결과 맨 위 AI 요약이 인용하는 건 글과 네이버 표다. 카드 이미지는 인용되지 않는다, 2026-10-01)
 - 표: 숫자표의 '표 자리' 줄을 따옴표 안 모양 그대로 한 줄로 넣는다. 그 자리에 코드가 만든 표(네이버 표)가 들어간다. 표 바로 앞 문장에서 표가 무엇인지 한 줄로 말한다.
@@ -228,18 +252,20 @@ WRITE_RULES = """너는 네이버 블로그 "억소리 나는 스포츠"(닉네�
 
 출력
 - gate_pass: 숫자표로 '새로 계산한 숫자'라는 정보 이득을 만들 수 있으면 true. info_gain에 한 줄.
-- titles 5개, 유형을 모두 다르게. recommended는 추천 제목 번호(1~5). 추천 제목은 숫자표의 '추천 제목 유형'으로 쓴다.
-  대표는 추천 제목 하나만 보고 발행한다. 나머지 4개는 예비다.
+- titles 5개, 모두 질문이고 묻는 각도는 다르게(얼마·몇 년치·누가 더·왜·다 받을까 등). type은 그 질문의 결(숫자형·대비형·순위형·반전형·질문형)을 모두 다르게.
+  recommended는 추천 제목 번호(1~5). 대표는 추천 제목 하나만 보고 발행한다. 나머지 4개는 예비다.
 
 제목 (홈판에서는 썸네일 + 제목만 보고 누를지 정한다. 가장 공들일 것)
 - 추천 제목은 썸네일과 한 쌍이다. 썸네일(숫자표 '썸네일' 줄)이 보여 주는 숫자·비교 대상을 그대로 이어받아, 그 숫자를 보고 생길
   다음 궁금증을 던진다. 썸네일에 물건(차·아파트·유니폼·여행)이나 세금이 있으면 제목에도 그 말을 넣는다. 썸네일과 다른 숫자·다른 비교
-  대상을 주제로 삼지 않는다. 예: 썸네일 "이정후 / 올해 연봉이면 / 테슬라 모델Y 597대" → 제목 "이정후 안타 하나 2억, 모델Y 몇 대?"
+  대상을 주제로 삼지 않는다. 예: 썸네일 "<선수> / 올해 연봉이면 / <숫자표의 비교 물건> N개" → 제목 "<선수> 연봉이면 <비교 물건> 몇 개 살까?" (물건은 숫자표에 있는 것만)
   (단, 퀴즈 카드가 묻는 단위는 피한다). 본문 첫 문단은 이 제목의 답이다.
 - 5개 모두 숫자표의 '제목용 짧은 이름'으로 시작한다 (검색 유입 + 스타 이름으로 눈길). 성+이름 전체를 쓰지 않는다.
-- 추천 제목은 짧은 이름 + 숫자 후킹 (예: "오타니 9,496억 계약인데 올해 27억?", "이정후 298억, 시즌 끝나도 다 받을까?"). 숫자로 반전·궁금증을 만든다.
+- 제목은 검색하는 사람이 검색창에 물어볼 질문 그대로 (대표 지시 2026-10-02). 키워드 나열·괄호·가운뎃점(·)·슬래시 금지, 물음표로 끝.
+  추천 제목에는 사람들이 치는 말 '짧은 이름 + 연봉'(골프는 상금)을 자연스럽게 (예: "이정후 연봉, 1경기에 얼마일까?",
+  "오타니 연봉, 9,496억 계약인데 올해는 얼마?"). 같은 말을 두 번 넣지 않는다.
 - 썸네일 금액(숫자표 '썸네일' 줄)은 추천 제목에 되풀이하지 않는다. 썸네일은 "얼마", 제목은 "왜?".
-- 25자 이하 (띄어쓰기 포함). 발행 때 코드가 추천 제목 뒤에 검색어 괄호('(이름 연봉 2026 · 팀)')를 붙이니 제목에 그 말을 억지로 넣지 않는다. 던진 궁금증은 본문 첫 화면(첫 3문단)에서 답한다. 선수 이름은 태그에도 넣는다.
+- 25자 이하 (띄어쓰기 포함). 던진 질문은 본문 첫 줄에서 답한다. 선수 이름은 태그에도 넣는다.
 - 추천 제목은 퀴즈 카드의 정답(누가 더 비싼지, 몇 대인지, 얼마짜리인지)을 묻지 않는다. 퀴즈 정답은 퀴즈 카드 뒤에서만 공개되므로
   제목이 그걸 물으면 첫 화면에서 답할 수 없다. 제목의 궁금증은 첫 화면에서 풀고, 퀴즈는 그다음 궁금증으로 쓴다.
 - 물음표는 1개까지. "충격", "경악", "헉", "소름", "역대급" 같은 과장어 금지.
@@ -304,14 +330,15 @@ def fill_prices(hub, llm, items: list[dict], today: str, fallback: dict | None) 
         news = [n for n in gather_news(hub, [it["query"]], per_query=15)
                 if (date.fromisoformat(today) - date.fromisoformat(n["date"])).days <= 180]
         if news:
-            region = it.get("kind") == "region_avg"
-            r = llm.ask_json([REGION_RULES if region else PRICE_RULES],
-                             f"{'지역' if region else '단지'}: {it['label']}\n오늘: {today}\n\n기사\n{news_prompt(news)}",
+            kind = it.get("kind")
+            rule, word = ((PRODUCT_RULES, "제품") if kind == "product" else
+                          (REGION_RULES, "지역") if kind == "region_avg" else (PRICE_RULES, "단지"))
+            r = llm.ask_json([rule], f"{word}: {it['label']}\n오늘: {today}\n\n기사\n{news_prompt(news)}",
                              PRICE_SCHEMA, max_tokens=1000, stage="가격 기사", **extract_opts())
             src = news[r["source"] - 1] if 1 <= r["source"] <= len(news) else None
             text = (src["title"] + " " + src["description"]).replace(" ", "") if src else ""
             if not r["found"] or not src:
-                why = "기사에서 84㎡ 매매 실거래가를 찾지 못함"
+                why = f"기사에서 {it['short']} 가격을 찾지 못함"
             elif not it.get("min_krw", 0) <= r["price_krw"] <= it.get("max_krw", 10**13):
                 why = f"범위 밖 가격 ({won(r['price_krw'])})"
             elif not any(x.replace(",", "") in text.replace(",", "") for x in eok_text(r["price_krw"])):
@@ -369,6 +396,28 @@ def season_card(facts: dict, unit_keys: list[str]) -> tuple[list[dict], str]:
     return card, max(dates) if dates else ""
 
 
+ECB_URL = "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"  # 유럽중앙은행 공개 기준환율 (키 없음, 허용된 통로)
+_ECB: dict = {}
+
+
+def ecb_fx(cur: str) -> dict | None:
+    """1 외화당 원 (EUR·USD·GBP). ECB는 1유로 기준이라 원/유로 ÷ 외화/유로. 실패하면 None."""
+    if "rates" not in _ECB:
+        try:
+            import urllib.request
+            with urllib.request.urlopen(ECB_URL, timeout=15) as r:
+                x = r.read().decode("utf-8")
+            _ECB["rates"] = {m.group(1): float(m.group(2)) for m in re.finditer(r"currency=['\"](\w+)['\"]\s+rate=['\"]([\d.]+)", x)}
+            _ECB["date"] = (re.search(r"time=['\"]([\d-]+)", x) or [None, ""])[1]
+        except Exception:
+            _ECB["rates"], _ECB["date"] = {}, ""
+    rates = _ECB["rates"]
+    if "KRW" not in rates or (cur != "EUR" and cur not in rates):
+        return None
+    v = rates["KRW"] / (1.0 if cur == "EUR" else rates[cur])
+    return {"value": round(v, 1), "date": f"{_ECB['date']}, 유럽중앙은행 기준환율"}
+
+
 def build_data(topic: dict, ex: dict, facts: dict, cfg: dict) -> tuple[dict | None, str]:
     """receipt.py 입력을 만든다. 모자라거나 말이 안 되는 숫자면 (None, 이유)."""
     sal = facts.get("salary")
@@ -380,17 +429,26 @@ def build_data(topic: dict, ex: dict, facts: dict, cfg: dict) -> tuple[dict | No
     if not lo <= sal["value"] <= hi:
         return None, f"연봉 숫자가 이상함 ({sal['value']:,} {cur})"
     d = {"player": topic["player"], "short_name": topic.get("short_name") or topic["player"].split(" ")[0],
-         "team": topic.get("team", ""), "season": ex["season"],
+         "team": topic.get("team", ""), "season": ex["season"], "event": topic.get("event", ""),
          "salary_label": f"연봉 {won(sal['value'])} · {ex['salary_basis']}" if not usd else None}
     if usd:
         c = FX[cur]
         fx = facts.get(c["key"])
+        if not fx or not c["range"][0] <= fx["value"] <= c["range"][1]:
+            fx = ecb_fx(cur)  # 뉴스에 환율이 없으면 유럽중앙은행 기준환율 (2026-10-02, 야말 유로 환율 실패)
         if not fx or not c["range"][0] <= fx["value"] <= c["range"][1]:
             return None, f"{c['word']} 환율을 찾지 못함"
         d |= {"salary_usd": sal["value"], "fx_krw_per_usd": fx["value"], "salary_currency": cur,
               "fx_label": f"1{c['word']} = {fx['value']:,}원 ({fx['date']})"}
     else:
         d["salary_krw"] = sal["value"]
+    # 나눌 기록 점검 (2026-10-03, 김민솔 글: '대회 순번 25'·'한 대회 2라운드까지'를 시즌 기록으로 뽑음)
+    for k in [k for k in ("events", "rounds") if k in facts]:
+        lab = str(facts[k].get("label", ""))
+        if any(w in lab for w in ("순번", "까지 소화", "번째 대회")) or re.search(r"(챔피언십|오픈|대회)\s*\d+라운드", lab):
+            facts.pop(k)  # 표·숫자표에서도 빠지게 그 자리에서 뺀다
+    if "events" in facts and "rounds" in facts and facts["rounds"]["value"] < 2 * facts["events"]["value"]:
+        facts.pop("rounds")  # 시즌 라운드는 대회 수의 2배 이상 (컷 탈락도 2라운드)
     units = [{"key": u["key"], "label": u["label"], "count": facts[u["key"]]["value"]}
              for u in ex["units"] if u["key"] in facts and facts[u["key"]]["value"] > 0]
     if len(units) < 2:
@@ -469,8 +527,8 @@ THUMB = re.compile(r"^썸네일: (.+?) / (.+?) / (.+?) \(", re.M)
 
 
 def check_titles(p: dict, sheet: str) -> list[str]:
-    """제목 규칙: 짧은 이름으로 시작, 25자 이하, 과장어 금지, 추천 제목은 숫자 후킹 + 썸네일 금액 되풀이 금지
-    + 썸네일과 짝(같은 비교 대상) + 오늘의 추천 제목 유형."""
+    """제목 규칙: 짧은 이름으로 시작, 25자 이하, 과장어 금지, 모두 질문(키워드 나열 금지, 2026-10-02),
+    추천 제목은 검색어(이름+연봉) 포함 + 썸네일 금액 되풀이 금지 + 썸네일과 짝(같은 비교 대상)."""
     m = THUMB.search(sheet)
     if not m or not p["titles"]:
         return []
@@ -495,17 +553,83 @@ def check_titles(p: dict, sheet: str) -> list[str]:
         out.append(f"추천 제목이 썸네일 숫자({money})를 되풀이함 → 반전·궁금증 한 마디로")
     if rec and subject and not any(w in rec for w in subject):
         out.append(f"추천 제목이 썸네일과 다른 이야기 → 썸네일 말('{' '.join(subject)}')을 제목에도 (짝으로)")
-    want = TYPE_LINE.search(sheet)
-    if rec and want and p["titles"][p["recommended"] - 1]["type"] != want.group(1):
-        out.append(f"추천 제목 유형이 오늘 정한 '{want.group(1)}'이 아님")
-    if not re.search(r"\d", rec):
-        out.append("추천 제목에 숫자가 없음 → 이름 + 숫자 후킹으로")
     # 태그의 선수 이름은 코드가 붙인다 (base_tags, 2026-09-30)
     return out
 
 
+VAGUE = ["많이", "많은", "대부분", "상당히", "상당수", "엄청", "수많은", "적지 않", "꽤 많"]
+DASHES = ("—", "–", "―")
+
+
+def title_style(p: dict, sheet: str) -> list[str]:
+    """제목은 검색하는 사람이 물어볼 질문 그대로 (대표 지시 2026-10-02): 키워드 나열·괄호·가운뎃점 금지, 물음표로 끝."""
+    s = SHORT.search(sheet)
+    core = s.group(1) if s else ""
+    out = []
+    for i, t in enumerate(p["titles"], 1):
+        text = t["text"].strip()
+        if not text.endswith("?"):
+            out.append(f"제목{i}이 질문이 아님 → 검색하는 사람이 물을 질문 그대로 (예: '{core} 연봉, 1경기에 얼마일까?')")
+        if any(ch in text for ch in "·()[]|/"):
+            out.append(f"제목{i}에 키워드 나열 기호(· 괄호 / |) → 질문 한 문장으로")
+    rec = p["titles"][p["recommended"] - 1]["text"] if 1 <= p.get("recommended", 0) <= len(p["titles"]) else ""
+    if rec and not any(w in rec for w in ("연봉", "상금", "몸값", "세금", "월급")):
+        out.append(f"추천 제목에 '{core} {'상금' if '상금' in sheet else '연봉'}'처럼 사람들이 검색하는 말이 없음")
+    return out
+
+
+def check_style(p: dict, sheet: str) -> list[str]:
+    """말투·형식 검사 (비용 효율 2026-10-02): 이것만 걸렸을 때는 다시 쓰지 않는다. 사실·안전 문제(check_post)로
+    다시 쓸 때, 또는 편집장이 고쳐 쓰라고 할 때 같이 고친다. 남은 것은 발행 패키지에 '참고'로 (✅는 유지)."""
+    out = list(check_draft(p["body"])) + title_style(p, sheet) + style_rules(p, sheet)
+    gaps = human_gaps(p["body"])
+    if gaps:
+        out.append(f"글쓴이의 생각·느낌·의견이 안 보이는 문단 {len(gaps)}개 (문단마다 하나씩, 꾸민 경험은 금지): "
+                   + " / ".join(f"'{g}…'" for g in gaps))
+    return out
+
+
+def code_fixes(p: dict) -> dict:
+    """코드로 고칠 수 있는 형식은 Claude 없이 고친다: 긴 대시 → 쉼표. (옛 [대표 한마디] 줄이 있으면 뺀다)"""
+    body = "\n\n".join(x for x in undash(p["body"]).split("\n\n") if x.strip() != "[대표 한마디]")
+    return {**p, "titles": [{**t, "text": undash(t["text"])} for t in p["titles"]],
+            "body": body, "clip_caption": undash(p.get("clip_caption", ""))}
+
+
+def undash(text: str) -> str:
+    return re.sub(r"\s*[—–―]\s*", ", ", text)
+
+
+def style_rules(p: dict, sheet: str) -> list[str]:
+    """대표 지시 9가지 (2026-10-02) 중 코드로 보는 것: 첫 줄 결론, 같은 키워드 되풀이, 막연한 양 대신 숫자,
+    질문형 소제목 2~3개, 긴 대시 금지."""
+    out, body = [], p["body"]
+    paras = [x.strip() for x in body.strip().split("\n\n") if x.strip()]
+    if paras and not re.search(r"\d", paras[0]):
+        out.append("첫 줄에 결론(숫자 답)이 없음 → 배경 설명은 뒤로, 첫 줄은 제목 질문의 답")
+    s = SHORT.search(sheet)
+    if s:
+        for w in ("연봉", "상금"):
+            k = f"{s.group(1)} {w}"
+            c = body.count(k) + body.count(k.replace(" ", ""))
+            if c > 3:
+                out.append(f"'{k}'를 본문에 {c}번 → 3번까지 (같은 키워드 되풀이 금지, 대명사·다른 말로)")
+    hit = [w for w in VAGUE if w in body]
+    if hit:
+        out.append(f"막연한 양 표현 {', '.join(hit)} → 숫자로 (예: '열 명 중 일곱', 숫자표에 있는 숫자만). 숫자가 없으면 그 말을 빼기")
+    qs = [x for x in paras if "\n" not in x and x.endswith("?") and len(x) <= 40 and not x.startswith("[")]
+    if len(qs) < 2:
+        out.append(f"질문형 소제목이 {len(qs)}개 → 2~3개 (검색 질문 한 줄 + 바로 다음 문장이 숫자 답)")
+    texts = [("본문", body), ("클립 설명", p.get("clip_caption", ""))] + [(f"제목{i}", t["text"]) for i, t in enumerate(p["titles"], 1)]
+    for label, text in texts:
+        if any(d in text for d in DASHES):
+            out.append(f"{label}에 긴 대시(—) → 쉼표나 마침표로 (AI 티)")
+    return out
+
+
 def check_post(p: dict, sheet: str) -> list[str]:
-    problems = list(check_draft(p["body"]))
+    """사실·안전·구조 검사: 걸리면 고쳐 쓴다 (말투·형식은 check_style)."""
+    problems = []
     if len(p.get("clip_question", "")) > 18:
         problems.append(f"클립 질문이 18자를 넘음 ({len(p['clip_question'])}자)")
     s = SHORT.search(sheet)
@@ -546,10 +670,6 @@ def check_post(p: dict, sheet: str) -> list[str]:
         problems.append("정답 카드가 퀴즈 카드보다 앞에 있음")
     if re.search(r"^#|\*\*", p["body"], re.M):
         problems.append("마크다운 기호(#, **)를 빼고 일반 텍스트로")
-    gaps = human_gaps(p["body"])
-    if gaps:
-        problems.append(f"글쓴이의 생각·느낌·의견이 안 보이는 문단 {len(gaps)}개 (문단마다 하나씩, 꾸민 경험은 금지): "
-                        + " / ".join(f"'{g}…'" for g in gaps))
     return problems
 
 
@@ -590,14 +710,17 @@ def write_post(llm, topic: dict, sheet: str, max_revisions: int) -> tuple[dict, 
     system = writer_system()
     prompt = (f"카테고리: {topic['category']}\n글 방향: {topic['angle']}\n\n숫자표\n{sheet}\n\n"
               "이 숫자표로 발행 패키지를 JSON으로 만들어라.")
-    post = llm.ask_json(system, prompt, POST_SCHEMA, stage="글쓰기", **opts)
+    # 다시 쓰기를 줄인다 (대표 지시 2026-10-02, 비용 증가 막기): 사실·안전·구조 문제(check_post)만 고쳐 쓰기를 부르고,
+    # 말투·형식(check_style)은 그때 같이 고친다. 대시·[대표 한마디] 자리는 코드가 고친다. 검사 고쳐 쓰기는 1번까지.
+    post = code_fixes(llm.ask_json(system, prompt, POST_SCHEMA, stage="글쓰기", **opts))
     problems = check_post(post, sheet)
     rounds = 0
-    while problems and rounds < max_revisions and llm.cost_usd() < cap:
+    while problems and rounds < min(max_revisions, 1) and llm.cost_usd() < cap:
         rounds += 1
+        style = check_style(post, sheet)
         fix = (prompt + "\n\n아래는 네가 쓴 초안이다. 검사에서 걸린 문제만 고치고, 나머지는 유지해서 같은 JSON 형식으로 다시 내라.\n"
-               "문제:\n" + "\n".join(f"- {x}" for x in problems) + "\n\n초안:\n" + json.dumps(post, ensure_ascii=False))
-        post = llm.ask_json(system, fix, POST_SCHEMA, stage="고쳐쓰기(검사)", **opts)
+               "문제:\n" + "\n".join(f"- {x}" for x in problems + style) + "\n\n초안:\n" + json.dumps(post, ensure_ascii=False))
+        post = code_fixes(llm.ask_json(system, fix, POST_SCHEMA, stage="고쳐쓰기(검사)", **opts))
         problems = check_post(post, sheet)
     # 편집장 검토 (스킬 0단계 기준): 4점 미만이 있으면 한 번 고쳐 쓰고, 고친 글이 코드 검사를 통과할 때만 바꾼다
     review = review_post(llm, sheet, post)
@@ -607,13 +730,15 @@ def write_post(llm, topic: dict, sheet: str, max_revisions: int) -> tuple[dict, 
             break
         fix = (prompt + "\n\n아래는 네가 쓴 초안과 편집장 검토다. 검토의 수정 지시를 반영해 같은 JSON 형식으로 다시 내라. "
                "숫자는 숫자표에 있는 것만.\n검토:\n" + "\n".join(f"- {x['criterion']} {x['score']}점: {x['reason']}" for x in low)
-               + "\n수정 지시:\n" + "\n".join(f"- {f}" for f in review["fixes"]) + "\n\n초안:\n" + json.dumps(post, ensure_ascii=False))
-        again = llm.ask_json(system, fix, POST_SCHEMA, stage="고쳐쓰기(편집장)", **opts)
+               + "\n수정 지시:\n" + "\n".join(f"- {f}" for f in review["fixes"] + check_style(post, sheet))
+               + "\n\n초안:\n" + json.dumps(post, ensure_ascii=False))
+        again = code_fixes(llm.ask_json(system, fix, POST_SCHEMA, stage="고쳐쓰기(편집장)", **opts))
         if check_post(again, sheet):
             break
         post, rounds = again, rounds + 1
         review = review_post(llm, sheet, post)
     post["review"] = review
+    post["style_notes"] = check_style(post, sheet)  # 다시 쓰지 않은 말투·형식 문제 (패키지에 참고로, ✅는 유지)
     if not review_ok(review["scores"]):  # 고쳐 써도 기준 미달이면 발행 가능으로 두지 않는다 (도우미에서 ⚠️, 다시 뽑기 권장)
         low = [x["criterion"] for x in review["scores"] if x["score"] < REVIEW_PASS]
         problems = problems + [f"편집장 기준 미달 ({', '.join(low)}) — 다시 뽑기 권장"]
@@ -639,6 +764,8 @@ def package_md(title: str, theme: str, category: str, facts: dict, post: dict, p
            + ("  " if marketer else ""), *([f"**마케터:** {marketer}"] if marketer else []), ""]
     if problems:
         out += ["**남은 문제:**", ""] + [f"- {p}" for p in problems] + [""]
+    if post.get("style_notes"):  # 비용 효율로 다시 쓰지 않은 말투·형식 (2026-10-02). 대표가 도우미에서 고쳐도 되고, 주간 점검에서 규칙에 반영
+        out += ["**참고 (말투·형식, 발행은 가능):**", ""] + [f"- {p}" for p in post["style_notes"]] + [""]
     if post.get("brief"):
         out += ["## 이 글의 설계 (독자·네이버 관점, 스킬 0단계)", ""]
         out += [f"- {BRIEF_KEYS[k]}: {v}" for k, v in post["brief"].items() if k in BRIEF_KEYS] + [""]
@@ -710,11 +837,28 @@ def with_known_salary(facts: dict, ex: dict, known: dict) -> tuple[dict, dict]:
     return facts, {**ex, "salary_currency": known["currency"], "salary_basis": known["basis"], "season": known["season"]}
 
 
+MONEY = re.compile(r"\d[\d,.]*\s*(억|만\s*(달러|유로|파운드|원)|달러|유로|파운드)")
+MONEY_WORDS = ("연봉", "주급", "상금", "계약", "몸값", "salary")
+
+
+def money_in_news(topic: dict, news: list[dict]) -> bool:
+    """정보가 없는 선수는 빼고 주제를 잡는다 (대표 지시 2026-10-02): Claude에게 넘기기 전에, 이 선수 이름과
+    돈 숫자(억·만 달러·유로·파운드)와 연봉·상금·계약 같은 말이 한 기사에 같이 있는지 코드로 먼저 본다."""
+    names = {topic["player"], topic.get("short_name") or topic["player"]}
+    for it in news:
+        t = f"{it.get('title', '')} {it.get('description', '')}"
+        if any(n and n in t for n in names) and MONEY.search(t) and any(w in t for w in MONEY_WORDS):
+            return True
+    return False
+
+
 def collect(hub, llm, topic: dict, today: str, cfg: dict) -> dict | str:
     """한 선수의 뉴스 → 숫자 뽑기 → 충돌 정리 → 계산 입력. 모자라면 이유(str)를 돌려준다."""
     news = gather_news(hub, topic["queries"] + cfg.get("fx_queries", [cfg["fx_query"]]))
     hint = f"\n종목 안내: {topic['hint']}" if topic.get("hint") else ""
     known = known_salary(topic["player"], today)
+    if not known and not money_in_news(topic, news):
+        return "뉴스에 연봉·상금 숫자가 안 보임 (코드 확인, Claude 비용 없음)"
     if known:
         hint += (f"\n확인된 올해 연봉이 따로 있다 ({known['currency']}, 코드가 넣는다). 요약문에 올해 연봉이 없어도 "
                  "나눌 기록이 있으면 usable=true. " + (f"외화 연봉이니 환율({FX[known['currency']]['key']})은 꼭 뽑는다." if known["currency"] in FX else ""))
@@ -729,7 +873,46 @@ def collect(hub, llm, topic: dict, today: str, cfg: dict) -> dict | str:
     d, why = build_data(topic, ex, facts, cfg)
     if d is None:
         return why
+    remember_ready(topic, today)
     return {"d": d, "facts": facts, "ex": ex, "news": news}
+
+
+READY = ROOT / "config" / "ready_players.yaml"
+READY_DAYS = 120
+
+
+def ready_players(today: str) -> set[str]:
+    """정보가 확인된 선수: 확인 연봉표(salaries.yaml) + 최근 120일 안에 뉴스에서 연봉·기록을 뽑아 글을 만든 선수."""
+    book = (yaml.safe_load(READY.read_text(encoding="utf-8")) or {}) if READY.exists() else {}
+    cut = str(date.fromisoformat(today) - timedelta(days=READY_DAYS))
+    sal = ((load_yaml("salaries.yaml") or {}).get("players") or {}) if (ROOT / "config" / "salaries.yaml").exists() else {}
+    return set(sal) | {n for n, v in book.items() if str(v.get("date", "")) >= cut}
+
+
+def remember_ready(topic: dict, today: str) -> None:
+    book = (yaml.safe_load(READY.read_text(encoding="utf-8")) or {}) if READY.exists() else {}
+    book[topic["player"]] = {"date": today}
+    READY.write_text("# 정보(올해 연봉·기록)를 뉴스에서 찾아 글을 만든 선수 (content/autopost.py가 채움, 2026-10-02)\n"
+                     "# 주제를 잡을 때 이 선수들을 3배 먼저 뽑는다. 연봉·기록을 못 찾은 선수는 skip_players.yaml에 30일.\n"
+                     + yaml.safe_dump(book, allow_unicode=True, sort_keys=True), encoding="utf-8")
+
+
+RECENT_ITEM_DAYS = 14  # 비교 물건은 이 기간 안에 다른 글에서 쓴 것을 피한다 (모델Y만 반복되던 문제, 대표 지적 2026-10-04)
+
+
+def recent_items(today: str, days: int = RECENT_ITEM_DAYS) -> set[str]:
+    """최근 N일 안에 어느 글에서든 쓴 비교 물건 key (버린 글 제외)."""
+    out: set[str] = set()
+    day = date.fromisoformat(today)
+    for f in (x for x in POSTS.iterdir() if (x / "data.yaml").exists()) if POSTS.exists() else []:
+        try:
+            if (day - date.fromisoformat(f.name[:10])).days > days or mark.status(f).get("status") == "rejected":
+                continue
+            d = yaml.safe_load((f / "data.yaml").read_text(encoding="utf-8")) or {}
+        except (ValueError, yaml.YAMLError):
+            continue
+        out |= {p.get("key") for p in d.get("prices") or [] if p.get("key")}
+    return out
 
 
 USED_DAYS = 120  # 같은 테마·같은 선수(조합)는 이 기간 안에 다시 쓰지 않는다 (콘텐츠가 마르지 않게 고르게 쓴다)
@@ -787,11 +970,12 @@ def place_item(place: dict, theme: str) -> dict:
 
 
 NO_DATA = ROOT / "config" / "skip_players.yaml"
-NO_DATA_DAYS = 7
+NO_DATA_DAYS = 30  # 정보 없는 선수는 빼고 주제를 잡는다 (대표 지시 2026-10-02, 7일 → 30일)
+READY_BOOST = 3   # 정보가 확인된 선수는 3배 먼저
 
 
 def no_data_players(today: str) -> list[str]:
-    """최근 7일 안에 뉴스에서 올해 연봉·기록을 못 찾은 선수. 다시 모으면 숫자 뽑기 비용만 든다 (실측: 하루 약 11명, 비용의 약 30%)."""
+    """최근 30일 안에 뉴스에서 올해 연봉·기록을 못 찾은 선수. 다시 모으면 숫자 뽑기 비용만 든다 (실측: 하루 약 11명, 비용의 약 30%)."""
     book = (yaml.safe_load(NO_DATA.read_text(encoding="utf-8")) or {}) if NO_DATA.exists() else {}
     return [n for n, v in book.items() if str(v.get("until", "")) >= today]
 
@@ -933,6 +1117,7 @@ def weighted_pool(hub, pool: dict, today: str) -> tuple[dict, str]:
     vf = ROOT / "config" / "search_volume.yaml"
     volume = (yaml.safe_load(vf.read_text(encoding="utf-8")) or {}).get("volume", {}) if vf.exists() else {}
     from .trending import volume_factor
+    ready = ready_players(today)
     for p in pool["players"] + extra:
         try:
             n = sum(1 for it in hub.news(p["name"], display=100)
@@ -942,7 +1127,10 @@ def weighted_pool(hub, pool: dict, today: str) -> tuple[dict, str]:
         hot_now = p["name"] in trend or p.get("short") in trend
         f = ((1 + min(2.0, n / NEWS_PER_BOOST)) * (req.get("boost", 3) if p["name"] in asked else 1)
              * (ev.get("boost", 3) if hot_now else 1) * volume_factor(volume.get(p["name"], 0)))
-        out.append({**p, "weight": p.get("weight", 1) * f, "news": n})  # news: 마케터 화제형이 선수를 가를 때 씀
+        f *= READY_BOOST if p["name"] in ready else 1
+        # 오늘의 사건 훅 (대표 결정 2026-10-03): 화제 선수가 왜 떴는지(trending의 why)를 글 첫 문단 훅으로 넘긴다
+        event = (trend.get(p["name"]) or trend.get(p.get("short")) or {}).get("why", "")
+        out.append({**p, "weight": p.get("weight", 1) * f, "news": n, "event": event})  # news: 화제형이 선수를 가를 때
         if n or p["name"] in asked or hot_now:
             hot.append((f, f"{short_name(p)} 기사 {n}건" + (" · 댓글 요청" if p["name"] in asked else "")
                         + (" · 화제" if hot_now else "")))
@@ -1052,15 +1240,17 @@ def finish(llm, *, cfg: dict, pool: dict, notes: list[str], start_cost: float, t
     except (KeyError, TypeError, ZeroDivisionError) as ex:
         notes.append(f"데이터 표 건너뜀 ({ex})")
     sheet = (make_sheet(n) + "\n" + "\n".join(themes.image_lines(th)) + table_lines(folder) + shop_line(d)
+             + (f"\n오늘의 사건: {d['event']} (뉴스에서 확인된 오늘 화제. 제목·첫 문단을 여기에 걸고 바로 계산으로. 기사 문장 복제 금지)" if d.get("event") else "")
              + f"\n추천 제목 유형: {title_type(today, marketer or len(made_today))} (코드가 날마다 돌린다)")
     category = pool["categories"].get(d.get("sport", "야구").split()[0], "야구")  # sport = "야구 (프로야구)"
     post, problems, rounds = write_post(llm, {"category": category, "angle": tinfo["angle"]}, sheet,
                                         cfg.get("max_revisions", 2))
     cost = llm.cost_usd() - start_cost
     post["tags"] = clean_tags(base_tags(d) + list(post.get("tags", [])), TAGS_MAX)
-    rec_t = post["titles"][post["recommended"] - 1] if 1 <= post["recommended"] <= len(post["titles"]) else None
-    if rec_t and (suf := search_suffix(d, rec_t["text"])):  # 검사는 본 제목(25자)으로 끝났다. 발행 제목에만 덧붙인다
-        rec_t["text"] = f"{rec_t['text'].strip()} {suf}"
+    # 제목 뒤 검색어 괄호('(이름 연봉 2026 · 팀)')는 붙이지 않는다: 제목은 검색하는 사람의 질문 그대로 (대표 지시 2026-10-02)
+    for t in post["titles"]:  # 긴 대시는 검사에서 걸러지지만, 남았으면 쉼표로 (가장 티 나는 AI 흔적)
+        t["text"] = undash(t["text"])
+    post["body"], post["clip_caption"] = undash(post["body"]), undash(post.get("clip_caption", ""))
     (folder / "data.yaml").write_text(yaml.safe_dump(d, allow_unicode=True, sort_keys=False), encoding="utf-8")
     (folder / "facts.json").write_text(json.dumps(facts, ensure_ascii=False, indent=1), encoding="utf-8")
     if photos.credit(folder):  # Pexels 이용 조건: 작가·Pexels 표시 (숫자 검사 뒤에 붙인다)
@@ -1094,7 +1284,49 @@ def marketer_of(folder: str) -> int | None:
     return ((yaml.safe_load(f.read_text(encoding="utf-8")) or {}).get("marketer") if f.exists() else None)
 
 
-def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str | None = None,
+SPORT_WORDS = {  # 소속·종목 힌트 → 종목 (대표가 지정 글에서 적은 소속, 2026-10-03)
+    "mlb": ["mlb", "메이저리그", "빅리그", "마이너리그"], "kbo": ["kbo", "프로야구", "국내야구", "케이비오"],
+    "epl": ["epl", "프리미어", "잉글랜드"], "laliga": ["라리가", "스페인"],
+    "soccer": ["축구", "분데스", "세리에", "리그앙", "해외축구", "k리그", "케이리그"],
+    "nba": ["nba", "농구", "엔비에이"], "golf": ["골프", "pga", "lpga", "상금"]}
+
+
+def sport_from_hint(hint: str, pool: dict) -> str | None:
+    """소속·종목 힌트에서 종목 키를 찾는다. 종목어 → 그 종목, 아니면 풀에 있는 팀 이름과 맞춰 본다."""
+    h = hint.replace(" ", "").lower()
+    for sp, ws in SPORT_WORDS.items():
+        if any(w in h for w in ws):
+            return sp
+    for p in pool["players"]:   # 팀 이름(토트넘·다저스 등)으로 종목 추정
+        team = (p.get("team") or "").replace(" ", "").lower()
+        if team and (team in h or h in team):
+            return p["sport"]
+    return None
+
+
+def resolve_player(pool: dict, name: str, hint: str) -> tuple[dict, str]:
+    """지정 선수 이름(+소속 힌트) → (선수 dict, 안내 메모). 목록에 있으면 종목·팀 자동, 동명이인은 소속으로 가린다."""
+    everyone = pool["players"]
+    matches = [p for p in everyone if name in (p["name"], p.get("short"))]
+    if hint and len(matches) > 1:
+        h = hint.replace(" ", "")
+        narrowed = [p for p in matches if h in (p.get("team", "") + p["sport"]).replace(" ", "")
+                    or sport_from_hint(hint, pool) == p["sport"]]
+        matches = narrowed or matches
+    if len(matches) == 1:
+        return matches[0], ""
+    if len(matches) > 1:
+        return matches[0], f"동명이인일 수 있어요: '{name}'이 목록에 여럿 — 소속팀을 적어 주시면 정확해져요 (지금은 {matches[0].get('team', '')}로 썼어요)"
+    sp = sport_from_hint(hint, pool) if hint else None
+    # 소속 힌트가 종목어(축구·NBA 등)면 팀은 비우고, 팀 이름이면 뉴스 검색에 쓰게 남긴다
+    is_word = any(w in hint.replace(" ", "").lower() for ws in SPORT_WORDS.values() for w in ws) if hint else False
+    if sp:
+        return {"name": name, "short": name, "team": "" if is_word else hint, "sport": sp, "weight": 1}, ""
+    return ({"name": name, "short": name, "team": hint, "sport": "kbo", "weight": 1},
+            f"'{name}'은 목록에 없고 종목을 몰라 야구로 가정했어요 — 축구·농구·골프면 소속/종목을 적어 주세요 (예: {name} / 토트넘)")
+
+
+def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str | None = None, event_hook: str = "", trend: bool = False, team_hint: str = "",
         out_root: Path = POSTS, again: bool = False, marketer: int | None = None) -> tuple[str, Path | None]:
     """again: 발행 도우미 '다시 뽑기' — 하루 한도를 건너뛰고 다른 조합으로 쓴다 (버린 글의 선수는 최근 목록에 있어 제외된다).
     marketer: 마케터 번호 (config/marketers.yaml, 2026-10-01). 그 마케터의 선수·테마로만, 하루 1편."""
@@ -1121,6 +1353,8 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
         # 순위·총정리형 (대표 결정 2026-09-30): 정한 요일의 첫 후보. 못 쓰면 평소 글로 넘어간다
         from .shorts import latest_fx
         for lst in ranking.pick(today, rc):
+            if marketer and not marketers.sport_ok(lst.get("league", ""), marketer, today):
+                continue  # 하루 야구 1편 (2026-10-02): 오늘 이 마케터 종목이 아닌 순위 목록은 건너뜀
             got = ranking.data(lst, today, latest_fx(today))
             if isinstance(got, str):
                 notes.append(f"순위 글 건너뜀 — {got}")
@@ -1133,7 +1367,10 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
             return "\n".join(notes + ["순위 글: 오늘 쓸 수 있는 목록이 없음 (config/rankings.yaml, 21일 안에 다 씀)"]), None
     pool, why = weighted_pool(hub, pool, today)
     if marketer and not topic_override:  # 마케터의 선수·테마만 (같은 날 다른 마케터와 선수가 겹치지 않게)
-        pool = {**pool, "players": marketers.players(pool["players"], marketer)}
+        # 하루 야구 1편 (2026-10-02): 종목으로 먼저 거르고 나서 화제형·반씩 나누기 (같은 종목 묶음 안에서 겹치지 않게)
+        mine = [p for p in pool["players"] if marketers.sport_ok(p.get("sport", ""), marketer, today)]
+        pool = {**pool, "players": marketers.players(mine, marketer)}
+        notes.append("종목: " + ("야구 차례" if marketers.baseball_marketer(today) == marketer else "야구 말고 (축구·농구·골프)"))
         if not theme:
             pool = {**pool, "themes": {**marketers.themes(pool["themes"], marketer),
                                        **({"rank": pool["themes"]["rank"]} if "rank" in pool["themes"] else {})}}
@@ -1144,8 +1381,13 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
         notes.append("가중치: " + why)
     used, used_items = used_combos(today)
     pool = {**pool, "_eligible": eligible(pool)}
+    override_player = None
+    if topic_override:   # 지정 선수: 소속으로 종목·동명이인을 가린다 (2026-10-03)
+        override_player, note = resolve_player(pool, topic_override, team_hint)
+        if note:
+            notes.append(note)
     for plan in themes.plans(pool, recent_players(pool.get("recent_posts", 5)) | skipped, seed, n=10,
-                             override=topic_override, theme=theme, used=used):
+                             override=topic_override, theme=theme, used=used, override_player=override_player):
         got = []
         for p in plan["players"]:
             if p["name"] not in cache:
@@ -1168,18 +1410,27 @@ def run(hub, llm, *, today: str, topic_override: str | None = None, theme: str |
                      for k, x in zip("ab", got) for key, f in x["facts"].items()}
         else:
             d = {**got[0]["d"], "theme": th}
+            if topic_override and event_hook:  # 대표가 지정한 선수 + 사건 한 줄 (2026-10-03): 그 사건을 첫 문단 훅으로
+                d["event"] = event_hook
             facts = got[0]["facts"]
             if th == "life":
                 prices = load_yaml("prices.yaml")
                 fallback = next((i for i in prices["items"] if i["key"] == "seoul_apt"), None)
-                d["prices"], pn = fill_prices(hub, llm, themes.pick_prices(prices, f"{today}-{d['player']}",
-                                                                           used_items.get(d["player"], set())),
-                                              today, fallback)
+                used_it = used_items.get(d["player"], set())
+                # 당일 검색량 상위 트렌드 상품 (대표 지시 2026-10-03): 지정 글/트렌드면 검색량 1위 물건부터
+                recent_it = recent_items(today)  # 최근 14일 어느 글에서든 쓴 비교 물건 (같은 물건 반복 방지, 2026-10-04)
+                picks = (themes.top_trend(prices, used_it, recent_it, f"{today}-{d['player']}") if trend
+                         else themes.pick_prices(prices, f"{today}-{d['player']}", used_it, recent_it))
+                d["prices"], pn = fill_prices(hub, llm, picks, today, fallback)
+                d["prices"] = d["prices"][:1]
                 notes += pn
             if th in ("place", "trip"):  # 연고지·출신지·예전 소속팀 도시 (이 선수와 아직 안 쓴 장소부터)
                 me = next(p for p in pool["players"] if p["name"] == d["player"])
                 cands = [x for x in places_for(pool, me) if th == "trip" or x["domestic"]]
                 fresh = [x for x in cands if place_item(x, th)["key"] not in used_items.get(d["player"], set())] or cands
+                if not fresh:  # 해외 선수는 국내 연고지가 없을 수 있다 (종목 돌리기, 2026-10-02)
+                    notes.append(f"건너뜀 — {d['player']}: {th} 테마에 쓸 장소 없음")
+                    continue
                 place = random.Random(f"{seed}-{d['player']}-{th}").choice(fresh)
                 d["place"] = place
                 d["prices"], pn = fill_prices(hub, llm, [place_item(place, th)], today, None)
@@ -1218,6 +1469,9 @@ def main() -> None:
     ap.add_argument("--target", type=int, default=1, help="발행 가능한(✅) 글을 몇 편 만들지")
     ap.add_argument("--tries", type=int, default=1, help="최대 몇 번 쓸지 (⚠️ 글은 목록에서 빼고 다시 쓴다)")
     ap.add_argument("--marketer", type=int, default=None, help="마케터 번호 (config/marketers.yaml). 동시에 여러 마케터가 쓸 때")
+    ap.add_argument("--event", default=None, help="대표가 지정한 선수의 오늘 사건 한 줄 (첫 문단 훅). --topic과 함께")
+    ap.add_argument("--trend", action="store_true", help="생활 물가 비교를 당일 검색량 상위 상품으로 (지정 글)")
+    ap.add_argument("--team", default=None, help="지정 선수 소속·종목 (동명이인·목록에 없는 선수 종목 판별). --topic과 함께")
     a = ap.parse_args()
     today = date.today().isoformat()
     out_root = Path(a.out) if a.out else POSTS
@@ -1242,7 +1496,7 @@ def main() -> None:
     made, lines, folder = 0, [], None
     for attempt in range(max(a.tries, a.target)):
         try:
-            msg, folder = run(hub, llm, today=today, topic_override=a.topic, theme=a.theme, out_root=out_root,
+            msg, folder = run(hub, llm, today=today, topic_override=a.topic, theme=a.theme, event_hook=a.event or "", trend=a.trend, team_hint=a.team or "", out_root=out_root,
                               again=a.again or made > 0, marketer=a.marketer)
         except Exception as e:  # 키·요금·API 오류: 메시지만 남기고 실패로 끝낸다 (키 값은 메시지에 없음)
             _summary(f"❌ 글쓰기 실패: {type(e).__name__}: {str(e)[:300]}\n\nClaude에게 이 화면을 알려주세요.")

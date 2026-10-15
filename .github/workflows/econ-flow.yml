@@ -1,0 +1,126 @@
+# 억선생의 경제판 하루 흐름 (content/econ_flow.py): 키워드 → (대표 선택) → 제목 후보 → (대표 선택) → 전체 제작
+# - 자동: 매일 아침 05:50(한국) 키워드 모으기
+# - 버튼: 발행 도우미 → 이슈 → desk-button.yml이 이 워크플로를 부름 (cmd·arg)
+name: 경제 흐름
+
+on:
+  # 자동 예약 멈춤 (대표 지시 2026-10-05 "자동 다 멈춰", 전체 개편 중). 다시 켜려면 아래 # 를 지운다.
+  # schedule:
+  #   - cron: "40 20 * * *"   # UTC 20:40 = 한국 05:40 참고 블로거 RSS 조사 (refs)
+  #   - cron: "50 20 * * *"   # UTC 20:50 = 한국 05:50 키워드 모으기
+  #   - cron: "30 22 * * 0"   # UTC 일 22:30 = 한국 월 07:30 주간 점검·학습 (learn)
+  # push:   # 참고 블로거 목록을 고치면 바로 한 번 조사 (refs) — 개편 중 멈춤
+  #   branches: [main]
+  #   paths: ["config/econ_refs.yaml"]
+  workflow_dispatch:
+    inputs:
+      cmd: {description: "keywords | add | aside | auto | link | titles | produce | learn | refs | masters", required: true, default: keywords}
+      arg1: {description: "키워드 / 주제폴더", required: false, default: ""}
+      arg2: {description: "제목 번호", required: false, default: ""}
+      blog: {description: "econ | ent | fashion", required: false, default: econ}
+  workflow_call:
+    outputs:
+      reason: {description: "실패 이유 (쉬운 말)", value: "${{ jobs.run.outputs.reason }}"}
+    inputs:
+      cmd: {type: string, required: true}
+      arg1: {type: string, required: false, default: ""}
+      arg2: {type: string, required: false, default: ""}
+      blog: {type: string, required: false, default: econ}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: econ-flow-${{ inputs.blog || 'econ' }}   # 블로그별로 따로 줄 서기 (2026-10-06)
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-24.04   # ubuntu-latest가 2026-10-06 새벽 서버 배정을 못 받아 15분 뒤 취소가 반복돼 고정 (Ubuntu 26 이전 중)
+    timeout-minutes: 100   # 자동 글 3편(제목+본문)을 한 번에 (2026-10-07)
+    outputs:
+      reason: ${{ steps.why.outputs.reason }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: 실행
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          NCP_APIGW_API_KEY_ID: ${{ secrets.NCP_APIGW_API_KEY_ID }}   # 정보 이득 게이트: 네이버 블로그 검색 API
+          NCP_APIGW_API_KEY: ${{ secrets.NCP_APIGW_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}           # 쿠니네 방식: AI 사진이 안 될 때 무료 사진
+          NAVER_AD_API_KEY: ${{ secrets.NAVER_AD_API_KEY }}       # 키워드 점수: 월간 검색량 (검색광고 API)
+          NAVER_AD_SECRET_KEY: ${{ secrets.NAVER_AD_SECRET_KEY }}
+          NAVER_AD_CUSTOMER_ID: ${{ secrets.NAVER_AD_CUSTOMER_ID }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}         # 키워드 화제성 보조: 유튜브 최근 영상 수 (2026-10-10)
+          BLOG: ${{ inputs.blog || 'econ' }}   # 경제·연예·패션 (config/blogs.yaml, 2026-10-05)
+          CMD: ${{ inputs.cmd || (github.event.schedule == '30 22 * * 0' && 'learn') || ((github.event.schedule == '40 20 * * *' || github.event_name == 'push') && 'refs') || 'keywords' }}
+          ARG1: ${{ inputs.arg1 }}
+          ARG2: ${{ inputs.arg2 }}
+        run: |
+          exec > >(tee -a run.log) 2>&1   # 실패 이유를 찾으려고 기록을 남김 (2026-10-10)
+          if [ "$CMD" = "keywords" ]; then python -m content.econ_flow keywords "$ARG1"   # ARG1=force면 Grok 새로 (다시 모으기)
+          elif [ "$CMD" = "add" ]; then python -m content.econ_flow add "$ARG1"
+          elif [ "$CMD" = "aside" ]; then python -m content.econ_flow aside "$ARG1"   # 어사이드 목록 → 바로 자동 글 (2026-10-07)
+          elif [ "$CMD" = "auto" ]; then python -m content.econ_flow auto "$ARG1"     # 10시 자동 글 / 도우미 다시 돌리기(force)
+          elif [ "$CMD" = "pack" ]; then python -m content.econ_flow pack "$ARG1"   # 패션 조사 세트 (2026-10-12)
+          elif [ "$CMD" = "link" ]; then python -m content.econ_flow link "$ARG1"     # 패션: 상품 링크로 초안 (2026-10-08)
+          elif [ "$CMD" = "rising" ]; then python -m content.econ_flow rising   # 네이버 급상승 탐지 (2026-10-10)
+          elif [ "$CMD" = "season" ]; then python -m content.econ_flow season   # 쇼핑인사이트 계절 인기 상품 (2026-10-10)
+          elif [ "$CMD" = "celebs" ]; then python -m content.econ_flow celebs   # 착장 도우미: 오늘 뜨는 연예인 (2026-10-10)
+          elif [ "$CMD" = "outfit" ]; then python -m content.econ_flow outfit "$ARG1"   # 착장 도우미: 글 (2026-10-10)
+          elif [ "$CMD" = "topicwrite" ]; then python -m content.econ_flow topicwrite "$ARG1"   # 직접 입력 주제로 바로 글 (2026-10-09)
+          elif [ "$CMD" = "linkwrite" ]; then python -m content.econ_flow linkwrite "$ARG1"   # 패션: 제목 + 상품 링크로 글 (2026-10-09)
+          elif [ "$CMD" = "titles" ]; then python -m content.econ_flow titles "$ARG1"
+          elif [ "$CMD" = "produce" ]; then python -m content.econ_flow produce "$ARG1" "$ARG2"
+          elif [ "$CMD" = "learn" ]; then python -m content.econ_inbox learn
+          elif [ "$CMD" = "refs" ]; then python -m content.econ_refs
+          elif [ "$CMD" = "news" ]; then python -m content.news_collect   # 신문사 제목 훅 단어 수집 (AI 없음, 2026-10-13)
+          elif [ "$CMD" = "collect" ]; then python -m content.title_collect   # 참고 블로거 제목 전체 수집 (AI 없음, 2026-10-12)
+          elif [ "$CMD" = "masters" ]; then python -m content.title_refs   # 제목 고수(경제토르·유미) 조사
+          else echo "모르는 명령"; exit 1; fi
+      - name: 저장 (econ/ 커밋)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          python -m content.run_error --clear "${{ inputs.cmd }}"   # 클로드 실행이 성공하면 도우미의 빨간 띠를 지움
+          for d in econ blogs reports status; do [ -e "$d" ] && git add -A "$d"; done   # 없는 폴더가 있어도 멈추지 않게
+          git diff --cached --quiet && exit 0
+          git commit -m "글 흐름(${{ inputs.blog || 'econ' }}): $(date +%F)"
+          for i in 1 2 3; do
+            git pull --rebase --autostash -X theirs origin main && git push origin HEAD:main && exit 0
+            sleep $((i * 5))
+          done
+          exit 1
+      - name: 실패 이유 남기기 (도우미 빨간 띠 + 이슈 댓글, 대표 지적 2026-10-10)
+        id: why
+        if: failure()
+        env:
+          ARG1: ${{ inputs.arg1 }}
+        run: |
+          r=$(python -m content.run_error run.log "${{ inputs.cmd }}" "$ARG1" | tail -1)
+          echo "reason=$r" >> "$GITHUB_OUTPUT"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add status
+          git diff --cached --quiet && exit 0
+          git commit -m "도우미: 실행 실패 이유"
+          for i in 1 2 3; do
+            git pull --rebase --autostash -X theirs origin main && git push origin HEAD:main && exit 0
+            sleep $((i * 5))
+          done
+
+  desk:
+    needs: run
+    if: always()
+    uses: ./.github/workflows/econ-desk.yml
+    secrets: inherit

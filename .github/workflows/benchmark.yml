@@ -11,8 +11,8 @@ on:
         type: choice
         options: [실제, 예시]
         default: 실제
-  schedule:
-    - cron: "13 0 * * 1"   # UTC 월요일 00:13 = 한국 월요일 09:13
+  # schedule:   # 2026-10-05 대표 결정: 스포츠 자동 중단 (경제 전향)
+  #   - cron: "13 0 * * 1"   # UTC 월요일 00:13 = 한국 월요일 09:13
 
 permissions:
   contents: write

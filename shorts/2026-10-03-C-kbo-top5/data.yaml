@@ -1,0 +1,15 @@
+kind: C
+key: C-kbo-top5
+div: 144
+league: kbo
+title: 2026 KBO 연봉 순위 TOP 5
+source: 2026-10-03-rank-kbo-top5
+q: 1위 예상했나요?
+basis: 확인 연봉표(config/salaries.yaml, 발표·보도), 환율 1유로 = 1,513.4원 (2026-10-02, 유럽중앙은행
+  기준환율)
+names:
+- 양의지
+- 고영표
+- 최정
+- 류현진
+- 박세웅

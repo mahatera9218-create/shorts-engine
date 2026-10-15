@@ -43,7 +43,7 @@ def ratio(x: float) -> str:
 # ---------------------------------------------------------------- 뽑기
 
 def plans(pool: dict, recent: set[str], seed: str, n: int = 6, override: str | None = None,
-          theme: str | None = None, used: set = frozenset()) -> list[dict]:
+          theme: str | None = None, used: set = frozenset(), override_player: dict | None = None) -> list[dict]:
     """오늘 시도할 (테마, 선수) 조합 후보 n개. 연봉 보도가 없는 선수가 있으면 다음 후보로 넘어간다."""
     rng = random.Random(seed)
     everyone = pool["players"]
@@ -62,7 +62,9 @@ def plans(pool: dict, recent: set[str], seed: str, n: int = 6, override: str | N
     out, seen = [], set()
     for _ in range(n * 5):
         th = theme or rng.choices(list(themes), weights=[t["weight"] for t in themes.values()])[0]
-        if override:
+        if override_player is not None:   # run()이 소속으로 종목·동명이인을 가려 넘긴 선수 (2026-10-03)
+            a = override_player
+        elif override:
             a = next((p for p in everyone if override in (p["name"], p.get("short"))),
                      {"name": override, "sport": "kbo", "weight": 1})
         else:
@@ -90,8 +92,9 @@ def topic(pool: dict, p: dict) -> dict:
     s = pool["sports"].get(p["sport"], {"name": "", "sport": "야구", "hint": ""})
     money = "상금" if s["sport"] == "골프" else "연봉"
     return {"id": p["name"].replace(" ", ""), "player": p["name"], "short_name": short(p), "team": p.get("team", ""),
-            "sport": f"{s['sport']} ({s['name']})", "hint": s.get("hint", ""),
-            "queries": [f"{p['name']} {money}", f"{p['name']} 시즌 성적", f"{p['name']} 계약" if money == "연봉" else f"{p['name']} 우승"]}
+            "sport": f"{s['sport']} ({s['name']})", "hint": s.get("hint", ""), "event": p.get("event", ""),
+            "queries": [f"{p['name']} {t} {money}".replace("  ", " ").strip() if (t := p.get("team", "")) else f"{p['name']} {money}",
+                        f"{p['name']} 시즌 성적", f"{p['name']} 계약" if money == "연봉" else f"{p['name']} 우승"]}
 
 
 def names_in(d: dict) -> list[str]:
@@ -150,18 +153,35 @@ def compute_life(d: dict) -> dict:
             "inverse_count": item["price_krw"] / pick["value"], "inverse_word": cards.word(pick["label"])}
 
 
-def pick_prices(prices: dict, seed: str, exclude: set[str] = frozenset()) -> list[dict]:
+def pick_prices(prices: dict, seed: str, exclude: set[str] = frozenset(), recent: set[str] = frozenset()) -> list[dict]:
     """1선수 1물건 (대표 결정): 먼저 그룹(집·국산차·수입차)을 group_weight대로 고르고,
     그 안에서 검색량(weight)이 큰 것일수록 자주 뽑는다 (많이 검색하는 단지·차종 위주)."""
     rng = random.Random(seed)
     gw = prices.get("group_weight") or {"home": 1, "car_kr": 1, "car_import": 1}
     groups = [g for g in gw if any(i.get("group") == g for i in prices["items"])]
     group = rng.choices(groups, weights=[gw[g] for g in groups])[0]
-    pool = [i for i in prices["items"] if i.get("group") == group and i["key"] not in exclude] or \
+    pool = [i for i in prices["items"] if i.get("group") == group and i["key"] not in exclude | recent] or \
+        [i for i in prices["items"] if i.get("group") == group and i["key"] not in exclude] or \
         [i for i in prices["items"] if i.get("group") == group]  # 이 선수와 이미 쓴 물건은 빼고 (다 썼으면 다시)
     it = rng.choices(pool, weights=[max(1, i.get("weight", 1)) for i in pool])[0]
     return [{x: it[x] for x in ("key", "group", "label", "short", "unit", "price_krw", "as_of", "source",
                                 "fetch", "query", "min_krw", "max_krw") if x in it}]
+
+
+def top_trend(prices: dict, exclude: set[str] = frozenset(), recent: set[str] = frozenset(), seed: str = "") -> list[dict]:
+    """검색량 상위 소비재 (대표 지시 2026-10-03). 매번 1위(모델Y)만 나오던 문제 수정 (대표 지적 2026-10-04):
+    - 최근 며칠 안에 어느 글에서든 쓴 물건(recent)은 빼고, 이 선수와 쓴 물건(exclude)도 뺀다
+    - 검색량 상위 8개 안에서 검색량이 클수록 자주 뽑히게 '날마다 다르게' 고른다 (1위 고정 아님)
+    다 빠지면 recent 제한을 풀어 다시 고른다. 앞의 것이 실패하면 다음 것을 쓰도록 3개를 돌려준다."""
+    base = [i for i in prices["items"] if (i.get("price_krw") or i.get("fetch")) and i["key"] not in exclude]
+    cand = [i for i in base if i["key"] not in recent] or base
+    cand.sort(key=lambda i: -max(1, i.get("weight", 1)))
+    top = cand[:8]
+    rng = random.Random(seed)
+    # 가중치 비례 무작위 순서 (검색량 큰 물건이 앞에 올 확률이 높지만 고정은 아님)
+    top.sort(key=lambda i: -(rng.random() ** (1.0 / max(1, i.get("weight", 1)))))
+    keys = ("key", "group", "label", "short", "unit", "price_krw", "as_of", "source", "fetch", "kind", "query", "min_krw", "max_krw")
+    return [{x: i[x] for x in keys if x in i} for i in top[:3]]
 
 
 def income_tax(x: float, brackets: list) -> float:

@@ -1,0 +1,72 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · 한화에어로스페이스 간판 클로즈업",
+  "make": true,
+  "file": "",
+  "desc": "Square close-up photograph of the Hanwha Aerospace company sign and logo on a building facade, filling the frame, low dark storm clouds, cold blue tone with a faint red warning glow, dramatic cinematic lighting, high contrast, no other text",
+  "brand": "Hanwha Aerospace",
+  "size": "1024x1024",
+  "prompt": "Square 1:1 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Square close-up photograph of the Hanwha Aerospace company sign and logo on a building facade, filling the frame, low dark storm clouds, cold blue tone with a faint red warning glow, dramatic cinematic lighting, high contrast, no other text This must clearly be Hanwha Aerospace: show its real, accurate corporate signage — the actual Hanwha Aerospace logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 2,
+  "label": "한화에어로스페이스 창원 사업장 전경",
+  "make": true,
+  "file": "",
+  "desc": "Wide aerial photograph of the Hanwha Aerospace Changwon plant in Gyeongsangnam-do, Korea, large industrial factory complex with the Hanwha Aerospace company sign visible on the main building, overcast sky, news photo style",
+  "brand": "Hanwha Aerospace",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Wide aerial photograph of the Hanwha Aerospace Changwon plant in Gyeongsangnam-do, Korea, large industrial factory complex with the Hanwha Aerospace company sign visible on the main building, overcast sky, news photo style This must clearly be Hanwha Aerospace: show its real, accurate corporate signage — the actual Hanwha Aerospace logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 3,
+  "label": "로켓 발사 장면",
+  "make": true,
+  "file": "",
+  "desc": "Realistic news photograph of a Korean space rocket lifting off from a launch pad at dusk with bright exhaust flame and smoke plume, no text, no logos, wide shot",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic news photograph of a Korean space rocket lifting off from a launch pad at dusk with bright exhaust flame and smoke plume, no text, no logos, wide shot No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 4,
+  "label": "발사통제센터 콘솔 모습",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photograph of a rocket launch control center in Korea seen from behind, rows of operator consoles with glowing screens, anonymous engineers silhouetted, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photograph of a rocket launch control center in Korea seen from behind, rows of operator consoles with glowing screens, anonymous engineers silhouetted, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 5,
+  "label": "여의도 증권가 전경",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photograph of Yeouido financial district in Seoul on a cloudy day, stock exchange area buildings, muted cold tones, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photograph of Yeouido financial district in Seoul on a cloudy day, stock exchange area buildings, muted cold tones, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 6,
+  "label": "스마트폰으로 시장 소식을 보는 투자자",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photograph of an anonymous office worker's hands holding a smartphone showing a blurred social media feed, soft office light, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photograph of an anonymous office worker's hands holding a smartphone showing a blurred social media feed, soft office light, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 7,
+  "label": "실적 발표 일정 확인 장면",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photograph of a desk calendar and documents in a Korean corporate office with soft natural window light, no readable text or numbers",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photograph of a desk calendar and documents in a Korean corporate office with soft natural window light, no readable text or numbers No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ }
+]

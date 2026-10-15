@@ -1,0 +1,254 @@
+keyword: 오픈AI 매출 쇼크
+person: 오픈AI
+mode: 쿠니네
+made: '11:17'
+items:
+- title: 오픈AI 매출 쇼크, 진짜 쇼크는 따로 있다? 회계 착시 논란
+  type: 반전형
+  rank: 1
+  best: true
+  chars: 34
+  flags: []
+- title: 오픈AI 매출 500억 vs 700억 달러, 200억 차이는 어디서 났나
+  type: 비교형
+  rank: null
+  best: true
+  chars: 40
+  flags: []
+- title: 오픈AI 매출 쇼크, 올해 초 200억에서 9월 500억 달러까지
+  type: 비교형
+  rank: null
+  best: false
+  chars: 36
+  flags: []
+- title: 오픈AI는 net, 앤트로픽은 gross... 같은 매출 다른 계산법
+  type: 비교형
+  rank: null
+  best: false
+  chars: 38
+  flags: []
+- title: 오픈AI 매출 쇼크, 수요 둔화일까 회계 차이일까?
+  type: 비교형
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: 오픈AI 매출 쇼크, AI 관련주 보유자가 확인할 3가지
+  type: 실행형
+  rank: null
+  best: true
+  chars: 31
+  flags: []
+- title: 오픈AI 매출 쇼크 뉴스 볼 때 각주부터 읽어야 하는 이유
+  type: 실행형
+  rank: null
+  best: false
+  chars: 32
+  flags: []
+- title: 오픈AI 매출 쇼크, 엔비디아 들고 있다면 체크할 것
+  type: 실행형
+  rank: null
+  best: false
+  chars: 29
+  flags: []
+- title: 오픈AI 매출 쇼크, 연말 700억 달러 가능성 어떻게 볼까?
+  type: 실행형
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: 오픈AI 매출 쇼크, 흔들린 날에도 챙겨볼 77% 성장률
+  type: 이득형
+  rank: null
+  best: false
+  chars: 31
+  flags: []
+- title: 오픈AI 매출 쇼크 속 기업 매출 107% 증가, 놓치지 마세요
+  type: 이득형
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: 오픈AI 매출 쇼크, 내 투자금 지키는 숫자 읽는 법
+  type: 이득형
+  rank: null
+  best: true
+  chars: 29
+  flags: []
+- title: 오픈AI 매출 쇼크, 공포 속에서 확인할 기회 신호
+  type: 이득형
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: 오픈AI 매출 쇼크, 700억 달러는 누가 계산한 숫자였나
+  type: 궁금형
+  rank: null
+  best: true
+  chars: 32
+  flags: []
+- title: 오픈AI 매출 쇼크, 대체 왜 오라클이 5.5% 빠졌을까?
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 32
+  flags: []
+- title: 오픈AI 매출 쇼크, 공식 수치는 정말 500억 달러뿐일까?
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 33
+  flags: []
+- title: 오픈AI 매출 쇼크 뒤 1.4조 달러 펀딩은 어떻게 될까
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 31
+  flags: []
+- title: 오픈AI 매출 쇼크, 나스닥 1.25% 하락이 보내는 경고
+  type: 위협형
+  rank: null
+  best: false
+  chars: 32
+  flags: []
+- title: 오픈AI 매출 쇼크에 엔비디아 2.9%, 오라클 5.5% 급락
+  type: 위협형
+  rank: null
+  best: true
+  chars: 34
+  flags: []
+- title: 오픈AI 매출 쇼크, AI 투자 정당성 논란 다시 불붙나
+  type: 위협형
+  rank: null
+  best: false
+  chars: 31
+  flags: []
+- title: 오픈AI 매출 쇼크, 내 연금 속 AI 비중도 흔들릴까?
+  type: 위협형
+  rank: null
+  best: false
+  chars: 31
+  flags: []
+- title: 오픈AI 매출 쇼크라더니, 성장률 77%는 그대로였다
+  type: 반전형
+  rank: null
+  best: false
+  chars: 29
+  flags: []
+- title: 오픈AI 매출 쇼크, 200억 달러가 사라진 게 아니라고?
+  type: 반전형
+  rank: null
+  best: false
+  chars: 32
+  flags: []
+- title: 오픈AI 매출 쇼크에 놀란 시장, 각주 하나에 갈린 평가
+  type: 반전형
+  rank: null
+  best: false
+  chars: 31
+  flags: []
+- title: 오픈AI 매출 쇼크, 숫자보다 계산 방식이 핵심이다
+  type: 확신형
+  rank: null
+  best: false
+  chars: 28
+  flags: []
+- title: 오픈AI 매출 쇼크, 수요 감소 아닌 측정 차이라는 설명이 우세
+  type: 확신형
+  rank: null
+  best: true
+  chars: 35
+  flags: []
+- title: 오픈AI 매출 쇼크, 비교 기준부터 맞춰야 답이 보입니다
+  type: 확신형
+  rank: null
+  best: false
+  chars: 31
+  flags: []
+- title: 오픈AI 매출 쇼크, 이번 하락은 숫자 오독에서 시작됐다
+  type: 확신형
+  rank: null
+  best: false
+  chars: 31
+  flags: []
+- title: 오픈AI 매출 쇼크에 AI 관련주 휘청, 하루 만에 무슨 일?
+  type: 자극형
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: 오픈AI 매출 쇼크, 700억 달러 기대가 500억으로 꺾였다
+  type: 자극형
+  rank: null
+  best: true
+  chars: 34
+  flags: []
+- title: '''오픈AI 매출 200억 달러 빵꾸?'' 월가가 발칵 뒤집힌 하루'
+  type: 자극형
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: 오픈AI 매출 쇼크, 엔비디아·오라클까지 줄줄이 빠졌다
+  type: 자극형
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+groups:
+- type: 비교형
+  idx:
+  - 1
+  - 2
+  - 3
+  - 4
+  best: 1
+- type: 실행형
+  idx:
+  - 5
+  - 6
+  - 7
+  - 8
+  best: 5
+- type: 이득형
+  idx:
+  - 9
+  - 10
+  - 11
+  - 12
+  best: 11
+- type: 궁금형
+  idx:
+  - 13
+  - 14
+  - 15
+  - 16
+  best: 13
+- type: 위협형
+  idx:
+  - 17
+  - 18
+  - 19
+  - 20
+  best: 18
+- type: 반전형
+  idx:
+  - 0
+  - 21
+  - 22
+  - 23
+  best: 0
+- type: 확신형
+  idx:
+  - 24
+  - 25
+  - 26
+  - 27
+  best: 25
+- type: 자극형
+  idx:
+  - 28
+  - 29
+  - 30
+  - 31
+  best: 29

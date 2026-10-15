@@ -1,0 +1,651 @@
+date: '2026-10-09'
+updated: 09:36
+items:
+- kw: 삼성전자 주가 전망
+  core: 삼성전자
+  area: 국내주식
+  why: 영업이익 100조 돌파 잠정실적에도 주가는 약세여서 향방에 관심이 쏠림
+  person: ''
+  product: ''
+  rows:
+  - D1
+  - D3
+  - G2
+  - N57
+  - N59
+  - N64
+  - N82
+  - N89
+  - N93
+  - N96
+  - N99
+  - Y70
+  - Y72
+  - Y73
+  - Y74
+  - Y75
+  - Y77
+  - W7
+  src: Grok, 국내뉴스, 어사이드, 인기종목, 해외뉴스
+  bloggers: []
+  naver_rank: 1
+  sources:
+    어사이드: 2
+    Grok: 1
+    국내뉴스: 8
+    해외뉴스: 6
+    인기종목: 1
+  score: 100
+  parts:
+    네이버: 35
+    최신: 25
+    출처: 20
+    뉴스: 10
+    검색: 10
+  stats:
+    뉴스24h: 100
+    뉴스6h: 100
+    블로그24h: 100
+    월검색: 11124500
+- kw: SK하이닉스 주가 전망
+  core: SK하이닉스
+  area: 국내주식
+  why: 세 달 만에 33% 급락, 삼성전자 대신 담을지 고민하는 투자자가 많음
+  person: ''
+  product: ''
+  rows:
+  - D2
+  - G2
+  - N6
+  - N77
+  - N96
+  src: Grok, 국내뉴스, 어사이드
+  bloggers: []
+  naver_rank: 2
+  sources:
+    어사이드: 1
+    Grok: 1
+    국내뉴스: 3
+  score: 88
+  parts:
+    네이버: 35
+    최신: 25
+    출처: 8
+    뉴스: 10
+    검색: 10
+  stats:
+    뉴스24h: 100
+    뉴스6h: 100
+    블로그24h: 100
+    월검색: 6819200
+- kw: 현대차 주가 전망
+  core: 현대차
+  area: 국내주식
+  why: 파업·원화 강세로 한 달 새 15% 하락, 4분기 신차 효과 기대
+  person: ''
+  product: ''
+  rows:
+  - D7
+  - G1
+  - G3
+  - N29
+  - N74
+  - W1
+  src: Grok, 국내뉴스, 어사이드, 인기종목
+  bloggers: []
+  naver_rank: 5
+  sources:
+    어사이드: 1
+    Grok: 2
+    국내뉴스: 2
+    인기종목: 1
+  score: 82
+  parts:
+    네이버: 26
+    최신: 25
+    출처: 11
+    뉴스: 10
+    검색: 10
+  stats:
+    뉴스24h: 100
+    뉴스6h: 100
+    블로그24h: 100
+    월검색: 681200
+- kw: 나스닥 하락 이유
+  core: 나스닥
+  area: 미국주식
+  why: 오픈AI 매출 실망과 유가 급등으로 나스닥이 1.25% 하락
+  person: ''
+  product: ''
+  rows:
+  - D5
+  - G6
+  - G7
+  - N9
+  - N53
+  - N54
+  - N105
+  - Y1
+  - Y4
+  - Y6
+  - Y19
+  - Y30
+  - Y36
+  - Y38
+  - Y85
+  src: Grok, 국내뉴스, 어사이드, 해외뉴스
+  bloggers: []
+  naver_rank: 10
+  sources:
+    어사이드: 1
+    Grok: 2
+    국내뉴스: 4
+    해외뉴스: 8
+  score: 77
+  parts:
+    네이버: 18
+    최신: 25
+    출처: 14
+    뉴스: 10
+    검색: 10
+  stats:
+    뉴스24h: 100
+    뉴스6h: 90
+    블로그24h: 100
+    월검색: 1126900
+- kw: 삼성전자 성과급
+  core: 삼성전자 성과급
+  area: 국내주식
+  why: 사상 최대 실적 발표로 직원 성과급 관심이 커짐
+  person: ''
+  product: ''
+  rows:
+  - D3
+  src: 어사이드
+  bloggers: []
+  naver_rank: 3
+  sources:
+    어사이드: 1
+  score: 70
+  parts:
+    네이버: 35
+    최신: 25
+    출처: 0
+    뉴스: 10
+    검색: 0
+  stats:
+    뉴스24h: 100
+    뉴스6h: 17
+    블로그24h: 100
+    월검색: 10
+- kw: 마운자로 일본 가격
+  core: 마운자로
+  area: 돈굴리기
+  why: 대표 지정 키워드
+  person: ''
+  product: ''
+  rows:
+  - D10
+  src: 어사이드
+  bloggers: []
+  naver_rank: 4
+  sources:
+    어사이드: 1
+  score: 69
+  parts:
+    네이버: 26
+    최신: 25
+    출처: 0
+    뉴스: 9
+    검색: 9
+  stats:
+    뉴스24h: 92
+    뉴스6h: 15
+    블로그24h: 46
+    월검색: 267400
+- kw: 비트코인 8만달러
+  core: 비트코인
+  area: 비트코인
+  why: 8만1000달러 급락 뒤 80K 지지선을 테스트하는 중
+  person: ''
+  product: ''
+  rows:
+  - G12
+  - G14
+  - N104
+  - N107
+  - N110
+  - W8
+  - W9
+  - Y49
+  - Y55
+  - Y56
+  - Y63
+  - Y66
+  - Y67
+  - Y84
+  src: Grok, 국내뉴스, 인기종목, 해외뉴스
+  bloggers: []
+  sources:
+    Grok: 2
+    국내뉴스: 3
+    인기종목: 2
+    해외뉴스: 7
+  score: 63
+  parts:
+    네이버: 0
+    최신: 25
+    출처: 18
+    뉴스: 10
+    검색: 10
+  stats:
+    뉴스24h: 100
+    뉴스6h: 47
+    블로그24h: 100
+    월검색: 1298200
+- kw: 한미약품 에페 허가
+  core: 한미약품
+  area: 국내주식
+  why: 대표 지정 키워드
+  person: ''
+  product: ''
+  rows:
+  - D4
+  src: 어사이드
+  bloggers: []
+  naver_rank: 9
+  sources:
+    어사이드: 1
+  score: 62
+  parts:
+    네이버: 18
+    최신: 25
+    출처: 0
+    뉴스: 10
+    검색: 9
+  stats:
+    뉴스24h: 100
+    뉴스6h: 13
+    블로그24h: 100
+    월검색: 272700
+- kw: 레버리지 ETF 손실
+  core: 단일종목 레버리지 ETF
+  area: 거시·환율
+  why: 단일종목 레버리지 ETF 도입 논란과 손실 확률 70% 분석이 나옴
+  person: 금융위원장 이억원
+  product: ''
+  rows:
+  - D6
+  - N12
+  - N48
+  - N58
+  - N80
+  - N81
+  src: 국내뉴스, 어사이드
+  bloggers: []
+  naver_rank: 7
+  sources:
+    어사이드: 1
+    국내뉴스: 5
+  score: 62
+  parts:
+    네이버: 18
+    최신: 25
+    출처: 6
+    뉴스: 10
+    검색: 3
+  stats:
+    뉴스24h: 100
+    뉴스6h: 13
+    블로그24h: 100
+    월검색: 2050
+- kw: 이더리움 시세
+  core: 이더리움
+  area: 비트코인
+  why: 비트코인 조정에 동반해 8% 하락
+  person: ''
+  product: ''
+  rows:
+  - G13
+  - N102
+  - Y52
+  - W4
+  - W5
+  src: Grok, 국내뉴스, 인기종목, 해외뉴스
+  bloggers: []
+  sources:
+    Grok: 1
+    국내뉴스: 1
+    해외뉴스: 1
+    인기종목: 2
+  score: 55
+  parts:
+    네이버: 0
+    최신: 25
+    출처: 11
+    뉴스: 10
+    검색: 9
+  stats:
+    뉴스24h: 100
+    뉴스6h: 27
+    블로그24h: 29
+    월검색: 407600
+- kw: 엔비디아 주가
+  core: 엔비디아
+  area: 미국주식
+  why: 오픈AI 매출 이슈로 2.9% 하락
+  person: ''
+  product: ''
+  rows:
+  - G6
+  - Y4
+  - Y19
+  - Y85
+  - W6
+  src: Grok, 인기종목, 해외뉴스
+  bloggers: []
+  sources:
+    Grok: 1
+    해외뉴스: 3
+    인기종목: 1
+  score: 55
+  parts:
+    네이버: 0
+    최신: 25
+    출처: 12
+    뉴스: 10
+    검색: 8
+  stats:
+    뉴스24h: 100
+    뉴스6h: 100
+    블로그24h: 100
+    월검색: 222600
+- kw: 테슬라 주가
+  core: 테슬라
+  area: 미국주식
+  why: FSD 안전성 논란과 스페이스X 가치 비교가 나옴
+  person: ''
+  product: ''
+  rows:
+  - G5
+  - Y24
+  - W3
+  src: Grok, 인기종목, 해외뉴스
+  bloggers: []
+  sources:
+    Grok: 1
+    해외뉴스: 1
+    인기종목: 1
+  score: 55
+  parts:
+    네이버: 0
+    최신: 25
+    출처: 10
+    뉴스: 10
+    검색: 10
+  stats:
+    뉴스24h: 100
+    뉴스6h: 37
+    블로그24h: 86
+    월검색: 858600
+- kw: 마이크론 주가
+  core: 마이크론
+  area: 미국주식
+  why: 삼성 실적에도 마이크론 주가가 하락
+  person: ''
+  product: ''
+  rows:
+  - W10
+  - Y71
+  - Y75
+  src: 인기종목, 해외뉴스
+  bloggers: []
+  sources:
+    인기종목: 1
+    해외뉴스: 2
+  score: 52
+  parts:
+    네이버: 0
+    최신: 25
+    출처: 8
+    뉴스: 10
+    검색: 9
+  stats:
+    뉴스24h: 100
+    뉴스6h: 68
+    블로그24h: 100
+    월검색: 288300
+- kw: 금시세 전망
+  core: 금시세
+  area: 금
+  why: 금값이 4133달러로 반등했으나 연준 추가 인상 신호에 두 달 저점을 기록
+  person: ''
+  product: ''
+  rows:
+  - D9
+  - G9
+  - G10
+  - G11
+  - N103
+  - Y35
+  - Y37
+  - Y39
+  - Y40
+  - Y42
+  src: Grok, 국내뉴스, 어사이드, 해외뉴스
+  bloggers: []
+  naver_rank: 6
+  sources:
+    어사이드: 1
+    Grok: 3
+    국내뉴스: 1
+    해외뉴스: 5
+  score: 50
+  parts:
+    네이버: 26
+    최신: 2
+    출처: 10
+    뉴스: 2
+    검색: 10
+  stats:
+    뉴스24h: 15
+    뉴스6h: 1
+    블로그24h: 100
+    월검색: 4149900
+- kw: 애플 주가
+  core: 애플
+  area: 미국주식
+  why: 나스닥 혼조 속 1% 상승
+  person: ''
+  product: ''
+  rows:
+  - G7
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 49
+  parts:
+    네이버: 0
+    최신: 25
+    출처: 4
+    뉴스: 10
+    검색: 10
+  stats:
+    뉴스24h: 100
+    뉴스6h: 57
+    블로그24h: 100
+    월검색: 1205600
+- kw: 한화에어로스페이스 주가
+  core: 한화에어로스페이스
+  area: 국내주식
+  why: 인기 종목
+  person: ''
+  product: ''
+  rows:
+  - W2
+  src: 인기종목
+  bloggers: []
+  sources:
+    인기종목: 1
+  score: 49
+  parts:
+    네이버: 0
+    최신: 25
+    출처: 5
+    뉴스: 10
+    검색: 9
+  stats:
+    뉴스24h: 98
+    뉴스6h: 18
+    블로그24h: 88
+    월검색: 282600
+- kw: 기아 PER
+  core: 기아
+  area: 국내주식
+  why: 현대차와 PER·이익률을 비교
+  person: ''
+  product: ''
+  rows:
+  - G3
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 48
+  parts:
+    네이버: 0
+    최신: 25
+    출처: 4
+    뉴스: 10
+    검색: 9
+  stats:
+    뉴스24h: 100
+    뉴스6h: 33
+    블로그24h: 8
+    월검색: 389200
+- kw: 솔리다임 미국 상장
+  core: 솔리다임
+  area: 국내주식
+  why: 몸값 최대 1000억달러 전망, 골드만삭스·모건스탠리 주관사 선정
+  person: ''
+  product: ''
+  rows:
+  - D8
+  - N69
+  - N86
+  - N92
+  src: 국내뉴스, 어사이드
+  bloggers: []
+  naver_rank: 8
+  sources:
+    어사이드: 1
+    국내뉴스: 3
+  score: 47
+  parts:
+    네이버: 18
+    최신: 12
+    출처: 4
+    뉴스: 6
+    검색: 7
+  stats:
+    뉴스24h: 61
+    뉴스6h: 5
+    블로그24h: 33
+    월검색: 40120
+- kw: TSMC 3분기 매출
+  core: TSMC
+  area: 미국주식
+  why: 3분기 매출이 62.5조로 역대 최대
+  person: ''
+  product: ''
+  rows:
+  - N61
+  - N70
+  - Y22
+  - Y81
+  src: 국내뉴스, 해외뉴스
+  bloggers: []
+  sources:
+    국내뉴스: 2
+    해외뉴스: 2
+  score: 46
+  parts:
+    네이버: 0
+    최신: 25
+    출처: 5
+    뉴스: 10
+    검색: 6
+  stats:
+    뉴스24h: 97
+    뉴스6h: 23
+    블로그24h: 100
+    월검색: 31500
+- kw: 팔란티어 주가
+  core: 팔란티어
+  area: 미국주식
+  why: 전고점까지 4.4% 남음
+  person: ''
+  product: ''
+  rows:
+  - G8
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 39
+  parts:
+    네이버: 0
+    최신: 25
+    출처: 4
+    뉴스: 3
+    검색: 7
+  stats:
+    뉴스24h: 34
+    뉴스6h: 19
+    블로그24h: 90
+    월검색: 61100
+- kw: 엘리스그룹 공모주
+  area: ''
+  src: 대표
+  why: 대표가 조사해 넣음
+  rows: []
+  sources:
+    대표: 1
+  score: 16
+  parts:
+    네이버: 0
+    최신: 0
+    출처: 9
+    뉴스: 0
+    검색: 7
+  stats:
+    뉴스24h: 5
+    뉴스6h: 0
+    블로그24h: 78
+    월검색: 42420
+- kw: KRX금 세금
+  core: KRX금
+  area: 금
+  why: KRX금 비과세와 금ETF 배당소득세를 비교하는 글이 나옴
+  person: ''
+  product: ''
+  rows:
+  - G10
+  - G11
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 2
+  score: 13
+  parts:
+    네이버: 0
+    최신: 5
+    출처: 4
+    뉴스: 1
+    검색: 3
+  stats:
+    뉴스24h: 7
+    뉴스6h: 2
+    블로그24h: 27
+    월검색: 1570

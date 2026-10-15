@@ -1,0 +1,282 @@
+keyword: 삼성전자 3분기 실적 발표
+person: ''
+mode: 쿠니네
+made: 07:59
+items:
+- title: 삼성전자 3분기 실적 발표 100조 넘었는데 주가는 조용했다
+  type: 반전형
+  rank: 1
+  best: true
+  chars: 33
+  flags: []
+- title: 삼성전자 3분기 실적 발표 영업이익 100조 넘긴 이유는 뭘까
+  type: 궁금형
+  rank: 2
+  best: true
+  chars: 34
+  flags: []
+- title: 삼성전자 3분기 실적 발표 107.4조 VS 컨센서스 105.5조, 차이는?
+  type: 비교형
+  rank: 3
+  best: true
+  chars: 42
+  flags: []
+- title: 삼성전자 3분기 실적 발표 환율 5~10조 이익 감소 변수 있었다
+  type: 위협형
+  rank: 4
+  best: true
+  chars: 36
+  flags: []
+- title: 삼성전자 3분기 실적 발표, DS 부문 기여도 먼저 확인하는 순서
+  type: 실행형
+  rank: 5
+  best: true
+  chars: 36
+  flags: []
+- title: 삼성전자 3분기 실적 발표, 2분기 89.5조와 비교하면 얼마나 늘었나
+  type: 비교형
+  rank: null
+  best: false
+  chars: 39
+  flags: []
+- title: 삼성전자 3분기 실적 발표 전년 동기 대비 영업이익 782.5% 증가
+  type: 비교형
+  rank: null
+  best: false
+  chars: 38
+  flags: []
+- title: 삼성전자 3분기 실적 발표 최고 110.6조 VS 최저 101.7조 전망
+  type: 비교형
+  rank: null
+  best: false
+  chars: 40
+  flags: []
+- title: 삼성전자 3분기 실적 발표 매출 195조 VS 시장 기대 200조 격차
+  type: 비교형
+  rank: null
+  best: false
+  chars: 39
+  flags: []
+- title: 삼성전자 3분기 실적 발표 후 영업이익 컨센서스부터 비교하세요
+  type: 실행형
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: 삼성전자 3분기 실적 발표 보기 전 환율 영향 1분 체크
+  type: 실행형
+  rank: null
+  best: false
+  chars: 31
+  flags: []
+- title: 삼성전자 3분기 실적 발표 뒤 10월 말 확정실적 날짜 챙기기
+  type: 실행형
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: 삼성전자 3분기 실적 발표 읽을 때 매출과 마진 같이 보세요
+  type: 실행형
+  rank: null
+  best: false
+  chars: 33
+  flags: []
+- title: 삼성전자 3분기 실적 발표 숫자, 컨센서스와 같이 봐야 남는 것
+  type: 이득형
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: 삼성전자 3분기 실적 발표 누적 영업이익 254.1조가 알려주는 흐름
+  type: 이득형
+  rank: null
+  best: false
+  chars: 38
+  flags: []
+- title: 삼성전자 3분기 실적 발표, 주가보다 실적 체력을 봐야 하는 이유
+  type: 이득형
+  rank: null
+  best: false
+  chars: 36
+  flags: []
+- title: 삼성전자 3분기 실적 발표 때 환율 영향을 따로 계산하면 보이는 것
+  type: 이득형
+  rank: null
+  best: false
+  chars: 37
+  flags: []
+- title: 삼성전자 3분기 실적 발표 전분기 대비 20% 증가, 어디서 나왔나
+  type: 이득형
+  rank: null
+  best: true
+  chars: 37
+  flags: []
+- title: 삼성전자 3분기 실적 발표 호조인데 주가 반응은 왜 미지근할까
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: 삼성전자 3분기 실적 발표 107.4조, 시장 예상보다 높았나 낮았나
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 38
+  flags: []
+- title: 삼성전자 3분기 실적 발표 DS 부문은 얼마나 벌었을까
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 30
+  flags: []
+- title: 삼성전자 3분기 실적 발표 100조 이익 2027년에도 이어질까
+  type: 궁금형
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: 삼성전자 3분기 실적 발표 매출이 예상 200조에 못 미친 이유
+  type: 위협형
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: 삼성전자 3분기 실적 발표 호조 속 마진 정체 우려가 나오는 이유
+  type: 위협형
+  rank: null
+  best: false
+  chars: 36
+  flags: []
+- title: 삼성전자 3분기 실적 발표만 보고 판단하면 놓치기 쉬운 지속성
+  type: 위협형
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: 삼성전자 3분기 실적 발표 날 옵션 만기 겹치면 변동성 커질까
+  type: 위협형
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: 삼성전자 3분기 실적 발표 영업이익은 컸는데 매출은 아쉬웠다
+  type: 반전형
+  rank: null
+  best: false
+  chars: 33
+  flags: []
+- title: 삼성전자 3분기 실적 발표 호조여도 해외는 '수명'을 물었다
+  type: 반전형
+  rank: null
+  best: false
+  chars: 33
+  flags: []
+- title: 삼성전자 3분기 실적 발표 컨센서스 105조 넘겼지만 평가는 갈렸다
+  type: 반전형
+  rank: null
+  best: false
+  chars: 37
+  flags: []
+- title: 삼성전자 3분기 실적 발표 환율 악재에도 107.4조 나온 반전
+  type: 반전형
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: 삼성전자 3분기 실적 발표 '영업이익 107.4조' 주가는 왜 미지근할까
+  type: 경제토르식
+  rank: null
+  best: false
+  chars: 40
+  flags: []
+- title: 삼성전자 3분기 실적 발표 '100조 돌파' 환율 때문에 아쉬운 부분은?
+  type: 경제토르식
+  rank: null
+  best: false
+  chars: 40
+  flags: []
+- title: 삼성전자 3분기 실적 발표 '2분기 89.5조→107.4조' 이 흐름 이어질까
+  type: 경제토르식
+  rank: null
+  best: false
+  chars: 43
+  flags: []
+- title: 삼성전자 3분기 실적 발표 '영업이익 107.4조' 국내 최초 100조 넘었다!
+  type: 유미식
+  rank: null
+  best: false
+  chars: 44
+  flags: []
+- title: 삼성전자 3분기 실적 발표 '원화 강세' 5~10조 깎였다는데 진짜일까?
+  type: 유미식
+  rank: null
+  best: false
+  chars: 40
+  flags: []
+- title: 삼성전자 3분기 실적 발표 '이 숫자' 때문에 증권가 시선 갈린 이유
+  type: 유미식
+  rank: null
+  best: false
+  chars: 38
+  flags: []
+groups:
+- type: 비교형
+  idx:
+  - 2
+  - 5
+  - 6
+  - 7
+  - 8
+  best: 2
+- type: 실행형
+  idx:
+  - 9
+  - 4
+  - 10
+  - 11
+  - 12
+  best: 4
+- type: 이득형
+  idx:
+  - 13
+  - 14
+  - 15
+  - 16
+  - 17
+  best: 17
+- type: 궁금형
+  idx:
+  - 1
+  - 18
+  - 19
+  - 20
+  - 21
+  best: 1
+- type: 위협형
+  idx:
+  - 3
+  - 22
+  - 23
+  - 24
+  - 25
+  best: 3
+- type: 반전형
+  idx:
+  - 0
+  - 26
+  - 27
+  - 28
+  - 29
+  best: 0
+- type: 경제토르식
+  idx:
+  - 30
+  - 31
+  - 32
+  best: null
+- type: 유미식
+  idx:
+  - 33
+  - 34
+  - 35
+  best: null

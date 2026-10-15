@@ -1,5 +1,6 @@
 """자동 글쓰기의 코드 부분(숫자 충돌 규칙, 숫자 검사, 계산 입력) 테스트. 키 없이 돈다."""
 import unittest
+from unittest.mock import patch
 
 from content import receipt
 from content.autopost import build_data, check_post, resolve, unknown_numbers
@@ -53,7 +54,9 @@ class ContentTest(unittest.TestCase):
         assert round(n["per"]["hits"]) == round(22_000_000 * 1356.7 / 149)
 
     def test_build_data_rejects_missing_or_absurd(self):
-        assert build_data({"player": "가"}, _ex(), _facts(salary=22_000_000, games=1, hits=1), CFG)[0] is None  # 환율 없음
+        # 환율 없음: 뉴스에 환율이 없고 ECB 보조 환율도 못 구하면 None (ecb_fx를 None으로 고정해 네트워크와 무관하게 검사)
+        with patch("content.autopost.ecb_fx", return_value=None):
+            assert build_data({"player": "가"}, _ex(), _facts(salary=22_000_000, games=1, hits=1), CFG)[0] is None
         assert build_data({"player": "가"}, _ex(), _facts(salary=113_000_000_0, fx_krw_per_usd=1356.7, games=1, hits=1), CFG)[0] is None
         assert build_data({"player": "가"}, _ex("KRW"), _facts(salary=2_000_000_000, games=30), CFG)[1] == "연봉을 나눌 기록이 2개 미만"
 
@@ -71,9 +74,9 @@ class ContentTest(unittest.TestCase):
 
     def test_check_post(self):
         sheet = "1안타당: 2억 32만 원"
-        good = {"body": "1안타에 2억.\n[1: thumb.png]\n[2: card_quiz.png]\n[3: card_answer.png]\n[4: card_wage.png]\n"
-                        "[5: card_table.png]", "recommended": 1,
-                "titles": [{"text": "1안타에 2억", "type": "숫자형"}] * 5}
+        good = {"body": "1안타에 2억.\n\n안타 하나는 얼마일까?\n\n[1: thumb.png]\n[2: card_quiz.png]\n[3: card_answer.png]\n"
+                        "[4: card_wage.png]\n[5: card_table.png]\n\n홈런 하나는 얼마일까?", "recommended": 1,
+                "titles": [{"text": "1안타에 2억?", "type": "질문형"}] * 5}
         assert check_post(good, sheet) == []
         bad = {**good, "body": good["body"] + "\n토토 배당 3.5배", "titles": [{"text": "1안타에 5억 999만", "type": "숫자형"}] * 5}
         problems = " / ".join(check_post(bad, sheet))
@@ -82,7 +85,7 @@ class ContentTest(unittest.TestCase):
     def test_human_gaps(self):
         from content.voice import human_gaps
         body = ("1경기에 489만원이 남아요.\n\n[이미지 1: thumb.png]\n\n세금은 4억원이에요. 연봉의 42%죠.\n\n"
-                "세금은 얼마일까요?\n\n솔직히 이렇게 많이 뗄 줄은 몰랐어요.\n\n[대표 한마디]\n\n기준: 국세청 세율표")
+                "세금은 얼마일까요?\n\n솔직히 이렇게 많이 뗄 줄은 몰랐어요.\n\n기준: 국세청 세율표")
         assert human_gaps(body) == ["세금은 4억원이에요. 연봉의 42%죠."]
 
     def test_quiz_answer_not_before_quiz(self):
@@ -104,7 +107,7 @@ class ContentTest(unittest.TestCase):
         sheet = ("제목용 짧은 이름: 오타니\n"
                  "썸네일: 오타니 쇼헤이 / 홈런 1개 / 9,045만원 (추천 제목에는 이 금액을 다시 쓰지 않는다)")
         good = {"recommended": 1, "tags": ["오타니", "MLB"],
-                "titles": [{"text": "오타니 9,496억 계약인데 올해 27억?", "type": "반전형"}]
+                "titles": [{"text": "오타니 연봉, 계약은 9,496억인데 올해는?", "type": "반전형"}]
                 + [{"text": "오타니 1경기에 얼마 받을까?", "type": "질문형"}] * 4}
         assert check_titles(good, sheet) == []
         bad = {"recommended": 1, "tags": ["MLB"],
@@ -113,7 +116,9 @@ class ContentTest(unittest.TestCase):
         problems = " / ".join(check_titles(bad, sheet))
         for word in ("긴 이름", "과장어", "되풀이", "25자", "짧은 이름(오타니)으로 시작"):
             assert word in problems, word
-        assert "숫자가 없음" in " / ".join(check_titles({**good, "titles": [{"text": "오타니 올해는 얼마?"}] * 5}, sheet))
+        from content.autopost import title_style
+        assert "질문이 아님" in " / ".join(title_style(bad, sheet))
+        assert "검색하는 말이 없음" in " / ".join(title_style({**good, "titles": [{"text": "오타니 올해는 얼마?"}] * 5}, sheet))
 
     def test_won_only(self):
         sheet = "1안타당: 2억 32만 원"
@@ -128,6 +133,8 @@ class ContentTest(unittest.TestCase):
         from pathlib import Path
         from content import desk
         for folder in Path("posts").glob("2026-*"):
+            if not (folder / "post.md").exists():  # 클립(clip.mp4)만 저장한 폴더는 글이 아니므로 건너뜀
+                continue
             p = desk.parse(folder)
             assert p and len(p["titles"]) == 5 and sum(t["best"] for t in p["titles"]) == 1
             assert [x["n"] for x in p["images"]] == list(range(1, len(p["images"]) + 1)) and p["tags"]
@@ -261,16 +268,19 @@ class ContentTest(unittest.TestCase):
 
     def test_marketers(self):
         from content import marketers as M
-        from content.desk import today_pick
+        from content.desk import today_picks
         assert [M.turn(d) for d in ("2026-10-01", "2026-10-02", "2026-10-03", "2026-10-04")] == [1, 2, 3, 1]
         ps = [{"name": f"선수{i}", "news": (30 - i if i < 12 else 0)} for i in range(40)]
         sets = [{p["name"] for p in M.players(ps, m)} for m in (1, 2, 3)]
         assert not (sets[0] & sets[1] or sets[0] & sets[2] or sets[1] & sets[2])  # 같은 날 선수가 겹치지 않게
         assert {"선수0", "선수1"} <= sets[2]  # 화제형 = 뉴스 많은 선수
-        posts = [{"date": "2026-10-02", "ok": True, "marketer": m, "folder": f"f{m}", "status": {}} for m in (1, 2, 3)]
-        assert today_pick(posts, "2026-10-02")["marketer"] == 2
-        posts[1]["ok"] = False  # 차례 마케터 글이 기준 미달이면 다음 마케터
-        assert today_pick(posts, "2026-10-02")["marketer"] == 3
+        posts = [{"date": "2026-10-02", "ok": True, "marketer": m, "folder": f"f{m}", "status": {},
+                  "review": r, "notes": 0} for m, r in ((1, "신뢰 3 · 말투 3"), (2, "신뢰 4 · 말투 4"), (3, "신뢰 5 · 말투 4"))]
+        assert [p["marketer"] for p in today_picks(posts, "2026-10-02")] == [3, 2]   # 1일 2포, 잘 써진 순 (2026-10-02)
+        posts[2]["ok"] = False  # 기준 미달은 빼고
+        assert [p["marketer"] for p in today_picks(posts, "2026-10-02")] == [2, 1]
+        posts[0]["review"] = posts[1]["review"]; posts[0]["notes"] = 0; posts[1]["notes"] = 3   # 점수 같으면 '참고' 적은 글
+        assert [p["marketer"] for p in today_picks(posts, "2026-10-02")] == [1, 2]
 
     def test_review_gate(self):
         from content.autopost import review_ok
@@ -459,13 +469,31 @@ class TestTitlePair(unittest.TestCase):
 
     def test_pair_ok(self):
         from content.autopost import check_titles
-        self.assertEqual(check_titles(self.post("이정후 안타 하나 2억, 모델Y 몇 대?"), self.SHEET), [])
+        self.assertEqual(check_titles(self.post("이정후 연봉이면 모델Y 몇 대 살까?"), self.SHEET), [])
 
     def test_off_pair_and_type(self):
         from content.autopost import check_titles
         got = check_titles(self.post("이정후 65승 97패 팀에서 받은 2억", "대비형"), self.SHEET)
         self.assertTrue(any("썸네일과 다른 이야기" in x for x in got))
-        self.assertTrue(any("유형" in x for x in got))
+        from content.autopost import title_style
+        self.assertTrue(any("질문이 아님" in x for x in title_style(self.post("이정후 65승 97패 팀에서 받은 2억"), self.SHEET)))
+        self.assertTrue(any("키워드 나열" in x for x in title_style(self.post("이정후 연봉 (2026 · 샌프란시스코)?"), self.SHEET)))
+
+    def test_style_does_not_force_rewrite(self):
+        from content.autopost import check_post, check_style, code_fixes
+        p = {"body": "1안타에 2억 — 놀랍죠.\n\n기준: 보도", "recommended": 1, "titles": [{"text": "이정후 1안타 2억"}] * 5}
+        assert not any("대시" in x or "질문" in x for x in check_post(p, self.SHEET))   # 말투·형식은 고쳐 쓰기를 부르지 않음
+        assert any("질문이 아님" in x for x in check_style(p, self.SHEET))
+        f = code_fixes(p)
+        assert "—" not in f["body"] and "[대표 한마디]" not in f["body"]   # 지어낸 경험 칸 제거 (2026-10-03)
+
+    def test_style_rules(self):
+        from content.autopost import style_rules, undash
+        p = {"body": "올해 연봉 이야기를 해 볼게요.\n\n이정후 연봉은 많이 올랐어요 — 정말요.", "titles": [{"text": "이정후 연봉?"}]}
+        got = " / ".join(style_rules(p, self.SHEET))
+        for w in ("첫 줄에 결론", "막연한 양", "질문형 소제목", "긴 대시"):
+            self.assertIn(w, got)
+        self.assertEqual(undash("2억 — 정말요"), "2억, 정말요")
 
     def test_repeat_number(self):
         from content.autopost import check_titles
@@ -644,13 +672,18 @@ class TestLifecycle(unittest.TestCase):
             for name in ("2026-10-01-A-류현진", "2026-10-01-B-x", "2026-09-29-C-preview-y"):
                 (d / name).mkdir()
                 (d / name / "video.mp4").write_bytes(b"0")
+                (d / name / "meta.txt").write_text("t\n", encoding="utf-8")
+            (d / "2026-10-01-C-orphan").mkdir()   # 저장 실패한 실행의 영상만 캐시로 돌아온 폴더
+            (d / "2026-10-01-C-orphan" / "video.mp4").write_bytes(b"0")
             log = [{"date": "2026-10-01", "kind": "A", "key": "A-류현진", "title": "t", "video_id": "v1"},
                    {"date": "2026-10-01", "kind": "B", "key": "B-x", "title": "u"}]
             (d / "log.yaml").write_text(yaml.safe_dump(log, allow_unicode=True), encoding="utf-8")
             with mock.patch.object(shorts, "OUT", d), mock.patch.object(shorts, "LOG", d / "log.yaml"):
                 self.assertEqual(shorts.pending("A"), [])            # 올린 건 대기 아님
                 self.assertEqual(shorts.pending("B"), ["2026-10-01-B-x"])
+                self.assertEqual(shorts.pending("C"), [])            # 제목·설명 없는 영상은 대기 아님
                 gone = shorts.cleanup("2026-10-02")
+                self.assertIn("2026-10-01-C-orphan", gone)
                 self.assertIn("2026-10-01-A-류현진", gone)           # 올린 건 폐기
                 self.assertIn("2026-09-29-C-preview-y", gone)        # 지난 미리보기 폐기
                 self.assertTrue((d / "2026-10-01-B-x").exists())    # 안 올린 건 남김
@@ -667,4 +700,76 @@ class TestLifecycle(unittest.TestCase):
             with mock.patch.object(autopost, "NO_DATA", Path(d) / "s.yaml"):
                 autopost.remember_no_data({"나성범": "올해 연봉 없음"}, "2026-10-01")
                 self.assertEqual(autopost.no_data_players("2026-10-05"), ["나성범"])
-                self.assertEqual(autopost.no_data_players("2026-10-09"), [])
+                self.assertEqual(autopost.no_data_players("2026-10-30"), ["나성범"])   # 30일 (2026-10-02)
+                self.assertEqual(autopost.no_data_players("2026-11-01"), [])
+
+    def test_baseball_one_a_day(self):
+        from content import marketers
+        c = {"rotation_start": "2026-10-01", "marketers": {1: {}, 2: {}, 3: {}}}
+        for i in range(9):
+            day = f"2026-10-{i + 1:02d}"
+            base = [m for m in (1, 2, 3) if marketers.sport_ok("kbo", m, day, c)]
+            assert len(base) == 1 and all(marketers.sport_ok("nba", m, day, c) for m in (1, 2, 3) if m not in base)
+        blog = [marketers.baseball_marketer(f"2026-10-{i + 1:02d}", c) == marketers.turn(f"2026-10-{i + 1:02d}", c) for i in range(9)]
+        assert sum(blog) == 3   # 블로그 차례 글은 사흘에 한 번 야구
+
+    def test_top_trend(self):
+        from content import themes
+        pr = {"items": [{"key": "a", "short": "A", "weight": 100, "price_krw": 1},
+                        {"key": "b", "short": "B", "weight": 300, "fetch": "news"},
+                        {"key": "c", "short": "C", "weight": 50}]}  # c는 가격 출처 없음 → 제외
+        t = themes.top_trend(pr)
+        assert [i["short"] for i in t] == ["B", "A"]               # 검색량 높은 순, 가격 있는 것만
+        assert themes.top_trend(pr, {"b"})[0]["short"] == "A"      # 이미 쓴 물건 제외
+
+    def test_shorts_per_post(self):
+        from content import shorts
+        # A: 한 선수 영수증 → 통장형
+        d = {"theme": "receipt", "player": "김도영", "short_name": "김도영", "salary_krw": 250000000,
+             "headline_unit": "games", "min_wage_monthly_krw": 2156880,
+             "units": [{"key": "games", "label": "1경기", "count": 125}, {"key": "home_runs", "label": "1홈런", "count": 41}]}
+        p = shorts._a_plan(d, "2026-10-03-receipt-김도영")
+        assert p and p["kind"] == "A" and p["per"]
+        # C: 순위 글 → 순위표
+        rk = {"theme": "rank", "key": "kbo-top5", "title": "TOP5", "games": 144, "league": "kbo",
+              "rows": [{"short": "양의지", "name": "양의지", "krw": 42e8}, {"short": "고영표", "name": "고영표", "krw": 26e8},
+                       {"short": "최정", "name": "최정", "krw": 22e8}]}
+        c = shorts._c_plan(rk, "2026-10-03-rank-kbo-top5")
+        assert c and c["kind"] == "C" and len(c["rows"]) == 3
+
+    def test_designate_parse(self):
+        from content.designate import parse
+        assert parse("[선수] 김도영", "x\n\n사건: 어제 끝내기 홈런\n\n소속: KIA") == ("김도영", "어제 끝내기 홈런", "KIA")
+        assert parse("[선수] 김도영", "") == ("김도영", "", "")
+        assert parse("[발행완료] 김도영", "") == ("", "", "")     # 다른 버튼
+        assert parse("[선수] ", "") == ("", "", "")              # 이름 없음
+        assert parse("[선수] a; rm -rf /", "") == ("", "", "")   # 셸 안전
+
+    def test_resolve_player(self):
+        from content.autopost import resolve_player, sport_from_hint
+        from market.common import load_yaml
+        pool = load_yaml("players.yaml")
+        assert sport_from_hint("PGA", pool) == "golf" and sport_from_hint("프리미어", pool) == "epl"
+        p, note = resolve_player(pool, "홍길동", "")      # 목록에 없고 힌트 없음 → 야구 가정 + 경고
+        assert p["sport"] == "kbo" and "가정" in note
+        p2, _ = resolve_player(pool, "홍길동", "PGA")      # 힌트로 종목 판별
+        assert p2["sport"] == "golf"
+
+    def test_event_hook(self):
+        from content import themes
+        from content.autopost import build_data
+        pool = {"sports": {"mlb": {"name": "메이저리그", "sport": "야구", "hint": ""}}}
+        t = themes.topic(pool, {"name": "김혜성", "sport": "mlb", "team": "LA", "event": "어제 끝내기"})
+        assert t["event"] == "어제 끝내기"
+        ex = {"season": 2026, "salary_currency": "KRW", "salary_basis": "보도", "headline_unit": "games",
+              "units": [{"key": "games", "label": "1경기"}, {"key": "hits", "label": "1안타"}]}
+        facts = {"salary": {"value": 5e8, "unit": "KRW"}, "games": {"value": 100, "unit": "games"}, "hits": {"value": 120, "unit": "개"}}
+        cfg = {"constants": {"min_wage_monthly_krw": 2156880, "min_wage_label": "x", "min_wage_source": "x"}}
+        d, _ = build_data(t, ex, facts, cfg)
+        assert d["event"] == "어제 끝내기"
+
+    def test_money_in_news(self):
+        from content.autopost import money_in_news
+        t = {"player": "엘링 홀란", "short_name": "홀란"}
+        assert money_in_news(t, [{"title": "홀란 주급 50만 파운드", "description": "연봉으로 2600만 파운드"}])
+        assert not money_in_news(t, [{"title": "홀란 해트트릭", "description": "맨시티 3-0 승"}])

@@ -3,7 +3,7 @@
 
 blog: sports-money          # config/blogs.yaml의 id
 daily_limit: 3              # 하루 후보 수 = 마케터 3명 × 1편 (2026-10-01). 블로그 발행은 하루 1편 (마케터 차례대로)
-max_revisions: 2            # 검사 미통과 시 Claude에게 고쳐 달라고 하는 최대 횟수
+max_revisions: 1            # 검사(사실·안전·구조) 미통과 시 고쳐 쓰기 최대 횟수 (말투·형식만 걸리면 고쳐 쓰지 않음, 2026-10-02)
 
 # 글마다 쓰는 고정 숫자 (공식 출처). 바뀌면 여기만 고친다.
 constants:

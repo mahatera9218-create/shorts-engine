@@ -1,0 +1,23 @@
+# 제목 고수 조사 (대표 지시 2026-10-05): 경제토르(kka_dream)·유미(influha)의 공개 RSS 제목 → 제목 공식 → 도우미 ② 칸
+# config/title_masters.yaml 을 고쳐 main에 올리면 한 번 돈다. 매일 아침 한 번 새 제목을 모아 공식을 다시 뽑는다
+# (대표 지시 2026-10-06 "매일 토르 것 분석하고 학습" → 2026-10-10 비용 줄이기로 월요일만. config를 고쳐 올리면 그때도 한 번 돈다)
+name: 제목 고수 조사
+
+on:
+  # 자동 제목 고수 분석 중단 (대표 결정 2026-10-11: 비용 0, 저장된 공식 그대로 씀). config 고쳐 올리거나 수동 실행 때만 돈다.
+  # schedule:
+  #   - cron: "47 20 * * 1"   # UTC 월 20:47 = 한국 월 05:47
+  push:
+    branches: [main]
+    paths: ["config/title_masters.yaml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    uses: ./.github/workflows/econ-flow.yml
+    with:
+      cmd: masters
+    secrets: inherit

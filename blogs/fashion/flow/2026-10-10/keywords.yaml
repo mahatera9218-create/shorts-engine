@@ -1,0 +1,651 @@
+date: '2026-10-10'
+updated: '19:46'
+items:
+- kw: 경량패딩 추천
+  core: 경량패딩
+  area: 의류
+  why: 올가을 경량 패딩 경쟁, 네파 에어써밋 신상
+  person: ''
+  product: 네파 에어써밋 여성 경량 다운자켓
+  rows:
+  - R13
+  - S2
+  - S15
+  - S16
+  - S17
+  - B59
+  - B68
+  src: 급상승, 뉴스검색, 블로거
+  bloggers:
+  - mythya0730
+  - tjthdus94
+  sources:
+    급상승: 1
+    뉴스검색: 4
+    블로거: 2
+  score: 66
+  parts:
+    네이버: 0
+    급상승: 7
+    최신: 0
+    출처: 7
+    뉴스: 4
+    검색: 33
+    제품: 15
+  stats:
+    뉴스24h: 7
+    뉴스6h: 0
+    블로그24h: 100
+    월검색: 124000
+    상승: 1.41
+- kw: 조이 후리스
+  core: 후리스
+  area: 의류
+  why: 레드벨벳 조이 탑텐 플러피플리스 하이넥 집업 3만원대
+  person: ''
+  product: 탑텐 플러피플리스 하이넥 집업 3만원대
+  rows:
+  - R15
+  - B24
+  src: 급상승, 블로거
+  bloggers:
+  - cocoleenice
+  sources:
+    급상승: 1
+    블로거: 1
+  score: 55
+  parts:
+    네이버: 0
+    급상승: 8
+    최신: 0
+    출처: 3
+    뉴스: 0
+    검색: 29
+    제품: 15
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 3
+    월검색: 39590
+    상승: 1.47
+- kw: 리사 루이비통 트위드 셋업
+  core: 리사 루이비통
+  area: 의류
+  why: '대표 키워드: 리사 루이비통 트위드 셋업'
+  person: ''
+  product: ''
+  rows:
+  - D1
+  src: 어사이드
+  bloggers: []
+  naver_rank: 3
+  sources:
+    어사이드: 1
+  score: 49
+  parts:
+    네이버: 20
+    급상승: 17
+    최신: 0
+    출처: 0
+    뉴스: 1
+    검색: 11
+  stats:
+    뉴스24h: 1
+    뉴스6h: 0
+    블로그24h: 26
+    월검색: 940
+    상승: 4.23
+- kw: 김고은 샤넬 자켓
+  core: 김고은 샤넬
+  area: 의류
+  why: 부산국제영화제 액터스하우스 샤넬 셋업 3300만원, 올드하다는 반응
+  person: 김고은
+  product: 샤넬 셋업 3300만원
+  rows:
+  - D2
+  - B44
+  src: 블로거, 어사이드
+  bloggers:
+  - by-nyong
+  naver_rank: 2
+  sources:
+    어사이드: 1
+    블로거: 1
+  score: 43
+  parts:
+    네이버: 20
+    급상승: 0
+    최신: 0
+    출처: 1
+    뉴스: 0
+    검색: 7
+    제품: 15
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 10
+    월검색: 400
+    상승: 0.95
+- kw: 현백코어 패션
+  core: 현백코어
+  area: 데일리룩
+  why: 논란 중심 현백코어 패션 스타일
+  person: ''
+  product: ''
+  rows:
+  - R6
+  - B2
+  - B31
+  src: 급상승, 블로거
+  bloggers:
+  - jayuyu
+  - semingg
+  sources:
+    급상승: 1
+    블로거: 2
+  score: 37
+  parts:
+    네이버: 0
+    급상승: 10
+    최신: 0
+    출처: 4
+    뉴스: 1
+    검색: 22
+  stats:
+    뉴스24h: 1
+    뉴스6h: 0
+    블로그24h: 100
+    월검색: 9040
+    상승: 1.61
+- kw: 신봉선 티파니 목걸이
+  core: 신봉선 목걸이
+  area: 시계·주얼리
+  why: 매일 착용하는 티파니앤코 하드웨어 목걸이 2,000만원대
+  person: ''
+  product: 티파니앤코 하드웨어 목걸이 2,000만원대
+  rows:
+  - D7
+  - B58
+  src: 블로거, 어사이드
+  bloggers:
+  - tjthdus94
+  naver_rank: 8
+  sources:
+    어사이드: 1
+    블로거: 1
+  score: 26
+  parts:
+    네이버: 10
+    급상승: 0
+    최신: 0
+    출처: 1
+    뉴스: 0
+    검색: 0
+    제품: 15
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 10
+    월검색: 25
+    상승: 1.0
+- kw: 한고은 미니 원피스
+  core: 한고은 원피스
+  area: 의류
+  why: 서울드라마어워즈 레드카펫 50대 베스트 드레서 반응
+  person: ''
+  product: ''
+  rows:
+  - D8
+  - R3
+  - B3
+  - B8
+  - B30
+  - B70
+  src: 급상승, 블로거, 블로거새글, 어사이드
+  bloggers:
+  - goodface0863
+  - jayuyu
+  - mythya0730
+  - semingg
+  naver_rank: 6
+  sources:
+    어사이드: 1
+    급상승: 1
+    블로거: 3
+    블로거새글: 1
+  score: 26
+  parts:
+    네이버: 15
+    급상승: 0
+    최신: 0
+    출처: 7
+    뉴스: 0
+    검색: 4
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 45
+    월검색: 210
+    상승: 1.0
+- kw: 문가영 샤넬 미디스커트
+  core: 문가영 샤넬
+  area: 의류
+  why: BIFF 아시아 스타 어워즈 샤넬 신상 착장, 현백코어·평가 갈림
+  person: 문가영
+  product: ''
+  rows:
+  - D3
+  - B4
+  - B9
+  - B31
+  - B37
+  src: 블로거, 어사이드
+  bloggers:
+  - djdjdj8206
+  - goodface0863
+  - ohye1991
+  - semingg
+  naver_rank: 1
+  sources:
+    어사이드: 1
+    블로거: 4
+  score: 24
+  parts:
+    네이버: 20
+    급상승: 0
+    최신: 0
+    출처: 4
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 71
+    월검색: 40
+    상승: 1.0
+- kw: 제니 바디수트
+  core: 제니 패션
+  area: 의류
+  why: 더 위켄드 내한 콘서트 깜짝 출연 바디수트 패션
+  person: ''
+  product: ''
+  rows:
+  - R5
+  - B6
+  - B16
+  src: 급상승, 블로거, 블로거새글
+  bloggers:
+  - cocoleenice
+  - ohye1991
+  sources:
+    급상승: 1
+    블로거: 1
+    블로거새글: 1
+  score: 21
+  parts:
+    네이버: 0
+    급상승: 1
+    최신: 0
+    출처: 5
+    뉴스: 2
+    검색: 13
+  stats:
+    뉴스24h: 3
+    뉴스6h: 0
+    블로그24h: 12
+    월검색: 1440
+    상승: 1.05
+- kw: 로로피아나 코트
+  core: 로로피아나 코트
+  area: 의류
+  why: '대표 키워드: 로로피아나 코트'
+  person: ''
+  product: ''
+  rows:
+  - D9
+  src: 대표
+  bloggers: []
+  sources:
+    대표: 1
+  score: 20
+  parts:
+    네이버: 0
+    급상승: 0
+    최신: 0
+    출처: 3
+    뉴스: 0
+    검색: 17
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 2
+    월검색: 3250
+    상승: 0.67
+- kw: 임지연 레드 롱드레스
+  core: 임지연 드레스
+  area: 의류
+  why: 서울드라마어워즈 레드카펫 드레스 룩
+  person: ''
+  product: ''
+  rows:
+  - D10
+  - R10
+  - B3
+  - B8
+  src: 급상승, 블로거, 어사이드
+  bloggers:
+  - goodface0863
+  - jayuyu
+  naver_rank: 5
+  sources:
+    어사이드: 1
+    급상승: 1
+    블로거: 2
+  score: 19
+  parts:
+    네이버: 15
+    급상승: 0
+    최신: 0
+    출처: 4
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 42
+    월검색: 45
+    상승: 1.0
+- kw: 김지원 드레스
+  core: 김지원 드레스
+  area: 의류
+  why: 불가리 행사에서 입은 1389만원 드레스를 문가영도 착용
+  person: ''
+  product: 드레스 1389만원
+  rows:
+  - R1
+  - B47
+  src: 급상승, 블로거
+  bloggers:
+  - by-nyong
+  sources:
+    급상승: 1
+    블로거: 1
+  score: 19
+  parts:
+    네이버: 0
+    급상승: 0
+    최신: 0
+    출처: 3
+    뉴스: 0
+    검색: 1
+    제품: 15
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 31
+    월검색: 130
+    상승: 0.8
+- kw: 김민하 가죽자켓
+  core: 김민하 패션
+  area: 의류
+  why: BIFF 액터스하우스 니트·가죽 스커트, 샤넬 원피스, 앞머리 변신 화제
+  person: 김민하
+  product: ''
+  rows:
+  - D4
+  - B5
+  - B12
+  - B32
+  - B46
+  src: 블로거, 블로거새글, 어사이드
+  bloggers:
+  - by-nyong
+  - cocoleenice
+  - ohye1991
+  - semingg
+  naver_rank: 7
+  sources:
+    어사이드: 1
+    블로거: 3
+    블로거새글: 1
+  score: 16
+  parts:
+    네이버: 10
+    급상승: 0
+    최신: 0
+    출처: 6
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 3
+    월검색: 40
+    상승: 1.0
+- kw: 젠데이아 루이비통 드레스
+  core: 젠데이아 루이비통
+  area: 드라마 패션
+  why: '대표 키워드: 젠데이아 루이비통 드레스'
+  person: ''
+  product: ''
+  rows:
+  - D5
+  src: 어사이드
+  bloggers: []
+  naver_rank: 4
+  sources:
+    어사이드: 1
+  score: 15
+  parts:
+    네이버: 15
+    급상승: 0
+    최신: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 100
+    월검색: 45
+    상승: 1.0
+- kw: 전지현 에르메스 가방
+  core: 전지현 가방
+  area: 가방
+  why: 한국 연예인 최초 에르메스 협찬 화제, 공항 재킷 룩
+  person: ''
+  product: ''
+  rows:
+  - G9
+  - B48
+  - B52
+  src: Grok, 블로거, 블로거새글
+  bloggers:
+  - merryeeun
+  sources:
+    Grok: 1
+    블로거새글: 1
+    블로거: 1
+  score: 13
+  parts:
+    네이버: 0
+    급상승: 0
+    최신: 0
+    출처: 5
+    뉴스: 0
+    검색: 8
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 0
+    월검색: 550
+    상승: 0.66
+- kw: 변우석 올블랙 공항패션
+  core: 변우석 공항패션
+  area: 데일리룩
+  why: '대표 키워드: 변우석 올블랙 공항패션'
+  person: ''
+  product: ''
+  rows:
+  - D11
+  src: 어사이드
+  bloggers: []
+  naver_rank: 9
+  sources:
+    어사이드: 1
+  score: 11
+  parts:
+    네이버: 10
+    급상승: 0
+    최신: 0
+    출처: 0
+    뉴스: 0
+    검색: 1
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 100
+    월검색: 120
+    상승: 1.0
+- kw: 신민아 원피스
+  core: 신민아 원피스
+  area: 의류
+  why: BIFF 재혼황후 GV 하이넥 실키 미디 원피스, 루이 비통 동안 화제
+  person: ''
+  product: ''
+  rows:
+  - R2
+  - B1
+  - B40
+  - S18
+  - S19
+  - S20
+  - S21
+  src: 급상승, 뉴스검색, 블로거새글
+  bloggers:
+  - by-nyong
+  - jayuyu
+  sources:
+    급상승: 1
+    블로거새글: 2
+    뉴스검색: 4
+  score: 10
+  parts:
+    네이버: 0
+    급상승: 2
+    최신: 0
+    출처: 8
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 59
+    월검색: 100
+    상승: 1.13
+- kw: 슬기 패션
+  core: 슬기 패션
+  area: 데일리룩
+  why: 스트라이프 레이어드에 가디건 착용
+  person: 레드벨벳 슬기
+  product: ''
+  rows:
+  - D12
+  - G8
+  src: Grok, 대표
+  bloggers: []
+  sources:
+    대표: 1
+    Grok: 1
+  score: 6
+  parts:
+    네이버: 0
+    급상승: 0
+    최신: 0
+    출처: 5
+    뉴스: 1
+    검색: 0
+  stats:
+    뉴스24h: 1
+    뉴스6h: 0
+    블로그24h: 39
+    월검색: 35
+    상승: 1.0
+- kw: 윤아 가디건
+  core: 윤아 가디건
+  area: 의류
+  why: 터틀넥 위 가디건 레이어드 트렌드
+  person: ''
+  product: ''
+  rows:
+  - G2
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 5
+  parts:
+    네이버: 0
+    급상승: 0
+    최신: 0
+    출처: 2
+    뉴스: 0
+    검색: 3
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 0
+    월검색: 180
+    상승: 0.62
+- kw: 아이유 프라다 원피스
+  core: 아이유 프라다
+  area: 의류
+  why: '대표 키워드: 아이유 프라다 원피스'
+  person: ''
+  product: ''
+  rows:
+  - D6
+  src: 대표
+  bloggers: []
+  sources:
+    대표: 1
+  score: 4
+  parts:
+    네이버: 0
+    급상승: 0
+    최신: 0
+    출처: 3
+    뉴스: 1
+    검색: 0
+  stats:
+    뉴스24h: 1
+    뉴스6h: 0
+    블로그24h: 3
+    월검색: 10
+    상승: 1.0
+- kw: 로제 트렌치코트
+  core: 로제 트렌치코트
+  area: 의류
+  why: 브라운 오버핏 트렌치코트 공항패션
+  person: ''
+  product: ''
+  rows:
+  - G3
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 2
+  parts:
+    네이버: 0
+    급상승: 0
+    최신: 0
+    출처: 2
+    뉴스: 0
+    검색: 0
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 4
+    월검색: 15
+    상승: 1.0

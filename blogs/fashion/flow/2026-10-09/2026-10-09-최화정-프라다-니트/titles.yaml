@@ -1,0 +1,124 @@
+keyword: 최화정 프라다 니트
+person: 최화정
+mode: 연예패션
+made: 09:45
+items:
+- title: '"최화정은 니트를 이렇게 입네" 결국 궁금해지는 프라다 니트룩'
+  type: 그룹 2
+  rank: 1
+  best: true
+  chars: 34
+  flags: []
+- title: '"니트 하나가 이렇게 달라 보이나?" 결국 눈길 끈 프라다 니트룩'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 36
+  flags:
+  - 36자(35자 넘음)
+- title: '"이 조합 괜찮은데?" 뜻밖의 프라다 니트와 클래식 스타일링'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 33
+  flags: []
+- title: '"멀리서 볼 땐 몰랐는데" 돌연 눈에 들어온 프라다 니트'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 31
+  flags: []
+- title: '"그 방송인은 니트를 이렇게 입네" 마침내 궁금해진 프라다 룩'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: '"가을에 하나쯤 있으면 좋겠네" 결국 다시 보게 된 니트 스타일'
+  type: 그룹 1
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: '"이 니트 어디 거지?" 뜻밖의 최화정 프라다 니트 스타일링'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 33
+  flags: []
+- title: '"역시 잘 입네" 마침내 눈에 들어온 최화정 프라다 니트'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 31
+  flags: []
+- title: '"프라다 니트가 이렇게 단정했나?" 돌연 주목한 최화정 가을 코디'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 36
+  flags:
+  - 36자(35자 넘음)
+- title: '"최화정 니트룩 이렇게 따라 입나?" 끝내 궁금해진 프라다 스타일'
+  type: 그룹 2
+  rank: null
+  best: false
+  chars: 36
+  flags:
+  - 36자(35자 넘음)
+- title: '"방송인들도 탐낼 만한 니트인데?" 결국 눈길 끈 프라다 니트룩'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+- title: '"가을엔 이런 니트가 제일 편하지" 뜻밖의 여자 프라다 니트 코디'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 36
+  flags:
+  - 36자(35자 넘음)
+- title: '"이 정도면 데일리로 괜찮겠네" 마침내 다시 보는 프라다 니트'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 34
+  flags: []
+- title: '"여자 니트는 결국 클래식이지" 돌연 눈에 띈 프라다 니트룩'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 33
+  flags: []
+- title: '"저 니트는 어디 제품이지?" 끝내 궁금해진 프라다 가을 스타일'
+  type: 그룹 3
+  rank: null
+  best: false
+  chars: 35
+  flags: []
+groups:
+- type: 그룹 1 주인공 숨김
+  idx:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  best: null
+- type: 그룹 2 이름 노출
+  idx:
+  - 0
+  - 6
+  - 7
+  - 8
+  - 9
+  best: null
+- type: 그룹 3 관련 인물
+  idx:
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  best: null

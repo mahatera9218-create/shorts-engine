@@ -1,0 +1,927 @@
+date: '2026-10-11'
+updated: '21:23'
+items:
+- kw: 2차전지 ETF 배터리주
+  core: LG에너지솔루션
+  area: 국내주식
+  why: 배터리 ETF가 고공행진하고 데이터센터 ESS 수혜가 거론됨
+  person: ''
+  product: ''
+  rows:
+  - R4
+  - B35
+  - N50
+  - N60
+  - N69
+  src: 국내뉴스, 급상승, 블로거
+  bloggers:
+  - 유미
+  sources:
+    급상승: 1
+    블로거: 1
+    국내뉴스: 3
+  score: 60
+  parts:
+    급상승: 14
+    출처: 5
+    뉴스: 5
+    검색: 20
+    최신: 8
+    유튜브: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 31
+    뉴스6h: 12
+    블로그24h: 51
+    월검색: 184600
+    상승: 1.61
+    유튜브7일: 36646
+- kw: 팔란티어 주가 전망
+  core: 팔란티어
+  area: 미국주식
+  why: 바클레이즈 목표가 265달러 제시 후 사상 최고가 마감
+  person: ''
+  product: ''
+  rows:
+  - R2
+  - Y18
+  src: 급상승, 해외뉴스
+  bloggers: []
+  sources:
+    급상승: 1
+    해외뉴스: 1
+  score: 54
+  parts:
+    급상승: 23
+    출처: 4
+    뉴스: 1
+    검색: 18
+    유튜브: 8
+  new: true
+  surge: true
+  stats:
+    뉴스24h: 5
+    뉴스6h: 3
+    블로그24h: 59
+    월검색: 64300
+    상승: 2.09
+    유튜브7일: 25481
+- kw: 서울 아파트 매매
+  core: 서울 아파트
+  area: 부동산
+  why: 서울 아파트 가격 전망과 주택공급 정상화 발표, LH 공급 계획이 겹침
+  person: ''
+  product: ''
+  rows:
+  - G1
+  - R11
+  - R12
+  - B12
+  - N28
+  - N30
+  - N38
+  - N43
+  src: Grok, 국내뉴스, 급상승, 블로거
+  bloggers:
+  - 은퇴연구소
+  sources:
+    Grok: 1
+    급상승: 2
+    블로거: 1
+    국내뉴스: 4
+  score: 53
+  parts:
+    급상승: 0
+    출처: 8
+    뉴스: 16
+    검색: 13
+    최신: 8
+    유튜브: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 100
+    뉴스6h: 60
+    블로그24h: 100
+    월검색: 12560
+    상승: 0.99
+    유튜브7일: 74961
+- kw: 삼성전자 외국인 지분율
+  core: 삼성전자
+  area: 국내주식
+  why: 역대급 실적에도 외국인 지분율이 금융위기 수준으로 떨어져 주가 향방에 관심이 큼
+  person: ''
+  product: ''
+  rows:
+  - W3
+  - B5
+  - B6
+  - B31
+  - B36
+  - N12
+  - N15
+  - N56
+  - N80
+  - Y67
+  - N70
+  - N72
+  src: 국내뉴스, 블로거, 어사이드, 인기종목, 해외뉴스
+  bloggers:
+  - 달스
+  - 유미
+  - 은퇴연구소
+  - 한입재테크
+  sources:
+    인기종목: 1
+    블로거: 4
+    국내뉴스: 6
+    해외뉴스: 1
+    어사이드: 1
+  score: 51
+  parts:
+    급상승: 0
+    출처: 7
+    뉴스: 16
+    검색: 25
+    최신: 25
+    반복: -30
+    유튜브: 8
+  new: false
+  surge: false
+  stats:
+    뉴스24h: 100
+    뉴스6h: 100
+    블로그24h: 100
+    월검색: 10080300
+    상승: 0.68
+    유튜브7일: 284399
+  naver_rank: 1
+- kw: 스페이스X 상장 투자 방법
+  core: 스페이스X
+  area: 미국주식
+  why: 상장 논의가 뜨겁고 SpaceX 편입 펀드와 ETF 접근 방법이 거론됨
+  person: ''
+  product: ''
+  rows:
+  - G2
+  - B34
+  - Y8
+  - Y26
+  - Y69
+  src: Grok, 블로거, 해외뉴스
+  bloggers:
+  - 유미
+  sources:
+    Grok: 1
+    블로거: 1
+    해외뉴스: 3
+  score: 50
+  parts:
+    급상승: 0
+    출처: 4
+    뉴스: 8
+    검색: 22
+    최신: 8
+    유튜브: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 47
+    뉴스6h: 19
+    블로그24h: 100
+    월검색: 319800
+    상승: 0.72
+    유튜브7일: 90524
+- kw: 엔화 환율 엔화 투자
+  core: 엔화환율
+  area: 환율
+  why: 엔화 환율이 840원대까지 내려 엔화 투자 자금이 몰리고 있음
+  person: ''
+  product: ''
+  rows:
+  - R7
+  - R8
+  - B4
+  - N58
+  src: 국내뉴스, 급상승, 블로거
+  bloggers:
+  - 달스
+  sources:
+    급상승: 2
+    블로거: 1
+    국내뉴스: 1
+  score: 49
+  parts:
+    급상승: 0
+    출처: 4
+    뉴스: 4
+    검색: 25
+    최신: 8
+    유튜브: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 27
+    뉴스6h: 2
+    블로그24h: 100
+    월검색: 5002600
+    상승: 0.93
+    유튜브7일: 12769
+- kw: AMD 주가 전망
+  core: AMD
+  area: 미국주식
+  why: 급상승 검색어이며 SK하이닉스 주가 논의에서도 AMD 언급이 나옴
+  person: ''
+  product: ''
+  rows:
+  - R6
+  - B33
+  src: 급상승, 블로거
+  bloggers:
+  - 유미
+  sources:
+    급상승: 1
+    블로거: 1
+  score: 47
+  parts:
+    급상승: 8
+    출처: 3
+    뉴스: 3
+    검색: 17
+    최신: 8
+    유튜브: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 19
+    뉴스6h: 6
+    블로그24h: 100
+    월검색: 52800
+    상승: 1.34
+    유튜브7일: 213238
+- kw: 한화에어로스페이스 주가
+  core: 한화에어로스페이스
+  area: 국내주식
+  why: 최근 24시간 네이버 기사 83건으로 관심이 높은 인기 종목
+  person: ''
+  product: ''
+  rows:
+  - W8
+  src: 인기종목
+  bloggers: []
+  sources:
+    인기종목: 1
+  score: 45
+  parts:
+    급상승: 0
+    출처: 3
+    뉴스: 13
+    검색: 21
+    유튜브: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 82
+    뉴스6h: 22
+    블로그24h: 100
+    월검색: 263100
+    상승: 0.88
+    유튜브7일: 41396
+- kw: 일라이릴리 주가
+  core: 일라이릴리
+  area: 미국주식
+  why: 급상승 검색어로 GLP-1 비만약 관련 관심이 이어짐
+  person: ''
+  product: ''
+  rows:
+  - R5
+  - Y29
+  src: 급상승, 해외뉴스
+  bloggers: []
+  sources:
+    급상승: 1
+    해외뉴스: 1
+  score: 42
+  parts:
+    급상승: 12
+    출처: 4
+    뉴스: 2
+    검색: 16
+    유튜브: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 13
+    뉴스6h: 2
+    블로그24h: 82
+    월검색: 37600
+    상승: 1.5
+    유튜브7일: 17737
+- kw: SK하이닉스 주가 전망
+  core: SK하이닉스
+  area: 국내주식
+  why: 솔라다임 분할 상장 가시화와 AMD 발언으로 주가 재평가 논의가 이어짐
+  person: ''
+  product: ''
+  rows:
+  - W4
+  - B25
+  - B33
+  - N10
+  - N70
+  - N72
+  src: 국내뉴스, 블로거, 인기종목
+  bloggers:
+  - 유미
+  - 한입재테크
+  sources:
+    인기종목: 1
+    블로거: 2
+    국내뉴스: 3
+  score: 41
+  parts:
+    급상승: 0
+    출처: 5
+    뉴스: 16
+    검색: 25
+    최신: 17
+    반복: -30
+    유튜브: 8
+  new: false
+  surge: false
+  stats:
+    뉴스24h: 100
+    뉴스6h: 100
+    블로그24h: 100
+    월검색: 6024500
+    상승: 0.59
+    유튜브7일: 93214
+- kw: 현대차 영업이익 기아 역전
+  core: 현대차
+  area: 국내주식
+  why: 분기 영업이익이 기아에 역전될 수 있다는 전망과 정의선 회장 취임 6주년 AI 전환 이슈
+  person: 현대차 정의선
+  product: ''
+  rows:
+  - W1
+  - N1
+  - N3
+  - N13
+  src: 국내뉴스, 인기종목
+  bloggers: []
+  sources:
+    인기종목: 1
+    국내뉴스: 3
+  score: 33
+  parts:
+    급상승: 0
+    출처: 5
+    뉴스: 16
+    검색: 24
+    반복: -12
+  new: false
+  surge: false
+  stats:
+    뉴스24h: 100
+    뉴스6h: 45
+    블로그24h: 100
+    월검색: 637700
+    상승: 0.81
+- kw: 원달러 환율 하락 수혜
+  core: 원달러 환율
+  area: 환율
+  why: 환율이 뚝 떨어져 수혜 업종과 재환전 전략에 관심이 모임
+  person: ''
+  product: ''
+  rows:
+  - G4
+  - N48
+  - N63
+  - R9
+  src: Grok, 국내뉴스, 급상승
+  bloggers: []
+  sources:
+    Grok: 1
+    국내뉴스: 2
+    급상승: 1
+  score: 33
+  parts:
+    급상승: 0
+    출처: 7
+    뉴스: 15
+    검색: 23
+    반복: -12
+  new: false
+  surge: false
+  stats:
+    뉴스24h: 95
+    뉴스6h: 8
+    블로그24h: 100
+    월검색: 469000
+    상승: 0.78
+- kw: 이더리움 시세 전망
+  core: 이더리움
+  area: 비트코인
+  why: 비트코인보다 더 떨어졌고 월가 자금이 빠지며 숏 포지션이 늘어남
+  person: ''
+  product: ''
+  rows:
+  - W10
+  - B3
+  - Y56
+  src: 블로거, 인기종목, 해외뉴스
+  bloggers:
+  - 달스
+  sources:
+    인기종목: 1
+    블로거: 1
+    해외뉴스: 1
+  score: 32
+  parts:
+    급상승: 0
+    출처: 4
+    뉴스: 9
+    검색: 23
+    최신: 8
+    반복: -12
+  new: false
+  surge: false
+  stats:
+    뉴스24h: 55
+    뉴스6h: 16
+    블로그24h: 44
+    월검색: 402400
+    상승: 0.79
+- kw: 중국환율
+  core: 중국환율
+  area: 환율
+  why: 급상승 검색어로 환율 계산 수요가 늘어남
+  person: ''
+  product: ''
+  rows:
+  - R10
+  src: 급상승
+  bloggers: []
+  sources:
+    급상승: 1
+  score: 31
+  parts:
+    급상승: 0
+    출처: 3
+    뉴스: 4
+    검색: 24
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 23
+    뉴스6h: 6
+    블로그24h: 100
+    월검색: 575700
+    상승: 0.95
+- kw: 국제유가 기름값 물가
+  core: 국제유가
+  area: 생활경제
+  why: 유가 상승이 기름값과 물가로 이어져 생활비 부담이 커짐
+  person: ''
+  product: ''
+  rows:
+  - G3
+  - Y14
+  src: Grok, 해외뉴스
+  bloggers: []
+  sources:
+    Grok: 1
+    해외뉴스: 1
+  score: 30
+  parts:
+    급상승: 0
+    출처: 3
+    뉴스: 14
+    검색: 25
+    반복: -12
+  new: false
+  surge: false
+  stats:
+    뉴스24h: 89
+    뉴스6h: 20
+    블로그24h: 100
+    월검색: 1738600
+    상승: 0.82
+- kw: 테슬라 주가 전망
+  core: 테슬라
+  area: 미국주식
+  why: 382달러대 거래 속 중국 판매와 로보택시 전망이 쟁점
+  person: ''
+  product: ''
+  rows:
+  - W9
+  - G5
+  src: Grok, 인기종목
+  bloggers: []
+  sources:
+    인기종목: 1
+    Grok: 1
+  score: 29
+  parts:
+    급상승: 0
+    출처: 5
+    뉴스: 11
+    검색: 25
+    반복: -12
+  new: false
+  surge: false
+  stats:
+    뉴스24h: 66
+    뉴스6h: 31
+    블로그24h: 100
+    월검색: 840500
+    상승: 0.86
+- kw: 마이크론 주가 전망
+  core: 마이크론
+  area: 미국주식
+  why: 2027년 말 주가 전망 기사가 나와 메모리 반도체 투자자 관심이 큼
+  person: ''
+  product: ''
+  rows:
+  - W5
+  - Y13
+  - Y34
+  src: 인기종목, 해외뉴스
+  bloggers: []
+  sources:
+    인기종목: 1
+    해외뉴스: 2
+  score: 27
+  parts:
+    급상승: 0
+    출처: 4
+    뉴스: 14
+    검색: 21
+    반복: -12
+  new: false
+  surge: false
+  stats:
+    뉴스24h: 89
+    뉴스6h: 38
+    블로그24h: 100
+    월검색: 275000
+    상승: 0.63
+- kw: 금시세 전망
+  core: 금값
+  area: 금
+  why: 금 관련 법안 우려와 UBS 전망 등 금값 방향 논의가 있음
+  person: ''
+  product: ''
+  rows:
+  - B32
+  - Y41
+  - Y42
+  - Y43
+  src: 블로거, 해외뉴스
+  bloggers:
+  - 유미
+  sources:
+    블로거: 1
+    해외뉴스: 3
+  score: 26
+  parts:
+    급상승: 0
+    출처: 2
+    뉴스: 3
+    검색: 25
+    최신: 8
+    반복: -12
+  new: false
+  surge: false
+  stats:
+    뉴스24h: 18
+    뉴스6h: 6
+    블로그24h: 100
+    월검색: 871400
+    상승: 0.71
+- kw: 청년미래적금 신청
+  core: 청년미래적금
+  area: 생활경제
+  why: 출생연도 관계없이 12일부터 16일까지 신청 가능
+  person: ''
+  product: ''
+  rows:
+  - N2
+  - N35
+  src: 국내뉴스
+  bloggers: []
+  sources:
+    국내뉴스: 2
+  score: 26
+  parts:
+    급상승: 6
+    출처: 1
+    뉴스: 7
+    검색: 24
+    반복: -12
+  new: false
+  surge: false
+  stats:
+    뉴스24h: 46
+    뉴스6h: 18
+    블로그24h: 100
+    월검색: 686300
+    상승: 1.27
+- kw: 엔저 일본여행
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 8
+  score: 24
+  parts:
+    급상승: 15
+    출처: 0
+    뉴스: 0
+    검색: 1
+    최신: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 2
+    뉴스6h: 0
+    블로그24h: 100
+    월검색: 130
+    상승: 1.67
+- kw: 로봇용 D램 수요
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 3
+  score: 20
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 5
+    검색: 0
+    최신: 15
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 32
+    뉴스6h: 11
+    블로그24h: 100
+    월검색: 10
+    상승: 1.0
+- kw: 비트코인 시세 전망
+  core: 비트코인
+  area: 비트코인
+  why: 8만 달러대 횡보 속 ETF 자금 유출입과 고래 매수·채굴자 동향이 엇갈림
+  person: ''
+  product: ''
+  rows:
+  - W6
+  - W7
+  - G6
+  - N94
+  - N95
+  - N96
+  - Y47
+  - Y49
+  - Y50
+  - Y52
+  - Y58
+  - Y60
+  - Y61
+  - Y64
+  - Y65
+  - Y55
+  - N91
+  src: Grok, 국내뉴스, 인기종목, 해외뉴스
+  bloggers: []
+  sources:
+    인기종목: 2
+    Grok: 1
+    국내뉴스: 4
+    해외뉴스: 10
+  score: 20
+  parts:
+    급상승: 0
+    출처: 11
+    뉴스: 14
+    검색: 25
+    반복: -30
+  new: false
+  surge: false
+  stats:
+    뉴스24h: 88
+    뉴스6h: 27
+    블로그24h: 100
+    월검색: 1274300
+    상승: 0.82
+- kw: 월배당 ETF
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 7
+  score: 18
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 0
+    검색: 10
+    최신: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 2
+    뉴스6h: 1
+    블로그24h: 100
+    월검색: 4500
+    상승: 0.55
+- kw: 엔비디아 주가 전망
+  core: 엔비디아
+  area: 미국주식
+  why: TSMC 실적 발표를 앞두고 AI 실적 시즌이 시작돼 엔비디아 관련 관심이 높음
+  person: ''
+  product: ''
+  rows:
+  - W2
+  - Y19
+  - Y24
+  src: 인기종목, 해외뉴스
+  bloggers: []
+  sources:
+    인기종목: 1
+    해외뉴스: 2
+  score: 17
+  parts:
+    급상승: 0
+    출처: 4
+    뉴스: 16
+    검색: 21
+    반복: -24
+  new: false
+  surge: false
+  stats:
+    뉴스24h: 100
+    뉴스6h: 47
+    블로그24h: 100
+    월검색: 213800
+    상승: 0.86
+- kw: 이창용 반도체 호황 경고
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 2
+  score: 15
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+    최신: 15
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 3
+    뉴스6h: 1
+    블로그24h: 94
+    월검색: 10
+    상승: 1.0
+- kw: 스타벅스 1위 재탈환
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 4
+  score: 11
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+    최신: 11
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 3
+    뉴스6h: 0
+    블로그24h: 23
+    월검색: 10
+    상승: 1.0
+- kw: 마포 국평 30억
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 5
+  score: 11
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+    최신: 11
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 2
+    뉴스6h: 0
+    블로그24h: 6
+    월검색: 10
+    상승: 1.0
+- kw: 요구불예금 20조 이탈
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 6
+  score: 11
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+    최신: 11
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 3
+    뉴스6h: 0
+    블로그24h: 17
+    월검색: 10
+    상승: 1.0
+- kw: LH 임대주택 공실
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 9
+  score: 9
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 1
+    검색: 0
+    최신: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 9
+    뉴스6h: 0
+    블로그24h: 100
+    월검색: 40
+    상승: 1.0
+- kw: 당근 중고거래 급증
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 10
+  score: 9
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 1
+    검색: 0
+    최신: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 6
+    뉴스6h: 2
+    블로그24h: 100
+    월검색: 10
+    상승: 1.0
+aside:
+  at: '21:23'
+  n: 10
+  list:
+  - 삼성전자 외국인 지분율
+  - 이창용 반도체 호황 경고
+  - 로봇용 D램 수요
+  - 스타벅스 1위 재탈환
+  - 마포 국평 30억
+  - 요구불예금 20조 이탈
+  - 월배당 ETF
+  - 엔저 일본여행
+  - LH 임대주택 공실
+  - 당근 중고거래 급증

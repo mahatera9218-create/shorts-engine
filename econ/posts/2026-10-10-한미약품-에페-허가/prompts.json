@@ -1,0 +1,72 @@
+[
+ {
+  "n": 1,
+  "label": "썸네일 · 한미약품 사옥 간판",
+  "make": true,
+  "file": "",
+  "desc": "Square close-up photograph of the HANMI Pharmaceutical signage on the front of its Seoul headquarters building, logo large at center, shot from low angle, half of the frame bright sunlight and half in deep shadow to suggest a split between price appeal and efficacy doubts, high saturation, cinematic light, no other text",
+  "brand": "Hanmi Pharmaceutical",
+  "size": "1024x1024",
+  "prompt": "Square 1:1 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Square close-up photograph of the HANMI Pharmaceutical signage on the front of its Seoul headquarters building, logo large at center, shot from low angle, half of the frame bright sunlight and half in deep shadow to suggest a split between price appeal and efficacy doubts, high saturation, cinematic light, no other text This must clearly be Hanmi Pharmaceutical: show its real, accurate corporate signage — the actual Hanmi Pharmaceutical logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 2,
+  "label": "약국 카운터에서 주 1회 주사 펜을 든 약사의 손",
+  "make": true,
+  "file": "",
+  "desc": "Realistic news photo of a pharmacist's hands holding a weekly injection pen box on a clean pharmacy counter, natural light, shallow depth of field, no text or logos",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic news photo of a pharmacist's hands holding a weekly injection pen box on a clean pharmacy counter, natural light, shallow depth of field, no text or logos No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 3,
+  "label": "한미약품 사옥 외관",
+  "make": true,
+  "file": "",
+  "desc": "Realistic exterior photograph of the Hanmi Pharmaceutical headquarters building in Songpa, Seoul, with the HANMI signage clearly visible on the facade, clear daytime, wide angle",
+  "brand": "Hanmi Pharmaceutical",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic exterior photograph of the Hanmi Pharmaceutical headquarters building in Songpa, Seoul, with the HANMI signage clearly visible on the facade, clear daytime, wide angle This must clearly be Hanmi Pharmaceutical: show its real, accurate corporate signage — the actual Hanmi Pharmaceutical logo and company name exactly as they appear on its real buildings, correctly spelled. No other readable text. No identifiable real person's face, no watermark, no charts."
+ },
+ {
+  "n": 4,
+  "label": "주사제 생산 라인의 펜 제품",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photo of a Korean pharmaceutical production line with sealed injection pens moving on a conveyor in a clean room, cool lighting, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photo of a Korean pharmaceutical production line with sealed injection pens moving on a conveyor in a clean room, cool lighting, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 5,
+  "label": "공원에서 운동하는 익명의 성인 뒷모습",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photo of an anonymous adult from behind walking outdoors along a park path in morning light, healthy lifestyle mood, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photo of an anonymous adult from behind walking outdoors along a park path in morning light, healthy lifestyle mood, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 6,
+  "label": "비만 진료 상담실 풍경",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photo of a hospital outpatient consultation room, doctor's desk with stethoscope and a weight scale in the background, no people faces, no text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photo of a hospital outpatient consultation room, doctor's desk with stethoscope and a weight scale in the background, no people faces, no text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ },
+ {
+  "n": 7,
+  "label": "약국 진열대의 의약품",
+  "make": true,
+  "file": "",
+  "desc": "Realistic photo of rows of medicine boxes on pharmacy shelves, soft natural light, no readable text",
+  "brand": "",
+  "size": "1536x1024",
+  "prompt": "Landscape 3:2 image. Photorealistic editorial news photograph, natural light, real-world location, sharp focus. Realistic photo of rows of medicine boxes on pharmacy shelves, soft natural light, no readable text No identifiable real person's face, no logos, no brand marks, no readable text, letters or numbers anywhere, no watermark, no charts."
+ }
+]
