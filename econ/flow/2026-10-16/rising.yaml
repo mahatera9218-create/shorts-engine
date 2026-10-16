@@ -1,5 +1,5 @@
 date: '2026-10-16'
-updated: '10:34'
+updated: '19:04'
 items:
 - kw: 삼성전자주가
   rise: 2.68
@@ -29,6 +29,13 @@ items:
   blog24h: 100
   section: 국내주식
   score: 140
+- kw: 아이온큐
+  rise: 2.09
+  volume: 319300
+  named: true
+  blog24h: 100
+  section: 해외주식
+  score: 133
 - kw: 마이크론
   rise: 2.11
   volume: 293200
@@ -36,13 +43,6 @@ items:
   blog24h: 100
   section: 해외주식
   score: 133
-- kw: 아이온큐
-  rise: 2.09
-  volume: 319300
-  named: true
-  blog24h: 90
-  section: 해외주식
-  score: 131
 - kw: 미국금리
   rise: 2.36
   volume: 146500
