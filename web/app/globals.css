@@ -98,7 +98,8 @@ img { display: block; max-width: 100%; }
 }
 
 /* article */
-.article { padding: 32px 0 72px; }
+/* 세로 여백만 준다. padding 단축표기는 .container의 좌우 여백을 0으로 덮어쓰므로 쓰지 않는다. */
+.article { padding-top: 32px; padding-bottom: 72px; }
 .article .a-cat { color: var(--sub); font-weight: 700; font-size: 14px; }
 .article h1 { font-size: 30px; line-height: 1.32; letter-spacing: -.03em; margin: 10px 0 12px; color: var(--fg); }
 .article .byline { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 15px; margin-bottom: 22px; }
@@ -155,7 +156,7 @@ img { display: block; max-width: 100%; }
   .intro { padding: 20px; gap: 16px; }
   .intro .avatar { width: 60px; height: 60px; flex-basis: 60px; }
   .intro h1 { font-size: 21px; }
-  .article { padding: 24px 0 64px; }
+  .article { padding-top: 24px; padding-bottom: 64px; }
   .article h1 { font-size: 25px; }
   .article-body { font-size: 16.5px; }
 }
