@@ -45,7 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Link href="/" className="brand" aria-label={SITE_NAME}>
               {/* 로고 이미지만. AI로 받은 로고로 교체 시 web/public/logo.svg만 바꾸면 됨. */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo.svg" alt={SITE_NAME} className="brand-logo" />
+              <img src="/logo.png" alt={SITE_NAME} className="brand-logo" />
             </Link>
             <div className="header-spacer" />
             <Menu />
