@@ -1,7 +1,7 @@
 // 사이트 상수·타입·순수 헬퍼. fs를 쓰지 않아 클라이언트 컴포넌트에서도 import 가능.
 // (실제 글 읽기는 서버 전용 lib/wp.ts에서 한다.)
 
-export const SITE_NAME = "일드레터";
+export const SITE_NAME = "Yield Briefing";
 export const SITE_DESC = "재테크·부동산·세금·연금을 쉽게, 정확하게 정리합니다.";
 // 사이트 정식 주소는 코드에 고정한다. (환경변수에 vercel.app 등 옛 주소가 박혀 있으면
 // 사이트맵·canonical이 엉뚱한 주소를 가리켜 구글 색인이 안 되던 문제를 없앤다.)

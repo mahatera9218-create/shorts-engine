@@ -25,7 +25,7 @@ npm run build && npm start           # 배포와 같은 빌드(content/ 파일�
 | `UNSPLASH_ACCESS_KEY` | 글 대표 실사진용(없으면 사진 생략) |
 | `NEXT_PUBLIC_ADSENSE_CLIENT` | `ca-pub-...` (게재 시) |
 
-> 브랜드명(일드레터)과 사이트 설명은 코드(`web/lib/site.ts`)에 고정. 이름 변경은 그 줄을 고친다.
+> 브랜드명(Yield Briefing)과 사이트 설명은 코드(`web/lib/site.ts`)에 고정. 이름 변경은 그 줄을 고친다.
 
 ## Vercel 배포 (스테이징 → 나중에 도메인 전환)
 1. vercel.com 가입(깃허브로 로그인, 무료 Hobby).

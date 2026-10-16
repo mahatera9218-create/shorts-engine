@@ -42,6 +42,8 @@ img { display: block; max-width: 100%; }
   background: #16181d; color: #fff; font-weight: 800; font-size: 16px; letter-spacing: -.02em;
 }
 .brand-title { font-weight: 800; font-size: 17px; letter-spacing: -.02em; color: var(--fg); }
+.brand { display: inline-flex; align-items: center; }
+.brand-logo { height: 26px; width: auto; display: block; }
 .header-spacer { flex: 1; }
 .icon-btn {
   width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center;
