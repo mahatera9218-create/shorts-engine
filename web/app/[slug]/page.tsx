@@ -10,6 +10,7 @@ import {
   stripHtml,
   formatDate,
   SITE_NAME,
+  SITE_URL,
 } from "@/lib/wp";
 import { stockPhoto } from "@/lib/photos";
 import PostCard from "@/components/PostCard";
@@ -32,7 +33,10 @@ export async function generateMetadata({
   if (!post) return { title: "글을 찾을 수 없음" };
   const title = stripHtml(post.title.rendered);
   const desc = stripHtml(post.excerpt.rendered).slice(0, 150);
-  const img = featuredImage(post);
+  // 대표 이미지: 주제에 맞는 실사진(Unsplash) 우선, 없으면 워드프레스 대표 이미지.
+  const cat = postCategory(post);
+  const stock = await stockPhoto(cat?.slug, post.slug);
+  const hero = stock ?? featuredImage(post)?.url ?? null;
   return {
     title,
     description: desc,
@@ -41,7 +45,13 @@ export async function generateMetadata({
       type: "article",
       title,
       description: desc,
-      images: img ? [{ url: img.url }] : undefined,
+      images: hero ? [{ url: hero }] : undefined,
+    },
+    twitter: {
+      card: hero ? "summary_large_image" : "summary",
+      title,
+      description: desc,
+      images: hero ? [hero] : undefined,
     },
   };
 }
@@ -58,6 +68,7 @@ export default async function PostPage({
   const cat = postCategory(post);
   const feat = featuredImage(post);
   const stock = await stockPhoto(cat?.slug, post.slug);
+  const hero = stock ?? feat?.url ?? null;
   const related = await getRelated(post, 3);
 
   return (
@@ -108,9 +119,12 @@ export default async function PostPage({
             "@context": "https://schema.org",
             "@type": "Article",
             headline: title,
-            author: { "@type": "Person", name: SITE_NAME },
+            image: hero ? [hero] : undefined,
+            author: { "@type": "Organization", name: SITE_NAME, url: SITE_URL },
+            publisher: { "@type": "Organization", name: SITE_NAME, url: SITE_URL },
             datePublished: post.date,
             dateModified: post.modified,
+            mainEntityOfPage: `${SITE_URL}/${post.slug}`,
           }),
         }}
       />
