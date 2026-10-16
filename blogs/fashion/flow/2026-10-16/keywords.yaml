@@ -1,511 +1,414 @@
 date: '2026-10-16'
-updated: 00:42
+updated: '14:38'
 items:
-- kw: 이수만 걸그룹 A2O LITE 패션
-  core: A2O LITE
-  area: 데일리룩
-  why: 10/13 데뷔 후 멜론 1위. 보라·아이찡 등 멤버 스타일링이 화제
-  person: A2O LITE
+- kw: 경량패딩
+  core: 경량패딩
+  area: 의류
+  why: 급상승 검색어, 마무트 루프틱 구스 다운 후기
+  person: ''
+  product: 마무트 루프틱 구스 다운
+  rows:
+  - R13
+  - B2
+  src: 급상승, 블로거새글
+  bloggers:
+  - jayuyu
+  sources:
+    급상승: 1
+    블로거새글: 1
+  score: 88
+  parts:
+    급상승: 6
+    출처: 6
+    뉴스: 16
+    검색: 25
+    최신: 12
+    제품: 15
+    유튜브: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 69
+    뉴스6h: 43
+    블로그24h: 100
+    월검색: 147200
+    상승: 1.26
+    유튜브7일: 27896
+- kw: 트렌치코트 연예인
+  core: 트렌치코트
+  area: 의류
+  why: 가을 아우터 대표 아이템으로 셀럽 착장·후기 검색 증가
+  person: 노윤서
   product: ''
   rows:
-  - B2
-  - B6
-  - B16
-  - B37
-  - N20
-  - N34
-  - N40
-  src: 국내뉴스, 블로거, 블로거새글
+  - G1
+  - G2
+  - G7
+  - G9
+  - G11
+  - G13
+  - B1
+  - B17
+  src: Grok, 블로거새글
   bloggers:
-  - goodface0863
+  - cocoleenice
   - jayuyu
-  - semingg
   sources:
+    Grok: 6
     블로거새글: 2
-    블로거: 2
-    국내뉴스: 3
-  score: 100
+  score: 67
   parts:
-    급상승: 23
-    출처: 11
-    뉴스: 16
-    검색: 23
+    급상승: 2
+    출처: 6
+    뉴스: 6
+    검색: 20
     최신: 25
     유튜브: 8
   new: true
+  surge: false
+  stats:
+    뉴스24h: 7
+    뉴스6h: 0
+    블로그24h: 55
+    월검색: 27350
+    상승: 1.07
+    유튜브7일: 84379
+- kw: 이영애 패션
+  core: 이영애 패션
+  area: 데일리룩
+  why: 아름다운예술인상 올화이트 부클 상의·플리츠스커트, 명품이 아니라 더 화제
+  person: 배우 이영애
+  product: ''
+  rows:
+  - B4
+  - B9
+  - B15
+  - B78
+  - B82
+  src: 블로거, 블로거새글
+  bloggers:
+  - dbsrud1207
+  - goodface0863
+  - jayuyu
+  - kims718
+  - ohye1991
+  sources:
+    블로거: 2
+    블로거새글: 3
+  score: 61
+  parts:
+    급상승: 23
+    출처: 0
+    뉴스: 2
+    검색: 7
+    최신: 25
+    유튜브: 4
+  new: true
   surge: true
   stats:
-    뉴스24h: 100
-    뉴스6h: 6
-    블로그24h: 20
-    월검색: 54900
-    상승: 65.25
-    유튜브7일: 54521
+    뉴스24h: 3
+    뉴스6h: 1
+    블로그24h: 100
+    월검색: 790
+    상승: 47.47
+    유튜브7일: 15
 - kw: 지수 까르띠에
   core: 지수 까르띠에
   area: 시계·주얼리
-  why: 일본 교토 까르띠에 하이 주얼리 행사에서 블랙 드레스 사이 혼자 화이트 머메이드 드레스를 입어 일본 배우들을 압도
+  why: 일본 까르띠에 행사에서 혼자 올화이트로 돋보임
   person: 블랙핑크 지수
-  product: 까르띠에 하이 주얼리 · 화이트 드레스
+  product: ''
   rows:
-  - B38
-  - B57
-  - B62
-  - B70
-  - B110
-  - B123
-  src: 블로거, 블로거새글
+  - B36
+  - B91
+  src: 블로거
   bloggers:
-  - by-nyong
-  - merryeeun
   - qkrdmsdhr95
   - semingg
-  - sunnyya314
   sources:
-    블로거새글: 2
-    블로거: 4
-  score: 76
+    블로거: 2
+  score: 61
   parts:
     급상승: 23
     출처: 0
     뉴스: 0
     검색: 5
     최신: 25
-    제품: 15
     유튜브: 8
   new: true
   surge: true
   stats:
     뉴스24h: 0
     뉴스6h: 0
-    블로그24h: 0
+    블로그24h: 31
     월검색: 390
-    상승: 3.3
-    유튜브7일: 3299
-- kw: 차정원 패션
-  core: 차정원 패션
-  area: 데일리룩
-  why: 하정우와 12월 13일 결혼을 발표. 사복 패션 장인으로 화제
-  person: 배우 차정원
-  product: ''
+    상승: 3.91
+    유튜브7일: 5010
+- kw: 유니클로 워크자켓
+  core: 유니클로 자켓
+  area: 의류
+  why: 피비파일로 닮은 유틸리티 재킷 99,900원
+  person: ''
+  product: 유니클로 유틸리티 재킷 99,900원
   rows:
-  - B33
-  - B58
+  - B7
   src: 블로거
   bloggers:
-  - by-nyong
-  - cocoleenice
+  - jayuyu
   sources:
-    블로거: 2
-  score: 68
-  parts:
-    급상승: 23
-    출처: 0
-    뉴스: 7
-    검색: 6
-    최신: 25
-    유튜브: 7
-  new: true
-  surge: true
-  stats:
-    뉴스24h: 9
-    뉴스6h: 0
-    블로그24h: 13
-    월검색: 480
-    상승: 4.45
-    유튜브7일: 316
-- kw: 고현정 화이트 수트
-  core: 고현정 패션
-  area: 의류
-  why: YCH 플래그십 포토콜(10/14)에서 아이보리·화이트 수트 셋업과 브라운 가죽 숄더백으로 아우라를 보여줌. 바지 길이 논란도 같이 나옴
-  person: 배우 고현정
-  product: 화이트 수트 셋업 · 브라운 가죽 숄더백
-  rows:
-  - B44
-  - B101
-  - B121
-  src: 블로거, 블로거새글
-  bloggers:
-  - dbsrud1207
-  - djdjdj8206
-  - sunnyya314
-  sources:
-    블로거새글: 1
-    블로거: 2
-  score: 65
+    블로거: 1
+  score: 50
   parts:
     급상승: 0
     출처: 0
-    뉴스: 16
-    검색: 4
-    최신: 25
+    뉴스: 0
+    검색: 15
+    최신: 12
     제품: 15
-    유튜브: 5
+    유튜브: 8
   new: true
   surge: false
-  stats:
-    뉴스24h: 46
-    뉴스6h: 1
-    블로그24h: 0
-    월검색: 330
-    상승: 0.52
-    유튜브7일: 35
-- kw: 이영애 패션
-  core: 이영애 패션
-  area: 데일리룩
-  why: 제16회 아름다운예술인상에 남편 정호영과 참석한 55세 이영애의 우아한 아웃핏이 반응이 좋음. 옷은 명품이 아니라는 점도 화제
-  person: 배우 이영애
-  product: ''
-  rows:
-  - B1
-  - B14
-  src: 블로거새글
-  bloggers:
-  - goodface0863
-  - jayuyu
-  sources:
-    블로거새글: 2
-  score: 58
-  parts:
-    급상승: 23
-    출처: 0
-    뉴스: 0
-    검색: 7
-    최신: 25
-    유튜브: 3
-  new: true
-  surge: true
   stats:
     뉴스24h: 0
     뉴스6h: 0
     블로그24h: 5
-    월검색: 790
-    상승: 47.47
-    유튜브7일: 11
-- kw: 김나영 가방
-  core: 김나영 패션
-  area: 가방
-  why: 네이비 니트와 연청 데님 가을 코디, 천만원 넘는 옐로우 스웨이드 재킷 룩이 화제
-  person: 김나영
-  product: 옐로우 스웨이드 재킷 천만원대
-  rows:
-  - B29
-  - B91
-  src: 블로거
-  bloggers:
-  - cocoleenice
-  - mythya0730
-  sources:
-    블로거: 2
-  score: 57
-  parts:
-    급상승: 0
-    출처: 0
-    뉴스: 1
-    검색: 8
-    최신: 25
-    제품: 15
-    유튜브: 8
-  new: true
-  surge: false
-  stats:
-    뉴스24h: 1
-    뉴스6h: 0
-    블로그24h: 0
-    월검색: 840
-    상승: 0.86
-    유튜브7일: 1178
-- kw: 박보영 드레스
+    월검색: 6220
+    상승: 0.89
+    유튜브7일: 12925
+- kw: 박보영 쇼파드
   core: 박보영 시계
   area: 시계·주얼리
-  why: 쇼파드 해피 다이아몬드 50주년 포토콜(10/15)에 노출 드레스와 명품 시계로 등장해 화제
+  why: 쇼파드 해피 다이아몬드 50주년 행사 드레스와 시계 패션
   person: 배우 박보영
   product: 쇼파드 해피 다이아몬드
   rows:
-  - B10
-  - B116
-  src: 블로거새글
-  bloggers:
-  - ohye1991
-  - sunnyya314
-  sources:
-    블로거새글: 2
-  score: 55
-  parts:
-    급상승: 0
-    출처: 0
-    뉴스: 14
-    검색: 0
-    최신: 25
-    제품: 15
-    유튜브: 1
-  new: true
-  surge: false
-  stats:
-    뉴스24h: 18
-    뉴스6h: 3
-    블로그24h: 2
-    월검색: 35
-    상승: 1.0
-    유튜브7일: 1
-- kw: 한소희 부츠
-  core: 한소희 부츠
-  area: 신발
-  why: 한소희가 디자인 기획에 참여한 FILA + SOHEE 에샤페 하이 부츠가 10/16 오전 11시에 발매됨
-  person: 배우 한소희
-  product: FILA + SOHEE 에샤페 하이 부츠
-  rows:
-  - B52
-  - B114
-  src: 블로거새글
-  bloggers:
-  - by-nyong
-  - sunnyya314
-  sources:
-    블로거새글: 2
-  score: 43
-  parts:
-    급상승: 0
-    출처: 0
-    뉴스: 2
-    검색: 0
-    최신: 25
-    제품: 15
-    유튜브: 1
-  new: true
-  surge: false
-  stats:
-    뉴스24h: 2
-    뉴스6h: 2
-    블로그24h: 2
-    월검색: 90
-    상승: 1.0
-    유튜브7일: 2
-- kw: 윤아 막스마라 코트
-  core: 윤아 코트
-  area: 의류
-  why: 막스마라 75주년 아우터웨어 팝업에서 카멜 코트를 입었고 버건디 가을 화보도 화제. 중단발 헤어도 함께 언급됨
-  person: 소녀시대 윤아
-  product: 막스마라 카멜 코트
-  rows:
-  - B36
-  - B49
-  - B56
-  - B100
-  - B113
+  - B11
+  - B47
+  - B99
   src: 블로거, 블로거새글
   bloggers:
   - by-nyong
-  - dbsrud1207
-  - djdjdj8206
-  - semingg
+  - ohye1991
   - sunnyya314
   sources:
-    블로거새글: 3
     블로거: 2
-  score: 41
+    블로거새글: 1
+  score: 49
   parts:
     급상승: 0
     출처: 0
-    뉴스: 1
+    뉴스: 8
     검색: 0
     최신: 25
     제품: 15
+    유튜브: 1
   new: true
   surge: false
   stats:
-    뉴스24h: 1
+    뉴스24h: 10
     뉴스6h: 0
-    블로그24h: 0
-    월검색: 55
+    블로그24h: 39
+    월검색: 35
     상승: 1.0
-- kw: 리즈 YCH 원피스
-  core: 리즈 패션
-  area: 의류
-  why: YCH 플래그십 스토어 VIP 오프닝에서 러플 장식 의상으로 다리 비율이 화제
-  person: 아이브 리즈
-  product: ''
+    유튜브7일: 1
+- kw: 한소희 휠라 부츠
+  core: 한소희 부츠
+  area: 신발
+  why: 10.16 오전 11시 발매, 한소희가 디자인 기획한 FILA+SOHEE 에샤페 하이 부츠
+  person: 배우 한소희
+  product: FILA + SOHEE 에샤페 하이 부츠
   rows:
-  - B47
-  - B54
-  - B120
+  - B49
+  - B97
   src: 블로거
   bloggers:
   - by-nyong
-  - djdjdj8206
   - sunnyya314
   sources:
-    블로거: 3
-  score: 41
-  parts:
-    급상승: 0
-    출처: 0
-    뉴스: 16
-    검색: 0
-    최신: 25
-  new: true
-  surge: false
-  stats:
-    뉴스24h: 47
-    뉴스6h: 0
-    블로그24h: 0
-    월검색: 15
-    상승: 1.0
-- kw: 고현정 에코백
-  core: 고현정 가방
-  area: 가방
-  why: 드레스보다 블랙 사복에 든 3만원대 에코백이 더 반응이 좋았음
-  person: 배우 고현정
-  product: 3만원대 에코백
-  rows:
-  - B39
-  src: 블로거
-  bloggers:
-  - semingg
-  sources:
-    블로거: 1
-  score: 41
+    블로거: 2
+  score: 44
   parts:
     급상승: 0
     출처: 0
     뉴스: 3
-    검색: 11
-    최신: 12
+    검색: 0
+    최신: 25
     제품: 15
+    유튜브: 1
   new: true
   surge: false
   stats:
     뉴스24h: 4
     뉴스6h: 2
-    블로그24h: 2
-    월검색: 2170
-    상승: 0.63
-- kw: 노윤서 가방
+    블로그24h: 18
+    월검색: 90
+    상승: 1.0
+    유튜브7일: 2
+- kw: 후리스
+  core: 후리스
+  area: 의류
+  why: 급상승 검색어, 가을 데일리 아우터
+  person: ''
+  product: ''
+  rows:
+  - R14
+  - G8
+  src: Grok, 급상승
+  bloggers: []
+  sources:
+    급상승: 1
+    Grok: 1
+  score: 41
+  parts:
+    급상승: 8
+    출처: 11
+    뉴스: 0
+    검색: 22
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 100
+    월검색: 47520
+    상승: 1.36
+- kw: 윤아 막스마라 코트
+  core: 윤아 코트
+  area: 의류
+  why: 막스마라 75주년 팝업 카멜 코트, 버건디 가을 화보 화제
+  person: 소녀시대 윤아
+  product: 막스마라 카멜 코트
+  rows:
+  - B34
+  - B84
+  - B96
+  src: 블로거
+  bloggers:
+  - dbsrud1207
+  - semingg
+  - sunnyya314
+  sources:
+    블로거: 3
+  score: 40
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+    최신: 25
+    제품: 15
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 60
+    월검색: 65
+    상승: 1.0
+- kw: 노윤서 스웨이드 가방
   core: 노윤서 가방
   area: 가방
-  why: 노윤서의 명품 가방 패션과 스웨이드 재킷·빈티지 가방 가을 코디가 화제
+  why: 스웨이드 코디템과 명품 가방 패션 화제
   person: 배우 노윤서
   product: ''
   rows:
-  - B53
-  - B99
-  src: 블로거새글
+  - B50
+  - B83
+  - G7
+  src: Grok, 블로거
   bloggers:
   - by-nyong
   - dbsrud1207
   sources:
-    블로거새글: 2
-  score: 32
+    블로거: 2
+    Grok: 1
+  score: 40
   parts:
-    급상승: 1
-    출처: 0
-    뉴스: 1
+    급상승: 4
+    출처: 6
+    뉴스: 0
     검색: 5
     최신: 25
   new: true
   surge: false
   stats:
-    뉴스24h: 1
+    뉴스24h: 0
     뉴스6h: 0
-    블로그24h: 0
+    블로그24h: 6
     월검색: 430
-    상승: 1.04
-- kw: 채정안 가죽자켓
-  core: 채정안 패션
-  area: 의류
-  why: 49세 채정안의 레더 재킷 가을 코디와 30대 같은 사복이 주목받음
-  person: 배우 채정안
+    상승: 1.19
+- kw: 고현정 패션
+  core: 고현정 패션
+  area: 데일리룩
+  why: YCH 행사 화이트 셋업과 가죽 숄더백, 올블랙 데일리룩
+  person: 배우 고현정
   product: ''
   rows:
-  - B34
-  - B102
-  src: 블로거
+  - B42
+  - B95
+  - B104
+  src: 블로거, 블로거새글
   bloggers:
-  - cocoleenice
-  - dbsrud1207
+  - djdjdj8206
+  - sunnyya314
   sources:
     블로거: 2
+    블로거새글: 1
   score: 31
   parts:
     급상승: 0
     출처: 0
-    뉴스: 1
-    검색: 5
+    뉴스: 2
+    검색: 4
     최신: 25
   new: true
   surge: false
   stats:
-    뉴스24h: 1
-    뉴스6h: 0
-    블로그24h: 0
-    월검색: 380
-    상승: 0.71
-- kw: 이지혜 목걸이
-  core: 이지혜 목걸이
-  area: 시계·주얼리
-  why: 디즈니 크루즈 내내 착용한 100만원대 골드 목걸이에 정보 문의가 많음
-  person: 이지혜
-  product: 골드 목걸이 100만원대
+    뉴스24h: 2
+    뉴스6h: 1
+    블로그24h: 100
+    월검색: 330
+    상승: 0.45
+- kw: 리즈 YCH 패션
+  core: 리즈 패션
+  area: 데일리룩
+  why: YCH 플래그십 오프닝 러플 장식 룩, 비율 화제
+  person: 아이브 리즈
+  product: ''
   rows:
-  - B77
+  - B51
+  - B59
+  - B103
   src: 블로거
   bloggers:
-  - tjthdus94
-  sources:
-    블로거: 1
-  score: 30
-  parts:
-    급상승: 0
-    출처: 0
-    뉴스: 0
-    검색: 3
-    최신: 12
-    제품: 15
-  new: true
-  surge: false
-  stats:
-    뉴스24h: 0
-    뉴스6h: 0
-    블로그24h: 0
-    월검색: 210
-    상승: 1.0
-- kw: 엄정화 가죽자켓
-  core: 엄정화 패션
-  area: 의류
-  why: 코펜하겐에서 가죽 재킷·코듀로이 팬츠·비니·에르메스 백으로 올블랙 스트릿 패션을 보여줌
-  person: 배우 엄정화
-  product: 에르메스 백
-  rows:
-  - B117
-  src: 블로거새글
-  bloggers:
+  - by-nyong
+  - merryeeun
   - sunnyya314
   sources:
-    블로거새글: 1
+    블로거: 3
   score: 29
   parts:
     급상승: 0
     출처: 0
-    뉴스: 2
+    뉴스: 4
     검색: 0
-    최신: 12
-    제품: 15
+    최신: 25
   new: true
   surge: false
   stats:
-    뉴스24h: 3
-    뉴스6h: 1
-    블로그24h: 1
-    월검색: 65
+    뉴스24h: 5
+    뉴스6h: 4
+    블로그24h: 13
+    월검색: 15
     상승: 1.0
-- kw: 신혜선 털코트
-  core: 신혜선 코트
+- kw: 엄정화 에르메스 가죽자켓
+  core: 엄정화 자켓
   area: 의류
-  why: 막스마라 아우터웨어 팝업 행사에서 172cm 비율로 털코트를 소화하고 카멜 톤온톤으로 매치함
-  person: 배우 신혜선
-  product: 막스마라 털코트
+  why: 코펜하겐 올블랙 룩, 가죽자켓과 에르메스 백
+  person: 엄정화
+  product: 에르메스 백
   rows:
-  - B118
+  - B100
   src: 블로거
   bloggers:
   - sunnyya314
@@ -524,20 +427,20 @@ items:
   stats:
     뉴스24h: 0
     뉴스6h: 0
-    블로그24h: 0
-    월검색: 25
+    블로그24h: 7
+    월검색: 15
     상승: 1.0
-- kw: 서현 알로 셋업
-  core: 서현 트레이닝복
-  area: 데일리룩
-  why: 인스타 공개 40만원대 알로 셋업 트레이닝복이 힙한 무드로 화제
-  person: 소녀시대 서현
-  product: 알로 셋업 40만원대
+- kw: 신혜선 털코트
+  core: 신혜선 코트
+  area: 의류
+  why: 막스마라 팝업 행사에서 털코트 소화
+  person: 배우 신혜선
+  product: 막스마라 털코트
   rows:
-  - B75
+  - B101
   src: 블로거
   bloggers:
-  - tjthdus94
+  - sunnyya314
   sources:
     블로거: 1
   score: 27
@@ -553,6 +456,117 @@ items:
   stats:
     뉴스24h: 0
     뉴스6h: 0
+    블로그24h: 6
+    월검색: 25
+    상승: 1.0
+- kw: 트위드자켓
+  core: 트위드자켓
+  area: 의류
+  why: 가을 쇼핑 인기 아이템, 연예인 착장 검색 증가
+  person: ''
+  product: ''
+  rows:
+  - G6
+  - G15
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 2
+  score: 27
+  parts:
+    급상승: 0
+    출처: 6
+    뉴스: 0
+    검색: 21
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 90
+    월검색: 36840
+    상승: 1.0
+- kw: 유리 레더자켓
+  core: 유리 자켓
+  area: 의류
+  why: 파리 여행룩 가죽자켓과 셔츠 원피스 레이어드
+  person: 소녀시대 유리
+  product: ''
+  rows:
+  - B26
+  - G3
+  src: Grok, 블로거
+  bloggers:
+  - cocoleenice
+  sources:
+    블로거: 1
+    Grok: 1
+  score: 19
+  parts:
+    급상승: 0
+    출처: 6
+    뉴스: 1
+    검색: 0
+    최신: 12
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 1
+    뉴스6h: 1
+    블로그24h: 3
+    월검색: 15
+    상승: 1.0
+- kw: 손담비 샤넬 트레이닝복
+  core: 손담비 샤넬
+  area: 가방
+  why: 모자·가방·신발은 샤넬, 트레이닝복은 30만원대
+  person: 손담비
+  product: ''
+  rows:
+  - B63
+  src: 블로거새글
+  bloggers:
+  - tjthdus94
+  sources:
+    블로거새글: 1
+  score: 12
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+    최신: 12
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 4
+    월검색: 15
+    상승: 1.0
+- kw: 송하영 재킷
+  core: 송하영 재킷
+  area: 의류
+  why: 스프 방송 레더 재킷 착장 화제
+  person: 프로미스나인 송하영
+  product: ''
+  rows:
+  - G3
+  src: Grok
+  bloggers: []
+  sources:
+    Grok: 1
+  score: 6
+  parts:
+    급상승: 0
+    출처: 6
+    뉴스: 0
+    검색: 0
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
     블로그24h: 0
-    월검색: 105
+    월검색: 10
     상승: 1.0
