@@ -161,6 +161,8 @@ img { display: block; max-width: 100%; }
   .article { padding-top: 24px; padding-bottom: 64px; }
   .article h1 { font-size: 25px; }
   .article-body { font-size: 16.5px; }
+  .proscons { grid-template-columns: 1fr; gap: 10px; }
+  .score-label { flex-basis: 76px; font-size: 13.5px; }
 }
 
 /* 순위 페이지 */
@@ -192,6 +194,39 @@ img { display: block; max-width: 100%; }
   border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); border-radius: 999px; padding: 7px 15px;
 }
 .rank-link:hover { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+a.rank-name:hover { color: var(--accent); }
+.rank-num.top { background: var(--accent); }
+
+/* 광고 자리 */
+.ad-slot {
+  border: 1px dashed var(--line); border-radius: 12px; min-height: 90px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--muted); font-size: 12px; letter-spacing: .08em; margin: 18px 0;
+  background: color-mix(in srgb, var(--sub) 4%, transparent);
+}
+
+/* 순위 상세 */
+.detail-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 8px 0 2px; }
+.detail-rank { font-size: 15px; color: var(--sub); }
+.detail-total { font-size: 30px; font-weight: 800; color: var(--accent); white-space: nowrap; }
+.detail-total span { font-size: 15px; color: var(--muted); font-weight: 600; }
+.score-bars { display: flex; flex-direction: column; gap: 10px; margin: 12px 0 6px; }
+.score-row { display: flex; align-items: center; gap: 12px; }
+.score-label { flex: 0 0 92px; font-size: 14px; color: var(--sub); }
+.score-track { flex: 1; height: 8px; border-radius: 999px; background: color-mix(in srgb, var(--sub) 14%, transparent); overflow: hidden; }
+.score-fill { height: 100%; background: var(--accent); border-radius: 999px; }
+.score-val { flex: 0 0 34px; text-align: right; font-weight: 700; font-size: 14px; color: var(--fg); }
+.proscons { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 12px 0; }
+.proscons h3 { font-size: 15px; margin: 0 0 6px; }
+.proscons ul { margin: 0; padding-left: 18px; }
+.proscons li { font-size: 14.5px; color: var(--sub); line-height: 1.6; margin: 4px 0; }
+.pros h3 { color: #1a7f4b; }
+.cons h3 { color: #b4532a; }
+.detail-cta { text-align: center; margin: 12px 0 4px; }
+.cta-btn { display: inline-block; background: var(--accent); color: #fff; font-weight: 800; font-size: 16px; padding: 14px 26px; border-radius: 12px; }
+.cta-btn:hover { filter: brightness(1.06); }
+.cta-btn.disabled { background: color-mix(in srgb, var(--sub) 20%, transparent); color: var(--muted); }
+.cta-note { font-size: 12.5px; color: var(--muted); margin: 10px 0 0; }
 
 /* menu dropdown */
 .menu-wrap { position: relative; }
