@@ -3,7 +3,6 @@ import Script from "next/script";
 import Link from "next/link";
 import "./globals.css";
 import { SITE_NAME, SITE_URL, SITE_DESC } from "@/lib/wp";
-import DarkToggle from "@/components/DarkToggle";
 import Menu from "@/components/Menu";
 
 const ADSENSE_CLIENT =
@@ -24,12 +23,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ko" suppressHydrationWarning>
       <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html:
-              "try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}",
-          }}
-        />
         {ADSENSE_CLIENT ? (
           <Script
             id="adsbygoogle-init"
@@ -44,13 +37,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <header className="site-header">
           <div className="container inner">
             <Link href="/" className="brand-mark" aria-label={SITE_NAME}>
-              억
+              Y
             </Link>
             <Link href="/" className="brand-title">
               {SITE_NAME}
             </Link>
             <div className="header-spacer" />
-            <DarkToggle />
             <Menu />
           </div>
         </header>

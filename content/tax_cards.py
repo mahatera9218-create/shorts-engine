@@ -153,7 +153,7 @@ def cover_card(out: Path, title: str, w: int = 1200, h: int = 630) -> Path:
     im = Image.new("RGB", (w, h), BG)
     d = ImageDraw.Draw(im)
     pad = 84
-    d.text((pad, 74), "억선생의 경제판", font=font("b", 40), fill=GOLD)
+    d.text((pad, 74), "일드레터", font=font("b", 40), fill=GOLD)
     d.rectangle((pad, 140, pad + 128, 150), fill=GOLD)
     size = 76
     f = font("xb", size)
@@ -167,7 +167,7 @@ def cover_card(out: Path, title: str, w: int = 1200, h: int = 630) -> Path:
     for ln in lines:
         d.text((pad, y), ln, font=f, fill=WHITE)
         y += lh
-    d.text((pad, h - 86), "세무·절세·연금 정보", font=font("b", 30), fill=GRAY)
+    d.text((pad, h - 86), "재테크·세금·연금 정보", font=font("b", 30), fill=GRAY)
     out.parent.mkdir(parents=True, exist_ok=True)
     im.save(out, "PNG")
     return out

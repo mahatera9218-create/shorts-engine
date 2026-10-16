@@ -1,6 +1,6 @@
 제목: 연금저축·IRP 세액공제 한도와 환급액 (2026년 기준)
 슬러그: yeongeum-irp-semuchul-gongje-2026
-분류: saving
+분류: pension
 
 ---
 

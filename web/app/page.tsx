@@ -10,9 +10,9 @@ export default async function Home() {
   return (
     <div className="container">
       <section className="intro">
-        <div className="avatar">억</div>
+        <div className="avatar">Y</div>
         <div>
-          <h1>억선생</h1>
+          <h1>{SITE_NAME}</h1>
           <p>{SITE_DESC}</p>
         </div>
       </section>

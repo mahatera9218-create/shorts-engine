@@ -1,6 +1,6 @@
 제목: ISA 계좌 혜택과 한도 총정리 (비과세·분리과세, 2026년 기준)
 슬러그: isa-gyejwa-hyetaek-2026
-분류: saving
+분류: jaetech
 
 ---
 
