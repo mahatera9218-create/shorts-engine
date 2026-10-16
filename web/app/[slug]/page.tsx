@@ -179,6 +179,22 @@ export default async function PostPage({
           }),
         }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: SITE_NAME, item: SITE_URL },
+              ...(cat
+                ? [{ "@type": "ListItem", position: 2, name: cat.name, item: `${SITE_URL}/category/${cat.slug}` }]
+                : []),
+              { "@type": "ListItem", position: cat ? 3 : 2, name: title, item: `${SITE_URL}/${post.slug}` },
+            ],
+          }),
+        }}
+      />
       {faq.length > 0 ? (
         <script
           type="application/ld+json"

@@ -48,3 +48,8 @@ def test_valid_new_topics_filters():
     ]
     out = valid_new_topics(raw, {"known-x"})
     assert [t["slug"] for t in out] == ["good-one"]
+
+
+def test_link_regex_matches_markdown_and_html():
+    from content.link_check import LINK
+    assert LINK.findall("[a](/foo-bar) and <a href=\"/baz-1\">x</a> [c](/p/about) [d](https://x.kr/no)") == ["foo-bar", "baz-1", "about"]
