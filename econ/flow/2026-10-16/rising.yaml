@@ -1,108 +1,108 @@
 date: '2026-10-16'
-updated: 08:14
+updated: '10:34'
 items:
 - kw: 삼성전자주가
-  rise: 2.23
+  rise: 2.68
   volume: 16858200
   named: true
   blog24h: 100
   section: 국내주식
   score: 140
 - kw: 삼성전자
-  rise: 2.24
+  rise: 2.75
   volume: 11131900
   named: true
   blog24h: 100
   section: 국내주식
   score: 140
 - kw: SK하이닉스
-  rise: 2.65
+  rise: 3.47
   volume: 6728200
   named: true
   blog24h: 100
   section: 국내주식
   score: 140
 - kw: 현대차주가
-  rise: 2.1
+  rise: 2.26
   volume: 1217800
   named: true
   blog24h: 100
   section: 국내주식
   score: 140
-- kw: 금리
-  rise: 2.04
-  volume: 113700
-  named: true
-  blog24h: 100
-  section: 생활경제
-  score: 127
-- kw: 일라이릴리
-  rise: 2.63
-  volume: 56260
+- kw: 마이크론
+  rise: 2.11
+  volume: 293200
   named: true
   blog24h: 100
   section: 해외주식
-  score: 123
-- kw: 환율
-  rise: 1.54
-  volume: 15029900
+  score: 133
+- kw: 아이온큐
+  rise: 2.09
+  volume: 319300
   named: true
-  blog24h: 100
-  section: 환율
-  score: 112
-- kw: 미국환율
-  rise: 1.51
-  volume: 2053600
-  named: true
-  blog24h: 100
-  section: 환율
-  score: 111
-- kw: 환율조회
-  rise: 1.56
-  volume: 438100
-  named: true
-  blog24h: 83
-  section: 환율
-  score: 105
-- kw: 한미반도체
-  rise: 1.46
-  volume: 666500
-  named: true
-  blog24h: 100
-  section: ''
-  score: 105
+  blog24h: 90
+  section: 해외주식
+  score: 131
 - kw: 미국금리
-  rise: 1.58
+  rise: 2.36
   volume: 146500
   named: true
   blog24h: 100
   section: 생활경제
-  score: 104
-- kw: 아이온큐
-  rise: 1.64
-  volume: 319300
+  score: 129
+- kw: 금리
+  rise: 1.96
+  volume: 113700
   named: true
-  blog24h: 45
-  section: 해외주식
-  score: 101
+  blog24h: 100
+  section: 생활경제
+  score: 125
+- kw: 한미반도체
+  rise: 1.64
+  volume: 666500
+  named: true
+  blog24h: 100
+  section: ''
+  score: 116
+- kw: 달러인덱스
+  rise: 1.71
+  volume: 108500
+  named: true
+  blog24h: 100
+  section: 환율
+  score: 110
+- kw: 환율
+  rise: 1.48
+  volume: 15029900
+  named: true
+  blog24h: 100
+  section: 환율
+  score: 109
+- kw: 비트코인
+  rise: 1.27
+  volume: 1292800
+  named: true
+  blog24h: 100
+  section: 금·비트코인
+  score: 96
 - kw: 주택담보대출
-  rise: 1.37
+  rise: 1.26
   volume: 91000
   named: true
   blog24h: 100
   section: 부동산
-  score: 88
-- kw: 청약
-  rise: 1.24
-  volume: 44300
-  named: true
-  blog24h: 100
-  section: 부동산
-  score: 76
+  score: 82
 - kw: ISA계좌
-  rise: 1.12
+  rise: 1.11
   volume: 72700
   named: true
   blog24h: 100
   section: ''
-  score: 72
+  score: 71
+- kw: 주담대금리
+  rise: 1.08
+  volume: 41900
+  named: true
+  blog24h: 100
+  section: 부동산
+  score: 66
