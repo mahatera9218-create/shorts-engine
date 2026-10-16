@@ -147,7 +147,7 @@ img { display: block; max-width: 100%; }
 
 @media (max-width: 560px) {
   body { font-size: 16px; }
-  .container { padding: 0 18px; }
+  .container { padding: 0 24px; }
   .post { gap: 16px; padding: 22px 0; }
   .post .thumb { width: 118px; height: 100px; flex-basis: 118px; }
   .post h2 { font-size: 18px; margin-bottom: 7px; }
