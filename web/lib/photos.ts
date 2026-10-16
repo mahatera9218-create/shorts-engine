@@ -52,3 +52,21 @@ export async function stockPhoto(catSlug: string | undefined, seed: string): Pro
   if (urls.length === 0) return null;
   return urls[hash(seed) % urls.length];
 }
+
+// 본문용으로 서로 다른 사진 n장(대표 사진 hero는 제외). 부족하면 있는 만큼만.
+export async function stockPhotos(
+  catSlug: string | undefined,
+  seed: string,
+  n: number,
+  exclude?: string | null,
+): Promise<string[]> {
+  const urls = (await pool(catSlug || "")).filter((u) => u !== exclude);
+  if (urls.length === 0) return [];
+  const out: string[] = [];
+  let i = hash(seed) % urls.length;
+  for (let k = 0; k < n && out.length < urls.length; k++) {
+    out.push(urls[i % urls.length]);
+    i += 1;
+  }
+  return out;
+}

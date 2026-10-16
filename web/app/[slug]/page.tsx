@@ -12,7 +12,7 @@ import {
   SITE_NAME,
   SITE_URL,
 } from "@/lib/wp";
-import { stockPhoto } from "@/lib/photos";
+import { stockPhoto, stockPhotos } from "@/lib/photos";
 import PostCard from "@/components/PostCard";
 import Thumb from "@/components/Thumb";
 
@@ -56,6 +56,26 @@ export async function generateMetadata({
   };
 }
 
+// 본문 HTML의 ## 섹션(<h2>) 사이사이에 사진을 끼워 넣는다(장식용, alt 비움).
+// 두 번째 섹션부터 한 섹션 걸러 한 장씩, 사진이 떨어질 때까지.
+function injectBodyImages(html: string, imgs: string[]): string {
+  if (imgs.length === 0) return html;
+  const parts = html.split(/(?=<h2)/);
+  if (parts.length < 3) return html;
+  let k = 0;
+  const out: string[] = [];
+  for (let i = 0; i < parts.length; i++) {
+    if (i >= 2 && (i - 2) % 2 === 0 && k < imgs.length) {
+      out.push(
+        `<figure class="body-photo"><img src="${imgs[k]}" alt="" loading="lazy"/></figure>`,
+      );
+      k += 1;
+    }
+    out.push(parts[i]);
+  }
+  return out.join("");
+}
+
 export default async function PostPage({
   params,
 }: {
@@ -69,6 +89,9 @@ export default async function PostPage({
   const feat = featuredImage(post);
   const stock = await stockPhoto(cat?.slug, post.slug);
   const hero = stock ?? feat?.url ?? null;
+  // 본문 중간에 넣을 사진(대표 사진과 겹치지 않게). 섹션 사이사이에 배치.
+  const bodyPhotos = await stockPhotos(cat?.slug, `${post.slug}-body`, 3, stock);
+  const bodyHtml = injectBodyImages(post.content.rendered, bodyPhotos);
   const related = await getRelated(post, 3);
 
   return (
@@ -93,7 +116,7 @@ export default async function PostPage({
 
       <div
         className="article-body"
-        dangerouslySetInnerHTML={{ __html: post.content.rendered }}
+        dangerouslySetInnerHTML={{ __html: bodyHtml }}
       />
 
       <div className="byline-foot">
