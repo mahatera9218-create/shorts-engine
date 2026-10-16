@@ -1,30 +1,36 @@
 date: '2026-10-16'
-updated: '10:37'
+updated: '19:06'
 items:
 - kw: 김수현
   rise: 4.25
   volume: 133000
   named: true
-  blog24h: 72
-  score: 123
+  blog24h: 100
+  score: 128
 - kw: 정호연
   rise: 1.87
   volume: 22410
   named: true
-  blog24h: 19
-  score: 94
+  blog24h: 47
+  score: 100
 - kw: 뷔
   rise: 1.31
   volume: 70720
   named: true
-  blog24h: 58
-  score: 75
+  blog24h: 100
+  score: 83
 - kw: 지민
   rise: 1.31
   volume: 26610
   named: true
-  blog24h: 74
-  score: 72
+  blog24h: 100
+  score: 78
+- kw: 박은빈
+  rise: 1.22
+  volume: 82400
+  named: true
+  blog24h: 55
+  score: 70
 - kw: 금시세
   rise: 1.38
   volume: 4157700
@@ -49,12 +55,6 @@ items:
   named: false
   blog24h: 100
   score: 64
-- kw: 박은빈
-  rise: 1.22
-  volume: 82400
-  named: true
-  blog24h: 21
-  score: 63
 - kw: 오늘금시세
   rise: 1.27
   volume: 814900
@@ -83,7 +83,7 @@ items:
   rise: 1.36
   volume: 47520
   named: false
-  blog24h: 98
+  blog24h: 100
   score: 49
 - kw: 오늘금값시세
   rise: 1.41
