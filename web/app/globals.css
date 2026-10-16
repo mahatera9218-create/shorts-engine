@@ -246,3 +246,19 @@ a.rank-name:hover { color: var(--accent); }
   color: var(--sub); border: 1px solid var(--line, #e3e6ea); background: transparent; white-space: nowrap;
 }
 .rank-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* 순위 허브: 분류별 행 + 상위 3개 + 더보기 */
+.hub-cat { margin: 26px 0 8px; }
+.hub-cat-head { display: flex; justify-content: space-between; align-items: baseline; }
+.hub-cat-head h2 { margin: 0; }
+.hub-all { font-size: 14px; font-weight: 700; color: var(--accent); }
+.hub-list { display: flex; flex-direction: column; margin-top: 10px; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.hub-row, .hub-more summary { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-top: 1px solid var(--line); color: var(--fg); }
+.hub-list > .hub-row:first-child { border-top: 0; }
+.hub-name { flex: 1; min-width: 0; font-weight: 700; display: flex; flex-direction: column; }
+.hub-name small { font-weight: 500; font-size: 12.5px; color: var(--sub); }
+.hub-score { font-weight: 800; color: var(--accent); white-space: nowrap; }
+.hub-more summary { cursor: pointer; justify-content: center; font-weight: 700; color: var(--accent); list-style: none; }
+.hub-more summary::-webkit-details-marker { display: none; }
+.hub-more[open] summary { color: var(--sub); }
+.hub-more[open] summary::after { content: " 접기"; }
