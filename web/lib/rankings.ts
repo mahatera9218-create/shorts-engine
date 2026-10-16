@@ -20,6 +20,7 @@ export interface RankApp {
   url: string;
   total: number;
   rank: number;
+  pending?: boolean;
 }
 export interface Ranking {
   slug: string;
@@ -30,6 +31,7 @@ export interface Ranking {
   intro: string;
   updated: string;
   beta: boolean;
+  status?: "example" | "pending" | "verified";
   criteria: Criterion[];
   apps: RankApp[];
 }
@@ -57,10 +59,14 @@ function load(slug: string): Ranking | null {
     return null;
   }
   const data = JSON.parse(raw) as Ranking;
-  data.apps = data.apps
+  const scored = data.apps
+    .filter((a) => !a.pending)
     .map((a) => ({ ...a, total: weightedTotal(a.scores, data.criteria), rank: 0 }))
     .sort((a, b) => b.total - a.total)
     .map((a, i) => ({ ...a, rank: i + 1 }));
+  // 평가 대기 후보는 순위 없이(rank 0) 뒤에 붙인다.
+  const waiting = data.apps.filter((a) => a.pending).map((a) => ({ ...a, total: 0, rank: 0 }));
+  data.apps = [...scored, ...waiting];
   return data;
 }
 
@@ -87,4 +93,19 @@ export function getRankingApp(
   if (!ranking) return null;
   const app = ranking.apps.find((a) => a.slug === appSlug);
   return app ? { ranking, app } : null;
+}
+
+// 탭 순서(고정). 목록에 없는 순위는 뒤에 붙는다.
+const TAB_ORDER = ["tax-firms", "law-firms", "tax-apps", "insurance-apps"];
+const TAB_LABEL: Record<string, string> = {
+  "tax-firms": "세무법인",
+  "law-firms": "법무법인",
+  "tax-apps": "세무앱",
+  "insurance-apps": "보험앱",
+};
+
+export function getRankTabs(): { slug: string; label: string }[] {
+  const all = getAllRankingSlugs();
+  const ordered = [...TAB_ORDER.filter((s) => all.includes(s)), ...all.filter((s) => !TAB_ORDER.includes(s))];
+  return ordered.map((slug) => ({ slug, label: TAB_LABEL[slug] ?? getRanking(slug)?.categoryName ?? slug }));
 }

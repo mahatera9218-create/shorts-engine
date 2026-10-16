@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getRanking, getAllRankingSlugs } from "@/lib/rankings";
 import { SITE_NAME } from "@/lib/wp";
 import AdSlot from "@/components/AdSlot";
+import RankTabs from "@/components/RankTabs";
 
 export const dynamicParams = false;
 
@@ -28,9 +29,14 @@ export default function RankingPage({ params }: { params: { slug: string } }) {
 
   return (
     <div className="container article">
+      <RankTabs current={r.slug} />
       {r.beta ? (
         <div className="mock-banner">
-          📋 <b>미리보기(베타)</b> — 평가 기준 확정 전 <b>예시 데이터</b>입니다. 점수·순위는 임시이며, 확정 후 공개합니다.
+          {r.status === "pending" ? (
+            <>📋 <b>준비 중</b> — 근거 자료 검증이 끝난 곳부터 점수·순위를 공개합니다. 아래는 평가 기준입니다.</>
+          ) : (
+            <>📋 <b>미리보기(베타)</b> — 평가 기준 확정 전 <b>예시 데이터</b>입니다. 점수·순위는 임시이며, 확정 후 공개합니다.</>
+          )}
         </div>
       ) : null}
 
@@ -50,14 +56,14 @@ export default function RankingPage({ params }: { params: { slug: string } }) {
       <div className="rank-list">
         {r.apps.map((a) => (
           <div key={a.slug} className="rank-card">
-            <div className={`rank-num${a.rank === 1 ? " top" : ""}`}>{a.rank}</div>
+            <div className={`rank-num${a.rank === 1 ? " top" : ""}`}>{a.pending ? "·" : a.rank}</div>
             <div className="rank-body">
               <div className="rank-head">
                 <div>
                   <Link href={`/rank/${r.slug}/${a.slug}`} className="rank-name">{a.name}</Link>
                   <div className="rank-tag">{a.tag}</div>
                 </div>
-                <div className="rank-score">{a.total.toFixed(1)}<span>/5</span></div>
+                <div className="rank-score">{a.pending ? <span>평가 대기</span> : <>{a.total.toFixed(1)}<span>/5</span></>}</div>
               </div>
               <p className="rank-note">{a.summary}</p>
               <Link href={`/rank/${r.slug}/${a.slug}`} className="rank-link">
@@ -68,18 +74,19 @@ export default function RankingPage({ params }: { params: { slug: string } }) {
         ))}
       </div>
 
+      {r.apps.some((a) => !a.pending) ? (<>
       <h2>항목별 점수 비교</h2>
       <figure className="wp-block-table">
         <table>
           <thead>
             <tr>
-              <th>앱</th>
+              <th>대상</th>
               {r.criteria.map((c) => <th key={c.key}>{c.name}</th>)}
               <th>종합</th>
             </tr>
           </thead>
           <tbody>
-            {r.apps.map((a) => (
+            {r.apps.filter((a) => !a.pending).map((a) => (
               <tr key={a.slug}>
                 <td><Link href={`/rank/${r.slug}/${a.slug}`}><b>{a.name}</b></Link></td>
                 {r.criteria.map((c) => <td key={c.key}>{(a.scores[c.key] ?? 0).toFixed(1)}</td>)}
@@ -89,11 +96,12 @@ export default function RankingPage({ params }: { params: { slug: string } }) {
           </tbody>
         </table>
       </figure>
+      </>) : null}
 
       <h2 id="methodology">평가 방법 (투명 공개)</h2>
       <ul>
         <li><b>기준·가중치</b>: {r.criteria.map((c) => `${c.name} ${c.weight}%`).join(" · ")}.</li>
-        <li><b>자료</b>: 각 앱의 공개된 수수료·기능·약관, 앱스토어 평점, 공개된 이용 후기만 사용(지어내지 않음).</li>
+        <li><b>자료</b>: 공개된 자격·수수료·기능·약관, 앱스토어 평점, 공개된 이용 후기만 사용(지어내지 않음). 근거 자료가 확인되지 않은 항목은 점수를 매기지 않습니다.</li>
         <li><b>갱신</b>: 매주 1회, 최신 이용 동향(검색·언급 추세)을 반영해 재계산.</li>
         <li><b>독립성</b>: 순위는 위 기준으로만 매깁니다. 제휴·광고는 순위에 영향을 주지 않으며 <b>'광고'로 분리 표시</b>합니다.</li>
       </ul>

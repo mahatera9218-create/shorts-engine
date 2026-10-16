@@ -22,6 +22,7 @@ export default function Menu() {
               {c.name}
             </Link>
           ))}
+          <Link href="/rank">순위</Link>
           <Link href="/p/about">소개</Link>
         </div>
       ) : null}

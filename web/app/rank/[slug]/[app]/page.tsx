@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getRanking, getRankingApp, getAllRankingSlugs } from "@/lib/rankings";
 import { SITE_NAME } from "@/lib/wp";
 import AdSlot from "@/components/AdSlot";
+import RankTabs from "@/components/RankTabs";
 
 export const dynamicParams = false;
 
@@ -43,6 +44,7 @@ export default function AppDetailPage({
 
   return (
     <div className="container article">
+      <RankTabs current={ranking.slug} />
       <Link href={`/rank/${ranking.slug}`} className="a-cat">← {ranking.title}</Link>
       <h1>{app.name} 평가·리뷰</h1>
       <div className="byline">
@@ -51,8 +53,8 @@ export default function AppDetailPage({
       </div>
 
       <div className="detail-head">
-        <div className="detail-rank">{ranking.categoryName} {ranking.apps.length}개 중 <b>{app.rank}위</b></div>
-        <div className="detail-total">{app.total.toFixed(1)}<span>/5</span></div>
+        <div className="detail-rank">{app.pending ? <>{ranking.categoryName} 후보 · <b>평가 대기</b></> : <>{ranking.categoryName} {ranking.apps.filter((x) => !x.pending).length}개 중 <b>{app.rank}위</b></>}</div>
+        {app.pending ? null : <div className="detail-total">{app.total.toFixed(1)}<span>/5</span></div>}
       </div>
       <p className="rank-tag" style={{ fontSize: 15 }}>{app.tag}</p>
 
@@ -60,6 +62,7 @@ export default function AppDetailPage({
 
       <AdSlot />
 
+      {app.pending ? null : (<>
       <h2>항목별 점수</h2>
       <div className="score-bars">
         {ranking.criteria.map((c) => {
@@ -73,7 +76,9 @@ export default function AppDetailPage({
           );
         })}
       </div>
+      </>)}
 
+      {app.pending ? null : (<>
       <h2>이런 분에게 맞아요</h2>
       <p>{app.whoFor}</p>
 
@@ -87,6 +92,7 @@ export default function AppDetailPage({
           <ul>{app.cons.map((c, i) => <li key={i}>{c}</li>)}</ul>
         </div>
       </div>
+      </>)}
 
       {/* 외부 바로가기 (여기서 광고 한 번 더 노출) */}
       <AdSlot />

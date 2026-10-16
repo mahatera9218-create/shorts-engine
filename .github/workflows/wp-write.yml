@@ -43,7 +43,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add reports/구글글-초안/ reports/costs.csv
+          git add reports/구글글-초안/ reports/costs.csv config/google_topics.yaml
           if git diff --cached --quiet; then
             echo "새로 생성된 글 없음" >> "$GITHUB_STEP_SUMMARY"
           else

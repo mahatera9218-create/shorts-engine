@@ -238,3 +238,11 @@ a.rank-name:hover { color: var(--accent); }
 }
 .menu-pop a { padding: 10px 12px; border-radius: 9px; font-size: 15px; font-weight: 600; color: var(--fg); }
 .menu-pop a:hover { background: color-mix(in srgb, var(--sub) 12%, transparent); }
+
+/* 순위 탭 */
+.rank-tabs { display: flex; gap: 8px; overflow-x: auto; margin: 4px 0 18px; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
+.rank-tab {
+  flex: 0 0 auto; padding: 8px 16px; border-radius: 999px; font-size: 15px; font-weight: 700;
+  color: var(--sub); border: 1px solid var(--line, #e3e6ea); background: transparent; white-space: nowrap;
+}
+.rank-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }

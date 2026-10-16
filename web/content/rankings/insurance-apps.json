@@ -1,0 +1,76 @@
+{
+  "slug": "insurance-apps",
+  "category": "insurance",
+  "categoryName": "보험",
+  "title": "2026 보험 앱 순위",
+  "subtitle": "후보 검토 중 · 점수는 검증 후 공개",
+  "intro": "보험 앱은 보장 분석·편의성·중립성 등 5개 기준으로 평가합니다. 후보를 먼저 공개하며, 공개 자료로 확인된 항목부터 점수를 올립니다.",
+  "updated": "2026-10-16",
+  "beta": true,
+  "status": "pending",
+  "criteria": [
+    {
+      "key": "coverage",
+      "name": "보장 분석 범위",
+      "weight": 25
+    },
+    {
+      "key": "convenience",
+      "name": "편의성",
+      "weight": 20
+    },
+    {
+      "key": "neutral",
+      "name": "중립성(상품 판매 편향)",
+      "weight": 25
+    },
+    {
+      "key": "support",
+      "name": "고객지원",
+      "weight": 15
+    },
+    {
+      "key": "rating",
+      "name": "이용자 평점",
+      "weight": 15
+    }
+  ],
+  "apps": [
+    {
+      "slug": "naebohum-dabeoyeo",
+      "name": "내보험다보여",
+      "tag": "내 보험 조회(공식 서비스)",
+      "scores": {},
+      "summary": "평가 대기 — 공개 자료 확인 후 점수를 공개합니다.",
+      "pros": [],
+      "cons": [],
+      "whoFor": "평가 후 공개",
+      "url": "#",
+      "pending": true
+    },
+    {
+      "slug": "bomap",
+      "name": "보맵",
+      "tag": "보장 분석",
+      "scores": {},
+      "summary": "평가 대기 — 공개 자료 확인 후 점수를 공개합니다.",
+      "pros": [],
+      "cons": [],
+      "whoFor": "평가 후 공개",
+      "url": "#",
+      "pending": true
+    },
+    {
+      "slug": "toss-insurance",
+      "name": "토스 보험",
+      "tag": "보험 비교·가입",
+      "scores": {},
+      "summary": "평가 대기 — 공개 자료 확인 후 점수를 공개합니다.",
+      "pros": [],
+      "cons": [],
+      "whoFor": "평가 후 공개",
+      "url": "#",
+      "pending": true
+    }
+  ]
+}

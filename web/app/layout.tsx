@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import Link from "next/link";
 import "./globals.css";
 import { SITE_NAME, SITE_URL, SITE_DESC } from "@/lib/wp";
 import Menu from "@/components/Menu";
+import AdsenseLoader from "@/components/AdsenseLoader";
 
 const ADSENSE_CLIENT =
   process.env.NEXT_PUBLIC_ADSENSE_CLIENT || "ca-pub-6435261744776184";
@@ -21,6 +21,8 @@ export const metadata: Metadata = {
   verification: {
     other: {
       "naver-site-verification": "77856750d7c78447f76f81fc80a91308d2af573b",
+      // 애드센스 소유확인(스크립트 대신 공식 메타 방식 — 광고 JS는 AdsenseLoader가 지연 로드).
+      ...(ADSENSE_CLIENT ? { "google-adsense-account": ADSENSE_CLIENT } : {}),
     },
   },
 };
@@ -28,18 +30,8 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko" suppressHydrationWarning>
-      <head>
-        {ADSENSE_CLIENT ? (
-          <Script
-            id="adsbygoogle-init"
-            async
-            strategy="afterInteractive"
-            crossOrigin="anonymous"
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
-          />
-        ) : null}
-      </head>
       <body>
+        <AdsenseLoader />
         <header className="site-header">
           <div className="container inner">
             <Link href="/" className="brand" aria-label={SITE_NAME}>

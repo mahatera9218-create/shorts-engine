@@ -35,6 +35,8 @@ jobs:
         run: |
           set -o pipefail
           python -m content.rank_collect | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: 순위 데이터 검증(공개 게이트)
+        run: python -m content.rank_verify | tee -a "$GITHUB_STEP_SUMMARY"
       - name: 커밋·푸시
         run: |
           git config user.name "github-actions[bot]"
