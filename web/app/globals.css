@@ -13,6 +13,7 @@
 }
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
+html, body { overflow-x: hidden; }  /* 가로 넘침으로 좌우 여백이 먹히는 것 방지 */
 body {
   margin: 0;
   background: var(--bg);
@@ -109,8 +110,11 @@ img { display: block; max-width: 100%; }
 .article-body h3 { font-size: 19px; margin: 1.5em 0 .5em; color: var(--fg); }
 .article-body p { margin: 1em 0; color: var(--fg); }
 .article-body img { border-radius: 10px; height: auto; }
+/* 넓은 표는 글 영역을 밀어내지 않고 표 안에서만 가로 스크롤 */
+.article-body figure.wp-block-table { margin: 1.5em 0; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .article-body table { width: 100%; border-collapse: collapse; margin: 1.5em 0; font-size: 15.5px; }
-.article-body th, .article-body td { border: 1px solid var(--line); padding: 10px 12px; text-align: left; }
+.article-body figure.wp-block-table table { margin: 0; }
+.article-body th, .article-body td { border: 1px solid var(--line); padding: 10px 12px; text-align: left; word-break: keep-all; }
 .article-body thead th { background: color-mix(in srgb, var(--sub) 8%, transparent); font-weight: 700; }
 .article-body blockquote {
   border-left: 3px solid var(--accent); background: color-mix(in srgb, var(--sub) 6%, transparent);
@@ -136,6 +140,7 @@ img { display: block; max-width: 100%; }
 
 @media (max-width: 560px) {
   body { font-size: 16px; }
+  .container { padding: 0 18px; }
   .post { gap: 16px; padding: 22px 0; }
   .post .thumb { width: 118px; height: 100px; flex-basis: 118px; }
   .post h2 { font-size: 18px; margin-bottom: 7px; }
@@ -143,7 +148,9 @@ img { display: block; max-width: 100%; }
   .intro { padding: 20px; gap: 16px; }
   .intro .avatar { width: 60px; height: 60px; flex-basis: 60px; }
   .intro h1 { font-size: 21px; }
+  .article { padding: 24px 0 64px; }
   .article h1 { font-size: 25px; }
+  .article-body { font-size: 16.5px; }
 }
 
 /* menu dropdown */
