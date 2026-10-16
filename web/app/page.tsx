@@ -33,8 +33,8 @@ export default async function Home() {
         </p>
       ) : (
         <div className="feed">
-          {posts.map((post) => (
-            <PostCard key={post.id} post={post} />
+          {posts.map((post, i) => (
+            <PostCard key={post.id} post={post} priority={i === 0} />
           ))}
         </div>
       )}

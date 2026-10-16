@@ -15,6 +15,7 @@ import {
 import { stockPhoto, stockPhotos } from "@/lib/photos";
 import PostCard from "@/components/PostCard";
 import Thumb from "@/components/Thumb";
+import { sized } from "@/lib/imgsize";
 
 export const revalidate = 600;
 export const dynamicParams = true;
@@ -67,7 +68,7 @@ function injectBodyImages(html: string, imgs: string[]): string {
   for (let i = 0; i < parts.length; i++) {
     if (i >= 2 && (i - 2) % 2 === 0 && k < imgs.length) {
       out.push(
-        `<figure class="body-photo"><img src="${imgs[k]}" alt="" loading="lazy" width="1200" height="675"/></figure>`,
+        `<figure class="body-photo"><img src="${sized(imgs[k], 800)}" alt="" loading="lazy" decoding="async" width="800" height="450"/></figure>`,
       );
       k += 1;
     }
@@ -137,7 +138,7 @@ export default async function PostPage({
 
       {stock || feat ? (
         <div className="hero">
-          <Thumb src={stock} fallback={feat?.url ?? null} alt={title} />
+          <Thumb src={stock} fallback={feat?.url ?? null} alt={title} w={960} priority />
         </div>
       ) : null}
 

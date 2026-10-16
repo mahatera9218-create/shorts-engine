@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import "./globals.css";
+import fs from "node:fs";
+import path from "node:path";
 import { SITE_NAME, SITE_URL, SITE_DESC } from "@/lib/wp";
 import Menu from "@/components/Menu";
 import AdsenseLoader from "@/components/AdsenseLoader";
@@ -27,9 +28,15 @@ export const metadata: Metadata = {
   },
 };
 
+// CSS를 <style>로 HTML에 인라인(작은 파일 11KB) → 별도 CSS 요청·렌더링 차단 제거(PageSpeed).
+const CSS = fs.readFileSync(path.join(process.cwd(), "app", "globals.css"), "utf8");
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko" suppressHydrationWarning>
+      <head>
+        <style dangerouslySetInnerHTML={{ __html: CSS }} />
+      </head>
       <body>
         <AdsenseLoader />
         <header className="site-header">
@@ -37,7 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Link href="/" className="brand" aria-label={SITE_NAME}>
               {/* 로고 이미지만. AI로 받은 로고로 교체 시 web/public/logo.svg만 바꾸면 됨. */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo.png" alt={SITE_NAME} className="brand-logo" width={890} height={240} />
+              <img src="/logo.webp" alt={SITE_NAME} className="brand-logo" width={111} height={30} fetchPriority="high" />
             </Link>
             <div className="header-spacer" />
             <Menu />
