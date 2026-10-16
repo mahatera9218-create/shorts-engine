@@ -76,6 +76,32 @@ function injectBodyImages(html: string, imgs: string[]): string {
   return out.join("");
 }
 
+// 본문의 '자주 묻는 질문' 섹션에서 Q/A를 뽑아 FAQ 스키마로 쓴다(구글 Q&A·AI 인용).
+function extractFaq(html: string): { q: string; a: string }[] {
+  const h = html.indexOf("자주 묻는 질문");
+  if (h === -1) return [];
+  let seg = html.slice(h);
+  const afterH = seg.indexOf("</h2>");
+  if (afterH !== -1) seg = seg.slice(afterH + 5);
+  const end = seg.search(/<h2[ >]/);
+  if (end !== -1) seg = seg.slice(0, end);
+  const paras = Array.from(seg.matchAll(/<p>([\s\S]*?)<\/p>/g))
+    .map((m) => stripHtml(m[1]).trim())
+    .filter(Boolean);
+  const out: { q: string; a: string }[] = [];
+  let cur: { q: string; a: string } | null = null;
+  for (const t of paras) {
+    if (/^Q[.\s]/.test(t)) {
+      if (cur) out.push(cur);
+      cur = { q: t.replace(/^Q[.\s]+/, "").trim(), a: "" };
+    } else if (cur) {
+      cur.a = cur.a ? `${cur.a} ${t}` : t;
+    }
+  }
+  if (cur) out.push(cur);
+  return out.filter((x) => x.q && x.a);
+}
+
 export default async function PostPage({
   params,
 }: {
@@ -92,6 +118,7 @@ export default async function PostPage({
   // 본문 중간에 넣을 사진(대표 사진과 겹치지 않게). 섹션 사이사이에 배치.
   const bodyPhotos = await stockPhotos(cat?.slug, `${post.slug}-body`, 3, stock);
   const bodyHtml = injectBodyImages(post.content.rendered, bodyPhotos);
+  const faq = extractFaq(post.content.rendered);
   const related = await getRelated(post, 3);
 
   return (
@@ -151,6 +178,22 @@ export default async function PostPage({
           }),
         }}
       />
+      {faq.length > 0 ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: faq.map((f) => ({
+                "@type": "Question",
+                name: f.q,
+                acceptedAnswer: { "@type": "Answer", text: f.a },
+              })),
+            }),
+          }}
+        />
+      ) : null}
     </article>
   );
 }
