@@ -37,6 +37,8 @@ CAT_NAMES = {
     "pension": "연금·노후",
 }
 BOLD_RE = re.compile(r"\*\*(.+?)\*\*")
+# 굵게(**..**) 또는 링크([텍스트](주소))를 등장 순서대로 처리.
+INLINE_RE = re.compile(r"\[([^\]]+)\]\(([^)\s]+)\)|\*\*(.+?)\*\*")
 ORDERED_RE = re.compile(r"^\d+\.\s+(.+)$")
 BULLET_RE = re.compile(r"^[-*]\s+(.+)$")
 # 본문에 그림을 넣는 자리표: 한 줄에 [[도식:세율표]] 또는 [[도식:계산:60000000]]
@@ -94,9 +96,14 @@ def _inline(text: str) -> str:
     """한 줄 안의 서식(굵게)만 처리하고 나머지는 이스케이프한다."""
     out = []
     pos = 0
-    for m in BOLD_RE.finditer(text):
+    for m in INLINE_RE.finditer(text):
         out.append(html.escape(text[pos:m.start()]))
-        out.append("<strong>" + html.escape(m.group(1)) + "</strong>")
+        if m.group(3) is not None:  # **굵게**
+            out.append("<strong>" + html.escape(m.group(3)) + "</strong>")
+        else:  # [텍스트](주소) — 내부(/..)·http(s)·앵커(#)만 허용, 그 외는 링크 해제
+            label, url = m.group(1), m.group(2)
+            safe = url if url.startswith(("/", "http://", "https://", "#")) else "#"
+            out.append(f'<a href="{html.escape(safe)}">{html.escape(label)}</a>')
         pos = m.end()
     out.append(html.escape(text[pos:]))
     return "".join(out)
