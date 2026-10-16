@@ -4,12 +4,12 @@
 export const WP_API_BASE =
   process.env.WP_API_BASE || "https://astacgroup.com/wp-json/wp/v2";
 
-export const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || "일드레터";
+// 브랜드명·설명은 확정값이라 코드에 고정한다. (예전 배포 때 설정에 '억선생의 경제판'이
+// 박혀 있어 화면 제목이 안 바뀌던 문제를 없앤다. 이름을 바꾸려면 이 줄을 고친다.)
+export const SITE_NAME = "일드레터";
+export const SITE_DESC = "재테크·부동산·세금·연금을 쉽게, 정확하게 정리합니다.";
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://astacgroup.com";
-export const SITE_DESC =
-  process.env.NEXT_PUBLIC_SITE_DESC ||
-  "재테크·부동산·세금·연금을 쉽게, 정확하게 정리합니다.";
 
 // 발행 전/후 반영 지연(초). 10분마다 최신 글을 다시 받아 온다(ISR).
 const REVALIDATE = 600;
