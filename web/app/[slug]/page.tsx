@@ -10,7 +10,9 @@ import {
   stripHtml,
   formatDate,
 } from "@/lib/wp";
+import { stockPhoto } from "@/lib/photos";
 import PostCard from "@/components/PostCard";
+import Thumb from "@/components/Thumb";
 
 export const revalidate = 600;
 export const dynamicParams = true;
@@ -53,23 +55,29 @@ export default async function PostPage({
 
   const title = stripHtml(post.title.rendered);
   const cat = postCategory(post);
+  const feat = featuredImage(post);
+  const stock = await stockPhoto(cat?.slug, post.slug);
   const related = await getRelated(post, 3);
 
   return (
     <article className="container article">
       {cat ? (
-        <Link href={`/category/${cat.slug}`} className="post-card-cat">
+        <Link href={`/category/${cat.slug}`} className="a-cat">
           {cat.name}
         </Link>
       ) : null}
       <h1 dangerouslySetInnerHTML={{ __html: post.title.rendered }} />
       <div className="byline">
-        <Link href="/p/about" className="byline-author">
-          억선생
-        </Link>
-        <span className="byline-sep">·</span>
+        <Link href="/p/about">억선생</Link>
+        <span>·</span>
         <span>{formatDate(post.date)}</span>
       </div>
+
+      {stock || feat ? (
+        <div className="hero">
+          <Thumb src={stock} fallback={feat?.url ?? null} alt={title} />
+        </div>
+      ) : null}
 
       <div
         className="article-body"
@@ -85,7 +93,7 @@ export default async function PostPage({
       {related.length > 0 ? (
         <section className="related">
           <h2>함께 보면 좋은 글</h2>
-          <div className="post-grid">
+          <div className="feed">
             {related.map((p) => (
               <PostCard key={p.id} post={p} />
             ))}

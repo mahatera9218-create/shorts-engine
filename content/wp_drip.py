@@ -7,15 +7,14 @@
 - 원칙: 대표가 '검토 기간 자동 공개'를 결정(DECISIONS). 워크플로를 끄면 즉시 멈춘다.
 
 사용법:
-    python -m content.wp_drip               # 확률 게이트 통과 시 1편 공개
-    python -m content.wp_drip --force       # 게이트 무시하고 바로 1편
+    python -m content.wp_drip               # 하루 상한 안이면 1편 공개
+    python -m content.wp_drip --force       # 상한 무시하고 바로 1편
     python -m content.wp_drip --dry-run     # 올리지 않고 '다음 대상'만 출력
 """
 from __future__ import annotations
 
 import argparse
 import os
-import random
 import sys
 from pathlib import Path
 
@@ -23,8 +22,9 @@ from market.common import ROOT, missing_secrets
 from content import wp
 
 QUEUE = ROOT / "reports" / "구글글-초안"
-PUBLISH_PROB = float(os.environ.get("DRIP_PROB", "0.7"))  # 매 실행 공개 확률(불규칙 간격용)
 DAILY_MAX = int(os.environ.get("DRIP_DAILY_MAX", "3"))     # 하루 상한(2~3편 목표)
+# 불규칙성은 cron 시각(하루 6회, 홀수 시각)으로 낸다. 확률 건너뛰기는 쓰지 않는다
+# (실행해도 안 올라가 헷갈림 → 상한 안이면 무조건 1편 공개).
 
 
 def next_draft(existing: set[str]) -> tuple[Path | None, str | None]:
@@ -67,9 +67,6 @@ def main(argv: list[str] | None = None) -> int:
         today = wp.published_today_kst()
         if today >= DAILY_MAX:
             print(f"오늘 목표 채움({today}/{DAILY_MAX}편). 다음 대상 대기: {f.name}")
-            return 0
-        if random.random() > PUBLISH_PROB:
-            print(f"이번엔 건너뜀(불규칙 간격, 오늘 {today}/{DAILY_MAX}). 다음 대상: {f.name}")
             return 0
 
     result = wp.publish_file(f, status="publish", slug=slug, verbose=True)

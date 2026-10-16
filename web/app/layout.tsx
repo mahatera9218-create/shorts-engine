@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import Link from "next/link";
 import "./globals.css";
-import { SITE_NAME, SITE_URL, SITE_DESC, CATEGORY_ORDER } from "@/lib/wp";
+import { SITE_NAME, SITE_URL, SITE_DESC } from "@/lib/wp";
+import DarkToggle from "@/components/DarkToggle";
+import Menu from "@/components/Menu";
 
-const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT || "";
+const ADSENSE_CLIENT =
+  process.env.NEXT_PUBLIC_ADSENSE_CLIENT || "ca-pub-6435261744776184";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -13,23 +16,20 @@ export const metadata: Metadata = {
     template: `%s | ${SITE_NAME}`,
   },
   description: SITE_DESC,
-  openGraph: {
-    type: "website",
-    siteName: SITE_NAME,
-    locale: "ko_KR",
-    url: SITE_URL,
-  },
+  openGraph: { type: "website", siteName: SITE_NAME, locale: "ko_KR", url: SITE_URL },
   robots: { index: true, follow: true },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ko">
+    <html lang="ko" suppressHydrationWarning>
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}",
+          }}
+        />
         {ADSENSE_CLIENT ? (
           <Script
             id="adsbygoogle-init"
@@ -43,43 +43,29 @@ export default function RootLayout({
       <body>
         <header className="site-header">
           <div className="container inner">
-            <Link href="/" className="brand">
-              억선생의 <span>경제판</span>
+            <Link href="/" className="brand-mark" aria-label={SITE_NAME}>
+              억
             </Link>
-            <nav className="nav">
-              {CATEGORY_ORDER.map((c) => (
-                <Link key={c.slug} href={`/category/${c.slug}`}>
-                  {c.name}
-                </Link>
-              ))}
-              <Link href="/p/about" prefetch={false}>
-                소개
-              </Link>
-            </nav>
+            <Link href="/" className="brand-title">
+              {SITE_NAME}
+            </Link>
+            <div className="header-spacer" />
+            <DarkToggle />
+            <Menu />
           </div>
         </header>
         <main>{children}</main>
         <footer className="site-footer">
           <div className="container">
             <div style={{ marginBottom: 10 }}>
-              <Link href="/p/privacy" prefetch={false}>
-                개인정보처리방침
-              </Link>
-              <Link href="/p/terms" prefetch={false}>
-                이용약관
-              </Link>
-              <Link href="/p/disclaimer" prefetch={false}>
-                면책조항
-              </Link>
-              <Link href="/p/contact" prefetch={false}>
-                연락처
-              </Link>
-              <Link href="/p/about" prefetch={false}>
-                소개
-              </Link>
+              <Link href="/p/privacy" prefetch={false}>개인정보처리방침</Link>
+              <Link href="/p/terms" prefetch={false}>이용약관</Link>
+              <Link href="/p/disclaimer" prefetch={false}>면책조항</Link>
+              <Link href="/p/contact" prefetch={false}>연락처</Link>
+              <Link href="/p/about" prefetch={false}>소개</Link>
             </div>
-            © {new Date().getFullYear()} {SITE_NAME}. 일반 정보 제공 목적이며 개별
-            사안은 전문가 확인을 권합니다.
+            © {new Date().getFullYear()} {SITE_NAME} · 일반 정보 제공 목적이며 개별
+            사안은 국세청(126)·세무 전문가 확인을 권합니다.
           </div>
         </footer>
       </body>

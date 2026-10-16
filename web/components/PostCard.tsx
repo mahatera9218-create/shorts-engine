@@ -6,31 +6,28 @@ import {
   stripHtml,
   formatDate,
 } from "@/lib/wp";
+import { stockPhoto } from "@/lib/photos";
+import Thumb from "./Thumb";
 
-// 썸네일 + 카테고리 + 제목 + 날짜 + 요약 카드. 홈·카테고리·관련 글 공용.
-export default function PostCard({ post }: { post: WpPost }) {
-  const img = featuredImage(post);
+// taihyoung 스타일: 썸네일 + (제목 → 카테고리·날짜 → 요약).
+export default async function PostCard({ post }: { post: WpPost }) {
   const cat = postCategory(post);
+  const feat = featuredImage(post);
+  const stock = await stockPhoto(cat?.slug, post.slug);
+  const title = stripHtml(post.title.rendered);
+
   return (
-    <Link href={`/${post.slug}`} className="post-card">
-      <div className="post-card-thumb">
-        {img ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={img.url} alt={img.alt} loading="lazy" />
-        ) : (
-          <div className="post-card-thumb-fallback">억선생의 경제판</div>
-        )}
+    <Link href={`/${post.slug}`} className="post">
+      <div className="thumb">
+        <Thumb src={stock} fallback={feat?.url ?? null} alt={title} />
       </div>
-      <div className="post-card-body">
-        {cat ? <span className="post-card-cat">{cat.name}</span> : null}
-        <h2
-          className="post-card-title"
-          dangerouslySetInnerHTML={{ __html: post.title.rendered }}
-        />
-        <p className="post-card-excerpt">
-          {stripHtml(post.excerpt.rendered).slice(0, 90)}
-        </p>
-        <div className="post-card-meta">{formatDate(post.date)}</div>
+      <div className="body">
+        <h2 dangerouslySetInnerHTML={{ __html: post.title.rendered }} />
+        <div className="meta">
+          {cat ? <span className="cat">{cat.name}</span> : null}
+          {formatDate(post.date)}
+        </div>
+        <p className="excerpt">{stripHtml(post.excerpt.rendered).slice(0, 120)}</p>
       </div>
     </Link>
   );
