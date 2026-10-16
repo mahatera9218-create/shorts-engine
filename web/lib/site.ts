@@ -3,8 +3,9 @@
 
 export const SITE_NAME = "일드레터";
 export const SITE_DESC = "재테크·부동산·세금·연금을 쉽게, 정확하게 정리합니다.";
-export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://astacgroup.com";
+// 사이트 정식 주소는 코드에 고정한다. (환경변수에 vercel.app 등 옛 주소가 박혀 있으면
+// 사이트맵·canonical이 엉뚱한 주소를 가리켜 구글 색인이 안 되던 문제를 없앤다.)
+export const SITE_URL = "https://astacgroup.com";
 
 // 고정 카테고리 순서(네비게이션용).
 export const CATEGORY_ORDER: Array<{ slug: string; name: string }> = [
