@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { CATEGORY_ORDER } from "@/lib/wp";
+import { CATEGORY_ORDER } from "@/lib/site";
 
 export default function Menu() {
   const [open, setOpen] = useState(false);

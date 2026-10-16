@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {
-  getCategoryBySlug,
-  getPostsByCategory,
+  getPostsByCategorySlug,
   CATEGORY_ORDER,
   SITE_NAME,
 } from "@/lib/wp";
@@ -35,10 +34,9 @@ export default async function CategoryPage({
   params: { slug: string };
 }) {
   const known = CATEGORY_ORDER.find((c) => c.slug === params.slug);
-  const cat = await getCategoryBySlug(params.slug);
-  if (!cat && !known) notFound();
-  const name = cat?.name ?? known?.name ?? params.slug;
-  const posts = cat ? await getPostsByCategory(cat.id, 30) : [];
+  if (!known) notFound();
+  const name = known.name;
+  const posts = await getPostsByCategorySlug(params.slug, 30);
 
   return (
     <div className="container">

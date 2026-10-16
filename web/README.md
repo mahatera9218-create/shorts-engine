@@ -1,31 +1,31 @@
-# web — 헤드리스 프론트엔드 (Next.js)
+# web — 사이트 프론트엔드 (Next.js)
 
-워드프레스(astacgroup.com)는 **글 쓰는 관리실(headless CMS)**, 이 Next.js 앱이
-**고객이 보는 빠른 화면**이다. WP REST(`/wp-json/wp/v2`)에서 글·페이지를 읽어
-정적 생성(ISR, 10분마다 갱신)으로 렌더한다.
+**워드프레스를 쓰지 않는다.** 글은 저장소 안의 파일(`web/content/posts/*.md`,
+`web/content/pages/*.md` — frontmatter + 변환된 HTML)에서 직접 읽어 정적 생성한다.
+발행기(`content/publish_fs.py`)가 대기 초안을 이 파일로 바꿔 커밋하면, Vercel이
+자동 배포해 사이트에 반영된다. (가비아 방화벽이 WP 쓰기를 막아 워드프레스를 폐기 — DECISIONS 2026-10-16.)
 
-- 운영자는 평소처럼 워드프레스에서 글 발행 → 10분 안에 이 사이트에 자동 반영.
-- 프레임워크: Next.js 14(App Router) · React 18 · TypeScript.
+- 발행: GitHub Actions `구글 글 드립 공개`(자동, 하루 2~3편) 또는 `글 1편 발행`(수동).
+- 프레임워크: Next.js 14(App Router) · React 18 · TypeScript. 외부 서버·비밀값 불필요.
 
 ## 로컬 실행
 ```bash
 cd web
 npm install
-WP_API_BASE=https://astacgroup.com/wp-json/wp/v2 npm run dev   # http://localhost:3000
-npm run build && npm start                                      # 배포와 같은 빌드
+npm run dev                          # http://localhost:3000
+npm run build && npm start           # 배포와 같은 빌드(content/ 파일을 읽어 정적 생성)
 ```
 
-## 환경변수 (`.env.example` 참고 — 모두 공개 값, 비밀 아님)
+## 환경변수 (`.env.example` 참고 — 모두 공개 값, 비밀 아님. 전부 선택)
 | 이름 | 값 |
 |---|---|
-| `WP_API_BASE` | `https://astacgroup.com/wp-json/wp/v2` |
 | `NEXT_PUBLIC_SITE_URL` | 최종 사이트 주소 |
 | `NEXT_PUBLIC_INTRO_TITLE` | 소개 카드 제목(운영자 수정용, 선택) |
 | `NEXT_PUBLIC_INTRO_DESC` | 소개 카드 한 줄 설명(운영자 수정용, 선택) |
+| `UNSPLASH_ACCESS_KEY` | 글 대표 실사진용(없으면 사진 생략) |
 | `NEXT_PUBLIC_ADSENSE_CLIENT` | `ca-pub-...` (게재 시) |
 
-> 브랜드명(일드레터)과 사이트 설명은 코드(`web/lib/wp.ts`)에 고정했다. 예전 배포 때
-> 설정에 옛 이름이 박혀 화면 제목이 안 바뀌던 문제를 없애기 위함. 이름 변경은 그 줄을 고친다.
+> 브랜드명(일드레터)과 사이트 설명은 코드(`web/lib/site.ts`)에 고정. 이름 변경은 그 줄을 고친다.
 
 ## Vercel 배포 (스테이징 → 나중에 도메인 전환)
 1. vercel.com 가입(깃허브로 로그인, 무료 Hobby).
