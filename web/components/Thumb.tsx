@@ -21,6 +21,8 @@ export default function Thumb({
       src={cur}
       alt={alt}
       loading="lazy"
+      width={1200}
+      height={800}
       onError={() => setI((n) => n + 1)}
     />
   );

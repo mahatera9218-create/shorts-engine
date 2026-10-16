@@ -67,7 +67,7 @@ function injectBodyImages(html: string, imgs: string[]): string {
   for (let i = 0; i < parts.length; i++) {
     if (i >= 2 && (i - 2) % 2 === 0 && k < imgs.length) {
       out.push(
-        `<figure class="body-photo"><img src="${imgs[k]}" alt="" loading="lazy"/></figure>`,
+        `<figure class="body-photo"><img src="${imgs[k]}" alt="" loading="lazy" width="1200" height="675"/></figure>`,
       );
       k += 1;
     }
