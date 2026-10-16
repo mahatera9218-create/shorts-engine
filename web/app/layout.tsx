@@ -17,6 +17,12 @@ export const metadata: Metadata = {
   description: SITE_DESC,
   openGraph: { type: "website", siteName: SITE_NAME, locale: "ko_KR", url: SITE_URL },
   robots: { index: true, follow: true },
+  // 검색엔진 소유확인(공개 토큰). 네이버 서치어드바이저.
+  verification: {
+    other: {
+      "naver-site-verification": "77856750d7c78447f76f81fc80a91308d2af573b",
+    },
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
