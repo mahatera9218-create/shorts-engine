@@ -11,6 +11,15 @@ on:
         description: "지금 바로 1편 (확률 무시)"
         type: boolean
         default: false
+  # main에 새 초안이 들어오거나 발행 코드가 바뀌면 자동으로 1편 발행(하루 상한 안에서).
+  # → 대표가 머지만 하면 발행됨(별도 버튼 불필요). 상한(3)으로 몰리지 않게 조절.
+  push:
+    branches: [main]
+    paths:
+      - "reports/구글글-초안/**"
+      - "content/wp.py"
+      - "content/wp_drip.py"
+      - ".github/workflows/wp-drip.yml"
   schedule:
     # 불규칙한 KST 시각(UTC). 매 실행 확률 게이트 + 하루 상한(기본 3)으로 2~3편이 몰리지 않게.
     - cron: "17 23 * * *"   # KST 08:17
