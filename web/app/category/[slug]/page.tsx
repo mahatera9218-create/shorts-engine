@@ -42,18 +42,18 @@ export default async function CategoryPage({
 
   return (
     <div className="container">
-      <section className="hero">
-        <div className="post-card-cat" style={{ marginBottom: 8 }}>
-          카테고리
+      <section className="intro">
+        <div>
+          <h1 style={{ margin: 0 }}>{name}</h1>
+          <p style={{ margin: "4px 0 0", color: "var(--sub)" }}>
+            {name} 관련 글 모음
+          </p>
         </div>
-        <h1>{name}</h1>
       </section>
       {posts.length === 0 ? (
-        <p style={{ color: "var(--muted)", padding: "40px 0 80px" }}>
-          이 카테고리에는 아직 글이 없습니다.
-        </p>
+        <p className="empty">이 카테고리에는 아직 글이 없습니다.</p>
       ) : (
-        <div className="post-grid">
+        <div className="feed">
           {posts.map((post) => (
             <PostCard key={post.id} post={post} />
           ))}
