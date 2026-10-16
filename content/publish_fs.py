@@ -29,8 +29,14 @@ QUEUE = ROOT / "reports" / "구글글-초안"
 PAGES_SRC = ROOT / "reports" / "구글-페이지"
 POSTS_OUT = ROOT / "web" / "content" / "posts"
 PAGES_OUT = ROOT / "web" / "content" / "pages"
-DAILY_MAX = 3  # 하루 상한(2~3편 목표). 몰리지 않게 불규칙 cron과 함께.
 KST = timezone(timedelta(hours=9))
+
+
+def daily_max() -> int:
+    """하루 발행 상한. 전환 당일(2026-10-16)만 2편(대표 요청: 오늘 2편 테스트 후 마감),
+    그 뒤로는 하루 3편(오전·점심·오후 불규칙)."""
+    today = datetime.now(KST).strftime("%Y-%m-%d")
+    return 2 if today == "2026-10-16" else 3
 
 
 def publish_pages() -> int:
@@ -155,8 +161,9 @@ def main(argv: list[str] | None = None) -> int:
     existing = published_slugs()
     published = 0
     for _ in range(max(1, args.max)):
-        if not args.force and published_today() + published >= DAILY_MAX:
-            print(f"오늘 목표 채움({published_today()}/{DAILY_MAX}편).")
+        cap = daily_max()
+        if not args.force and published_today() + published >= cap:
+            print(f"오늘 목표 채움({published_today()}/{cap}편).")
             break
         f, slug = next_draft(existing)
         if not f:
