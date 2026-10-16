@@ -1,183 +1,198 @@
-// 워드프레스 REST(headless CMS)에서 글·페이지를 읽는다.
-// 사이트가 잠깐 안 떠도 빌드가 깨지지 않게 실패 시 빈 값을 돌려준다(런타임 ISR로 채움).
+// 글·페이지를 저장소 안의 마크다운(미리 HTML로 변환됨) 파일에서 읽는다.
+// 워드프레스를 쓰지 않는다(가비아 방화벽 문제 제거). 발행기가 content/posts·content/pages에
+// 파일을 쓰고 커밋하면, 배포 때 이 모듈이 읽어 사이트에 반영한다. 서버 전용(fs 사용).
+import fs from "node:fs";
+import path from "node:path";
 
-export const WP_API_BASE =
-  process.env.WP_API_BASE || "https://astacgroup.com/wp-json/wp/v2";
+import {
+  CATEGORY_ORDER,
+  categoryName,
+  postCategory,
+  slugId,
+  type WpCategory,
+  type WpPost,
+} from "./site";
 
-// 브랜드명·설명은 확정값이라 코드에 고정한다. (예전 배포 때 설정에 '억선생의 경제판'이
-// 박혀 있어 화면 제목이 안 바뀌던 문제를 없앤다. 이름을 바꾸려면 이 줄을 고친다.)
-export const SITE_NAME = "일드레터";
-export const SITE_DESC = "재테크·부동산·세금·연금을 쉽게, 정확하게 정리합니다.";
-export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://astacgroup.com";
+// 상수·타입·순수 헬퍼는 그대로 다시 내보낸다(기존 import 경로 유지).
+export * from "./site";
 
-// 발행 전/후 반영 지연(초). 10분마다 최신 글을 다시 받아 온다(ISR).
-const REVALIDATE = 600;
+const POSTS_DIR = path.join(process.cwd(), "content", "posts");
+const PAGES_DIR = path.join(process.cwd(), "content", "pages");
 
-export interface WpRendered {
-  rendered: string;
+interface Parsed {
+  data: Record<string, string>;
+  body: string;
 }
-export interface WpPost {
-  id: number;
-  slug: string;
-  date: string;
-  modified: string;
-  link: string;
-  title: WpRendered;
-  excerpt: WpRendered;
-  content: WpRendered;
-  _embedded?: {
-    "wp:featuredmedia"?: Array<{
-      source_url?: string;
-      alt_text?: string;
-      media_details?: { width?: number; height?: number };
-    }>;
-    author?: Array<{ name?: string }>;
-    "wp:term"?: Array<Array<{ id: number; name: string; slug: string; taxonomy: string }>>;
+
+function parseFrontmatter(raw: string): Parsed {
+  const m = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
+  if (!m) return { data: {}, body: raw };
+  const data: Record<string, string> = {};
+  for (const line of m[1].split(/\r?\n/)) {
+    const i = line.indexOf(":");
+    if (i === -1) continue;
+    const k = line.slice(0, i).trim();
+    let v = line.slice(i + 1).trim();
+    if (
+      (v.startsWith('"') && v.endsWith('"')) ||
+      (v.startsWith("'") && v.endsWith("'"))
+    ) {
+      v = v.slice(1, -1);
+    }
+    data[k] = v;
+  }
+  return { data, body: m[2] };
+}
+
+function readDir(dir: string): Parsed[] {
+  let names: string[] = [];
+  try {
+    names = fs.readdirSync(dir);
+  } catch {
+    return [];
+  }
+  const out: Parsed[] = [];
+  for (const f of names) {
+    if (!f.endsWith(".md")) continue;
+    try {
+      const raw = fs.readFileSync(path.join(dir, f), "utf8");
+      const p = parseFrontmatter(raw);
+      if (!p.data.slug) p.data.slug = f.replace(/\.md$/, "");
+      out.push(p);
+    } catch {
+      /* 깨진 파일은 건너뛴다 */
+    }
+  }
+  return out;
+}
+
+function toPost(p: Parsed): WpPost {
+  const d = p.data;
+  const slug = d.slug || "";
+  const catSlug = d.category || "";
+  const date = d.date || new Date().toISOString();
+  const media = d.image
+    ? [{ source_url: d.image, alt_text: d.title || slug }]
+    : undefined;
+  return {
+    id: slugId(slug),
+    slug,
+    date,
+    modified: d.modified || date,
+    link: `/${slug}`,
+    title: { rendered: d.title || slug },
+    excerpt: { rendered: d.excerpt || "" },
+    content: { rendered: p.body.trim() },
+    _embedded: {
+      ...(media ? { "wp:featuredmedia": media } : {}),
+      ...(catSlug
+        ? {
+            "wp:term": [
+              [
+                {
+                  id: slugId(catSlug),
+                  name: categoryName(catSlug),
+                  slug: catSlug,
+                  taxonomy: "category",
+                },
+              ],
+            ],
+          }
+        : {}),
+    },
   };
 }
 
-export interface WpCategory {
-  id: number;
-  name: string;
-  slug: string;
-  count: number;
-}
-
-async function wpGet<T>(path: string): Promise<T | null> {
-  try {
-    const res = await fetch(`${WP_API_BASE}${path}`, {
-      next: { revalidate: REVALIDATE },
-    });
-    if (!res.ok) return null;
-    return (await res.json()) as T;
-  } catch {
-    return null;
-  }
+let _postCache: WpPost[] | null = null;
+function loadPosts(): WpPost[] {
+  if (_postCache) return _postCache;
+  const posts = readDir(POSTS_DIR)
+    .map(toPost)
+    .filter((p) => p.slug);
+  posts.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+  _postCache = posts;
+  return posts;
 }
 
 export async function getPosts(perPage = 20): Promise<WpPost[]> {
-  const data = await wpGet<WpPost[]>(
-    `/posts?per_page=${perPage}&_embed&orderby=date&order=desc`,
-  );
-  return data ?? [];
+  return loadPosts().slice(0, perPage);
 }
 
 export async function getPostBySlug(slug: string): Promise<WpPost | null> {
-  const data = await wpGet<WpPost[]>(
-    `/posts?slug=${encodeURIComponent(slug)}&_embed`,
-  );
-  return data && data.length > 0 ? data[0] : null;
-}
-
-export async function getPageBySlug(slug: string): Promise<WpPost | null> {
-  const data = await wpGet<WpPost[]>(
-    `/pages?slug=${encodeURIComponent(slug)}&_embed`,
-  );
-  return data && data.length > 0 ? data[0] : null;
+  return loadPosts().find((p) => p.slug === slug) ?? null;
 }
 
 export async function getAllPostSlugs(): Promise<string[]> {
-  const posts = await getPosts(100);
-  return posts.map((p) => p.slug).filter(Boolean);
+  return loadPosts().map((p) => p.slug);
 }
 
-// 고정 카테고리 순서(네비게이션용). 실제 글 수는 WP에서 받아 합친다.
-export const CATEGORY_ORDER: Array<{ slug: string; name: string }> = [
-  { slug: "jaetech", name: "재테크" },
-  { slug: "realty", name: "부동산" },
-  { slug: "tax", name: "세금·절세" },
-  { slug: "pension", name: "연금·노후" },
-];
+export async function getPostsByCategorySlug(
+  slug: string,
+  perPage = 30,
+): Promise<WpPost[]> {
+  return loadPosts()
+    .filter((p) => postCategory(p)?.slug === slug)
+    .slice(0, perPage);
+}
+
+export async function getCategoryBySlug(
+  slug: string,
+): Promise<WpCategory | null> {
+  const known = CATEGORY_ORDER.find((c) => c.slug === slug);
+  const count = loadPosts().filter((p) => postCategory(p)?.slug === slug).length;
+  if (!known && count === 0) return null;
+  return {
+    id: slugId(slug),
+    name: known?.name ?? slug,
+    slug,
+    count,
+  };
+}
 
 export async function getCategories(): Promise<WpCategory[]> {
-  const data = await wpGet<WpCategory[]>(`/categories?per_page=50&_fields=id,name,slug,count`);
-  return (data ?? []).filter((c) => c.count > 0);
-}
-
-export async function getCategoryBySlug(slug: string): Promise<WpCategory | null> {
-  const data = await wpGet<WpCategory[]>(`/categories?slug=${encodeURIComponent(slug)}`);
-  return data && data.length > 0 ? data[0] : null;
-}
-
-export async function getPostsByCategory(catId: number, perPage = 20): Promise<WpPost[]> {
-  const data = await wpGet<WpPost[]>(
-    `/posts?categories=${catId}&per_page=${perPage}&_embed&orderby=date&order=desc`,
-  );
-  return data ?? [];
-}
-
-export function postCategory(
-  post: WpPost,
-): { name: string; slug: string } | null {
-  const terms = post._embedded?.["wp:term"]?.flat() ?? [];
-  const cat = terms.find((t) => t.taxonomy === "category");
-  return cat ? { name: cat.name, slug: cat.slug } : null;
+  const posts = loadPosts();
+  return CATEGORY_ORDER.map((c) => ({
+    id: slugId(c.slug),
+    name: c.name,
+    slug: c.slug,
+    count: posts.filter((p) => postCategory(p)?.slug === c.slug).length,
+  })).filter((c) => c.count > 0);
 }
 
 // 관련 글: 같은 카테고리 우선, 모자라면 최신에서 채운다(현재 글 제외).
 export async function getRelated(post: WpPost, n = 3): Promise<WpPost[]> {
   const out: WpPost[] = [];
   const seen = new Set<number>([post.id]);
-  const cat = postCategory(post);
-  if (cat) {
-    const c = await getCategoryBySlug(cat.slug);
-    if (c) {
-      for (const p of await getPostsByCategory(c.id, n + 1)) {
-        if (!seen.has(p.id)) {
-          out.push(p);
-          seen.add(p.id);
-        }
-      }
-    }
-  }
-  if (out.length < n) {
-    for (const p of await getPosts(n + 3)) {
+  const catSlug = postCategory(post)?.slug;
+  const push = (list: WpPost[]) => {
+    for (const p of list) {
       if (out.length >= n) break;
       if (!seen.has(p.id)) {
         out.push(p);
         seen.add(p.id);
       }
     }
-  }
+  };
+  if (catSlug) push(await getPostsByCategorySlug(catSlug, n + 1));
+  if (out.length < n) push(await getPosts(n + 4));
   return out.slice(0, n);
 }
 
+// ---- 고정 페이지(개인정보·약관 등) ----
+
+let _pageCache: WpPost[] | null = null;
+function loadPages(): WpPost[] {
+  if (_pageCache) return _pageCache;
+  _pageCache = readDir(PAGES_DIR)
+    .map(toPost)
+    .filter((p) => p.slug);
+  return _pageCache;
+}
+
+export async function getPageBySlug(slug: string): Promise<WpPost | null> {
+  return loadPages().find((p) => p.slug === slug) ?? null;
+}
+
 export async function getAllPageSlugs(): Promise<string[]> {
-  const data = await wpGet<WpPost[]>(`/pages?per_page=100`);
-  return (data ?? []).map((p) => p.slug).filter(Boolean);
-}
-
-// 대표 이미지(featured) URL과 대체텍스트를 뽑는다.
-export function featuredImage(
-  post: WpPost,
-): { url: string; alt: string; width?: number; height?: number } | null {
-  const m = post._embedded?.["wp:featuredmedia"]?.[0];
-  if (!m?.source_url) return null;
-  return {
-    url: m.source_url,
-    alt: m.alt_text || stripHtml(post.title.rendered),
-    width: m.media_details?.width,
-    height: m.media_details?.height,
-  };
-}
-
-export function stripHtml(html: string): string {
-  return html
-    .replace(/<[^>]*>/g, "")
-    .replace(/&amp;/g, "&")
-    .replace(/&#8217;/g, "’")
-    .replace(/&#8216;/g, "‘")
-    .replace(/&#x27;/g, "'")
-    .replace(/&nbsp;/g, " ")
-    .replace(/&hellip;/g, "…")
-    .trim();
-}
-
-export function formatDate(iso: string): string {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "";
-  return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(
-    d.getDate(),
-  ).padStart(2, "0")}`;
+  return loadPages().map((p) => p.slug);
 }

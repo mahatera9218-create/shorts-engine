@@ -2,7 +2,7 @@
   "name": "astac-web",
   "version": "0.1.0",
   "private": true,
-  "description": "억선생의 경제판 — 헤드리스 프론트엔드 (워드프레스 REST를 읽어 Next.js로 렌더)",
+  "description": "일드레터 — Next.js 사이트 (저장소 글 파일을 읽어 정적 생성, 워드프레스 불필요)",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
