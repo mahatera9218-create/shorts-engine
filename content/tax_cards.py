@@ -153,7 +153,7 @@ def cover_card(out: Path, title: str, w: int = 1200, h: int = 630) -> Path:
     im = Image.new("RGB", (w, h), BG)
     d = ImageDraw.Draw(im)
     pad = 84
-    d.text((pad, 74), "일드레터", font=font("b", 40), fill=GOLD)
+    d.text((pad, 74), "Yield Briefing", font=font("b", 40), fill=GOLD)
     d.rectangle((pad, 140, pad + 128, 150), fill=GOLD)
     size = 76
     f = font("xb", size)

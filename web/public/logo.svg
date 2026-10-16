@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 184 40" role="img" aria-label="Yield Briefing">
+  <!-- mark: 바다 위 밝은 별 (astac) -->
+  <path d="M17 4 L20.5 11.5 L28 15 L20.5 18.5 L17 26 L13.5 18.5 L6 15 L13.5 11.5 Z" fill="#2f6df6"/>
+  <path d="M5 31 q6 -4 12 0 t12 0" fill="none" stroke="#9aa0a8" stroke-width="2" stroke-linecap="round"/>
+  <path d="M5 36 q6 -4 12 0 t12 0" fill="none" stroke="#c7ccd2" stroke-width="2" stroke-linecap="round"/>
+  <!-- wordmark -->
+  <text x="40" y="26" font-family="Pretendard, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="19" font-weight="800" letter-spacing="-0.6" fill="#16181d">Yield Briefing</text>
+</svg>
