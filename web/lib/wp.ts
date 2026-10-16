@@ -4,12 +4,12 @@
 export const WP_API_BASE =
   process.env.WP_API_BASE || "https://astacgroup.com/wp-json/wp/v2";
 
-export const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || "억선생의 경제판";
+export const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || "일드레터";
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://astacgroup.com";
 export const SITE_DESC =
   process.env.NEXT_PUBLIC_SITE_DESC ||
-  "세무·절세·연금을 쉽게 — 숫자로 정확하게 정리하는 경제 블로그.";
+  "재테크·부동산·세금·연금을 쉽게, 정확하게 정리합니다.";
 
 // 발행 전/후 반영 지연(초). 10분마다 최신 글을 다시 받아 온다(ISR).
 const REVALIDATE = 600;
@@ -84,9 +84,10 @@ export async function getAllPostSlugs(): Promise<string[]> {
 
 // 고정 카테고리 순서(네비게이션용). 실제 글 수는 WP에서 받아 합친다.
 export const CATEGORY_ORDER: Array<{ slug: string; name: string }> = [
-  { slug: "realty", name: "부동산·상속 세금" },
-  { slug: "saving", name: "절세·연금" },
-  { slug: "life", name: "생활·4대보험" },
+  { slug: "jaetech", name: "재테크" },
+  { slug: "realty", name: "부동산" },
+  { slug: "tax", name: "세금·절세" },
+  { slug: "pension", name: "연금·노후" },
 ];
 
 export async function getCategories(): Promise<WpCategory[]> {

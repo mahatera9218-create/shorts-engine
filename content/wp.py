@@ -29,11 +29,12 @@ from market.common import ROOT, missing_secrets, secret
 TITLE_RE = re.compile(r"^제목\s*[:：]\s*(.+)$")
 SLUG_RE = re.compile(r"^슬러그\s*[:：]\s*([A-Za-z0-9][A-Za-z0-9-]*)$")
 CATEGORY_RE = re.compile(r"^분류\s*[:：]\s*([A-Za-z0-9-]+)$")
-# 카테고리 slug → 표시 이름 (세무 클러스터). 발행 시 WP 카테고리를 만들어 붙인다.
+# 카테고리 slug → 표시 이름. 발행 시 WP 카테고리를 만들어 붙인다.
 CAT_NAMES = {
-    "realty": "부동산·상속 세금",
-    "saving": "절세·연금",
-    "life": "생활·4대보험",
+    "jaetech": "재테크",
+    "realty": "부동산",
+    "tax": "세금·절세",
+    "pension": "연금·노후",
 }
 BOLD_RE = re.compile(r"\*\*(.+?)\*\*")
 ORDERED_RE = re.compile(r"^\d+\.\s+(.+)$")

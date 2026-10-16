@@ -4,9 +4,10 @@
 const KEY = process.env.UNSPLASH_ACCESS_KEY || "";
 
 const QUERIES: Record<string, string> = {
+  jaetech: "investment stock market finance chart",
   realty: "apartment building city korea real estate",
-  saving: "money savings coins finance investment",
-  life: "tax documents calculator desk paperwork",
+  tax: "tax documents calculator desk paperwork",
+  pension: "retirement savings money coins piggy bank",
 };
 const DEFAULT_QUERY = "finance money economy";
 

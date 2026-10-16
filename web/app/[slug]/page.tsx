@@ -9,6 +9,7 @@ import {
   postCategory,
   stripHtml,
   formatDate,
+  SITE_NAME,
 } from "@/lib/wp";
 import { stockPhoto } from "@/lib/photos";
 import PostCard from "@/components/PostCard";
@@ -68,7 +69,7 @@ export default async function PostPage({
       ) : null}
       <h1 dangerouslySetInnerHTML={{ __html: post.title.rendered }} />
       <div className="byline">
-        <Link href="/p/about">억선생</Link>
+        <Link href="/p/about">{SITE_NAME}</Link>
         <span>·</span>
         <span>{formatDate(post.date)}</span>
       </div>
@@ -85,8 +86,7 @@ export default async function PostPage({
       />
 
       <div className="byline-foot">
-        글쓴이 <Link href="/p/about">억선생</Link> · 증시·부동산·세금 정보를 공식
-        자료로 정리합니다. 이 글은 일반 정보이며 개별 사안은 국세청(126)·세무
+        글쓴이 <Link href="/p/about">{SITE_NAME}</Link> · 재테크·부동산·세금 정보를 공식 자료로 정리합니다. 이 글은 일반 정보이며 개별 사안은 국세청(126)·세무
         전문가 확인을 권합니다.
       </div>
 
@@ -108,7 +108,7 @@ export default async function PostPage({
             "@context": "https://schema.org",
             "@type": "Article",
             headline: title,
-            author: { "@type": "Person", name: "억선생" },
+            author: { "@type": "Person", name: SITE_NAME },
             datePublished: post.date,
             dateModified: post.modified,
           }),
