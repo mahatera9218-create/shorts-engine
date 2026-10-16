@@ -2,7 +2,7 @@
   --bg: #ffffff;
   --fg: #16181d;
   --sub: #6b7079;
-  --muted: #9aa0a8;
+  --muted: #656b73;
   --line: #ededf0;
   --card: #ffffff;
   --cardline: #eceef1;
@@ -107,7 +107,7 @@ img { display: block; max-width: 100%; }
 .article .byline { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 15px; margin-bottom: 22px; }
 .article .byline a { color: var(--fg); font-weight: 700; }
 .article .hero { border-radius: var(--radius); overflow: hidden; margin: 0 0 26px; background: color-mix(in srgb, var(--sub) 10%, transparent); }
-.article .hero img { width: 100%; height: auto; }
+.article .hero img { width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; }
 .article-body { font-size: 17px; }
 .article-body h2 { font-size: 23px; letter-spacing: -.02em; margin: 1.9em 0 .55em; color: var(--fg); }
 .article-body h3 { font-size: 19px; margin: 1.5em 0 .5em; color: var(--fg); }
