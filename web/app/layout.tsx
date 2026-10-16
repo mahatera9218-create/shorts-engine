@@ -18,6 +18,7 @@ export const metadata: Metadata = {
   description: SITE_DESC,
   openGraph: { type: "website", siteName: SITE_NAME, locale: "ko_KR", url: SITE_URL },
   robots: { index: true, follow: true },
+  alternates: { types: { "application/rss+xml": `${SITE_URL}/rss.xml` } },
   // 검색엔진 소유확인(공개 토큰). 네이버 서치어드바이저.
   verification: {
     other: {
