@@ -49,6 +49,7 @@ jobs:
           WP_USER: ${{ secrets.WP_USER }}
           WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
         run: |
+          set -o pipefail   # tee 때문에 파이썬이 터져도 성공으로 보이던 문제 방지
           if [ "${{ inputs.force }}" = "true" ]; then FLAG=--force; else FLAG=""; fi
           python -m content.wp_drip $FLAG | tee -a "$GITHUB_STEP_SUMMARY"
 

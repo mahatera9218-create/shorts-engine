@@ -296,9 +296,18 @@ def upload_image(path: Path, *, alt: str = "") -> dict:
         resp = requests.post(endpoint, headers=headers, data=data, timeout=60)
     except requests.RequestException as e:
         raise RuntimeError(f"워드프레스 그림 업로드 연결 실패: {type(e).__name__}") from None
+    if resp.history:  # http→https 등 리다이렉트 시 POST가 GET으로 바뀌어 본문이 사라진다
+        raise RuntimeError(
+            f"그림 업로드가 리다이렉트됨(HTTP {resp.history[0].status_code} → {resp.url[:80]}). "
+            "WP_URL 비밀값을 최종 https 주소로 정확히 넣어야 한다.")
     if resp.status_code not in (200, 201):
         raise RuntimeError(f"그림 업로드 실패 HTTP {resp.status_code}: {resp.text[:200]}")
-    media = resp.json()
+    try:
+        media = resp.json()
+    except ValueError:
+        raise RuntimeError(
+            f"그림 업로드 응답이 JSON이 아님(HTTP {resp.status_code}, "
+            f"본문 {resp.text[:120]!r}). 미디어 업로드가 막혔을 수 있다.") from None
     mid = media.get("id")
     # 대체텍스트(alt)는 SEO·접근성·애드센스 심사에 중요 → 따로 채워 준다.
     if mid and alt:
@@ -389,10 +398,18 @@ def publish(title: str, content_html: str, *, status: str = "draft",
         resp = requests.post(endpoint, headers=_auth_header(), json=payload, timeout=30)
     except requests.RequestException as e:
         raise RuntimeError(f"워드프레스 연결 실패: {type(e).__name__}") from None
+    if resp.history:
+        raise RuntimeError(
+            f"발행 요청이 리다이렉트됨(HTTP {resp.history[0].status_code} → {resp.url[:80]}). "
+            "WP_URL 비밀값을 최종 https 주소로 정확히 넣어야 한다.")
     if resp.status_code not in (200, 201):
         # 응답 본문에 민감정보는 없지만, 길이를 제한해 둔다.
         raise RuntimeError(f"워드프레스 발행 실패 HTTP {resp.status_code}: {resp.text[:300]}")
-    data = resp.json()
+    try:
+        data = resp.json()
+    except ValueError:
+        raise RuntimeError(
+            f"발행 응답이 JSON이 아님(HTTP {resp.status_code}, 본문 {resp.text[:120]!r}).") from None
     return {"id": data.get("id"), "link": data.get("link"), "status": data.get("status")}
 
 
@@ -407,25 +424,40 @@ def publish_file(path: Path, *, status: str = "draft", slug: str | None = None,
     images: dict[str, str] = {}
     featured_media: int | None = None
     tmp = Path(tempfile.mkdtemp(prefix="wp_fig_"))
+
+    def _try_upload(p: Path, alt: str) -> dict | None:
+        """그림 업로드는 실패해도 글 발행을 막지 않는다. 사이트는 썸네일을 대체(Unsplash)로 채운다."""
+        try:
+            return upload_image(p, alt=alt)
+        except Exception as e:  # noqa: BLE001 (원인 로그만 남기고 계속)
+            if verbose:
+                print(f"[그림 건너뜀] {type(e).__name__}: {e}")
+            return None
+
     if tokens:
         for tok in tokens:
             png = render_figure(tok, tmp)
             alt = _figure_alt(tok)
-            up = upload_image(png, alt=alt)
-            images[tok] = _figure_html(up["source_url"], alt)
-            if featured_media is None and up.get("id"):
-                featured_media = up["id"]
-            if verbose:
-                print(f"[도식 업로드] {tok} → media #{up.get('id')}")
+            up = _try_upload(png, alt=alt)
+            if up:
+                images[tok] = _figure_html(up["source_url"], alt)
+                if featured_media is None and up.get("id"):
+                    featured_media = up["id"]
+                if verbose:
+                    print(f"[도식 업로드] {tok} → media #{up.get('id')}")
     # 대표 이미지가 없으면(글·페이지 공통) 제목 표지 카드를 코드로 만들어 썸네일로 쓴다.
     if featured_media is None and kind == "post":
         from content import tax_cards
         cover = tax_cards.cover_card(tmp / "cover.png", title)
-        up = upload_image(cover, alt=title)
-        if up.get("id"):
+        up = _try_upload(cover, alt=title)
+        if up and up.get("id"):
             featured_media = up["id"]
             if verbose:
                 print(f"[표지 업로드] media #{up.get('id')}")
+    # 업로드 못 한 도식 토큰은 본문에서 지운다(라이브 글에 '발행 시…' 자리표가 남지 않게).
+    for tok in tokens:
+        if tok not in images:
+            body = re.sub(r"[ \t]*\[\[도식:" + re.escape(tok) + r"\]\][ \t]*\n?", "", body)
     content_html = md_to_html(body, images)
     categories = None
     if kind == "post":
