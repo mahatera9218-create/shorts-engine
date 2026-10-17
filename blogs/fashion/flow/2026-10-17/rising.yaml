@@ -1,93 +1,93 @@
 date: '2026-10-17'
-updated: 08:04
+updated: '10:28'
 items:
+- kw: 이영애
+  rise: 4.9
+  volume: 87900
+  named: true
+  blog24h: 100
+  score: 126
 - kw: 김수현
-  rise: 4.25
+  rise: 2.09
   volume: 133800
   named: true
-  blog24h: 26
-  score: 114
+  blog24h: 49
+  score: 118
 - kw: 정호연
-  rise: 1.87
+  rise: 2.38
   volume: 23410
   named: true
-  blog24h: 17
-  score: 94
+  blog24h: 25
+  score: 103
+- kw: 사나
+  rise: 1.27
+  volume: 21260
+  named: true
+  blog24h: 100
+  score: 74
+- kw: 조이
+  rise: 1.22
+  volume: 28680
+  named: true
+  blog24h: 100
+  score: 73
+- kw: 박보영
+  rise: 1.24
+  volume: 84100
+  named: true
+  blog24h: 53
+  score: 71
+- kw: 한고은
+  rise: 1.28
+  volume: 35440
+  named: true
+  blog24h: 59
+  score: 69
 - kw: 금시세
-  rise: 1.38
+  rise: 1.31
   volume: 4158800
   named: false
   blog24h: 100
-  score: 68
-- kw: 지민
-  rise: 1.31
-  volume: 26630
-  named: true
-  blog24h: 47
-  score: 67
-- kw: 뷔
-  rise: 1.31
-  volume: 71180
-  named: true
-  blog24h: 18
-  score: 67
-- kw: 금값
-  rise: 1.33
-  volume: 940700
+  score: 64
+- kw: 금값시세
+  rise: 1.29
+  volume: 2766700
   named: false
   blog24h: 100
-  score: 64
+  score: 62
 - kw: 오늘의금시세
-  rise: 1.35
+  rise: 1.3
   volume: 677100
   named: false
   blog24h: 100
-  score: 64
+  score: 61
+- kw: 금값
+  rise: 1.25
+  volume: 940700
+  named: false
+  blog24h: 100
+  score: 60
 - kw: 오늘금시세
-  rise: 1.27
+  rise: 1.24
   volume: 817200
   named: false
   blog24h: 100
-  score: 60
-- kw: 박은빈
-  rise: 1.22
-  volume: 81800
-  named: true
-  blog24h: 5
-  score: 60
-- kw: 금값시세
-  rise: 1.34
-  volume: 2766700
-  named: false
-  blog24h: 64
   score: 58
-- kw: 오늘의금값
-  rise: 1.26
-  volume: 165970
-  named: false
-  blog24h: 100
-  score: 50
 - kw: 경량패딩
-  rise: 1.26
+  rise: 1.32
   volume: 151400
   named: false
   blog24h: 100
-  score: 50
+  score: 53
 - kw: 순금시세
-  rise: 1.3
+  rise: 1.23
   volume: 356500
   named: false
-  blog24h: 46
-  score: 46
-- kw: 오늘금값시세
-  rise: 1.41
-  volume: 25130
+  blog24h: 83
+  score: 49
+- kw: 오늘의금값
+  rise: 1.23
+  volume: 165970
   named: false
-  blog24h: 64
-  score: 41
-- kw: 오늘의금값시세
-  rise: 1.27
-  volume: 82940
-  named: false
-  blog24h: 64
-  score: 40
+  blog24h: 100
+  score: 48
