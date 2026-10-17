@@ -1,0 +1,64 @@
+# 사이트 무게 점검 — 빌드해서 페이지별 HTML·첫 로드 JS·인라인 CSS를 재고 예산과 비교한다.
+# - web/ 변경이 main에 올라올 때와 매주 월요일 08:05 KST에 실행. 예산 초과 시 실패(빨간 X)로 알린다.
+# - 주간 실행(스케줄·수동)은 reports/사이트무게.md 에 날짜별 한 줄을 남긴다.
+name: 사이트 무게 점검
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["web/**", "content/site_weight.py"]
+  schedule:
+    - cron: "5 23 * * 0"   # KST 월요일 08:05
+
+permissions:
+  contents: write
+
+concurrency:
+  group: site-weight
+  cancel-in-progress: true
+
+jobs:
+  weight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+      TZ: Asia/Seoul
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: 준비
+        run: |
+          pip install -r requirements.txt
+          cd web && npm ci
+      - name: 빌드
+        run: cd web && npx next build
+      - name: 도구 계산 테스트
+        run: cd web && npm test
+      - name: 무게 점검
+        run: |
+          set -o pipefail
+          if [ "${{ github.event_name }}" = "push" ]; then REC=""; else REC="--record"; fi
+          python -m content.site_weight $REC | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: 기록 커밋
+        if: github.event_name != 'push'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/사이트무게.md
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "사이트 무게 기록 ($(date +%F))"
+          for i in 1 2 3 4; do
+            git pull --rebase --autostash origin main && git push origin HEAD:main && exit 0
+            sleep $((i * 3))
+          done
+          exit 1
