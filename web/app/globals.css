@@ -262,3 +262,13 @@ a.rank-name:hover { color: var(--accent); }
 .hub-more summary::-webkit-details-marker { display: none; }
 .hub-more[open] summary { color: var(--sub); }
 .hub-more[open] summary::after { content: " 접기"; }
+
+/* 모바일 보정(2026-10-17): 한글 단어 중간 줄바꿈 방지, 순위 비교표 가로 스크롤, 탭 한 줄에 맞춤 */
+body { word-break: keep-all; overflow-wrap: break-word; }
+.article figure.wp-block-table { margin: 1.2em 0; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.article figure.wp-block-table table { border-collapse: collapse; min-width: 540px; width: 100%; font-size: 14.5px; margin: 0; }
+.article figure.wp-block-table th, .article figure.wp-block-table td { border: 1px solid var(--line); padding: 9px 10px; text-align: left; white-space: nowrap; }
+.article figure.wp-block-table th { background: color-mix(in srgb, var(--sub) 8%, transparent); }
+.rank-tabs { gap: 6px; }
+.rank-tab { padding: 8px 13px; font-size: 14.5px; }
+.rank-num { flex: 0 0 auto; }

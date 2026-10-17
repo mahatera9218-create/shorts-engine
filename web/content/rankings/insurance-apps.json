@@ -37,9 +37,9 @@
   ],
   "apps": [
     {
-      "slug": "naebohum-dabeoyeo",
-      "name": "내보험다보여",
-      "tag": "내 보험 조회(공식 서비스)",
+      "slug": "naebohum-chajajum",
+      "name": "내보험찾아줌(생·손보협회 공식 조회)",
+      "tag": "가입 계약·숨은 보험금 조회(공식 서비스)",
       "scores": {},
       "summary": "평가 대기 — 공개 자료 확인 후 점수를 공개합니다.",
       "pros": [],
