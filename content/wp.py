@@ -67,7 +67,8 @@ def parse_draft(path: Path) -> tuple[str, str]:
     body_lines = lines[start:]
     while body_lines and (not body_lines[0].strip() or body_lines[0].strip() == "---"
                           or SLUG_RE.match(body_lines[0].strip())
-                          or CATEGORY_RE.match(body_lines[0].strip())):
+                          or CATEGORY_RE.match(body_lines[0].strip())
+                          or re.match(r"^검증:\s*\S+", body_lines[0].strip())):
         body_lines.pop(0)
     return title, "\n".join(body_lines).strip()
 

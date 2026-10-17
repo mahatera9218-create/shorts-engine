@@ -3,7 +3,7 @@
 - 큐: reports/구글글-초안/*.md  (제목/슬러그/분류 머리글 + 마크다운 본문)
 - 결과: web/content/posts/<slug>.md  (frontmatter + 변환된 HTML 본문)
 - 이미 발행된 slug(web/content/posts/에 파일 있음)는 건너뛴다 → 중복 방지.
-- 하루 상한(기본 3) 안에서 1편 발행. --force면 상한 무시. --max N 으로 여러 편(초기 씨딩).
+- 하루 상한 2편(오전 1·오후 1) 안에서 구간당 1편 발행. 초안 머리글 '검증:'이 확인됨/부분확인이 아니면 발행하지 않는다. --force면 상한 무시. --max N 으로 여러 편(초기 씨딩).
 - 도식(그림) 토큰은 이미지 호스팅이 없어 본문에서 제거한다. 진짜 데이터 표(<table>)는 그대로 유지.
 - 대표 사진은 사이트가 주제별 실사진(Unsplash)으로 자동 표시한다(발행기는 신경 쓰지 않는다).
 
@@ -33,10 +33,40 @@ KST = timezone(timedelta(hours=9))
 
 
 def daily_max() -> int:
-    """하루 발행 상한. 전환 당일(2026-10-16)만 2편(대표 요청: 오늘 2편 테스트 후 마감),
-    그 뒤로는 하루 3편(오전·점심·오후 불규칙)."""
-    today = datetime.now(KST).strftime("%Y-%m-%d")
-    return 2 if today == "2026-10-16" else 3
+    """하루 발행 상한 2편(오전 1 + 오후 1, 2026-10-17 대표 결정: 애드센스 승인 전 속도 조절)."""
+    return 2
+
+
+PM_START_HOUR = 12  # KST 12시 이전=오전 구간, 이후=오후 구간
+
+
+def slot_of(hour: int) -> str:
+    return "am" if hour < PM_START_HOUR else "pm"
+
+
+def slot_filled(now: datetime | None = None) -> bool:
+    """지금 구간(오전/오후)에 오늘 이미 발행된 글이 있는가. 구간마다 1편만 나가게 한다."""
+    now = now or datetime.now(KST)
+    today = now.strftime("%Y-%m-%d")
+    cur = slot_of(now.hour)
+    for f in POSTS_OUT.glob("*.md") if POSTS_OUT.exists() else []:
+        m = re.search(r"^date:\s*(\d{4}-\d{2}-\d{2})T(\d{2})", f.read_text(encoding="utf-8"), re.M)
+        if m and m.group(1) == today and slot_of(int(m.group(2))) == cur:
+            return True
+    return False
+
+
+def draft_verification(path: Path) -> str:
+    """초안 윗부분의 '검증: 확인됨|부분확인|미확인' 줄. 줄이 없으면 '미확인'으로 본다(검증 전 발행 금지)."""
+    for line in path.read_text(encoding="utf-8").splitlines()[:8]:
+        m = re.match(r"^검증:\s*(\S+)", line.strip())
+        if m:
+            return m.group(1)
+    return "미확인"
+
+
+def is_publishable(path: Path) -> bool:
+    return draft_verification(path) in ("확인됨", "부분확인")
 
 
 def publish_pages() -> int:
@@ -79,6 +109,9 @@ def next_draft(existing: set[str]) -> tuple[Path | None, str | None]:
     for f in sorted(QUEUE.glob("*.md")):
         slug = wp.draft_slug(f)
         if not slug or slug in existing:
+            continue
+        if not is_publishable(f):
+            print(f"[보류] {f.name}: 숫자 검증 전('검증:' 줄이 없거나 미확인)")
             continue
         return f, slug
     return None, None
@@ -164,6 +197,9 @@ def main(argv: list[str] | None = None) -> int:
         cap = daily_max()
         if not args.force and published_today() + published >= cap:
             print(f"오늘 목표 채움({published_today()}/{cap}편).")
+            break
+        if not args.force and (published > 0 or slot_filled()):
+            print("이번 구간(오전/오후)에는 이미 발행했습니다.")
             break
         f, slug = next_draft(existing)
         if not f:
