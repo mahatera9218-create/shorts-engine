@@ -35,7 +35,7 @@ export default async function ToolShell({
       <AdSlot />
 
       <h2>계산·판정 기준 (출처)</h2>
-      <figure className="wp-block-table">
+      <figure className="wp-block-table basis">
         <table>
           <thead><tr><th>규칙</th><th>값</th><th>출처</th></tr></thead>
           <tbody>

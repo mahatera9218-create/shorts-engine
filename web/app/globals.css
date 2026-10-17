@@ -328,3 +328,5 @@ body { word-break: keep-all; overflow-wrap: break-word; }
 .tr-warn { background: color-mix(in srgb, #e0a020 10%, transparent); border-color: color-mix(in srgb, #e0a020 40%, var(--line)); }
 .tr-info { background: color-mix(in srgb, var(--accent) 7%, transparent); }
 .tr-note { font-size: 13px; color: var(--muted); margin-top: 8px; }
+.article figure.basis table { min-width: 0; }
+.article figure.basis th, .article figure.basis td { white-space: normal; vertical-align: top; }
