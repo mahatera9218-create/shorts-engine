@@ -307,3 +307,24 @@ body { word-break: keep-all; overflow-wrap: break-word; }
 .spark-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 12px; color: var(--accent); }
 .spark-item span { color: var(--fg); font-weight: 600; font-size: 14px; }
 .spark { width: 55%; max-width: 260px; height: 44px; }
+
+/* 판정·비교 도구 */
+.tf { margin: 16px 0; }
+.tf-label { display: block; font-weight: 700; font-size: 15.5px; margin-bottom: 4px; }
+.tf-hint { font-size: 13px; color: var(--muted); margin-bottom: 8px; line-height: 1.5; }
+.tf-num { display: flex; align-items: center; gap: 8px; }
+.tf-num input { flex: 1; min-width: 0; font-size: 18px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: transparent; color: var(--fg); }
+.tf-num span { color: var(--sub); font-weight: 600; }
+.tf-choice { display: flex; flex-wrap: wrap; gap: 8px; }
+.tf-choice button { padding: 10px 14px; border-radius: 12px; font-size: 14.5px; font-weight: 600; border: 1px solid var(--line); background: transparent; color: var(--sub); cursor: pointer; text-align: left; }
+.tf-choice button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.tr { margin: 22px 0; padding: 16px; border-radius: 14px; border: 1px solid var(--line); }
+.tr-title { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
+.tr-body { font-size: 15px; line-height: 1.65; color: var(--fg); }
+.tr-body table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 14.5px; }
+.tr-body th, .tr-body td { border-bottom: 1px solid var(--line); padding: 8px 4px; text-align: left; }
+.tr-body td:last-child, .tr-body th:last-child { text-align: right; white-space: nowrap; }
+.tr-good { background: color-mix(in srgb, #1a9f5a 8%, transparent); border-color: color-mix(in srgb, #1a9f5a 35%, var(--line)); }
+.tr-warn { background: color-mix(in srgb, #e0a020 10%, transparent); border-color: color-mix(in srgb, #e0a020 40%, var(--line)); }
+.tr-info { background: color-mix(in srgb, var(--accent) 7%, transparent); }
+.tr-note { font-size: 13px; color: var(--muted); margin-top: 8px; }
