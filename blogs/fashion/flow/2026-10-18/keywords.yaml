@@ -1,0 +1,267 @@
+date: '2026-10-18'
+items:
+- kw: 이영애 정호영 패션
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 1
+  score: 15
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+    최신: 15
+    유튜브: 0
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 19
+    월검색: 10
+    상승: 1.0
+    유튜브7일: 0
+- kw: 김민하 샤넬 듀오립
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 2
+  score: 15
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+    최신: 15
+    유튜브: 0
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 1
+    월검색: 10
+    상승: 1.0
+    유튜브7일: 0
+- kw: 전소민 롱샴 숄더백 120만원
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 3
+  score: 15
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+    최신: 15
+    유튜브: 0
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 4
+    월검색: 10
+    상승: 1.0
+    유튜브7일: 0
+- kw: 고현정 가방 3만원대
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 4
+  score: 12
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+    최신: 11
+    유튜브: 1
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 4
+    월검색: 10
+    상승: 1.0
+    유튜브7일: 1
+- kw: 하희라 최수종 부부 옷차림
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 6
+  score: 12
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+    최신: 11
+    유튜브: 1
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 8
+    월검색: 10
+    상승: 1.0
+    유튜브7일: 1
+- kw: 손담비 샤넬 트레이닝복 30만원대
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 5
+  score: 11
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+    최신: 11
+    유튜브: 0
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 0
+    월검색: 10
+    상승: 1.0
+    유튜브7일: 0
+- kw: 리사 루이비통 전통의상
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 10
+  score: 10
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+    최신: 8
+    유튜브: 2
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 5
+    월검색: 10
+    상승: 1.0
+    유튜브7일: 3
+- kw: 한소희 스포티 롱부츠
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 8
+  score: 9
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 1
+    검색: 0
+    최신: 8
+    유튜브: 0
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 1
+    뉴스6h: 0
+    블로그24h: 2
+    월검색: 10
+    상승: 1.0
+    유튜브7일: 0
+- kw: 김지원 올블랙 패션
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 7
+  score: 9
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+    최신: 8
+    유튜브: 1
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 7
+    월검색: 10
+    상승: 1.0
+    유튜브7일: 2
+- kw: 혜리 후드집업
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 9
+  score: 8
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+    최신: 8
+    유튜브: 0
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 0
+    월검색: 10
+    상승: 1.0
+    유튜브7일: 0
+updated: 08:20
+aside:
+  at: 08:20
+  n: 10
+  list:
+  - 이영애 정호영 패션
+  - 김민하 샤넬 듀오립
+  - 전소민 롱샴 숄더백 120만원
+  - 고현정 가방 3만원대
+  - 손담비 샤넬 트레이닝복 30만원대
+  - 하희라 최수종 부부 옷차림
+  - 김지원 올블랙 패션
+  - 한소희 스포티 롱부츠
+  - 혜리 후드집업
+  - 리사 루이비통 전통의상
