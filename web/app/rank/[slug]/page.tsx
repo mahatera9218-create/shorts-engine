@@ -5,6 +5,7 @@ import { getRanking, getAllRankingSlugs } from "@/lib/rankings";
 import { SITE_NAME } from "@/lib/wp";
 import AdSlot from "@/components/AdSlot";
 import RankTabs from "@/components/RankTabs";
+import ScoreCompare from "@/components/ScoreCompare";
 
 export const dynamicParams = false;
 
@@ -76,26 +77,7 @@ export default function RankingPage({ params }: { params: { slug: string } }) {
 
       {r.apps.some((a) => !a.pending) ? (<>
       <h2>항목별 점수 비교</h2>
-      <figure className="wp-block-table">
-        <table>
-          <thead>
-            <tr>
-              <th>대상</th>
-              {r.criteria.map((c) => <th key={c.key}>{c.name}</th>)}
-              <th>종합</th>
-            </tr>
-          </thead>
-          <tbody>
-            {r.apps.filter((a) => !a.pending).map((a) => (
-              <tr key={a.slug}>
-                <td><Link href={`/rank/${r.slug}/${a.slug}`}><b>{a.name}</b></Link></td>
-                {r.criteria.map((c) => <td key={c.key}>{(a.scores[c.key] ?? 0).toFixed(1)}</td>)}
-                <td><b>{a.total.toFixed(1)}</b></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </figure>
+      <ScoreCompare r={r} />
       </>) : null}
 
       <h2 id="methodology">평가 방법 (투명 공개)</h2>

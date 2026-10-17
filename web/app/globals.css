@@ -272,3 +272,17 @@ body { word-break: keep-all; overflow-wrap: break-word; }
 .rank-tabs { gap: 6px; }
 .rank-tab { padding: 8px 13px; font-size: 14.5px; }
 .rank-num { flex: 0 0 auto; }
+
+/* 항목별 점수 비교(항목 카드 + 막대) */
+.cmp { display: flex; flex-direction: column; gap: 12px; margin: 14px 0 6px; }
+.cmp-card { border: 1px solid var(--line); border-radius: 14px; padding: 14px 14px 8px; }
+.cmp-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.cmp-head h3 { margin: 0; font-size: 16px; }
+.cmp-head span { font-size: 12.5px; color: var(--muted); }
+.cmp-row { display: grid; grid-template-columns: minmax(84px, 36%) 1fr 34px; align-items: center; gap: 10px; padding: 7px 0; }
+.cmp-name { font-size: 14px; font-weight: 600; color: var(--fg); line-height: 1.3; }
+.cmp-bar { height: 8px; border-radius: 99px; background: color-mix(in srgb, var(--sub) 14%, transparent); overflow: hidden; }
+.cmp-bar i { display: block; height: 100%; border-radius: 99px; background: color-mix(in srgb, var(--accent) 45%, transparent); }
+.cmp-row.lead .cmp-bar i { background: var(--accent); }
+.cmp-val { font-size: 14px; text-align: right; color: var(--sub); font-weight: 700; }
+.cmp-row.lead .cmp-val { color: var(--accent); }

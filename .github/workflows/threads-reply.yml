@@ -5,8 +5,9 @@ name: Threads 댓글 후보
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "37 1 * * *"    # KST 10:37 하루 1회
+  # 자동 스케줄 끔(2026-10-17 대표 지시, Threads 보류). 토큰 발급 후 아래 주석을 풀면 다시 돈다.
+  # schedule:
+  #   - cron: "37 1 * * *"    # KST 10:37 하루 1회
 
 permissions:
   contents: write
@@ -40,7 +41,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add reports/threads-reply-queue.md reports/threads-reply-seen.json reports/costs.csv
+          git add reports/threads-reply-queue.md reports/threads-reply-seen.json reports/costs.csv 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "새 후보 없음." >> "$GITHUB_STEP_SUMMARY"; exit 0
           fi
