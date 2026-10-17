@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getPosts, getAllPageSlugs, postCategory, SITE_URL, CATEGORY_ORDER } from "@/lib/wp";
+import { TOOLS } from "@/lib/tools/registry";
 
 export const revalidate = 3600;
 
@@ -19,5 +20,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     url: `${SITE_URL}/category/${c.slug}`,
     lastModified: posts.find((p) => postCategory(p)?.slug === c.slug)?.modified,
   }));
-  return [{ url: SITE_URL }, ...catUrls, ...postUrls, ...pageUrls];
+  const toolUrls = TOOLS.some((t) => t.published)
+    ? [{ url: `${SITE_URL}/tools` }, ...TOOLS.filter((t) => t.published).map((t) => ({ url: `${SITE_URL}/tools/${t.slug}`, lastModified: t.checked }))]
+    : [];
+  return [{ url: SITE_URL }, ...catUrls, ...toolUrls, ...postUrls, ...pageUrls];
 }

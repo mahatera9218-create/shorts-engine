@@ -15,6 +15,7 @@ import {
 import { stockPhoto, stockPhotos } from "@/lib/photos";
 import PostCard from "@/components/PostCard";
 import Thumb from "@/components/Thumb";
+import { toolsForPost } from "@/lib/tools/registry";
 import { sized } from "@/lib/imgsize";
 
 export const revalidate = 600;
@@ -146,6 +147,17 @@ export default async function PostPage({
         className="article-body"
         dangerouslySetInnerHTML={{ __html: bodyHtml }}
       />
+
+      {toolsForPost(post.slug).length > 0 ? (
+        <section className="tool-callout">
+          <b>내 경우는 어떨까? 바로 판정해 보기</b>
+          <ul>
+            {toolsForPost(post.slug).map((t) => (
+              <li key={t.slug}><Link href={`/tools/${t.slug}`}>{t.short} →</Link> <small>({t.audience})</small></li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
       <div className="byline-foot">
         글쓴이 <Link href="/p/about">{SITE_NAME}</Link> · 재테크·부동산·세금 정보를 공식 자료로 정리합니다. 이 글은 일반 정보이며 개별 사안은 국세청(126)·세무

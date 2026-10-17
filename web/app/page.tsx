@@ -41,6 +41,11 @@ export default async function Home() {
         ))}
       </div>
 
+      <Link href="/tools" className="tool-strip">
+        <b>🧮 내 경우 바로 판정</b>
+        <span>월세 분리과세 · 셀러 간이과세 · 피부양자 자격 · 사업자등록</span>
+      </Link>
+
       {posts.length === 0 ? (
         <p className="empty">
           아직 발행된 글이 없습니다. 워드프레스에서 글을 공개하면 여기에 나타납니다.

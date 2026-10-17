@@ -59,6 +59,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link href="/p/terms" prefetch={false}>이용약관</Link>
               <Link href="/p/disclaimer" prefetch={false}>면책조항</Link>
               <Link href="/p/contact" prefetch={false}>연락처</Link>
+              <Link href="/p/editorial" prefetch={false}>편집 원칙</Link>
+              <Link href="/tools" prefetch={false}>판정 도구</Link>
               <Link href="/p/about" prefetch={false}>소개</Link>
             </div>
             © {new Date().getFullYear()} {SITE_NAME} · 일반 정보 제공 목적이며 개별

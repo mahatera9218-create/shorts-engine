@@ -330,3 +330,10 @@ body { word-break: keep-all; overflow-wrap: break-word; }
 .tr-note { font-size: 13px; color: var(--muted); margin-top: 8px; }
 .article figure.basis table { min-width: 0; }
 .article figure.basis th, .article figure.basis td { white-space: normal; vertical-align: top; }
+
+/* 도구 안내(홈 띠·글 하단 상자) */
+.tool-strip { display: flex; flex-direction: column; gap: 3px; margin: 4px 0 14px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 14px; background: color-mix(in srgb, var(--accent) 6%, transparent); color: var(--fg); }
+.tool-strip span { font-size: 13px; color: var(--sub); }
+.tool-callout { margin: 26px 0 8px; padding: 14px 16px; border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line)); border-radius: 14px; background: color-mix(in srgb, var(--accent) 6%, transparent); }
+.tool-callout ul { margin: 8px 0 0; padding-left: 18px; }
+.tool-callout small { color: var(--muted); }
