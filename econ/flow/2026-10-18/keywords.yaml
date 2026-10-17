@@ -1,0 +1,497 @@
+date: '2026-10-18'
+items:
+- kw: 필라델피아 반도체지수
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 7
+  score: 68
+  parts:
+    급상승: 30
+    출처: 0
+    뉴스: 9
+    검색: 13
+    최신: 8
+    유튜브: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 44
+    뉴스6h: 5
+    블로그24h: 97
+    월검색: 314600
+    상승: 1.99
+    유튜브7일: 45075
+- kw: 한미반도체 주가
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 3
+  score: 64
+  parts:
+    급상승: 26
+    출처: 0
+    뉴스: 1
+    검색: 14
+    최신: 15
+    유튜브: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 3
+    뉴스6h: 1
+    블로그24h: 31
+    월검색: 726800
+    상승: 1.86
+    유튜브7일: 44640
+- kw: 테슬라 스페이스X 합병
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 6
+  score: 57
+  parts:
+    급상승: 30
+    출처: 0
+    뉴스: 5
+    검색: 3
+    최신: 11
+    유튜브: 8
+  new: true
+  surge: true
+  stats:
+    뉴스24h: 26
+    뉴스6h: 2
+    블로그24h: 43
+    월검색: 550
+    상승: 6.69
+    유튜브7일: 3083
+- kw: 아이폰 듀오 가격
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 20
+  score: 50
+  parts:
+    급상승: 27
+    출처: 0
+    뉴스: 6
+    검색: 9
+    유튜브: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 28
+    뉴스6h: 9
+    블로그24h: 100
+    월검색: 32690
+    상승: 1.89
+    유튜브7일: 24941
+- kw: 한화에어로스페이스 주가
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 4
+  score: 49
+  parts:
+    급상승: 19
+    출처: 0
+    뉴스: 0
+    검색: 11
+    최신: 11
+    유튜브: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 2
+    뉴스6h: 0
+    블로그24h: 21
+    월검색: 66800
+    상승: 1.65
+    유튜브7일: 28500
+- kw: 미국 9월 CPI
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 16
+  score: 48
+  parts:
+    급상승: 30
+    출처: 0
+    뉴스: 8
+    검색: 2
+    유튜브: 8
+  new: true
+  surge: true
+  stats:
+    뉴스24h: 41
+    뉴스6h: 8
+    블로그24h: 100
+    월검색: 280
+    상승: 6.23
+    유튜브7일: 64177
+- kw: 아크메르 동탄 분양가
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 13
+  score: 44
+  parts:
+    급상승: 30
+    출처: 0
+    뉴스: 1
+    검색: 8
+    유튜브: 5
+  new: true
+  surge: true
+  stats:
+    뉴스24h: 6
+    뉴스6h: 0
+    블로그24h: 47
+    월검색: 16730
+    상승: 4.92
+    유튜브7일: 36
+- kw: 반대매매 3000억
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 2
+  score: 34
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 7
+    검색: 5
+    최신: 15
+    유튜브: 7
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 34
+    뉴스6h: 1
+    블로그24h: 22
+    월검색: 2555
+    상승: 1.0
+    유튜브7일: 157
+- kw: 이더리움 시세
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 10
+  score: 32
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 3
+    검색: 13
+    최신: 8
+    유튜브: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 16
+    뉴스6h: 6
+    블로그24h: 20
+    월검색: 325400
+    상승: 0.96
+    유튜브7일: 22093
+- kw: 삼성전자 7만원 전망
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 1
+  score: 25
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 2
+    검색: 0
+    최신: 15
+    유튜브: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 9
+    뉴스6h: 3
+    블로그24h: 100
+    월검색: 10
+    상승: 1.0
+    유튜브7일: 11883
+- kw: 금값 전망
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 8
+  score: 17
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 2
+    검색: 7
+    최신: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 10
+    뉴스6h: 3
+    블로그24h: 52
+    월검색: 7000
+    상승: 0.86
+- kw: 코어위브 주가 폭락
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 5
+  score: 15
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 4
+    검색: 0
+    최신: 11
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 20
+    뉴스6h: 6
+    블로그24h: 100
+    월검색: 105
+    상승: 1.0
+- kw: 비트코인 8만달러
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 9
+  score: 14
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 4
+    검색: 2
+    최신: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 21
+    뉴스6h: 1
+    블로그24h: 100
+    월검색: 420
+    상승: 1.0
+- kw: 국민연금 평균 수령액
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 19
+  score: 11
+  parts:
+    급상승: 11
+    출처: 0
+    뉴스: 0
+    검색: 0
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 1
+    뉴스6h: 1
+    블로그24h: 100
+    월검색: 10
+    상승: 1.36
+- kw: 예금 금리 연 4%
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 17
+  score: 3
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 3
+    검색: 0
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 13
+    뉴스6h: 7
+    블로그24h: 81
+    월검색: 10
+    상승: 1.0
+- kw: 토허제 연장
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 11
+  score: 2
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 0
+    검색: 2
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 2
+    뉴스6h: 1
+    블로그24h: 9
+    월검색: 260
+    상승: 1.0
+- kw: 정비구역 해제 389곳
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 14
+  score: 1
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 1
+    검색: 0
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 5
+    뉴스6h: 1
+    블로그24h: 18
+    월검색: 10
+    상승: 1.0
+- kw: 휘발유값 22주 하락
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 18
+  score: 1
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 1
+    검색: 0
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 3
+    뉴스6h: 2
+    블로그24h: 26
+    월검색: 10
+    상승: 1.0
+- kw: 서울 중간가격대 아파트값
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 12
+  score: 0
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 2
+    뉴스6h: 0
+    블로그24h: 100
+    월검색: 10
+    상승: 1.0
+- kw: 원달러 환율 1337원
+  area: ''
+  src: 어사이드
+  why: 어사이드 · 네이버 홈판·인기글
+  rows: []
+  sources:
+    어사이드: 1
+  naver_rank: 15
+  score: 0
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 0
+    검색: 0
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 0
+    뉴스6h: 0
+    블로그24h: 0
+    월검색: 10
+    상승: 1.0
+updated: 08:18
+aside:
+  at: 08:18
+  n: 20
+  list:
+  - 삼성전자 7만원 전망
+  - 반대매매 3000억
+  - 한미반도체 주가
+  - 한화에어로스페이스 주가
+  - 코어위브 주가 폭락
+  - 테슬라 스페이스X 합병
+  - 필라델피아 반도체지수
+  - 금값 전망
+  - 비트코인 8만달러
+  - 이더리움 시세
+  - 토허제 연장
+  - 서울 중간가격대 아파트값
+  - 아크메르 동탄 분양가
+  - 정비구역 해제 389곳
+  - 원달러 환율 1337원
+  - 미국 9월 CPI
+  - 예금 금리 연 4%
+  - 휘발유값 22주 하락
+  - 국민연금 평균 수령액
+  - 아이폰 듀오 가격
