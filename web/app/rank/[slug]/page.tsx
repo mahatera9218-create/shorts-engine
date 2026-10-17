@@ -67,6 +67,7 @@ export default function RankingPage({ params }: { params: { slug: string } }) {
                 <div className="rank-score">{a.pending ? <span>평가 대기</span> : <>{a.total.toFixed(1)}<span>/5</span></>}</div>
               </div>
               <p className="rank-note">{a.summary}</p>
+              {typeof a.coverage === "number" ? <p className="cmp-ev" style={{ padding: 0, marginBottom: 8 }}>근거 확인된 항목 {a.coverage}/{r.criteria.length}개</p> : null}
               <Link href={`/rank/${r.slug}/${a.slug}`} className="rank-link">
                 {a.name} 자세히 보기 →
               </Link>

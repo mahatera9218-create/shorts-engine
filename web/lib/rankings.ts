@@ -8,6 +8,13 @@ export interface Criterion {
   name: string;
   weight: number;
 }
+export interface Evidence {
+  type: "auto" | "manual";
+  source: string;
+  label: string;
+  url?: string;
+  checked: string;
+}
 export interface RankApp {
   slug: string;
   name: string;
@@ -21,6 +28,8 @@ export interface RankApp {
   total: number;
   rank: number;
   pending?: boolean;
+  evidence?: Record<string, Evidence>;
+  coverage?: number;
 }
 export interface Ranking {
   slug: string;
@@ -31,10 +40,13 @@ export interface Ranking {
   intro: string;
   updated: string;
   beta: boolean;
-  status?: "example" | "pending" | "verified";
+  status?: "example" | "beta" | "pending" | "verified";
   criteria: Criterion[];
   apps: RankApp[];
 }
+
+// 근거 있는 점수가 이 개수 미만이면 순위를 매기지 않고 "평가 대기"로 둔다.
+export const MIN_COVERAGE = 3;
 
 const RANK_DIR = path.join(process.cwd(), "content", "rankings");
 
@@ -59,13 +71,17 @@ function load(slug: string): Ranking | null {
     return null;
   }
   const data = JSON.parse(raw) as Ranking;
-  const scored = data.apps
+  const covered = data.apps.map((a) => {
+    const coverage = data.criteria.filter((c) => typeof a.scores?.[c.key] === "number").length;
+    return { ...a, scores: a.scores ?? {}, coverage, pending: a.pending || coverage < MIN_COVERAGE };
+  });
+  const scored = covered
     .filter((a) => !a.pending)
     .map((a) => ({ ...a, total: weightedTotal(a.scores, data.criteria), rank: 0 }))
     .sort((a, b) => b.total - a.total)
     .map((a, i) => ({ ...a, rank: i + 1 }));
   // 평가 대기 후보는 순위 없이(rank 0) 뒤에 붙인다.
-  const waiting = data.apps.filter((a) => a.pending).map((a) => ({ ...a, total: 0, rank: 0 }));
+  const waiting = covered.filter((a) => a.pending).map((a) => ({ ...a, total: 0, rank: 0 }));
   data.apps = [...scored, ...waiting];
   return data;
 }

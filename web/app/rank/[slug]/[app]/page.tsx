@@ -66,12 +66,26 @@ export default function AppDetailPage({
       <h2>항목별 점수</h2>
       <div className="score-bars">
         {ranking.criteria.map((c) => {
-          const s = app.scores[c.key] ?? 0;
+          const s = app.scores[c.key];
+          const ev = app.evidence?.[c.key];
           return (
-            <div key={c.key} className="score-row">
-              <div className="score-label">{c.name}</div>
-              <div className="score-track"><div className="score-fill" style={{ width: `${(s / 5) * 100}%` }} /></div>
-              <div className="score-val">{s.toFixed(1)}</div>
+            <div key={c.key} className="score-block">
+              <div className="score-row">
+                <div className="score-label">{c.name}</div>
+                <div className="score-track"><div className="score-fill" style={{ width: `${((s ?? 0) / 5) * 100}%` }} /></div>
+                <div className="score-val">{typeof s === "number" ? s.toFixed(1) : "–"}</div>
+              </div>
+              <div className="cmp-ev">
+                {typeof s === "number" && ev ? (
+                  <>
+                    <em className={ev.type}>{ev.type === "auto" ? "자동 지표" : "직접 확인"}</em>
+                    {ev.label} · {ev.checked}
+                    {ev.url ? <> · <a href={ev.url} target="_blank" rel="nofollow noopener">출처</a></> : null}
+                  </>
+                ) : (
+                  "근거 자료 확인 중 — 확인되면 점수를 공개합니다."
+                )}
+              </div>
             </div>
           );
         })}
@@ -79,10 +93,10 @@ export default function AppDetailPage({
       </>)}
 
       {app.pending ? null : (<>
-      <h2>이런 분에게 맞아요</h2>
-      <p>{app.whoFor}</p>
+      {app.whoFor ? (<><h2>이런 분에게 맞아요</h2>
+      <p>{app.whoFor}</p></>) : null}
 
-      <div className="proscons">
+      {app.pros.length + app.cons.length > 0 ? (<div className="proscons">
         <div className="pros">
           <h3>장점</h3>
           <ul>{app.pros.map((p, i) => <li key={i}>{p}</li>)}</ul>
@@ -91,7 +105,7 @@ export default function AppDetailPage({
           <h3>아쉬운 점</h3>
           <ul>{app.cons.map((c, i) => <li key={i}>{c}</li>)}</ul>
         </div>
-      </div>
+      </div>) : null}
       </>)}
 
       {/* 외부 바로가기 (여기서 광고 한 번 더 노출) */}

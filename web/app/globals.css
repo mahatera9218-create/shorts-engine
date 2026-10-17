@@ -286,3 +286,12 @@ body { word-break: keep-all; overflow-wrap: break-word; }
 .cmp-row.lead .cmp-bar i { background: var(--accent); }
 .cmp-val { font-size: 14px; text-align: right; color: var(--sub); font-weight: 700; }
 .cmp-row.lead .cmp-val { color: var(--accent); }
+.cmp-card.muted { background: color-mix(in srgb, var(--sub) 5%, transparent); }
+.cmp-empty { margin: 4px 0 10px; font-size: 14px; color: var(--muted); }
+.cmp-item { padding-bottom: 4px; }
+.cmp-row { padding-bottom: 2px; }
+.cmp-ev { font-size: 12px; color: var(--muted); line-height: 1.5; padding: 0 0 8px; }
+.cmp-ev em { font-style: normal; font-weight: 700; font-size: 11px; padding: 1px 6px; margin-right: 6px; border-radius: 99px; background: color-mix(in srgb, var(--sub) 14%, transparent); color: var(--sub); }
+.cmp-ev em.auto { background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--accent); }
+.cmp-ev a { color: var(--accent); }
+.score-block { margin-bottom: 6px; }
