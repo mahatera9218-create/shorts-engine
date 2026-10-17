@@ -2,39 +2,13 @@
   "slug": "insurance-apps",
   "category": "insurance",
   "categoryName": "보험",
-  "title": "2026 보험 앱 순위",
-  "subtitle": "후보 검토 중 · 점수는 검증 후 공개",
-  "intro": "보험 앱은 보장 분석·편의성·중립성 등 5개 기준으로 평가합니다. 후보를 먼저 공개하며, 공개 자료로 확인된 항목부터 점수를 올립니다.",
+  "title": "보험 앱 공개 지표 비교",
+  "subtitle": "후보 검토 중 · 출처 확인 후 공개",
+  "intro": "보험 앱은 후보를 먼저 보여 드리고, 출처가 확인된 지표부터 공개합니다. 공식 조회 서비스(내보험찾아줌)와 민간 앱은 성격이 달라 서열로 비교하지 않습니다.",
   "updated": "2026-10-16",
   "beta": true,
   "status": "pending",
-  "criteria": [
-    {
-      "key": "coverage",
-      "name": "보장 분석 범위",
-      "weight": 25
-    },
-    {
-      "key": "convenience",
-      "name": "편의성",
-      "weight": 20
-    },
-    {
-      "key": "neutral",
-      "name": "중립성(상품 판매 편향)",
-      "weight": 25
-    },
-    {
-      "key": "support",
-      "name": "고객지원",
-      "weight": 15
-    },
-    {
-      "key": "rating",
-      "name": "이용자 평점",
-      "weight": 15
-    }
-  ],
+  "criteria": [],
   "apps": [
     {
       "slug": "naebohum-chajajum",

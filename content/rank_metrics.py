@@ -122,6 +122,20 @@ def _set(app: dict, key: str, score, evidence: dict) -> None:
     app["evidence"][key] = evidence
 
 
+def append_history(app: dict, today: str, volume: float | None, interest: float | None, keep: int = 52) -> None:
+    """주간 추이용 기록(같은 날짜는 덮어쓰기, 최근 keep개만). 값이 없으면 기록하지 않는다."""
+    if volume is None and interest is None:
+        return
+    hist = [h for h in app.get("history", []) if h.get("date") != today]
+    point = {"date": today}
+    if volume is not None:
+        point["volume"] = round(volume)
+    if interest is not None:
+        point["interest"] = round(interest, 1)
+    hist.append(point)
+    app["history"] = sorted(hist, key=lambda h: h["date"])[-keep:]
+
+
 def update_file(path: Path, dry: bool = False) -> int:
     d = json.loads(path.read_text(encoding="utf-8"))
     apps = [a for a in d.get("apps", []) if a.get("metrics") and not a.get("pending")]
@@ -141,6 +155,8 @@ def update_file(path: Path, dry: bool = False) -> int:
     for a in apps:
         m = a["metrics"]
         kw = m["keyword"]
+        i_avg = (sum(ratios[kw][-4:]) / 4) if len(ratios.get(kw, [])) >= 4 else None
+        append_history(a, today, vols.get(kw), i_avg)
         if kw in vols:
             _set(a, "awareness", volume_to_score(vols[kw]), {
                 "type": "auto", "source": "네이버 검색광고 API",

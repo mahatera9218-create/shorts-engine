@@ -2,38 +2,12 @@
   "slug": "tax-firms",
   "category": "tax",
   "categoryName": "세무법인",
-  "title": "2026 세무법인 순위",
-  "subtitle": "선정 기준 공개 · 평가 준비 중",
-  "intro": "세무법인은 업체별 공개 자료(자격·이력·수수료 안내·이용자 평점)를 검증한 뒤에만 순위를 공개합니다. 지금은 평가 기준을 먼저 공개하고, 근거 자료가 확인된 곳부터 순서대로 올립니다.",
+  "title": "세무법인 공개 지표 비교",
+  "subtitle": "준비 중 · 출처 확인 후 공개",
+  "intro": "세무법인은 업체별 공개 자료(자격·징계 공고·수수료 안내)를 출처와 함께 확인한 뒤에만 공개합니다. 서열이나 점수는 만들지 않습니다.",
   "updated": "2026-10-16",
   "beta": true,
   "status": "pending",
-  "criteria": [
-    {
-      "key": "trust",
-      "name": "공개 신뢰도(자격·이력)",
-      "weight": 25
-    },
-    {
-      "key": "fee",
-      "name": "수수료 투명성",
-      "weight": 25
-    },
-    {
-      "key": "expertise",
-      "name": "전문 분야 적합도",
-      "weight": 20
-    },
-    {
-      "key": "support",
-      "name": "고객지원",
-      "weight": 15
-    },
-    {
-      "key": "rating",
-      "name": "이용자 평점",
-      "weight": 15
-    }
-  ],
+  "criteria": [],
   "apps": []
 }

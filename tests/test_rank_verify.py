@@ -1,7 +1,7 @@
 from content.rank_verify import verify
 
 EV = {"type": "auto", "source": "s", "label": "l", "checked": "2026-10-17"}
-CRIT = [{"key": "a", "name": "A", "weight": 60}, {"key": "b", "name": "B", "weight": 40}]
+CRIT = [{"key": "a", "name": "A"}, {"key": "b", "name": "B"}]
 
 
 def _d(**kw):
@@ -14,22 +14,26 @@ def test_beta_structure_ok():
     assert verify(_d()) == []
 
 
-def test_weight_sum_must_be_100():
-    assert verify(_d(criteria=[{"key": "a", "name": "A", "weight": 50}]))
-
-
 def test_score_range_and_missing():
     bad = _d(apps=[{"slug": "x", "url": "#", "scores": {"a": 9}, "evidence": {"a": EV}}])
     errs = verify(bad)
     assert any("0~5" in e for e in errs)
 
 
-def test_public_requires_verified_and_sources():
+def test_public_requires_verified_and_content():
     errs = verify(_d(beta=False))
-    assert any("verified" in e for e in errs) and any("sources" in e for e in errs)
-    ok = _d(beta=False, status="verified")
-    ok["apps"][0]["sources"] = ["https://example.kr/a"]
-    assert verify(ok) == []
+    assert any("verified" in e for e in errs)
+    assert verify(_d(beta=False, status="verified")) == []
+    empty = _d(beta=False, status="verified", apps=[{"slug": "x", "url": "#", "scores": {}}])
+    assert any("하나 이상" in e for e in verify(empty))
+
+
+def test_facts_need_https_source():
+    d = _d()
+    d["apps"][0]["facts"] = [{"label": "수수료", "value": "공식 안내 확인", "url": "http://x", "checked": "2026-10-17"}]
+    assert any("facts" in e for e in verify(d))
+    d["apps"][0]["facts"][0]["url"] = "https://x.kr/fee"
+    assert verify(d) == []
 
 
 def test_pending_cannot_be_public():
@@ -74,3 +78,16 @@ def test_rank_metrics_scoring_and_apple_pick():
     res = [{"trackName": "다른 앱", "sellerName": "x"}, {"trackName": "삼쩜삼 - 세금 환급", "sellerName": "(주)자비스앤빌런즈"}]
     assert pick_apple_result(res, "삼쩜삼", "자비스")["sellerName"] == "(주)자비스앤빌런즈"
     assert pick_apple_result(res, "삼쩜삼", "토스") is None
+
+
+def test_append_history_replaces_same_day_and_caps():
+    from content.rank_metrics import append_history
+    app = {}
+    append_history(app, "2026-10-17", 1000, 50.0)
+    append_history(app, "2026-10-17", 2000, 60.0)
+    assert app["history"] == [{"date": "2026-10-17", "volume": 2000, "interest": 60.0}]
+    for i in range(60):
+        append_history(app, f"2026-11-{i:02d}", 1, 1.0, keep=52)
+    assert len(app["history"]) == 52
+    append_history(app, "2027-01-01", None, None)
+    assert app["history"][-1]["date"] != "2027-01-01"

@@ -1,7 +1,7 @@
 """순위 데이터 검증: 공개(beta:false·index) 전에 반드시 통과해야 하는 게이트.
 
 - 모든 순위 JSON(web/content/rankings/*.json)을 검사한다. 실패가 있으면 종료코드 1.
-- 구조 검사(항상): 가중치 합 100, 점수 0~5, 점수 항목이 criteria와 일치, 링크 형식, 모든 점수에 근거(evidence: 자동/수동·라벨·확인일, 수동은 https 링크).
+- 구조 검사(항상): 점수 0~5(가중치·종합점수 없음), 점수 항목이 criteria와 일치, 링크 형식, 모든 점수에 근거(evidence: 자동/수동·라벨·확인일, 수동은 https 링크).
 - 점수가 없는 항목은 허용('근거 확인 중'으로 표시). 근거 있는 점수가 3개 미만이면 화면에서 평가 대기로 처리한다.
 - 공개 게이트(beta:false 일 때만): status가 'verified', 모든 대상에 근거 sources(https) 1개 이상,
   평가 대기(pending) 대상 없음, 예시 데이터 아님. 하나라도 어기면 실패 → 예시·미검증 순위가 색인되는 걸 막는다.
@@ -24,10 +24,6 @@ def verify(d: dict, name: str = "") -> list[str]:
     errs: list[str] = []
     crit = d.get("criteria", [])
     keys = [c.get("key") for c in crit]
-    if not crit:
-        errs.append("criteria 없음")
-    elif sum(c.get("weight", 0) for c in crit) != 100:
-        errs.append(f"가중치 합이 100이 아님({sum(c.get('weight', 0) for c in crit)})")
     slugs = [a.get("slug") for a in d.get("apps", [])]
     if len(slugs) != len(set(slugs)):
         errs.append("대상 slug 중복")
@@ -36,6 +32,9 @@ def verify(d: dict, name: str = "") -> list[str]:
         url = a.get("url", "#")
         if url != "#" and not url.startswith("https://"):
             errs.append(f"{who}: url은 https 또는 '#'")
+        for f in a.get("facts", []):
+            if not (f.get("label") and f.get("value") and f.get("checked")) or not str(f.get("url", "")).startswith("https://"):
+                errs.append(f"{who}: facts는 label·value·checked와 https url 필요")
         if a.get("pending"):
             continue
         sc = a.get("scores", {})
@@ -58,13 +57,12 @@ def verify(d: dict, name: str = "") -> list[str]:
         if d.get("status") != "verified":
             errs.append("공개(beta:false)는 status='verified' 필요(예시·준비 중 데이터 공개 금지)")
         if not d.get("apps"):
-            errs.append("공개 순위에 대상이 없음")
+            errs.append("공개 비교에 대상이 없음")
+        if not any(a.get("scores") or a.get("facts") for a in d.get("apps", [])):
+            errs.append("공개하려면 근거 있는 점수나 사실이 하나 이상 필요")
         for a in d.get("apps", []):
             if a.get("pending"):
                 errs.append(f"{a.get('slug')}: 평가 대기 상태로 공개 불가")
-            srcs = a.get("sources") or []
-            if not srcs or not all(str(s).startswith("https://") for s in srcs):
-                errs.append(f"{a.get('slug')}: 근거 sources(https) 1개 이상 필요")
     return errs
 
 

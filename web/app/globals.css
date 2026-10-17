@@ -295,3 +295,15 @@ body { word-break: keep-all; overflow-wrap: break-word; }
 .cmp-ev em.auto { background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--accent); }
 .cmp-ev a { color: var(--accent); }
 .score-block { margin-bottom: 6px; }
+
+/* 공개 지표 비교(항목 선택 탭·추이 그래프) */
+.mc-tabs { display: flex; gap: 6px; overflow-x: auto; margin: 6px 0 10px; padding-bottom: 4px; }
+.mc-tabs button { flex: 0 0 auto; padding: 7px 13px; border-radius: 999px; font-size: 14px; font-weight: 700; border: 1px solid var(--line); background: transparent; color: var(--sub); cursor: pointer; white-space: nowrap; }
+.mc-tabs button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.mc-note, .cmp-sub { font-size: 13.5px; color: var(--muted); margin: 2px 0 10px; }
+.mc .cmp-item { border-bottom: 1px solid var(--line); padding: 8px 0 2px; }
+.mc .cmp-item:last-child { border-bottom: 0; }
+.spark-list { display: flex; flex-direction: column; gap: 6px; }
+.spark-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 12px; color: var(--accent); }
+.spark-item span { color: var(--fg); font-weight: 600; font-size: 14px; }
+.spark { width: 55%; max-width: 260px; height: 44px; }
