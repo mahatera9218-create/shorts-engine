@@ -139,7 +139,15 @@ def publish_one(path: Path, slug: str) -> Path:
     html = wp.md_to_html(body)
     excerpt = make_excerpt(body)
     cat = wp.draft_category(path) or ""
-    date = datetime.now(KST).strftime("%Y-%m-%dT%H:%M:%S+09:00")
+    now = datetime.now(KST).strftime("%Y-%m-%dT%H:%M:%S+09:00")
+    date = now
+    modified_line = ""
+    prev = POSTS_OUT / f"{slug}.md"
+    if prev.exists():  # 이미 발행된 글을 고쳐 다시 올릴 때: 최초 발행일은 유지하고 수정일만 갱신
+        m = re.search(r"^date:\s*(\S+)", prev.read_text(encoding="utf-8"), re.M)
+        if m:
+            date = m.group(1)
+            modified_line = f"modified: {now}\n"
     # frontmatter 값은 한 줄(개행 금지). 콜론은 첫 콜론만 분리되므로 그대로 둬도 안전.
     one = lambda s: re.sub(r"\s+", " ", (s or "").replace("\n", " ")).strip()
     front = (
@@ -148,6 +156,7 @@ def publish_one(path: Path, slug: str) -> Path:
         f"slug: {slug}\n"
         f"category: {cat}\n"
         f"date: {date}\n"
+        f"{modified_line}"
         f"excerpt: {one(excerpt)}\n"
         "---\n"
     )

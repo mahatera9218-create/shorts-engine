@@ -52,3 +52,19 @@ class VerifyGateTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class RepublishTest(unittest.TestCase):
+    def test_republish_keeps_date_and_sets_modified(self):
+        with tempfile.TemporaryDirectory() as d:
+            posts = Path(d) / "posts"
+            posts.mkdir()
+            (posts / "s.md").write_text("---\ntitle: t\nslug: s\ncategory: tax\ndate: 2026-10-16T18:10:53+09:00\nexcerpt: e\n---\n<p>old</p>\n", encoding="utf-8")
+            draft = Path(d) / "01-s.md"
+            draft.write_text("제목: 새 제목\n슬러그: s\n분류: tax\n검증: 부분확인\n\n---\n\n본문 새로\n", encoding="utf-8")
+            with mock.patch.object(pf, "POSTS_OUT", posts):
+                pf.publish_one(draft, "s")
+            out = (posts / "s.md").read_text(encoding="utf-8")
+            self.assertIn("date: 2026-10-16T18:10:53+09:00", out)
+            self.assertIn("modified: ", out)
+            self.assertIn("본문 새로", out)
