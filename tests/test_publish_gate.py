@@ -68,3 +68,23 @@ class RepublishTest(unittest.TestCase):
             self.assertIn("date: 2026-10-16T18:10:53+09:00", out)
             self.assertIn("modified: ", out)
             self.assertIn("본문 새로", out)
+
+
+class IndexNowTest(unittest.TestCase):
+    def test_slug_urls_only_posts(self):
+        from content import indexnow
+        out = indexnow.slug_urls(["web/content/posts/a-b.md", "web/content/pages/about.md", "reports/x.md", "web/content/posts/c.md"])
+        self.assertEqual(out, ["https://astacgroup.com/a-b", "https://astacgroup.com/c"])
+
+    def test_find_key_requires_matching_file(self):
+        from content import indexnow
+        with tempfile.TemporaryDirectory() as d:
+            pub = Path(d)
+            k = "0123456789abcdef0123456789abcdef"
+            (pub / f"{k}.txt").write_text(k, encoding="utf-8")
+            (pub / "robots.txt").write_text("x", encoding="utf-8")
+            with mock.patch.object(indexnow, "PUBLIC", pub):
+                self.assertEqual(indexnow.find_key(), k)
+            (pub / f"{k}.txt").write_text("other", encoding="utf-8")
+            with mock.patch.object(indexnow, "PUBLIC", pub):
+                self.assertIsNone(indexnow.find_key())

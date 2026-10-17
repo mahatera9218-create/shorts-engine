@@ -61,8 +61,14 @@ jobs:
           for i in 1 2 3 4; do
             git pull --rebase --autostash origin main \
               && git push origin HEAD:main \
-              && { echo "✅ 발행 완료 — 곧 사이트에 반영됩니다." >> "$GITHUB_STEP_SUMMARY"; exit 0; }
+              && { echo "✅ 발행 완료 — 곧 사이트에 반영됩니다." >> "$GITHUB_STEP_SUMMARY"; touch /tmp/published; break; }
             sleep $((i * 3))
           done
+          [ -f /tmp/published ] && exit 0
           echo "❌ 푸시 실패(네트워크). 다음 예약 때 재시도됩니다." >> "$GITHUB_STEP_SUMMARY"
           exit 1
+      - name: 검색엔진에 알리기 (IndexNow — 네이버·빙)
+        run: |
+          [ -f /tmp/published ] || exit 0
+          sleep 150   # Vercel 배포가 끝난 뒤 알린다
+          python -m content.indexnow --new | tee -a "$GITHUB_STEP_SUMMARY" || true
