@@ -13,9 +13,9 @@
 - 나이: 확인 안 됨 → 쓰지 않음
 - 사진 링크: https://www.mt.co.kr/living/2026/10/01/2026100119452355520 (머니투데이), https://www.slist.kr/news/articleView.html?idxno=770215 (싱글리스트)
 - 아이템 서브축: 신발 (이번 글 중심 = 니하이 부츠)
-- 함께 보면 좋은 글 2 (본문 끝, 해시태그 위):
-  · 장원영 디올 쇼 끝나고 입은 에펠탑 앞 시퀸 파티룩 | https://m.blog.naver.com/tenbillionsound/224434173687
-  · "그냥 흰 니트 아니야?" 뜻밖의 파리에서 눈길 끈 셀린느 앰버서더 | https://m.blog.naver.com/tenbillionsound/224435742457
+- 함께 보면 좋은 글 2 (본문 끝, 해시태그 위 — 본문엔 URL만 각 줄에 하나씩, 썸네일 자동):
+  https://m.blog.naver.com/tenbillionsound/224434173687
+  https://m.blog.naver.com/tenbillionsound/224435742457
 - 사진: 가상 모델 실사(실존 셀럽 사진·얼굴 복제 금지), 사진 프롬프트는 이 창에서 '사진'이라고 요청
 
 출발
