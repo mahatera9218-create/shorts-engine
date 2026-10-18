@@ -22,6 +22,7 @@ DRAFTS = ROOT / "reports" / "건강글-초안"
 KST = ZoneInfo("Asia/Seoul")
 NAME = "건강 블로그 (갱년기)"
 SHOW_GENDER = True   # 패션 등 다른 블로그는 build()에서 끈다
+RESEARCH = False     # 패션: 도우미를 '조사 세트 전달'(프로젝트에 붙여넣고 출발) 모드로
 
 
 def parse(md: str) -> dict:
@@ -182,6 +183,30 @@ def card(d: dict, fname: str) -> str:
     )
 
 
+def research_card(md: str, fname: str) -> str:
+    """패션 조사 세트 카드: 셀럽+아이템+조사한 사실을 '프로젝트에 붙여넣기(출발 포함)' 한 덩이로 복사.
+    글·제목·사진은 도우미에서 안 만들고, 대표가 패션 프로젝트 창에 붙여 '출발'로 받는다."""
+    global _tid
+    m = re.search(r"^키워드:\s*(.+)$", md, re.M)
+    kw = m.group(1).strip() if m else fname
+    m = re.search(r"^사진\s*확인\s*[:：]\s*(\S+)", md, re.M)
+    photo = m.group(1).strip() if m else ""
+    parts = re.split(r"^---\s*프로젝트에 붙여넣기\s*---\s*$", md, maxsplit=1, flags=re.M)
+    proj = (parts[1].strip() if len(parts) > 1 else md.strip())
+    _tid += 1
+    tid = f"t{_tid}"
+    ta = f'<textarea id="{tid}" readonly>{html.escape(proj)}</textarea>'
+    return (
+        '<section class="card">'
+        f'<div class="head"><span class="kw">{html.escape(kw)}</span></div>'
+        + photo_check(photo)
+        + ('<div class="row"><div class="lab">프로젝트에 붙여넣기 (끝에 ‘출발’까지 포함)</div>'
+           f'<button class="cp" data-t="{tid}">복사</button>{ta}</div>')
+        + f'<details><summary>조사 내용 보기</summary><pre>{html.escape(proj)}</pre></details>'
+        + '</section>'
+    )
+
+
 def photo_check(url):
     """사진 확인 링크(패션): 가상 모델 사진이 실제 착장과 맞는지 대표가 눌러서 확인."""
     if not url:
@@ -208,13 +233,14 @@ def rel_block(rels):
 
 
 def build(out_dir: str, drafts_dir: Path | None = None, name: str | None = None,
-          show_gender: bool = True) -> int:
-    global DRAFTS, NAME, SHOW_GENDER
+          show_gender: bool = True, research: bool = False) -> int:
+    global DRAFTS, NAME, SHOW_GENDER, RESEARCH
     if drafts_dir is not None:
         DRAFTS = drafts_dir
     if name is not None:
         NAME = name
-    SHOW_GENDER = show_gender
+    SHOW_GENDER = show_gender and not research
+    RESEARCH = research
     out = ROOT / out_dir
     out.mkdir(parents=True, exist_ok=True)
     files = [p for p in DRAFTS.glob("*.md") if p.name != "README.md"] if DRAFTS.exists() else []
@@ -222,11 +248,19 @@ def build(out_dir: str, drafts_dir: Path | None = None, name: str | None = None,
     cards = []
     for p in files:
         try:
-            cards.append(card(parse(p.read_text(encoding="utf-8")), p.name))
+            txt = p.read_text(encoding="utf-8")
+            cards.append(research_card(txt, p.name) if RESEARCH else card(parse(txt), p.name))
         except Exception as e:  # 한 글이 깨져도 나머지는 보이게
             cards.append(f'<section class="card"><div class="title">[읽기 실패] {html.escape(p.name)}: {html.escape(str(e))}</div></section>')
     now = datetime.now(KST).strftime("%Y-%m-%d %H:%M")
-    empty = '<p class="empty">아직 생성된 초안이 없어요. 생성되면 여기에 자동으로 떠요.</p>'
+    if RESEARCH:
+        sub_line = (f"{now} 기준 · 조사 세트 {len(files)}건 · 카드의 ‘복사’(끝에 ‘출발’ 포함) → "
+                    "패션 프로젝트 창에 붙여넣으면 제목·본문이 나와요(사진은 그 창에서 ‘사진’이라고 요청) · "
+                    "‘원본 사진 보기’로 실물 확인")
+    else:
+        sub_line = (f"{now} 기준 · 글 {len(files)}편 · ①제목 하나 골라 복사 → "
+                    "②본문 복사(사진 위치·해시태그 포함)해 네이버에 붙이기 → ③이미지 프롬프트 복사로 그림 생성")
+    empty = '<p class="empty">아직 생성된 조사 세트가 없어요. 생성되면 여기에 자동으로 떠요.</p>' if RESEARCH else '<p class="empty">아직 생성된 초안이 없어요. 생성되면 여기에 자동으로 떠요.</p>'
     filter_bar = ('<div class="filter">'
                   '<button class="fb on" data-f="전체">전체</button>'
                   '<button class="fb" data-f="여성">여성</button>'
@@ -281,7 +315,7 @@ pre{{white-space:pre-wrap;font-size:12px;color:var(--muted);background:#f0ebe0;p
 </style></head>
 <body><div class="wrap">
 <h1>{html.escape(NAME)} 발행 도우미</h1>
-<div class="sub">{now} 기준 · 글 {len(files)}편 · ①제목 하나 골라 복사 → ②본문 복사(사진 위치·해시태그 포함)해 네이버에 붙이기 → ③이미지 프롬프트 복사로 그림 생성</div>
+<div class="sub">{sub_line}</div>
 {filter_bar}
 {''.join(cards) if cards else empty}
 </div>
