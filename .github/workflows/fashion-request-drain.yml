@@ -42,7 +42,7 @@ jobs:
             [ -z "$KEY" ] && continue
             npx --yes wrangler@4 kv key get "$KEY" --namespace-id "$NS" > val.json 2>/dev/null || continue
             SAFE=$(printf '%s' "$KEY" | tr -c 'a-zA-Z0-9._-' '_')
-            SAFE="$SAFE" python3 -c "import json,os; d=json.load(open('val.json')); open('reports/패션-요청/'+os.environ['SAFE']+'.md','w',encoding='utf-8').write('# 접수 '+str(d.get('ts',''))+chr(10)+chr(10)+str(d.get('text','')))" 2>/dev/null || { echo "스킵 $KEY"; continue; }
+            SAFE="$SAFE" python3 -c "import json,os; d=json.load(open('val.json')); open('reports/패션-요청/'+os.environ['SAFE']+'.md','w',encoding='utf-8').write('slug: '+str(d.get('slug',''))+chr(10)+'접수: '+str(d.get('ts',''))+chr(10)+chr(10)+str(d.get('text','')))" 2>/dev/null || { echo "스킵 $KEY"; continue; }
             npx --yes wrangler@4 kv key delete "$KEY" --namespace-id "$NS" 2>/dev/null || true
           done <<< "$NAMES"
           git config user.name "github-actions[bot]"
