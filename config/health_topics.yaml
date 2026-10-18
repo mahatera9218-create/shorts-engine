@@ -1,19 +1,27 @@
-# 건강 블로그(갱년기 축) 키워드 큐 — 매일 예약작업이 위에서부터 2개씩 뽑아 글 생성 (대표 2026-10-18)
-# 축: 갱년기 (DECISIONS 2026-10-18). 정보형(증상·관리·식단·운동·수면·심리) 중심, 영양제 효능 단정·제품 홍보 금지.
-# 예약작업 규칙: pending에서 아직 초안(reports/건강글-초안/<slug>.md)이 없는 주제를 위에서부터 2개 골라 생성.
-#   생성 후 그 주제를 done으로 옮긴다(또는 초안 파일 존재로 중복 방지). pending이 6개 미만이면 세션이 갱년기 롱테일 10개를 보충.
-# slug는 키워드를 영문/숫자로. 검증: 모든 숫자·효능은 공식 의학기관(질병관리청·건보공단·대한폐경학회·대학병원) 출처로.
+# 건강 블로그(갱년기 축) 키워드 큐 — 매일 예약작업/수동 생성이 위에서부터 2개씩 뽑아 글 생성 (대표 2026-10-18)
+# 축: 갱년기. 단, '여자 갱년기 증상'처럼 넓은 주제는 지양(허브글 1개면 충분).
+# **갱년기 안에서 좁은 세부 키워드**로 간다. 독자 3부류에 맞춘다 (대표 2026-10-18):
+#   seg1 = 이미 갱년기인 사람 → 지금 겪는 증상 '완화·관리 how-to'
+#   seg2 = 갱년기를 앞둔 사람(40대 초중반) → '준비·예방'
+#   seg3 = 갱년기인지 의심 중인 사람 → '자가 점검·감별(이 증상이 갱년기일까)'
+# 정보형 중심, 영양제 효능 단정·제품 홍보 금지. 숫자·효능은 공식 의학기관 출처로. slug는 영문/숫자.
+# 규칙: pending에서 초안(reports/건강글-초안/<slug>.md) 없는 주제를 위에서부터 2개 생성→done 이동. pending<6이면 세 부류 고루 롱테일 보충.
 pending:
-  - { kw: "갱년기 열감 홍조 완화", slug: "menopause-hot-flashes" }
-  - { kw: "갱년기 불면증 수면", slug: "menopause-insomnia" }
-  - { kw: "갱년기 우울감 감정기복", slug: "menopause-mood" }
-  - { kw: "갱년기 관절통 근육통", slug: "menopause-joint-pain" }
-  - { kw: "갱년기 체중 증가 관리", slug: "menopause-weight" }
-  - { kw: "갱년기 식단 음식", slug: "menopause-diet" }
-  - { kw: "갱년기 운동 방법", slug: "menopause-exercise" }
-  - { kw: "폐경 전조증상 초기", slug: "perimenopause-signs" }
-  - { kw: "갱년기 영양소 정보", slug: "menopause-nutrients" }
-  - { kw: "갱년기 건강검진 체크", slug: "menopause-checkup" }
+  # seg3 — 의심 중(감별·자가점검): 검색 유입 가장 큼, 최우선
+  - { seg: 3, kw: "갱년기 자가진단 체크리스트", slug: "menopause-self-check" }
+  - { seg: 3, kw: "이 증상 갱년기일까 피로 어지럼", slug: "is-it-menopause-fatigue" }
+  - { seg: 3, kw: "갱년기 갑상선 우울증 구분", slug: "menopause-vs-thyroid" }
+  - { seg: 3, kw: "갱년기 무슨 검사 어디서", slug: "menopause-which-test" }
+  # seg1 — 이미 겪는 중(증상별 완화 how-to)
+  - { seg: 1, kw: "갱년기 열감 밤에 심할 때", slug: "hot-flash-at-night" }
+  - { seg: 1, kw: "갱년기 불면 잠 잘 자는 법", slug: "menopause-sleep-tips" }
+  - { seg: 1, kw: "갱년기 감정기복 다스리기", slug: "menopause-mood-care" }
+  - { seg: 1, kw: "갱년기 손가락 마디 관절통", slug: "menopause-finger-joint" }
+  # seg2 — 앞둔 사람(준비·예방)
+  - { seg: 2, kw: "폐경 전 생리불순 전조", slug: "perimenopause-irregular" }
+  - { seg: 2, kw: "갱년기 시작 나이 언제부터", slug: "menopause-start-age" }
+  - { seg: 2, kw: "갱년기 오기 전 뼈 건강 준비", slug: "premenopause-bone" }
+  - { seg: 2, kw: "갱년기 대비 운동 식습관", slug: "premenopause-habits" }
 done:
-  - { kw: "여자 갱년기 증상", slug: "women-menopause-symptoms" }   # 2026-10-18 샘플(수동 생성)
-  - { kw: "남자 갱년기 증상", slug: "men-menopause-symptoms" }     # 2026-10-18 샘플(수동 생성)
+  - { kw: "여자 갱년기 증상", slug: "women-menopause-symptoms" }   # 2026-10-18 샘플(넓은 허브글)
+  - { kw: "남자 갱년기 증상", slug: "men-menopause-symptoms" }     # 2026-10-18 샘플(넓은 허브글)
