@@ -48,7 +48,7 @@
 [공통 스타일]
 Photorealistic, 8k, highly detailed, natural warm lighting. Everyday middle-aged Korean life — East Asian / Korean woman in her 40s–50s, home and clinic settings. Calm, reassuring mood. No medical gore, no product or hospital logos.
 
-[사진1 — 썸네일/도입]
+[사진1 — ★대표 썸네일 · 부위 클로즈업(시선 집중, 자극 않게)]
 A Korean woman in her 50s resting a hand on her chest with a slightly startled, concerned expression at home, soft daytime light.
 
 [사진2 — 원인]
@@ -57,7 +57,7 @@ A Korean woman in her late 40s holding a coffee cup in the evening looking a bit
 [사진3 — 검사]
 A calm clinic scene with an ECG/electrocardiogram setting, a middle-aged Korean woman consulting a doctor (faces soft/neutral), reassuring mood, no logos.
 
-[한글 인포 썸네일]
+[본문 요약 카드 (선택 · 썸네일 아님)]
 LAYOUT: 신호 카드 + 경고 포인트
 HERO: 가슴에 손을 얹은 50대 여성
 HEADLINE: "가슴 두근거림, 갱년기? 심장?"
