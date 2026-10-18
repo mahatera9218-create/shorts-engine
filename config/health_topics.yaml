@@ -9,9 +9,7 @@
 pending:
   # ★ 핵심 전략 '증상 엮기'(seg3 감별): 흔한 증상 키워드(검색량 큼) → "혹시 갱년기? 이렇게 구분".
   #   단정 금지 — "갱년기일 수도/아닐 수도, 감별 포인트, 애매하면 병원". 검색 유입 최우선.
-  - { seg: 3, kw: "이유 없는 피로 혹시 갱년기", slug: "fatigue-menopause" }
   - { seg: 3, kw: "손발 저림 갱년기 신호일까", slug: "tingling-menopause" }
-  - { seg: 3, kw: "가슴 두근거림 갱년기", slug: "palpitation-menopause" }
   - { seg: 3, kw: "어지럼증 갱년기 관련", slug: "dizziness-menopause" }
   - { seg: 3, kw: "건망증 기억력 저하 갱년기", slug: "memory-menopause" }
   - { seg: 3, kw: "어깨 목 결림 갱년기", slug: "stiff-shoulder-menopause" }
@@ -33,6 +31,7 @@ pending:
   - { seg: 2, kw: "갱년기 오기 전 뼈 건강 준비", slug: "premenopause-bone" }
   - { seg: 2, kw: "갱년기 대비 운동 식습관", slug: "premenopause-habits" }
 done:
-  - { kw: "여자 갱년기 증상", slug: "women-menopause-symptoms" }   # 2026-10-18 샘플(넓은 허브글)
-  - { kw: "남자 갱년기 증상", slug: "men-menopause-symptoms" }     # 2026-10-18 샘플(넓은 허브글)
-  - { seg: 3, kw: "갱년기 자가진단 체크리스트", slug: "menopause-self-check" }   # 2026-10-18 좁은 샘플(seg3)
+  # 허브글(여자/남자 갱년기 증상)은 대표 결정으로 제거함(2026-10-18). 좁은 증상-엮기 결로 전환.
+  - { seg: 3, kw: "갱년기 자가진단 체크리스트", slug: "menopause-self-check" }     # 2026-10-18 좁은 샘플(seg3)
+  - { seg: 3, kw: "이유 없는 피로 혹시 갱년기", slug: "fatigue-menopause" }          # 2026-10-18 증상엮기 샘플
+  - { seg: 3, kw: "가슴 두근거림 갱년기", slug: "palpitation-menopause" }            # 2026-10-18 증상엮기 샘플
