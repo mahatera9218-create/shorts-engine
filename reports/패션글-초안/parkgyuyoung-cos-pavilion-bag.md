@@ -13,9 +13,6 @@
 - 나이: 확인 안 됨 → 쓰지 않음
 - 사진 링크: https://fashionseoul.com/275267 (패션서울 보도)
 - 아이템 서브축: 가방
-- 함께 보면 좋은 글 2 (본문 끝, 해시태그 위 — 본문엔 URL만 각 줄에 하나씩, 썸네일 자동):
-  https://m.blog.naver.com/tenbillionsound/224435502548
-  https://m.blog.naver.com/tenbillionsound/224442454016
 - 사진: 가상 모델 실사(실존 셀럽 사진·얼굴 복제 금지), 사진 프롬프트는 이 창에서 '사진'이라고 요청
 
 출발
