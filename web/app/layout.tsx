@@ -22,7 +22,10 @@ export const metadata: Metadata = {
   // 검색엔진 소유확인(공개 토큰). 네이버 서치어드바이저.
   verification: {
     other: {
-      "naver-site-verification": "77856750d7c78447f76f81fc80a91308d2af573b",
+      "naver-site-verification": [
+        "77856750d7c78447f76f81fc80a91308d2af573b",
+        "18ac1493a909859444407b5105f7b234e15c242e", // 2026-10-18 서치어드바이저 추가 소유확인
+      ],
       // 애드센스 소유확인(스크립트 대신 공식 메타 방식 — 광고 JS는 AdsenseLoader가 지연 로드).
       ...(ADSENSE_CLIENT ? { "google-adsense-account": ADSENSE_CLIENT } : {}),
     },
