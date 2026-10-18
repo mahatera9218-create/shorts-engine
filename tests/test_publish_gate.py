@@ -14,6 +14,9 @@ class SlotTest(unittest.TestCase):
         self.assertEqual(pf.slot_of(11), "am")
         self.assertEqual(pf.slot_of(12), "pm")
         self.assertEqual(pf.slot_of(16), "pm")
+        self.assertEqual(pf.slot_of(17), "pm")
+        self.assertEqual(pf.slot_of(18), "eve")
+        self.assertEqual(pf.slot_of(21), "eve")
 
     def test_slot_filled_only_same_half(self):
         with tempfile.TemporaryDirectory() as d:
@@ -27,8 +30,8 @@ class SlotTest(unittest.TestCase):
                 self.assertFalse(pf.slot_filled(pm))
                 self.assertFalse(pf.slot_filled(other_day))
 
-    def test_daily_max_is_two(self):
-        self.assertEqual(pf.daily_max(), 2)
+    def test_daily_max_is_three(self):
+        self.assertEqual(pf.daily_max(), 3)
 
 
 class VerifyGateTest(unittest.TestCase):
