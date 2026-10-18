@@ -214,15 +214,11 @@ def intake_card() -> str:
     return (
         '<section class="card intake">'
         '<div class="ilab">제품 정보 넣기 — 새 글 요청</div>'
-        '<div class="itip">제품 정보만 적고 아래 <b>요청서 복사</b>를 누르세요. 복사한 걸 클로드(컨트롤타워 창)에 붙여넣으면 '
-        '그 제품으로 글을 만들어 여기 도우미에 올려 드려요. <b>인물은 비워도 돼요</b>(제가 최근 착용한 셀럽을 찾습니다).</div>'
-        '<input class="ifield" id="f_item" placeholder="제품명·브랜드·색상 (예: 코스 파빌리온 토트백, 블랙)">'
-        '<input class="ifield" id="f_price" placeholder="가격 (확인된 것만, 모르면 비움)">'
-        '<input class="ifield" id="f_link" placeholder="제품/사진 링크 (URL)">'
-        '<input class="ifield" id="f_person" placeholder="원하는 인물 (선택 · 비우면 자동)">'
-        '<textarea class="ifield vis" id="f_memo" placeholder="메모 (선택 · 강조하고 싶은 점 등)"></textarea>'
-        '<button class="cp mk" id="mkbtn">요청서 복사</button>'
-        '<div class="itip2" id="mktip">복사한 뒤 클로드 컨트롤타워 창에 붙여넣기 하세요.</div>'
+        '<div class="itip">제품 정보나 링크를 통째로 여기 붙여넣고 <b>복사</b>를 누르세요. 클로드(컨트롤타워 창)에 붙여넣으면 '
+        '그 제품으로 글을 만들어 도우미에 올려 드려요. <b>인물·가격은 몰라도 돼요</b>(제가 찾습니다).</div>'
+        '<textarea class="ifield vis" id="f_free" placeholder="예: 코스 파빌리온 토트백 블랙 / 또는 제품·사진 링크 아무거나 붙여넣기"></textarea>'
+        '<button class="cp mk" id="mkbtn">복사</button>'
+        '<div class="itip2" id="mktip">복사한 뒤 클로드 창에 붙여넣기. (칸 쓰기 싫으면 제품 정보를 클로드에 바로 붙여넣어도 똑같이 돼요.)</div>'
         '<textarea id="intake_out" readonly></textarea>'
         '</section>'
     )
@@ -328,18 +324,11 @@ document.querySelectorAll('.fb').forEach(function(b){{
 }});
 var mk=document.getElementById('mkbtn');
 if(mk){{ mk.addEventListener('click', function(){{
-  function v(id){{var e=document.getElementById(id);return e?e.value.trim():'';}}
-  var lines=['[패션 새 글 요청]',
-    '인물: '+(v('f_person')||'(비움 — 최근 착용 셀럽을 자동으로 찾아 주세요)'),
-    '시점: 오늘',
-    '제품: '+v('f_item'),
-    '가격: '+(v('f_price')||'(미확인 — 확인되면만)'),
-    '제품/사진 링크: '+v('f_link'),
-    '메모: '+v('f_memo')];
-  var txt=lines.join('\\n');
+  var free=document.getElementById('f_free');
+  var txt='[패션 새 글 요청]\\n'+(free?free.value.trim():'');
   var o=document.getElementById('intake_out'); o.value=txt;
   var tip=document.getElementById('mktip');
-  function ok2(){{ mk.textContent='복사됨'; mk.classList.add('done'); if(tip)tip.textContent='복사됐어요. 클로드 컨트롤타워 창에 붙여넣기 하세요.'; setTimeout(function(){{mk.textContent='요청서 복사';mk.classList.remove('done');}},1400); }}
+  function ok2(){{ mk.textContent='복사됨'; mk.classList.add('done'); if(tip)tip.textContent='복사됐어요. 클로드 창에 붙여넣기 하세요.'; setTimeout(function(){{mk.textContent='복사';mk.classList.remove('done');}},1400); }}
   if(navigator.clipboard&&navigator.clipboard.writeText){{ navigator.clipboard.writeText(txt).then(ok2,function(){{o.style.position='static';o.style.opacity=1;o.select();document.execCommand('copy');o.style.position='absolute';o.style.opacity=0;ok2();}}); }}
   else {{ o.style.position='static';o.style.opacity=1;o.select();document.execCommand('copy');o.style.position='absolute';o.style.opacity=0;ok2(); }}
 }}); }}
