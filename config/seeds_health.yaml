@@ -1,0 +1,36 @@
+# 건강 블로그(3번째) 축 후보 씨앗 — 어느 축이 검색량 크고 틈새인지 조사용 (대표 2026-10-18)
+# 전략: 건강은 홈판 의존보다 '검색 유입을 안정적으로 쌓는' 버팀목. (DECISIONS 2026-10-18)
+# 조사: 네이버 검색광고 월간 검색량 + API HUB 블로그 문서 수(경쟁) → 틈새 점수. (market.run --seeds seeds_health.yaml)
+# 좁은 축 하나로 시작할 것이므로, 점수 상위 1개 축을 골라 운영 시작한다.
+# affiliate: 제휴 가치 사전값(1~5, 가정). 건강기능식품 제휴가 자연스러운 축이 높음. 특정 브랜드 홍보는 금지(CLAUDE.md).
+areas:
+  - id: health-joint
+    name: 관절·무릎
+    affiliate: 4
+    seeds: [무릎 통증, 무릎 연골, 허리 통증, 어깨 통증]
+    include_terms: [무릎, 관절, 연골, 허리, 디스크, 어깨, 오십견, 통증, 시큰, 스트레칭, 운동, 영양제, 글루코사민, 콘드로이친, MSM]
+  - id: health-sugar
+    name: 혈당·당뇨
+    affiliate: 4
+    seeds: [혈당 낮추는 법, 당뇨 초기증상, 당화혈색소, 공복혈당]
+    include_terms: [혈당, 당뇨, 당뇨병, 당화혈색소, 인슐린, 공복, 식후, 식단, 합병증, 저당, 혈당스파이크]
+  - id: health-vessel
+    name: 혈압·혈관·콜레스테롤
+    affiliate: 4
+    seeds: [고혈압 낮추는 법, 콜레스테롤 낮추는 음식, 중성지방, 혈관 건강]
+    include_terms: [혈압, 고혈압, 콜레스테롤, 중성지방, 혈관, 동맥경화, 뇌졸중, 심장, LDL, 오메가3, 식단]
+  - id: health-sleep
+    name: 수면·불면
+    affiliate: 3
+    seeds: [불면증 극복, 잠 잘 오는 법, 자다가 깨는 이유, 수면의 질]
+    include_terms: [불면증, 수면, 잠, 숙면, 멜라토닌, 새벽, 깸, 피로, 코골이, 수면제]
+  - id: health-eye
+    name: 눈 건강
+    affiliate: 4
+    seeds: [눈 건강 영양제, 노안 예방, 백내장 초기증상, 안구건조증]
+    include_terms: [눈, 노안, 백내장, 녹내장, 안구건조, 황반변성, 루테인, 시력, 비문증]
+  - id: health-menopause
+    name: 갱년기
+    affiliate: 4
+    seeds: [갱년기 증상, 갱년기 영양제, 여성 갱년기, 남성 갱년기]
+    include_terms: [갱년기, 폐경, 홍조, 호르몬, 에스트로겐, 영양제, 여성, 남성, 불면, 우울]

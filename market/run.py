@@ -45,9 +45,9 @@ def collect_keywords(tool, areas: list[dict], cfg: dict) -> list[dict]:
     return rows
 
 
-def run(sample: bool) -> int:
+def run(sample: bool, seeds_file: str = "seeds.yaml") -> int:
     cfg = load_yaml("global.yaml")
-    areas = load_yaml("seeds.yaml")["areas"]
+    areas = load_yaml(seeds_file)["areas"]
     run_date = date.today().isoformat()
     notes: list[str] = []
 
@@ -215,8 +215,9 @@ def write_step_summary(text: str) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description="시장조사 실행")
     parser.add_argument("--sample", action="store_true", help="API 키 없이 예시 데이터로 실행")
+    parser.add_argument("--seeds", default="seeds.yaml", help="씨앗 파일(config/ 기준). 기본 seeds.yaml, 건강은 seeds_health.yaml")
     args = parser.parse_args()
-    sys.exit(run(args.sample))
+    sys.exit(run(args.sample, args.seeds))
 
 
 if __name__ == "__main__":
