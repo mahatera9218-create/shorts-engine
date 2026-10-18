@@ -51,10 +51,10 @@ jobs:
           cd "$GITHUB_WORKSPACE"
           mkdir -p config
           printf '%s\n' "$URL" > config/intake_url.txt
-          if ! git diff --quiet -- config/intake_url.txt; then
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add config/intake_url.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add config/intake_url.txt
+          if ! git diff --cached --quiet; then
             git commit -m "접수함 워커 URL 기록 [skip ci]"
             git push origin HEAD:main
           fi
