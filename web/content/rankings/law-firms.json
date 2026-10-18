@@ -1,0 +1,13 @@
+{
+  "slug": "law-firms",
+  "category": "law",
+  "categoryName": "법무법인",
+  "title": "법무법인 공개 지표 비교",
+  "subtitle": "준비 중 · 출처 확인 후 공개",
+  "intro": "법무법인은 변호사 등록·징계 공개·수임료 안내 같은 공개 자료를 출처와 함께 확인한 뒤에만 공개합니다. 서열이나 점수는 만들지 않습니다.",
+  "updated": "2026-10-16",
+  "beta": true,
+  "status": "pending",
+  "criteria": [],
+  "apps": []
+}

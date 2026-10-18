@@ -1,7 +1,7 @@
-# 순위 '호응도' 주간 수집 — Grok 웹검색으로 각 서비스 최근 반응을 점수화해 순위 JSON 갱신
-# - 매주 1회 자동. web/content/rankings/*.json의 buzz(호응도)만 갱신해 main에 커밋 → Vercel 배포.
-# - 비밀값 XAI_API_KEY 필요. 없거나 응답 없으면 기존 값 유지(안전).
-name: 순위 호응도 주간 수집
+# 순위 자동 지표 주간 수집 — 네이버 검색광고·데이터랩·앱스토어 평점(출처 있는 공개 지표)으로 순위 JSON 갱신(Grok 추정 점수는 중단)
+# - 매주 1회 자동. 앱의 metrics 설정이 있는 순위 JSON의 자동 항목(인지도·관심도·평점)과 근거를 갱신해 main에 커밋 → Vercel 배포.
+# - 네이버 키(NAVER_AD_*, NCP_APIGW_*)가 없거나 API 오류면 기존 값 유지(안전). 수수료·표시광고는 사람이 근거 링크와 함께 입력.
+name: 순위 자동 지표 주간 수집
 
 on:
   workflow_dispatch:
@@ -29,12 +29,18 @@ jobs:
           cache: pip
       - name: 준비
         run: pip install -r requirements.txt
-      - name: 호응도 수집
+      - name: 자동 지표 수집(네이버 검색광고·데이터랩·앱스토어 평점)
         env:
-          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
+          NAVER_AD_API_KEY: ${{ secrets.NAVER_AD_API_KEY }}
+          NAVER_AD_SECRET_KEY: ${{ secrets.NAVER_AD_SECRET_KEY }}
+          NAVER_AD_CUSTOMER_ID: ${{ secrets.NAVER_AD_CUSTOMER_ID }}
+          NCP_APIGW_API_KEY_ID: ${{ secrets.NCP_APIGW_API_KEY_ID }}
+          NCP_APIGW_API_KEY: ${{ secrets.NCP_APIGW_API_KEY }}
         run: |
           set -o pipefail
-          python -m content.rank_collect | tee -a "$GITHUB_STEP_SUMMARY"
+          python -m content.rank_metrics | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: 순위 데이터 검증(공개 게이트)
+        run: python -m content.rank_verify | tee -a "$GITHUB_STEP_SUMMARY"
       - name: 커밋·푸시
         run: |
           git config user.name "github-actions[bot]"

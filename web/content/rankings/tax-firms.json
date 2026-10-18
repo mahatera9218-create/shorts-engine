@@ -1,0 +1,13 @@
+{
+  "slug": "tax-firms",
+  "category": "tax",
+  "categoryName": "세무법인",
+  "title": "세무법인 공개 지표 비교",
+  "subtitle": "준비 중 · 출처 확인 후 공개",
+  "intro": "세무법인은 업체별 공개 자료(자격·징계 공고·수수료 안내)를 출처와 함께 확인한 뒤에만 공개합니다. 서열이나 점수는 만들지 않습니다.",
+  "updated": "2026-10-16",
+  "beta": true,
+  "status": "pending",
+  "criteria": [],
+  "apps": []
+}

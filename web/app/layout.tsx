@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import Link from "next/link";
-import "./globals.css";
+import fs from "node:fs";
+import path from "node:path";
 import { SITE_NAME, SITE_URL, SITE_DESC } from "@/lib/wp";
 import Menu from "@/components/Menu";
+import AdsenseLoader from "@/components/AdsenseLoader";
 
 const ADSENSE_CLIENT =
   process.env.NEXT_PUBLIC_ADSENSE_CLIENT || "ca-pub-6435261744776184";
@@ -17,35 +18,34 @@ export const metadata: Metadata = {
   description: SITE_DESC,
   openGraph: { type: "website", siteName: SITE_NAME, locale: "ko_KR", url: SITE_URL },
   robots: { index: true, follow: true },
+  alternates: { types: { "application/rss+xml": `${SITE_URL}/rss.xml` } },
   // 검색엔진 소유확인(공개 토큰). 네이버 서치어드바이저.
   verification: {
     other: {
       "naver-site-verification": "77856750d7c78447f76f81fc80a91308d2af573b",
+      // 애드센스 소유확인(스크립트 대신 공식 메타 방식 — 광고 JS는 AdsenseLoader가 지연 로드).
+      ...(ADSENSE_CLIENT ? { "google-adsense-account": ADSENSE_CLIENT } : {}),
     },
   },
 };
+
+// CSS를 <style>로 HTML에 인라인(작은 파일 11KB) → 별도 CSS 요청·렌더링 차단 제거(PageSpeed).
+const CSS = fs.readFileSync(path.join(process.cwd(), "app", "globals.css"), "utf8");
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko" suppressHydrationWarning>
       <head>
-        {ADSENSE_CLIENT ? (
-          <Script
-            id="adsbygoogle-init"
-            async
-            strategy="afterInteractive"
-            crossOrigin="anonymous"
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
-          />
-        ) : null}
+        <style dangerouslySetInnerHTML={{ __html: CSS }} />
       </head>
       <body>
+        <AdsenseLoader />
         <header className="site-header">
           <div className="container inner">
             <Link href="/" className="brand" aria-label={SITE_NAME}>
               {/* 로고 이미지만. AI로 받은 로고로 교체 시 web/public/logo.svg만 바꾸면 됨. */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo.png" alt={SITE_NAME} className="brand-logo" width={890} height={240} />
+              <img src="/logo.webp" alt={SITE_NAME} className="brand-logo" width={111} height={30} fetchPriority="high" />
             </Link>
             <div className="header-spacer" />
             <Menu />
@@ -59,6 +59,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link href="/p/terms" prefetch={false}>이용약관</Link>
               <Link href="/p/disclaimer" prefetch={false}>면책조항</Link>
               <Link href="/p/contact" prefetch={false}>연락처</Link>
+              <Link href="/p/editorial" prefetch={false}>편집 원칙</Link>
+              <Link href="/tools" prefetch={false}>판정 도구</Link>
               <Link href="/p/about" prefetch={false}>소개</Link>
             </div>
             © {new Date().getFullYear()} {SITE_NAME} · 일반 정보 제공 목적이며 개별

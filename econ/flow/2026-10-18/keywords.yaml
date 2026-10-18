@@ -1,0 +1,658 @@
+date: '2026-10-18'
+updated: 08:23
+items:
+- kw: 삼성전자 7만원 전망
+  core: 삼성전자
+  area: 국내주식
+  why: 삼전닉스 주간 급락 후 적정 주가 논쟁
+  person: ''
+  product: ''
+  rows:
+  - D10
+  - R1
+  - R2
+  - B24
+  - B28
+  - B31
+  - B32
+  - N7
+  - N33
+  - N70
+  - W2
+  src: 국내뉴스, 급상승, 블로거, 어사이드, 인기종목
+  bloggers:
+  - 소드킴
+  - 유미
+  naver_rank: 1
+  sources:
+    어사이드: 1
+    급상승: 2
+    블로거: 4
+    국내뉴스: 3
+    인기종목: 1
+  score: 96
+  parts:
+    급상승: 30
+    출처: 10
+    뉴스: 20
+    검색: 15
+    최신: 25
+    반복: -12
+    유튜브: 8
+  new: false
+  surge: true
+  stats:
+    뉴스24h: 100
+    뉴스6h: 95
+    블로그24h: 100
+    월검색: 10967700
+    상승: 2.57
+    유튜브7일: 659598
+- kw: SK하이닉스 주가
+  core: SK하이닉스
+  area: 국내주식
+  why: 120만원대 붕괴 후 추가 하락 여부 관심
+  person: 최태원 SK
+  product: ''
+  rows:
+  - R4
+  - B17
+  - B20
+  - B27
+  - B33
+  - N34
+  - Y72
+  - W5
+  src: 국내뉴스, 급상승, 블로거, 인기종목, 해외뉴스
+  bloggers:
+  - 소드킴
+  - 유미
+  - 한입재테크
+  sources:
+    급상승: 1
+    블로거: 4
+    국내뉴스: 1
+    해외뉴스: 1
+    인기종목: 1
+  score: 95
+  parts:
+    급상승: 30
+    출처: 9
+    뉴스: 20
+    검색: 15
+    최신: 25
+    반복: -12
+    유튜브: 8
+  new: false
+  surge: true
+  stats:
+    뉴스24h: 100
+    뉴스6h: 76
+    블로그24h: 100
+    월검색: 6633200
+    상승: 3.14
+    유튜브7일: 363820
+- kw: 반대매매 3000억
+  core: 반대매매
+  area: 국내주식
+  why: 빚투 3천억 강제청산으로 개미 피해 확산
+  person: ''
+  product: ''
+  rows:
+  - D8
+  - N47
+  - N54
+  - N67
+  - B7
+  src: 국내뉴스, 블로거, 어사이드
+  bloggers:
+  - 은퇴연구소
+  naver_rank: 2
+  sources:
+    어사이드: 1
+    국내뉴스: 3
+    블로거: 1
+  score: 77
+  parts:
+    급상승: 30
+    출처: 3
+    뉴스: 17
+    검색: 8
+    최신: 23
+    반복: -12
+    유튜브: 8
+  new: false
+  surge: true
+  stats:
+    뉴스24h: 83
+    뉴스6h: 9
+    블로그24h: 22
+    월검색: 12410
+    상승: 20.54
+    유튜브7일: 44079
+- kw: 코어위브 주가 폭락
+  core: 코어위브
+  area: 미국주식
+  why: 레버리지 부담과 창업자 매도로 우려 확대
+  person: ''
+  product: ''
+  rows:
+  - D12
+  - Y28
+  - Y36
+  src: 어사이드, 해외뉴스
+  bloggers: []
+  naver_rank: 5
+  sources:
+    어사이드: 1
+    해외뉴스: 2
+  score: 76
+  parts:
+    급상승: 30
+    출처: 2
+    뉴스: 15
+    검색: 10
+    최신: 11
+    유튜브: 8
+  new: true
+  surge: true
+  stats:
+    뉴스24h: 77
+    뉴스6h: 21
+    블로그24h: 100
+    월검색: 48000
+    상승: 29.29
+    유튜브7일: 63275
+- kw: 필라델피아 반도체지수
+  core: 필라델피아 반도체지수
+  area: 미국주식
+  why: 반도체주 급락 속 미국 반도체 지수 방향에 관심 집중
+  person: ''
+  product: ''
+  rows:
+  - D1
+  - Y33
+  src: 어사이드, 해외뉴스
+  bloggers: []
+  naver_rank: 7
+  sources:
+    어사이드: 1
+    해외뉴스: 1
+  score: 69
+  parts:
+    급상승: 30
+    출처: 1
+    뉴스: 9
+    검색: 13
+    최신: 8
+    유튜브: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 44
+    뉴스6h: 5
+    블로그24h: 97
+    월검색: 314600
+    상승: 1.99
+    유튜브7일: 45079
+- kw: 한미반도체 주가
+  core: 한미반도체
+  area: 국내주식
+  why: 반도체 급락장에서 한미반도체 흐름을 찾아보는 수요
+  person: ''
+  product: ''
+  rows:
+  - D2
+  - R9
+  src: 급상승, 어사이드
+  bloggers: []
+  naver_rank: 3
+  sources:
+    어사이드: 1
+    급상승: 1
+  score: 64
+  parts:
+    급상승: 22
+    출처: 4
+    뉴스: 1
+    검색: 14
+    최신: 15
+    유튜브: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 5
+    뉴스6h: 1
+    블로그24h: 31
+    월검색: 652700
+    상승: 1.73
+    유튜브7일: 51530
+- kw: 미국 9월 CPI
+  core: 미국 CPI
+  area: 미국주식
+  why: CPI 예상 상회로 금리 인상 우려 재점화
+  person: ''
+  product: ''
+  rows:
+  - D6
+  - G20
+  - Y41
+  src: Grok, 어사이드, 해외뉴스
+  bloggers: []
+  naver_rank: 16
+  sources:
+    어사이드: 1
+    Grok: 1
+    해외뉴스: 1
+  score: 61
+  parts:
+    급상승: 30
+    출처: 4
+    뉴스: 10
+    검색: 9
+    유튜브: 8
+  new: true
+  surge: true
+  stats:
+    뉴스24h: 48
+    뉴스6h: 9
+    블로그24h: 100
+    월검색: 30060
+    상승: 30.44
+    유튜브7일: 88564
+- kw: 아크메르 동탄 분양가
+  core: 아크메르 동탄
+  area: 부동산
+  why: 청약 일정 26일 공개, 국평 17억 분양가 화제
+  person: ''
+  product: ''
+  rows:
+  - D7
+  - B22
+  src: 블로거, 어사이드
+  bloggers:
+  - 유미
+  naver_rank: 13
+  sources:
+    어사이드: 1
+    블로거: 1
+  score: 59
+  parts:
+    급상승: 30
+    출처: 0
+    뉴스: 2
+    검색: 11
+    최신: 8
+    유튜브: 8
+  new: true
+  surge: true
+  stats:
+    뉴스24h: 10
+    뉴스6h: 1
+    블로그24h: 47
+    월검색: 90300
+    상승: 4.72
+    유튜브7일: 388
+- kw: 아이폰 듀오 가격
+  core: 아이폰 듀오
+  area: 생활경제
+  why: 신제품 가격 문의가 몰리는 주제
+  person: ''
+  product: ''
+  rows:
+  - D4
+  src: 어사이드
+  bloggers: []
+  naver_rank: 20
+  sources:
+    어사이드: 1
+  score: 58
+  parts:
+    급상승: 30
+    출처: 0
+    뉴스: 7
+    검색: 13
+    유튜브: 8
+  new: true
+  surge: true
+  stats:
+    뉴스24h: 37
+    뉴스6h: 9
+    블로그24h: 100
+    월검색: 368000
+    상승: 3.26
+    유튜브7일: 265578
+- kw: 금값 전망
+  core: 금값
+  area: 금
+  why: 인플레 우려 속 금값 방향과 300만원 전망
+  person: ''
+  product: ''
+  rows:
+  - D11
+  - G7
+  - B21
+  - Y41
+  - Y59
+  - N55
+  src: Grok, 국내뉴스, 블로거, 어사이드, 해외뉴스
+  bloggers:
+  - 유미
+  naver_rank: 8
+  sources:
+    어사이드: 1
+    Grok: 1
+    블로거: 1
+    해외뉴스: 2
+    국내뉴스: 1
+  score: 48
+  parts:
+    급상승: 8
+    출처: 5
+    뉴스: 4
+    검색: 15
+    최신: 16
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 18
+    뉴스6h: 5
+    블로그24h: 52
+    월검색: 926700
+    상승: 1.25
+- kw: 비트코인 8만달러
+  core: 비트코인
+  area: 비트코인
+  why: 8.1만달러선 등락, 10월 약세 이어지는 중
+  person: ''
+  product: ''
+  rows:
+  - D13
+  - G8
+  - N79
+  - Y55
+  - Y61
+  - Y64
+  - W3
+  - W4
+  src: Grok, 국내뉴스, 어사이드, 인기종목, 해외뉴스
+  bloggers: []
+  naver_rank: 9
+  sources:
+    어사이드: 1
+    Grok: 1
+    국내뉴스: 1
+    해외뉴스: 3
+    인기종목: 2
+  score: 46
+  parts:
+    급상승: 5
+    출처: 10
+    뉴스: 20
+    검색: 15
+    최신: 8
+    반복: -12
+  new: false
+  surge: false
+  stats:
+    뉴스24h: 100
+    뉴스6h: 25
+    블로그24h: 100
+    월검색: 1248300
+    상승: 1.17
+- kw: 원달러 환율 1337원
+  core: 원달러 환율
+  area: 환율
+  why: 1331원대 연저점, 2년 만에 최저
+  person: ''
+  product: ''
+  rows:
+  - D20
+  - G18
+  - N66
+  - R11
+  - R12
+  - N46
+  src: Grok, 국내뉴스, 급상승, 어사이드
+  bloggers: []
+  naver_rank: 15
+  sources:
+    어사이드: 1
+    Grok: 1
+    국내뉴스: 2
+    급상승: 2
+  score: 45
+  parts:
+    급상승: 12
+    출처: 8
+    뉴스: 11
+    검색: 14
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 57
+    뉴스6h: 26
+    블로그24h: 0
+    월검색: 445300
+    상승: 1.4
+- kw: 이더리움 시세
+  core: 이더리움
+  area: 비트코인
+  why: ETF 유출 속 2100달러 유지 여부에 관심
+  person: ''
+  product: ''
+  rows:
+  - D9
+  - G9
+  - N77
+  - Y2
+  - Y66
+  - W9
+  - W10
+  src: Grok, 국내뉴스, 어사이드, 인기종목, 해외뉴스
+  bloggers: []
+  naver_rank: 10
+  sources:
+    어사이드: 1
+    Grok: 1
+    국내뉴스: 1
+    해외뉴스: 2
+    인기종목: 2
+  score: 42
+  parts:
+    급상승: 0
+    출처: 9
+    뉴스: 12
+    검색: 13
+    최신: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 59
+    뉴스6h: 16
+    블로그24h: 20
+    월검색: 384100
+    상승: 1.01
+- kw: 국민연금 평균 수령액
+  core: 국민연금
+  area: 생활경제
+  why: 3분기 주식 182조 손실로 연금 관심 커짐
+  person: ''
+  product: ''
+  rows:
+  - D14
+  - N11
+  - N57
+  src: 국내뉴스, 어사이드
+  bloggers: []
+  naver_rank: 19
+  sources:
+    어사이드: 1
+    국내뉴스: 2
+  score: 41
+  parts:
+    급상승: 30
+    출처: 2
+    뉴스: 8
+    검색: 13
+    반복: -12
+  new: false
+  surge: true
+  stats:
+    뉴스24h: 42
+    뉴스6h: 18
+    블로그24h: 100
+    월검색: 232800
+    상승: 2.37
+- kw: 한화에어로스페이스 주가
+  core: 한화에어로스페이스
+  area: 국내주식
+  why: K9 자주포 미군 호평 소식과 맞물려 관심
+  person: ''
+  product: ''
+  rows:
+  - D5
+  - B11
+  src: 블로거, 어사이드
+  bloggers:
+  - 메르
+  naver_rank: 4
+  sources:
+    어사이드: 1
+    블로거: 1
+  score: 39
+  parts:
+    급상승: 3
+    출처: 0
+    뉴스: 4
+    검색: 13
+    최신: 19
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 18
+    뉴스6h: 6
+    블로그24h: 21
+    월검색: 254100
+    상승: 1.11
+- kw: 서울 중간가격대 아파트값
+  core: 서울 아파트값
+  area: 부동산
+  why: 거래 위축과 관망세 속 가격대별 흐름
+  person: ''
+  product: ''
+  rows:
+  - D19
+  - G10
+  - B14
+  - N31
+  src: Grok, 국내뉴스, 블로거, 어사이드
+  bloggers:
+  - 블룸앤아이유
+  naver_rank: 12
+  sources:
+    어사이드: 1
+    Grok: 1
+    블로거: 1
+    국내뉴스: 1
+  score: 25
+  parts:
+    급상승: 0
+    출처: 4
+    뉴스: 6
+    검색: 7
+    최신: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 30
+    뉴스6h: 10
+    블로그24h: 100
+    월검색: 5770
+    상승: 0.81
+- kw: 토허제 연장
+  core: 토지거래허가구역
+  area: 부동산
+  why: 확대 1년, 경기 집값 상승과 디커플링 확대
+  person: ''
+  product: ''
+  rows:
+  - D16
+  - N26
+  - N27
+  src: 국내뉴스, 어사이드
+  bloggers: []
+  naver_rank: 11
+  sources:
+    어사이드: 1
+    국내뉴스: 2
+  score: 17
+  parts:
+    급상승: 4
+    출처: 2
+    뉴스: 3
+    검색: 8
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 15
+    뉴스6h: 4
+    블로그24h: 9
+    월검색: 15300
+    상승: 1.14
+- kw: 휘발유값 22주 하락
+  core: 휘발유값
+  area: 생활경제
+  why: 유가 급등과 대비되는 주유소 가격 흐름
+  person: ''
+  product: ''
+  rows:
+  - D18
+  - G21
+  src: Grok, 어사이드
+  bloggers: []
+  naver_rank: 18
+  sources:
+    어사이드: 1
+    Grok: 1
+  score: 12
+  parts:
+    급상승: 3
+    출처: 3
+    뉴스: 2
+    검색: 4
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 8
+    뉴스6h: 2
+    블로그24h: 26
+    월검색: 930
+    상승: 1.11
+- kw: 정비구역 해제 389곳
+  core: 정비구역 해제
+  area: 부동산
+  why: 재개발 해제 대상 지역 확인 수요
+  person: ''
+  product: ''
+  rows:
+  - D17
+  src: 어사이드
+  bloggers: []
+  naver_rank: 14
+  sources:
+    어사이드: 1
+  score: 1
+  parts:
+    급상승: 0
+    출처: 0
+    뉴스: 1
+    검색: 0
+  new: true
+  surge: false
+  stats:
+    뉴스24h: 6
+    뉴스6h: 1
+    블로그24h: 18
+    월검색: 20
+    상승: 1.0

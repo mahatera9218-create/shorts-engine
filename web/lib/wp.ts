@@ -109,7 +109,9 @@ function loadPosts(): WpPost[] {
   const posts = readDir(POSTS_DIR)
     .map(toPost)
     .filter((p) => p.slug);
-  posts.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+  // 최신순. 문자열이 아니라 시각(숫자)으로 비교(시간대 표기가 달라도 정확), 같으면 slug 역순으로 고정.
+  const t = (d: string) => Date.parse(d) || 0;
+  posts.sort((a, b) => t(b.date) - t(a.date) || (a.slug < b.slug ? 1 : -1));
   _postCache = posts;
   return posts;
 }

@@ -52,7 +52,7 @@ def collect_file(path: Path, dry: bool = False) -> None:
     d = json.loads(path.read_text(encoding="utf-8"))
     if not any(c.get("key") == "buzz" for c in d.get("criteria", [])):
         return
-    apps = {a["slug"]: a["name"] for a in d["apps"]}
+    apps = {a["slug"]: a["name"] for a in d["apps"] if not a.get("pending")}
     prompt = ASK.format(
         cat=d.get("categoryName", ""),
         apps=", ".join(f"{s}={n}" for s, n in apps.items()),
@@ -64,6 +64,8 @@ def collect_file(path: Path, dry: bool = False) -> None:
         return
     changed = 0
     for a in d["apps"]:
+        if a.get("pending"):  # 평가 대기 후보는 점수를 채우지 않는다
+            continue
         s = scores.get(a["slug"], scores.get(a["name"]))
         if isinstance(s, (int, float)):
             a["scores"]["buzz"] = float(s)

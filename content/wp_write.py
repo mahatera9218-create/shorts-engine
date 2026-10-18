@@ -91,6 +91,60 @@ def _system(existing_slugs: list[str]) -> list[str]:
     return [guide, rules] if guide else [rules]
 
 
+LOW_WATER = 10   # 대기 주제가 이 수 미만이면 새 주제를 자동 보충(큐 고갈 방지)
+REFILL = 15      # 한 번에 보충할 주제 수
+CATS = ("jaetech", "realty", "tax", "pension")
+
+TOPIC_SCHEMA = {
+    "type": "object",
+    "properties": {"topics": {"type": "array", "items": {
+        "type": "object",
+        "properties": {"slug": {"type": "string"}, "cat": {"type": "string", "enum": list(CATS)},
+                       "topic": {"type": "string"}},
+        "required": ["slug", "cat", "topic"], "additionalProperties": False}}},
+    "required": ["topics"], "additionalProperties": False,
+}
+
+
+def valid_new_topics(raw: list[dict], known: set[str]) -> list[dict]:
+    """LLM이 준 주제 중 형식·중복 검사를 통과한 것만(slug 영소문자-하이픈, 기존과 겹치지 않음)."""
+    out, seen = [], set(known)
+    for t in raw:
+        slug = str(t.get("slug", "")).strip()
+        topic = str(t.get("topic", "")).strip()
+        if (re.fullmatch(r"[a-z0-9]+(-[a-z0-9]+)*", slug) and t.get("cat") in CATS
+                and len(topic) >= 10 and slug not in seen):
+            out.append({"slug": slug, "cat": t["cat"], "topic": topic})
+            seen.add(slug)
+    return out
+
+
+def replenish_topics(llm, topics: list[dict], n: int = REFILL) -> int:
+    """주제 큐가 줄면 Claude로 거래의도형(비교·비용·신청·요건) 세무·절세·연금·재테크 주제를 n개 보충해
+    config/google_topics.yaml 맨 아래에 덧붙인다. 반환: 실제로 추가한 개수."""
+    known = {t["slug"] for t in topics}
+    sample = "\n".join(f"- {t['slug']}: {t['topic']}" for t in topics[-40:])
+    system = [
+        "너는 한국 세무·절세·연금·재테크 정보 블로그의 주제 기획자다. 검색 수요가 있고 거래의도"
+        "(요건·한도·비용·신청 방법·비교·기한)가 있는 evergreen 주제만 제안한다. 투자 권유·종목 추천·"
+        "단정 전망 주제, 시사 뉴스성 주제는 제외. slug는 영문 소문자-하이픈. cat은 "
+        f"{', '.join(CATS)} 중 하나. topic은 한글 한 줄(핵심 키워드와 다룰 범위)."]
+    prompt = (f"새 주제 {n}개를 제안하라. 아래 기존 주제와 겹치거나 비슷하면 안 된다.\n"
+              f"기존 주제(최근 일부):\n{sample}")
+    out = llm.ask_json(system, prompt, TOPIC_SCHEMA, model="claude-sonnet-5-5",
+                       effort="medium", max_tokens=4000, stage="주제보충")
+    new = valid_new_topics(out.get("topics", []), known)
+    if not new:
+        return 0
+    lines = ["  # 자동 보충 " + __import__("datetime").date.today().isoformat()]
+    for t in new:
+        lines += [f"  - slug: {t['slug']}", f"    cat: {t['cat']}",
+                  f"    topic: {t['topic']}"]
+    text = TOPICS.read_text(encoding="utf-8").rstrip("\n") + "\n" + "\n".join(lines) + "\n"
+    TOPICS.write_text(text, encoding="utf-8")
+    return len(new)
+
+
 def generate_one(llm, topic: dict, existing_slugs: list[str], idx: int) -> Path:
     system = _system(existing_slugs)
     prompt = (f"주제: {topic['topic']}\n슬러그(참고): {topic['slug']}\n"
@@ -123,10 +177,6 @@ def main(argv: list[str] | None = None) -> int:
             print(f"  - {t['slug']}: {t['topic']}")
         return 0
 
-    if not pending:
-        print("큐의 모든 주제를 다 썼어요. config/google_topics.yaml에 주제를 추가하세요.")
-        return 0
-
     missing = missing_secrets("anthropic")
     if missing:
         print("ANTHROPIC_API_KEY가 없습니다(글 생성 불가).", file=sys.stderr)
@@ -134,6 +184,18 @@ def main(argv: list[str] | None = None) -> int:
 
     from content.llm import Claude, log_cost
     llm = Claude()
+    if len(pending) < LOW_WATER:
+        try:
+            added = replenish_topics(llm, topics)
+            print(f"[주제 보충] 대기 {len(pending)}개 < {LOW_WATER} → {added}개 추가")
+            if added:
+                topics = load_topics()
+                pending = [t for t in topics if t["slug"] not in done]
+        except Exception as e:  # noqa: BLE001  (보충 실패해도 남은 주제로 계속)
+            print(f"[주제 보충 실패] {type(e).__name__}: {e}", file=sys.stderr)
+    if not pending:
+        print("큐의 모든 주제를 다 썼고 보충도 못 했어요. config/google_topics.yaml에 주제를 추가하세요.")
+        return 1
     QUEUE.mkdir(parents=True, exist_ok=True)
     idx = next_index()
     made = 0

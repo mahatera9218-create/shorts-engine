@@ -17,7 +17,17 @@ const nextConfig = {
     ],
   },
   // 빌드 시 WP가 잠깐 안 떠도 배포가 막히지 않게(런타임 ISR로 채움).
-  experimental: { missingSuspenseWithCSRBailout: false },
+  experimental: {
+    missingSuspenseWithCSRBailout: false,
+  },
+  // 정적 이미지는 오래 캐시(PageSpeed '효율적인 캐시 수명').
+  async headers() {
+    const long = [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }];
+    return [
+      { source: "/logo.webp", headers: long },
+      { source: "/icon.png", headers: long },
+    ];
+  },
 };
 
 export default nextConfig;

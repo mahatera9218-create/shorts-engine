@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { getRanking, getRankingApp, getAllRankingSlugs } from "@/lib/rankings";
 import { SITE_NAME } from "@/lib/wp";
 import AdSlot from "@/components/AdSlot";
+import RankTabs from "@/components/RankTabs";
+import Sparkline from "@/components/Sparkline";
 
 export const dynamicParams = false;
 
@@ -16,79 +18,82 @@ export function generateStaticParams() {
   return out;
 }
 
-export function generateMetadata({
-  params,
-}: {
-  params: { slug: string; app: string };
-}): Metadata {
+export function generateMetadata({ params }: { params: { slug: string; app: string } }): Metadata {
   const found = getRankingApp(params.slug, params.app);
   if (!found) return { title: "상세" };
   const { ranking, app } = found;
   return {
-    title: `${app.name} 평가·리뷰 — ${ranking.title}`,
+    title: `${app.name} 공개 지표 — ${ranking.title}`,
     description: app.summary.slice(0, 150),
     robots: ranking.beta ? { index: false, follow: false } : { index: true, follow: true },
   };
 }
 
-export default function AppDetailPage({
-  params,
-}: {
-  params: { slug: string; app: string };
-}) {
+export default function AppDetailPage({ params }: { params: { slug: string; app: string } }) {
   const found = getRankingApp(params.slug, params.app);
   if (!found) notFound();
   const { ranking, app } = found;
   const hasLink = app.url && app.url !== "#";
+  const shown = ranking.criteria.filter((c) => typeof app.scores[c.key] === "number" && app.evidence?.[c.key]);
 
   return (
     <div className="container article">
+      <RankTabs current={ranking.slug} />
       <Link href={`/rank/${ranking.slug}`} className="a-cat">← {ranking.title}</Link>
-      <h1>{app.name} 평가·리뷰</h1>
+      <h1>{app.name} 공개 지표</h1>
       <div className="byline">
         <span>{SITE_NAME}</span><span>·</span>
         <span>{ranking.updated} 기준</span>
       </div>
-
-      <div className="detail-head">
-        <div className="detail-rank">{ranking.categoryName} {ranking.apps.length}개 중 <b>{app.rank}위</b></div>
-        <div className="detail-total">{app.total.toFixed(1)}<span>/5</span></div>
-      </div>
       <p className="rank-tag" style={{ fontSize: 15 }}>{app.tag}</p>
-
       <p className="rank-intro">{app.summary}</p>
 
       <AdSlot />
 
-      <h2>항목별 점수</h2>
-      <div className="score-bars">
-        {ranking.criteria.map((c) => {
-          const s = app.scores[c.key] ?? 0;
-          return (
-            <div key={c.key} className="score-row">
-              <div className="score-label">{c.name}</div>
-              <div className="score-track"><div className="score-fill" style={{ width: `${(s / 5) * 100}%` }} /></div>
-              <div className="score-val">{s.toFixed(1)}</div>
-            </div>
-          );
-        })}
-      </div>
-
-      <h2>이런 분에게 맞아요</h2>
-      <p>{app.whoFor}</p>
-
-      <div className="proscons">
-        <div className="pros">
-          <h3>장점</h3>
-          <ul>{app.pros.map((p, i) => <li key={i}>{p}</li>)}</ul>
+      <h2>항목별 값</h2>
+      {shown.length === 0 ? (
+        <p className="cmp-sub">아직 출처를 확인한 지표가 없습니다. 확인되는 대로 표시합니다.</p>
+      ) : (
+        <div className="score-bars">
+          {shown.map((c) => {
+            const s = app.scores[c.key];
+            const ev = app.evidence![c.key];
+            return (
+              <div key={c.key} className="score-block">
+                <div className="score-row">
+                  <div className="score-label">{c.name}</div>
+                  <div className="score-track"><div className="score-fill" style={{ width: `${(s / 5) * 100}%` }} /></div>
+                  <div className="score-val">{s.toFixed(1)}</div>
+                </div>
+                <div className="cmp-ev">
+                  <em className={ev.type}>{ev.type === "auto" ? "자동 지표" : "직접 확인"}</em>
+                  {ev.label} · {ev.checked}
+                  {ev.url ? <> · <a href={ev.url} target="_blank" rel="nofollow noopener">출처</a></> : null}
+                </div>
+              </div>
+            );
+          })}
         </div>
-        <div className="cons">
-          <h3>아쉬운 점</h3>
-          <ul>{app.cons.map((c, i) => <li key={i}>{c}</li>)}</ul>
-        </div>
-      </div>
+      )}
 
-      {/* 외부 바로가기 (여기서 광고 한 번 더 노출) */}
+      {(app.facts?.length ?? 0) > 0 ? (
+        <>
+          <h2>확인한 사실</h2>
+          <ul>
+            {app.facts!.map((f, i) => (
+              <li key={i}><b>{f.label}</b>: {f.value} (<a href={f.url} target="_blank" rel="nofollow noopener">출처</a> · {f.checked})</li>
+            ))}
+          </ul>
+        </>
+      ) : null}
+
+      {(app.history?.length ?? 0) >= 2 ? (
+        <>
+          <h2>검색 관심도 추이</h2>
+          <div className="spark-item"><Sparkline points={app.history!} field="interest" label={app.name} /></div>
+        </>
+      ) : null}
+
       <AdSlot />
       <div className="detail-cta">
         {hasLink ? (
@@ -102,7 +107,7 @@ export default function AppDetailPage({
       </div>
 
       <p style={{ marginTop: 28 }}>
-        <Link href={`/rank/${ranking.slug}`}>← {ranking.title} 전체 순위 보기</Link>
+        <Link href={`/rank/${ranking.slug}`}>← {ranking.title} 전체 보기</Link>
       </p>
 
       <div className="byline-foot">

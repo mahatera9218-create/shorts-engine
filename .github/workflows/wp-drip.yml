@@ -1,7 +1,7 @@
 # 구글 글 드립 공개 (워드프레스 없이 — 저장소 글 파일로 발행)
 # - 대기 글(reports/구글글-초안/*.md)을 불규칙한 시각에 하나씩 사이트용으로 변환해
 #   web/content/posts/ 에 쓰고 main에 커밋한다. 커밋되면 Vercel이 자동 배포 → 사이트 반영.
-# - 중복은 slug로 거른다(이미 web/content/posts/에 있으면 건너뜀). 하루 상한 3편.
+# - 중복은 slug로 거른다(이미 web/content/posts/에 있으면 건너뜀). 하루 2편(오전 1·오후 1). '검증: 미확인' 초안은 발행하지 않는다.
 # - 끄려면 이 워크플로를 비활성화. 비밀 값·외부 서버 불필요(순수 파일 작업).
 name: 구글 글 드립 공개
 
@@ -13,13 +13,12 @@ on:
         type: boolean
         default: false
   schedule:
-    # 불규칙한 KST 시각(UTC). 하루 상한(3)과 합쳐 몰리지 않게 2~3편.
-    - cron: "17 23 * * *"   # KST 08:17
-    - cron: "41 1 * * *"    # KST 10:41
-    - cron: "43 3 * * *"    # KST 12:43
-    - cron: "9 7 * * *"     # KST 16:09
-    - cron: "31 10 * * *"   # KST 19:31
-    - cron: "53 12 * * *"   # KST 21:53
+    # 하루 2편: 오전 1편 + 오후 1편(2026-10-17 대표 결정, 애드센스 승인 전 속도 조절).
+    # 각 구간에 두 번씩 걸어 두고, 이미 그 구간 글이 나갔으면 건너뛴다(content.publish_fs의 구간 규칙).
+    - cron: "17 0 * * *"    # KST 09:17 (오전)
+    - cron: "41 1 * * *"    # KST 10:41 (오전 재시도)
+    - cron: "9 6 * * *"     # KST 15:09 (오후)
+    - cron: "31 7 * * *"    # KST 16:31 (오후 재시도)
 
 permissions:
   contents: write
@@ -62,8 +61,14 @@ jobs:
           for i in 1 2 3 4; do
             git pull --rebase --autostash origin main \
               && git push origin HEAD:main \
-              && { echo "✅ 발행 완료 — 곧 사이트에 반영됩니다." >> "$GITHUB_STEP_SUMMARY"; exit 0; }
+              && { echo "✅ 발행 완료 — 곧 사이트에 반영됩니다." >> "$GITHUB_STEP_SUMMARY"; touch /tmp/published; break; }
             sleep $((i * 3))
           done
+          [ -f /tmp/published ] && exit 0
           echo "❌ 푸시 실패(네트워크). 다음 예약 때 재시도됩니다." >> "$GITHUB_STEP_SUMMARY"
           exit 1
+      - name: 검색엔진에 알리기 (IndexNow — 네이버·빙)
+        run: |
+          [ -f /tmp/published ] || exit 0
+          sleep 150   # Vercel 배포가 끝난 뒤 알린다
+          python -m content.indexnow --new | tee -a "$GITHUB_STEP_SUMMARY" || true

@@ -52,8 +52,8 @@ export default async function CategoryPage({
         <p className="empty">이 카테고리에는 아직 글이 없습니다.</p>
       ) : (
         <div className="feed">
-          {posts.map((post) => (
-            <PostCard key={post.id} post={post} />
+          {posts.map((post, i) => (
+            <PostCard key={post.id} post={post} priority={i === 0} />
           ))}
         </div>
       )}

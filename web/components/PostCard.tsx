@@ -10,7 +10,7 @@ import { stockPhoto } from "@/lib/photos";
 import Thumb from "./Thumb";
 
 // taihyoung 스타일: 썸네일 + (제목 → 카테고리·날짜 → 요약).
-export default async function PostCard({ post }: { post: WpPost }) {
+export default async function PostCard({ post, priority = false }: { post: WpPost; priority?: boolean }) {
   const cat = postCategory(post);
   const feat = featuredImage(post);
   const stock = await stockPhoto(cat?.slug, post.slug);
@@ -19,7 +19,7 @@ export default async function PostCard({ post }: { post: WpPost }) {
   return (
     <Link href={`/${post.slug}`} className="post">
       <div className="thumb">
-        <Thumb src={stock} fallback={feat?.url ?? null} alt={title} />
+        <Thumb src={stock} fallback={feat?.url ?? null} alt={title} w={480} priority={priority} />
       </div>
       <div className="body">
         <h2 dangerouslySetInnerHTML={{ __html: post.title.rendered }} />

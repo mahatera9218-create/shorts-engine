@@ -5,6 +5,16 @@
 # - 거래의도(어디서·비교·비용·신청·요건) 중심 = 애드센스 단가·AI 방어·제휴에 유리(플레이북).
 # - 다 쓰면 아래에 계속 추가(대표 중단 요청 전까지). YMYL: 숫자는 공식 기준·확인 권고·면책.
 topics:
+  # 판정·비교 도구(/tools)와 짝을 이루는 해설 글을 앞쪽에 둔다(2026-10-18).
+  - slug: seller-ganyi-ilban-gwase-chai
+    cat: tax
+    topic: 스마트스토어·쿠팡 온라인 셀러의 간이과세와 일반과세 차이 (간이과세 기준 직전 연도 공급대가 1억400만원, 연 4,800만원 미만 납부면제, 부가가치율, 세금계산서 발급 의무, 매입이 많을 때 일반과세가 유리한 경우, 신규 사업자 환산). 공식 기준을 확인해 숫자를 쓴다
+  - slug: pibuyangja-jagyeok-yogeon
+    cat: tax
+    topic: 건강보험 피부양자 자격요건 (소득·재산 기준)과 탈락 시 지역가입 전환
+  - slug: saeopja-deungnok-gijun
+    cat: tax
+    topic: 사업자등록이 필요한 기준과 블로그·유튜브 수익의 세금 신고
   # 부동산
   - slug: yangdose-1jutaek-bigwase
     cat: realty
@@ -55,12 +65,6 @@ topics:
   - slug: budaese-gagan-singo
     cat: tax
     topic: 부가가치세 과세기간과 신고·납부 일정, 간이과세 기준
-  - slug: saeopja-deungnok-gijun
-    cat: tax
-    topic: 사업자등록이 필요한 기준과 블로그·유튜브 수익의 세금 신고
-  - slug: pibuyangja-jagyeok-yogeon
-    cat: tax
-    topic: 건강보험 피부양자 자격요건 (소득·재산 기준)과 탈락 시 지역가입 전환
   - slug: jiyeok-geonbo-san-jeong
     cat: tax
     topic: 지역가입자 건강보험료 산정 기준 (소득·재산·자동차)과 줄이는 법
@@ -74,3 +78,7 @@ topics:
   - slug: yesutbogeum-isja-se
     cat: jaetech
     topic: 예적금 이자소득세 15.4%와 비과세·세금우대 상품 활용
+  # 공개 지표 비교(/rank/tax-apps)와 짝을 이루는 해설 글(2026-10-17). 수수료 숫자는 단정하지 말고 구조와 확인 방법 중심.
+  - slug: hwangeup-app-sugsuryo-gujo
+    cat: tax
+    topic: 세금 환급·종합소득세 신고 앱의 수수료 구조 이해하기 (환급액 기준 후불 수수료 방식, 신고 대행 vs 직접 신고 차이, 이용 전 공식 안내에서 확인할 항목 체크리스트). 특정 앱의 수수료율 숫자는 확인되지 않은 한 단정하지 말고 '각 서비스 공식 안내 확인'으로 쓴다

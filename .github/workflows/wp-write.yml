@@ -10,8 +10,10 @@ on:
         description: "생성할 편수"
         type: string
         default: "3"
-  schedule:
-    - cron: "11 21 * * *"   # KST 06:11 매일 (드립보다 앞서 큐를 채움)
+  # 자동 스케줄 끔(2026-10-16): API 키 없이 클로드 예약 작업이 매일 새벽 초안 3편을 저장한다.
+  # API 키를 다시 쓸 때만 아래 schedule을 되살린다.
+  # schedule:
+  #   - cron: "11 21 * * *"   # KST 06:11
 
 permissions:
   contents: write
@@ -43,7 +45,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add reports/구글글-초안/ reports/costs.csv
+          git add reports/구글글-초안/ reports/costs.csv config/google_topics.yaml
           if git diff --cached --quiet; then
             echo "새로 생성된 글 없음" >> "$GITHUB_STEP_SUMMARY"
           else
