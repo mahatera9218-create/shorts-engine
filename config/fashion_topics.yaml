@@ -16,3 +16,5 @@ rotation_note: |
 done:   # 생성된 (셀럽+아이템) 조합 slug 기록용
   - { axis: 가방, kw: "박규영 코스 파빌리온 토트백", slug: "parkgyuyoung-cos-pavilion-bag" }   # 2026-10-18 샘플(여배우 방향)
   - { axis: 신발, kw: "김유정 찰스앤키스 니하이 부츠", slug: "kimyoojung-charleskeith-kneehigh-boots" }   # 2026-10-18 (2편째)
+  - { axis: 아우터, kw: "박보영 아미 캐시미어 롱코트", slug: "parkboyoung-ami-cashmere-coat" }   # 2026-10-19 (여배우·공항)
+  - { axis: 니트·가디건, kw: "김고은 조이그라이슨 니트 가디건", slug: "kimgoeun-joygryson-knit-cardigan" }   # 2026-10-19 (여배우·화보, 가성비 반전)
