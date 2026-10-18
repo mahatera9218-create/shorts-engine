@@ -9,10 +9,8 @@
 pending:
   # ★ 핵심 전략 '증상 엮기'(seg3 감별): 흔한 증상 키워드(검색량 큼) → "혹시 갱년기? 이렇게 구분".
   #   단정 금지 — "갱년기일 수도/아닐 수도, 감별 포인트, 애매하면 병원". 검색 유입 최우선.
-  - { seg: 3, kw: "손발 저림 갱년기 신호일까", slug: "tingling-menopause" }
   - { seg: 3, kw: "어지럼증 갱년기 관련", slug: "dizziness-menopause" }
   - { seg: 3, kw: "건망증 기억력 저하 갱년기", slug: "memory-menopause" }
-  - { seg: 3, kw: "어깨 목 결림 갱년기", slug: "stiff-shoulder-menopause" }
   - { seg: 3, kw: "우울 불안 갱년기 구분", slug: "mood-vs-menopause" }
   - { seg: 3, kw: "질 건조 성교통 갱년기", slug: "dryness-menopause" }
   - { seg: 3, kw: "요실금 잦은 소변 갱년기", slug: "bladder-menopause" }
@@ -35,3 +33,5 @@ done:
   - { seg: 3, kw: "갱년기 자가진단 체크리스트", slug: "menopause-self-check" }     # 2026-10-18 좁은 샘플(seg3)
   - { seg: 3, kw: "이유 없는 피로 혹시 갱년기", slug: "fatigue-menopause" }          # 2026-10-18 증상엮기 샘플
   - { seg: 3, kw: "가슴 두근거림 갱년기", slug: "palpitation-menopause" }            # 2026-10-18 증상엮기 샘플
+  - { seg: 3, kw: "손발 저림 갱년기 신호일까", slug: "tingling-menopause" }     # 2026-10-18 새 결 샘플(부위=손)
+  - { seg: 3, kw: "어깨 목 결림 갱년기", slug: "stiff-shoulder-menopause" }     # 2026-10-18 새 결 샘플(부위=목·어깨)
