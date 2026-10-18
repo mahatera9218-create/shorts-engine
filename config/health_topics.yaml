@@ -1,0 +1,19 @@
+# 건강 블로그(갱년기 축) 키워드 큐 — 매일 예약작업이 위에서부터 2개씩 뽑아 글 생성 (대표 2026-10-18)
+# 축: 갱년기 (DECISIONS 2026-10-18). 정보형(증상·관리·식단·운동·수면·심리) 중심, 영양제 효능 단정·제품 홍보 금지.
+# 예약작업 규칙: pending에서 아직 초안(reports/건강글-초안/<slug>.md)이 없는 주제를 위에서부터 2개 골라 생성.
+#   생성 후 그 주제를 done으로 옮긴다(또는 초안 파일 존재로 중복 방지). pending이 6개 미만이면 세션이 갱년기 롱테일 10개를 보충.
+# slug는 키워드를 영문/숫자로. 검증: 모든 숫자·효능은 공식 의학기관(질병관리청·건보공단·대한폐경학회·대학병원) 출처로.
+pending:
+  - { kw: "여자 갱년기 증상", slug: "women-menopause-symptoms" }
+  - { kw: "남자 갱년기 증상", slug: "men-menopause-symptoms" }
+  - { kw: "갱년기 열감 홍조 완화", slug: "menopause-hot-flashes" }
+  - { kw: "갱년기 불면증 수면", slug: "menopause-insomnia" }
+  - { kw: "갱년기 우울감 감정기복", slug: "menopause-mood" }
+  - { kw: "갱년기 관절통 근육통", slug: "menopause-joint-pain" }
+  - { kw: "갱년기 체중 증가 관리", slug: "menopause-weight" }
+  - { kw: "갱년기 식단 음식", slug: "menopause-diet" }
+  - { kw: "갱년기 운동 방법", slug: "menopause-exercise" }
+  - { kw: "폐경 전조증상 초기", slug: "perimenopause-signs" }
+  - { kw: "갱년기 영양소 정보", slug: "menopause-nutrients" }
+  - { kw: "갱년기 건강검진 체크", slug: "menopause-checkup" }
+done: []
