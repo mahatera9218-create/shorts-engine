@@ -1,93 +1,69 @@
 date: '2026-10-18'
-updated: 07:39
+updated: '10:20'
 items:
 - kw: 이영애
-  rise: 4.9
+  rise: 6.33
   volume: 92400
   named: true
-  blog24h: 99
+  blog24h: 100
   score: 126
-- kw: 김수현
-  rise: 2.09
-  volume: 133400
-  named: true
-  blog24h: 14
-  score: 111
 - kw: 정호연
-  rise: 2.38
+  rise: 2.6
   volume: 24750
   named: true
-  blog24h: 6
-  score: 100
+  blog24h: 15
+  score: 102
 - kw: 조이
-  rise: 1.22
+  rise: 1.6
   volume: 29090
   named: true
   blog24h: 100
-  score: 73
+  score: 96
+- kw: 송혜교
+  rise: 1.33
+  volume: 123000
+  named: true
+  blog24h: 100
+  score: 88
 - kw: 사나
-  rise: 1.27
+  rise: 1.37
   volume: 21450
   named: true
-  blog24h: 72
-  score: 68
-- kw: 금시세
-  rise: 1.31
-  volume: 4066000
-  named: false
   blog24h: 100
-  score: 64
-- kw: 박보영
-  rise: 1.24
-  volume: 84850
-  named: true
-  blog24h: 16
-  score: 63
+  score: 80
 - kw: 한고은
-  rise: 1.28
+  rise: 1.4
   volume: 35840
   named: true
-  blog24h: 26
-  score: 63
-- kw: 오늘의금시세
-  rise: 1.3
-  volume: 688000
-  named: false
-  blog24h: 100
-  score: 61
-- kw: 오늘금시세
-  rise: 1.24
-  volume: 805100
-  named: false
-  blog24h: 100
-  score: 58
-- kw: 금값
-  rise: 1.25
-  volume: 926700
-  named: false
-  blog24h: 83
-  score: 56
-- kw: 경량패딩
-  rise: 1.32
-  volume: 155200
-  named: false
-  blog24h: 100
-  score: 53
-- kw: 금값시세
-  rise: 1.29
-  volume: 2712900
-  named: false
-  blog24h: 48
-  score: 52
-- kw: 오늘의금값
+  blog24h: 52
+  score: 75
+- kw: 박보영
+  rise: 1.35
+  volume: 84850
+  named: true
+  blog24h: 25
+  score: 72
+- kw: 정유미
+  rise: 1.41
+  volume: 60760
+  named: true
+  blog24h: 7
+  score: 70
+- kw: 엄정화
   rise: 1.23
-  volume: 163790
+  volume: 49740
+  named: true
+  blog24h: 27
+  score: 62
+- kw: 백팩
+  rise: 1.26
+  volume: 78400
   named: false
-  blog24h: 83
-  score: 45
-- kw: 후리스
-  rise: 1.44
-  volume: 50190
+  blog24h: 100
+  score: 46
+- kw: 유니클로세일
+  rise: 1.25
+  volume: 153300
   named: false
-  blog24h: 50
-  score: 44
+  blog24h: 20
+  score: 33
