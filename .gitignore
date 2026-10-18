@@ -9,3 +9,4 @@ output/
 *.mp4
 site/
 .cache/
+site-health/
