@@ -18,6 +18,11 @@ pending:
   - { seg: 3, kw: "이 증상 갱년기일까 종합 자가점검", slug: "is-it-menopause-fatigue" }
   - { seg: 3, kw: "갱년기 갑상선 우울증 구분", slug: "menopause-vs-thyroid" }
   - { seg: 3, kw: "갱년기 무슨 검사 어디서", slug: "menopause-which-test" }
+  # ★ 남성 갱년기(성별 균형) — sex: 남성. 남성도 증상-엮기(기력·성욕·근력·뱃살·수면)로.
+  - { seg: 3, sex: 남성, kw: "남자 성욕 감퇴 혹시 남성 갱년기", slug: "men-libido" }
+  - { seg: 3, sex: 남성, kw: "남자 뱃살 근력 감소 갱년기", slug: "men-belly-muscle" }
+  - { seg: 3, sex: 남성, kw: "남자 우울 의욕저하 갱년기", slug: "men-depression" }
+  - { seg: 1, sex: 남성, kw: "남성 갱년기 관리 운동 생활습관", slug: "men-menopause-care" }
   # seg1 — 이미 겪는 중(증상별 완화 how-to)
   - { seg: 1, kw: "갱년기 열감 밤에 심할 때", slug: "hot-flash-at-night" }
   - { seg: 1, kw: "갱년기 불면 잠 잘 자는 법", slug: "menopause-sleep-tips" }
@@ -35,3 +40,4 @@ done:
   - { seg: 3, kw: "가슴 두근거림 갱년기", slug: "palpitation-menopause" }            # 2026-10-18 증상엮기 샘플
   - { seg: 3, kw: "손발 저림 갱년기 신호일까", slug: "tingling-menopause" }     # 2026-10-18 새 결 샘플(부위=손)
   - { seg: 3, kw: "어깨 목 결림 갱년기", slug: "stiff-shoulder-menopause" }     # 2026-10-18 새 결 샘플(부위=목·어깨)
+  - { seg: 3, sex: 남성, kw: "남자 기력 저하 성욕 감퇴 남성 갱년기", slug: "men-low-energy" }   # 2026-10-18 남성 샘플(균형)

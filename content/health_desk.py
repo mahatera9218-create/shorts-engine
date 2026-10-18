@@ -30,13 +30,19 @@ def parse(md: str) -> dict:
     본문 블록에는 사진 자리([사진N])와 해시태그가 함께 들어 있어 '본문 복사' 한 번으로 다 복사된다.
     이미지 프롬프트는 별도.
     """
-    d = {"검증": "", "키워드": "", "후보": [], "추천": "", "본문": "", "이미지": "", "출처": ""}
+    d = {"검증": "", "키워드": "", "대상": "", "후보": [], "추천": "", "본문": "", "이미지": "", "출처": ""}
     m = re.search(r"^검증:\s*(.+)$", md, re.M)
     if m:
         d["검증"] = m.group(1).strip()
     m = re.search(r"^키워드:\s*(.+)$", md, re.M)
     if m:
         d["키워드"] = m.group(1).strip()
+    m = re.search(r"^대상:\s*(.+)$", md, re.M)
+    if m:
+        v = m.group(1).strip()
+        d["대상"] = "남성" if v.startswith("남") else ("여성" if v.startswith("여") else "공용")
+    else:
+        d["대상"] = "공용"
 
     # 제목 후보: '제목 후보:' 줄 아래의 번호 줄들을 줄 단위로 수집. 없으면 옛 '제목(선정):' 한 개로.
     head = re.split(r"^---\s*$", md, maxsplit=1, flags=re.M)[0]
@@ -114,9 +120,12 @@ def card(d: dict, fname: str) -> str:
         '<div class="lab2">제목 — 마음에 드는 것 하나 골라 복사</div>' + "".join(cand_rows)
         if cand_rows else '<div class="lab2">제목 후보 없음</div>'
     )
+    sx = d.get("대상") or "공용"
+    sx_color = {"여성": "#c05f8a", "남성": "#3a6ea5", "공용": "#6b645c"}[sx]
+    sx_chip = f'<span class="sx" style="background:{sx_color}">{sx}</span>'
     return (
-        '<section class="card">'
-        f'<div class="head"><span class="kw">{kw}</span>{badge(d["검증"])}</div>'
+        f'<section class="card" data-sex="{sx}">'
+        f'<div class="head"><span class="kw">{kw}</span>{sx_chip}{badge(d["검증"])}</div>'
         + titles
         + box("본문 복사 (사진 위치·해시태그 포함)", d["본문"])
         + box("이미지 프롬프트 복사 (별도)", d["이미지"], "img")
@@ -154,6 +163,10 @@ h1{{font-size:20px;margin:6px 0 2px}}
 .head{{display:flex;align-items:center;gap:8px;margin-bottom:6px}}
 .kw{{font-size:13px;color:var(--muted);flex:1}}
 .badge{{color:#fff;font-size:11px;padding:3px 8px;border-radius:20px;white-space:nowrap}}
+.sx{{color:#fff;font-size:11px;padding:3px 9px;border-radius:20px;white-space:nowrap;font-weight:700}}
+.filter{{display:flex;gap:8px;margin:0 0 16px;flex-wrap:wrap}}
+.fb{{border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:13px;padding:7px 14px;border-radius:20px;cursor:pointer}}
+.fb.on{{background:var(--point);color:#fff;border-color:var(--point)}}
 .title{{font-weight:700;font-size:16px;margin:4px 0 12px}}
 .row{{display:flex;align-items:center;gap:8px;margin:8px 0}}
 .lab{{flex:1;font-size:14px}}
@@ -174,9 +187,25 @@ pre{{white-space:pre-wrap;font-size:12px;color:var(--muted);background:#f0ebe0;p
 <body><div class="wrap">
 <h1>{html.escape(NAME)} 발행 도우미</h1>
 <div class="sub">{now} 기준 · 글 {len(files)}편 · ①제목 하나 골라 복사 → ②본문 복사(사진 위치·해시태그 포함)해 네이버에 붙이기 → ③이미지 프롬프트 복사로 그림 생성</div>
+<div class="filter">
+  <button class="fb on" data-f="전체">전체</button>
+  <button class="fb" data-f="여성">여성</button>
+  <button class="fb" data-f="남성">남성</button>
+  <button class="fb" data-f="공용">공용</button>
+</div>
 {''.join(cards) if cards else empty}
 </div>
 <script>
+document.querySelectorAll('.fb').forEach(function(b){{
+  b.addEventListener('click', function(){{
+    document.querySelectorAll('.fb').forEach(function(x){{x.classList.remove('on');}});
+    b.classList.add('on');
+    var f=b.dataset.f;
+    document.querySelectorAll('.card').forEach(function(c){{
+      c.style.display = (f==='전체' || c.dataset.sex===f) ? '' : 'none';
+    }});
+  }});
+}});
 document.querySelectorAll('.cp').forEach(function(b){{
   b.addEventListener('click', function(){{
     var t=document.getElementById(b.dataset.t); if(!t) return;
