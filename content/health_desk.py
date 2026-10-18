@@ -22,8 +22,6 @@ DRAFTS = ROOT / "reports" / "건강글-초안"
 KST = ZoneInfo("Asia/Seoul")
 NAME = "건강 블로그 (갱년기)"
 SHOW_GENDER = True   # 패션 등 다른 블로그는 build()에서 끈다
-INTAKE = False       # 패션: 제품 정보 입력칸(새 글 요청)을 띄운다
-INTAKE_URL = ""      # 접수함 워커 엔드포인트(있으면 '보내기', 없으면 복사 대체)
 
 
 def parse(md: str) -> dict:
@@ -180,7 +178,6 @@ def card(d: dict, fname: str) -> str:
         + box("이미지 프롬프트 복사 (별도)", d["이미지"], "img")
         + rel_block(d.get("관련글") or [])
         + (f'<details><summary>출처(F목록)</summary><pre>{html.escape(d["출처"])}</pre></details>' if d["출처"] else "")
-        + revise_block(fname)
         + '</section>'
     )
 
@@ -210,36 +207,14 @@ def rel_block(rels):
     )
 
 
-def revise_block(fname: str) -> str:
-    """글마다 '제품정보 보완 → 다시 만들기'. 대표가 제품정보를 적어 보내면 그 글만 고쳐 다시 올린다.
-    접수함 워커로 {slug, text} 전송. 평소엔 접어 둬서 화면이 깔끔하게."""
-    if not (INTAKE and INTAKE_URL):
-        return ""
-    global _tid
-    _tid += 1
-    rid = f"rv{_tid}"
-    slug = fname[:-3] if fname.endswith(".md") else fname
-    return (
-        '<details class="rvwrap"><summary class="rvsum">제품정보 보완 → 다시 만들기</summary>'
-        '<div class="rvinner">'
-        '<div class="rvlab">품번·가격·공식 제품명/링크 등 아는 걸 적고 보내면, 제가 <b>이 글</b>을 그 정보로 고쳐 다시 올려요. (안 보내면 지금 글 그대로 발행하시면 돼요.)</div>'
-        f'<textarea class="ifield vis" id="{rid}" placeholder="예: 공식 제품명 ○○, 정가 ○○원, 공식몰/기사 링크 ..."></textarea>'
-        f'<button class="cp rv" data-slug="{html.escape(slug)}" data-src="{rid}">보내서 다시 만들기</button>'
-        f'<div class="rvtip" id="{rid}tip"></div>'
-        '</div></details>'
-    )
-
-
 def build(out_dir: str, drafts_dir: Path | None = None, name: str | None = None,
-          show_gender: bool = True, intake: bool = False, intake_url: str = "") -> int:
-    global DRAFTS, NAME, SHOW_GENDER, INTAKE, INTAKE_URL
+          show_gender: bool = True) -> int:
+    global DRAFTS, NAME, SHOW_GENDER
     if drafts_dir is not None:
         DRAFTS = drafts_dir
     if name is not None:
         NAME = name
     SHOW_GENDER = show_gender
-    INTAKE = intake
-    INTAKE_URL = (intake_url or "").strip()
     out = ROOT / out_dir
     out.mkdir(parents=True, exist_ok=True)
     files = [p for p in DRAFTS.glob("*.md") if p.name != "README.md"] if DRAFTS.exists() else []
@@ -251,7 +226,6 @@ def build(out_dir: str, drafts_dir: Path | None = None, name: str | None = None,
         except Exception as e:  # 한 글이 깨져도 나머지는 보이게
             cards.append(f'<section class="card"><div class="title">[읽기 실패] {html.escape(p.name)}: {html.escape(str(e))}</div></section>')
     now = datetime.now(KST).strftime("%Y-%m-%d %H:%M")
-    intake_url_js = '"' + INTAKE_URL.replace('"', '').replace('\\', '') + '"' if INTAKE_URL else '""'
     empty = '<p class="empty">아직 생성된 초안이 없어요. 생성되면 여기에 자동으로 떠요.</p>'
     filter_bar = ('<div class="filter">'
                   '<button class="fb on" data-f="전체">전체</button>'
@@ -298,19 +272,6 @@ h1{{font-size:20px;margin:6px 0 2px}}
 .pchk{{display:flex;align-items:center;gap:8px;margin:10px 0 2px;padding:8px 10px;background:#f0ebe0;border-radius:8px}}
 .plab{{font-size:12px;color:var(--muted);flex:1}}
 .pbtn{{background:var(--point);color:#fff;font-size:12px;padding:7px 12px;border-radius:9px;text-decoration:none;white-space:nowrap}}
-.intake{{border:1px dashed var(--point)}}
-.ilab{{font-weight:700;font-size:15px;margin-bottom:4px}}
-.itip{{font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.5}}
-.itip2{{font-size:12px;color:var(--muted);margin-top:6px}}
-.ifield{{width:100%;border:1px solid var(--line);border-radius:9px;padding:10px;margin:5px 0;font-size:14px;font-family:inherit;background:#fff;color:var(--ink)}}
-textarea.ifield.vis{{position:static;left:auto;opacity:1;min-height:58px;resize:vertical}}
-.mk{{margin-top:8px;width:100%}}
-.rvwrap{{margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}}
-.rvsum{{color:var(--point);font-size:13px;font-weight:700;cursor:pointer}}
-.rvinner{{margin-top:8px}}
-.rvlab{{font-size:12px;color:var(--muted);margin-bottom:6px;line-height:1.5}}
-.rvtip{{font-size:12px;color:var(--muted);margin-top:6px}}
-.rv{{margin-top:6px;width:100%}}
 textarea{{position:absolute;left:-9999px;opacity:0}}
 details{{margin-top:10px}}
 summary{{color:var(--muted);font-size:13px;cursor:pointer}}
@@ -333,21 +294,6 @@ document.querySelectorAll('.fb').forEach(function(b){{
     document.querySelectorAll('.card').forEach(function(c){{
       c.style.display = (f==='전체' || c.dataset.sex===f) ? '' : 'none';
     }});
-  }});
-}});
-var INTAKE_URL={intake_url_js};
-document.querySelectorAll('.rv').forEach(function(b){{
-  b.addEventListener('click', function(){{
-    var ta=document.getElementById(b.dataset.src);
-    var tip=document.getElementById(b.dataset.src+'tip');
-    var txt=ta?ta.value.trim():'';
-    if(!txt){{ if(tip)tip.textContent='내용을 적어 주세요.'; return; }}
-    if(!INTAKE_URL){{ if(tip)tip.textContent='전송 설정이 없어요(관리자 확인 필요).'; return; }}
-    b.disabled=true; var old=b.textContent; b.textContent='보내는 중...';
-    fetch(INTAKE_URL,{{method:'POST',headers:{{'Content-Type':'application/json'}},body:JSON.stringify({{slug:b.dataset.slug,text:txt}})}})
-      .then(function(r){{return r.ok?r.json():Promise.reject(r.status);}})
-      .then(function(){{ b.textContent='보냈어요'; b.classList.add('done'); if(ta)ta.value=''; if(tip)tip.textContent='접수됐어요. 한 시간 안에 이 글을 보완해 다시 올려 드릴게요.'; setTimeout(function(){{b.textContent=old;b.classList.remove('done');b.disabled=false;}},2500); }})
-      .catch(function(){{ b.textContent=old; b.disabled=false; if(tip)tip.textContent='보내기가 안 됐어요. 잠시 뒤 다시 시도해 주세요.'; }});
   }});
 }});
 document.querySelectorAll('.cp').forEach(function(b){{
