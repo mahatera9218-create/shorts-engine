@@ -12,8 +12,8 @@ pending:
   - { seg: 3, kw: "어지럼증 갱년기 관련", slug: "dizziness-menopause" }
   - { seg: 3, kw: "건망증 기억력 저하 갱년기", slug: "memory-menopause" }
   - { seg: 3, kw: "우울 불안 갱년기 구분", slug: "mood-vs-menopause" }
-  - { seg: 3, kw: "질 건조 성교통 갱년기", slug: "dryness-menopause" }
-  - { seg: 3, kw: "요실금 잦은 소변 갱년기", slug: "bladder-menopause" }
+  - { seg: 3, sex: 여성, kw: "질 건조 성교통 갱년기", slug: "dryness-menopause" }
+  - { seg: 3, sex: 여성, kw: "요실금 잦은 소변 갱년기", slug: "bladder-menopause" }
   - { seg: 3, kw: "피부 가려움 건조 갱년기", slug: "itch-menopause" }
   - { seg: 3, kw: "이 증상 갱년기일까 종합 자가점검", slug: "is-it-menopause-fatigue" }
   - { seg: 3, kw: "갱년기 갑상선 우울증 구분", slug: "menopause-vs-thyroid" }
@@ -24,12 +24,12 @@ pending:
   - { seg: 3, sex: 남성, kw: "남자 우울 의욕저하 갱년기", slug: "men-depression" }
   - { seg: 1, sex: 남성, kw: "남성 갱년기 관리 운동 생활습관", slug: "men-menopause-care" }
   # seg1 — 이미 겪는 중(증상별 완화 how-to)
-  - { seg: 1, kw: "갱년기 열감 밤에 심할 때", slug: "hot-flash-at-night" }
+  - { seg: 1, sex: 여성, kw: "갱년기 열감 밤에 심할 때", slug: "hot-flash-at-night" }
   - { seg: 1, kw: "갱년기 불면 잠 잘 자는 법", slug: "menopause-sleep-tips" }
   - { seg: 1, kw: "갱년기 감정기복 다스리기", slug: "menopause-mood-care" }
-  - { seg: 1, kw: "갱년기 손가락 마디 관절통", slug: "menopause-finger-joint" }
+  - { seg: 1, sex: 여성, kw: "갱년기 손가락 마디 관절통", slug: "menopause-finger-joint" }
   # seg2 — 앞둔 사람(준비·예방)
-  - { seg: 2, kw: "폐경 전 생리불순 전조", slug: "perimenopause-irregular" }
+  - { seg: 2, sex: 여성, kw: "폐경 전 생리불순 전조", slug: "perimenopause-irregular" }
   - { seg: 2, kw: "갱년기 시작 나이 언제부터", slug: "menopause-start-age" }
   - { seg: 2, kw: "갱년기 오기 전 뼈 건강 준비", slug: "premenopause-bone" }
   - { seg: 2, kw: "갱년기 대비 운동 식습관", slug: "premenopause-habits" }
