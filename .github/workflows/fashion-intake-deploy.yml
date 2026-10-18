@@ -8,7 +8,7 @@ on:
       - "intake/**"
       - ".github/workflows/fashion-intake-deploy.yml"
 permissions:
-  contents: read
+  contents: write
 concurrency:
   group: fashion-intake-deploy
   cancel-in-progress: false
@@ -48,3 +48,13 @@ jobs:
           URL=$(grep -oiE 'https://[a-z0-9.-]*workers\.dev' dep.log | head -1)
           echo "## 패션 접수함 워커" >> "$GITHUB_STEP_SUMMARY"
           if [ -n "$URL" ]; then echo "엔드포인트: $URL" >> "$GITHUB_STEP_SUMMARY"; else echo "⚠️ URL을 로그에서 못 찾음(로그 확인)" >> "$GITHUB_STEP_SUMMARY"; fi
+          cd "$GITHUB_WORKSPACE"
+          mkdir -p config
+          printf '%s\n' "$URL" > config/intake_url.txt
+          if ! git diff --quiet -- config/intake_url.txt; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add config/intake_url.txt
+            git commit -m "접수함 워커 URL 기록 [skip ci]"
+            git push origin HEAD:main
+          fi
