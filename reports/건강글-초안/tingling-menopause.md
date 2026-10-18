@@ -54,7 +54,7 @@
 [공통 스타일]
 Photorealistic, 8k, highly detailed, natural warm lighting. Everyday middle-aged Korean life — East Asian / Korean woman in her 40s–50s. Calm, reassuring mood. No medical gore, no product or hospital logos.
 
-[사진1 — 썸네일 · 부위(손) 강조]
+[사진1 — ★대표 썸네일 · 부위 클로즈업(시선 집중, 자극 않게)]
 Close-up centered on a middle-aged Korean woman's hands held up in front of her, one hand gently pressing/rubbing the other wrist as if it tingles, hands large and sharp in frame as the clear focal point, her face soft/blurred in background, calm tone (not scary). 손이 화면 중심에 크게.
 
 [사진2 — 원인/구분]
@@ -63,7 +63,7 @@ A Korean woman in her 50s shaking out her hand at a desk in the evening, mild di
 [사진3 — 검사·상담]
 A calm neurology consultation scene, a middle-aged Korean woman talking with a doctor (faces soft/neutral), reassuring clinic mood, no logos.
 
-[한글 인포 썸네일]
+[본문 요약 카드 (선택 · 썸네일 아님)]
 LAYOUT: 원인 체크 카드 (부위=손 강조)
 HERO: 손을 클로즈업으로 크게 (손목 문지르는 손)
 HEADLINE: "손발 저림, 혹시 갱년기?"

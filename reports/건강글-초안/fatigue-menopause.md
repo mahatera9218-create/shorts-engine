@@ -50,7 +50,7 @@
 [공통 스타일]
 Photorealistic, 8k, highly detailed, natural warm lighting. Everyday middle-aged Korean life — East Asian / Korean woman in her 40s–50s, home setting. Calm, reassuring mood. No medical gore, no product or hospital logos.
 
-[사진1 — 썸네일/도입]
+[사진1 — ★대표 썸네일 · 부위 클로즈업(시선 집중, 자극 않게)]
 A Korean woman in her late 40s sitting on the edge of the bed in the morning, rubbing her eyes, still looking tired despite having slept, soft morning light.
 
 [사진2 — 수면·피로]
@@ -59,7 +59,7 @@ A Korean woman in her 50s resting her head on her hand at a desk in the afternoo
 [사진3 — 검사·상담]
 A calm blood-test or consultation scene at a clinic, a middle-aged Korean woman with a doctor (faces soft/neutral), reassuring mood, no logos.
 
-[한글 인포 썸네일]
+[본문 요약 카드 (선택 · 썸네일 아님)]
 LAYOUT: 오해 vs 사실 좌우 대비
 HERO: 아침에 피곤해하는 40대 후반 여성
 HEADLINE: "계속 피곤해.. 갱년기일까?"

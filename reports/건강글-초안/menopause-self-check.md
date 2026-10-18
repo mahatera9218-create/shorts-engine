@@ -54,7 +54,7 @@
 [공통 스타일]
 Photorealistic, 8k, highly detailed, natural warm lighting. Everyday middle-aged Korean life — East Asian / Korean woman in her 40s–50s, home setting. Calm, reassuring mood. No medical gore, no product or hospital logos.
 
-[사진1 — 썸네일/도입]
+[사진1 — ★대표 썸네일 · 부위 클로즈업(시선 집중, 자극 않게)]
 A Korean woman in her late 40s sitting at a kitchen table with a notebook and pen, pausing thoughtfully as if checking how she feels, soft daytime light.
 
 [사진2 — 자가 점검]
@@ -63,7 +63,7 @@ Close-ish shot of a hand ticking items on a simple checklist on paper at a home 
 [사진3 — 병원 상담]
 A calm doctor's consultation desk scene, a middle-aged Korean woman talking with a doctor (faces soft/neutral), clean reassuring clinic mood, no logos.
 
-[한글 인포 썸네일]
+[본문 요약 카드 (선택 · 썸네일 아님)]
 LAYOUT: 체크리스트 카드
 HERO: 40대 후반 여성이 노트에 체크하며 생각하는 장면
 HEADLINE: "혹시 나도 갱년기? 먼저 체크"
