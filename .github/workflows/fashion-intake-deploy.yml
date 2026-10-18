@@ -1,0 +1,52 @@
+# 패션 접수함 워커 배포 (대표 2026-10-18)
+# intake/ 가 바뀌면 KV 네임스페이스를 보장하고 워커를 배포한다. 워커 URL을 요약에 찍는다.
+name: 패션 접수함 워커
+on:
+  push:
+    branches: [main]
+    paths:
+      - "intake/**"
+      - ".github/workflows/fashion-intake-deploy.yml"
+permissions:
+  contents: read
+concurrency:
+  group: fashion-intake-deploy
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: 워커 배포
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "❌ 클플 키 없음" >> "$GITHUB_STEP_SUMMARY"; exit 1
+          fi
+          ACC=$(printf '%s' "$CLOUDFLARE_ACCOUNT_ID" | grep -oiE '[0-9a-f]{32}' | head -1 || true)
+          echo "::add-mask::$ACC"; export CLOUDFLARE_ACCOUNT_ID="$ACC"
+          export CLOUDFLARE_API_TOKEN="$(printf '%s' "$CLOUDFLARE_API_TOKEN" | tr -d '[:space:]')"
+          cd intake
+          TITLE="eok-fashion-intake-REQ"
+          # 이미 있으면 그 id, 없으면 생성
+          LIST=$(npx --yes wrangler@4 kv namespace list 2>/dev/null || echo '[]')
+          ID=$(printf '%s' "$LIST" | python3 -c "import sys,json
+try: d=json.load(sys.stdin)
+except Exception: d=[]
+print(next((n['id'] for n in d if n.get('title')=='$TITLE'),''))" 2>/dev/null || true)
+          if [ -z "$ID" ]; then
+            CREATE=$(npx --yes wrangler@4 kv namespace create "$TITLE" 2>&1 | tee /dev/stderr)
+            ID=$(printf '%s' "$CREATE" | grep -oiE '"?id"?[ =:]+"?[0-9a-f]{32}' | grep -oiE '[0-9a-f]{32}' | head -1)
+          fi
+          if [ -z "$ID" ]; then echo "❌ KV 네임스페이스 id를 못 얻음" >> "$GITHUB_STEP_SUMMARY"; exit 1; fi
+          echo "::add-mask::$ID"
+          sed -i "s/PLACEHOLDER_ID/$ID/" wrangler.toml
+          npx --yes wrangler@4 deploy 2>&1 | tee dep.log
+          URL=$(grep -oiE 'https://[a-z0-9.-]*workers\.dev' dep.log | head -1)
+          echo "## 패션 접수함 워커" >> "$GITHUB_STEP_SUMMARY"
+          if [ -n "$URL" ]; then echo "엔드포인트: $URL" >> "$GITHUB_STEP_SUMMARY"; else echo "⚠️ URL을 로그에서 못 찾음(로그 확인)" >> "$GITHUB_STEP_SUMMARY"; fi

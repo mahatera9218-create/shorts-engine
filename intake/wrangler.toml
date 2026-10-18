@@ -1,0 +1,10 @@
+# 패션 접수함 워커 (도우미 입력칸 → 저장소) — 대표 2026-10-18
+# 도우미(정적 페이지)가 받을 수 없어서, 입력을 받아 KV에 쌓는 작은 워커.
+name = "eok-fashion-intake"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+
+# KV 네임스페이스 id는 배포 워크플로가 자동으로 채운다(PLACEHOLDER_ID 교체).
+[[kv_namespaces]]
+binding = "REQ"
+id = "PLACEHOLDER_ID"
