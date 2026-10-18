@@ -31,13 +31,17 @@ def parse(md: str) -> dict:
     본문 블록에는 사진 자리([사진N])와 해시태그가 함께 들어 있어 '본문 복사' 한 번으로 다 복사된다.
     이미지 프롬프트는 별도.
     """
-    d = {"검증": "", "키워드": "", "대상": "", "후보": [], "추천": "", "본문": "", "이미지": "", "출처": ""}
+    d = {"검증": "", "키워드": "", "대상": "", "후보": [], "추천": "", "본문": "", "이미지": "", "출처": "", "사진확인": ""}
     m = re.search(r"^검증:\s*(.+)$", md, re.M)
     if m:
         d["검증"] = m.group(1).strip()
     m = re.search(r"^키워드:\s*(.+)$", md, re.M)
     if m:
         d["키워드"] = m.group(1).strip()
+    # 사진 확인 링크(패션): 가상 모델로 그리니, 대표가 실제 셀럽 착장을 눈으로 확인할 원본 사진 출처 URL
+    m = re.search(r"^사진\s*확인\s*[:：]\s*(\S+)", md, re.M)
+    if m:
+        d["사진확인"] = m.group(1).strip()
     m = re.search(r"^대상:\s*(.+)$", md, re.M)
     if m:
         v = m.group(1).strip()
@@ -77,16 +81,43 @@ def parse(md: str) -> dict:
     src_split = re.split(r"^---\s*출처.*?---\s*$", after_img, maxsplit=1, flags=re.M)
     d["이미지"] = src_split[0].strip()
     src_rest = (src_split[1] if len(src_split) > 1 else "")
-    # '--- 함께 보면 좋은 글 ---' 블록(제목 | URL 줄들)을 출처에서 떼어 관련글로
+    # 관련글(함께 보면 좋은 글)은 '본문 안'에 들어 있어야 한다(대표 2026-10-18: 따로 주지 말 것).
+    # ① 본문에 이미 'http'가 들어간 '제목 | URL' 줄이 있으면 그걸 관련글로 읽는다(복사는 본문에 포함됨).
     d["관련글"] = []
+    for ln in d["본문"].splitlines():
+        if "|" in ln and "http" in ln:
+            title, url = ln.rsplit("|", 1)
+            d["관련글"].append((title.strip(" -*·•"), url.strip()))
+    # ② (옛 형식 호환) 끝에 '--- 함께 보면 좋은 글 ---' 블록으로 따로 있으면 읽어서 본문 안으로 옮긴다.
     rel_split = re.split(r"^---\s*함께 보면 좋은 글\s*---\s*$", src_rest, maxsplit=1, flags=re.M)
     d["출처"] = rel_split[0].strip()
-    if len(rel_split) > 1:
+    if not d["관련글"] and len(rel_split) > 1:
         for ln in rel_split[1].splitlines():
             if "|" in ln and "http" in ln:
                 title, url = ln.rsplit("|", 1)
-                d["관련글"].append((title.strip(" -*·"), url.strip()))
+                d["관련글"].append((title.strip(" -*·•"), url.strip()))
+        d["본문"] = _inject_related(d["본문"], d["관련글"])
     return d
+
+
+def _inject_related(body: str, rels: list) -> str:
+    """관련글을 본문 해시태그 줄 바로 위에 끼워 넣는다(본문 복사 한 번에 같이 복사되도록)."""
+    if not rels or any(u in body for _, u in rels):
+        return body
+    block = "함께 보면 좋은 글\n" + "\n".join(f"· {t} | {u}" for t, u in rels)
+    lines = body.rstrip().split("\n")
+    idx = None
+    for i in range(len(lines) - 1, -1, -1):
+        s = lines[i].strip()
+        if s.startswith("#"):
+            idx = i
+        elif s:
+            break
+    if idx is None:
+        return body.rstrip() + "\n\n" + block
+    before = "\n".join(lines[:idx]).rstrip()
+    tags = "\n".join(lines[idx:])
+    return before + "\n\n" + block + "\n\n" + tags
 
 
 def badge(v: str) -> str:
@@ -142,7 +173,8 @@ def card(d: dict, fname: str) -> str:
         f'<section class="card"{data_sex}>'
         f'<div class="head"><span class="kw">{kw}</span>{sx_chip}{badge(d["검증"])}</div>'
         + titles
-        + box("본문 복사 (사진 위치·해시태그 포함)", d["본문"])
+        + photo_check(d.get("사진확인") or "")
+        + box("본문 복사 (사진 위치·관련글·해시태그 포함)", d["본문"])
         + box("이미지 프롬프트 복사 (별도)", d["이미지"], "img")
         + rel_block(d.get("관련글") or [])
         + (f'<details><summary>출처(F목록)</summary><pre>{html.escape(d["출처"])}</pre></details>' if d["출처"] else "")
@@ -150,22 +182,28 @@ def card(d: dict, fname: str) -> str:
     )
 
 
+def photo_check(url):
+    """사진 확인 링크(패션): 가상 모델 사진이 실제 착장과 맞는지 대표가 눌러서 확인."""
+    if not url:
+        return ""
+    return (
+        '<div class="pchk"><span class="plab">실제 사진으로 확인</span>'
+        f'<a class="pbtn" href="{html.escape(url)}" target="_blank" rel="noopener">원본 사진 보기</a></div>'
+    )
+
+
 def rel_block(rels):
-    """함께 보면 좋은 글: 클릭 링크로 보여 주고(뜨게), 전체 복사 버튼도 준다."""
+    """함께 보면 좋은 글: 이미 '본문'에 들어 있으므로(본문 복사에 포함) 여기선 눌러서 미리 확인만."""
     if not rels:
         return ""
-    global _tid
     links = "".join(
         f'<div class="rl"><a href="{html.escape(u)}" target="_blank" rel="noopener">{html.escape(t)}</a></div>'
         for t, u in rels
     )
-    copytext = "\n".join(f"{t} {u}" for t, u in rels)
-    _tid += 1
-    tid = f"t{_tid}"
     return (
-        '<div class="relwrap"><div class="rlab">함께 보면 좋은 글 (본문 해시태그 위에 넣기)'
-        f'<button class="cp" data-t="{tid}">링크 복사</button></div>{links}'
-        f'<textarea id="{tid}" readonly>{html.escape(copytext)}</textarea></div>'
+        '<div class="relwrap"><div class="rlab">함께 보면 좋은 글 '
+        '<span class="rnote">(본문에 이미 포함됨 · 눌러서 확인)</span></div>'
+        f'{links}</div>'
     )
 
 
@@ -229,6 +267,10 @@ h1{{font-size:20px;margin:6px 0 2px}}
 .rlab .cp{{margin-left:auto}}
 .rl{{margin:4px 0}}
 .rl a{{color:var(--point);font-size:13px;text-decoration:none;line-height:1.4}}
+.rnote{{color:var(--muted);font-size:11px;font-weight:400}}
+.pchk{{display:flex;align-items:center;gap:8px;margin:10px 0 2px;padding:8px 10px;background:#f0ebe0;border-radius:8px}}
+.plab{{font-size:12px;color:var(--muted);flex:1}}
+.pbtn{{background:var(--point);color:#fff;font-size:12px;padding:7px 12px;border-radius:9px;text-decoration:none;white-space:nowrap}}
 textarea{{position:absolute;left:-9999px;opacity:0}}
 details{{margin-top:10px}}
 summary{{color:var(--muted);font-size:13px;cursor:pointer}}

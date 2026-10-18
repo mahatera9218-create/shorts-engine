@@ -2,6 +2,8 @@
 
 키워드: 키키(KiiiKiii) 코치 공항백 (아이템=가방)
 
+사진 확인: https://www.google.com/search?tbm=isch&q=키키+KiiiKiii+공항+코치백
+
 제목 후보:
 1. "다섯 명이 다 같은 거였어?" 공항에서 눈길 끈 그 코치 가방들의 정체
 2. "저 가방 어디 거야?" 공항패션 완성한 코치 브루클린백, 알고 보니
@@ -48,30 +50,26 @@
 
 다음에 볼 것: 코치 테비 사이즈별 차이 / 40만원대 입문 명품백 비교 / 공항룩 무채색 코디
 
+함께 보면 좋은 글
+· "가방이 더 의젓하네" 카리나 블랙 레더 숄더백 | https://m.blog.naver.com/tenbillionsound/224435502548
+· "흰 티에 청바지가 2천만원?" 김민하 샤넬룩, 알고 보니 더 놀라운 정체 | https://m.blog.naver.com/tenbillionsound/224442454016
+
 #키키 #KiiiKiii #코치백 #코치브루클린 #공항패션 #명품백 #숄더백 #데일리백 #가을가방 #공항룩
 
 
 --- 이미지 프롬프트 ---
 
 [공통 스타일]
-Photorealistic fashion photograph, 8k, natural light, clean background. Standard fashion-model body type. The model does NOT resemble any specific real person. No brand logo text, no readable text, no watermark.
+Photorealistic editorial fashion photograph, square 1:1, natural light or clean studio, sharp focus. Standard fashion-model body type (날씬~보통, 균형 잡힌 비율). 얼굴·머리는 프레임 밖(목 아래만), 특정 실존 인물을 닮지 않게. No brand logo, no readable text, no price tag, no watermark.
 
-[사진1 — ★대표 썸네일 · 아이템(가방) 클로즈업(시선 집중, 과하지 않게)]
-Close-up centered on a mid-size structured leather shoulder bag held at the hip of a young woman in an airport-casual outfit, the bag large and sharp as the clear focal point, neutral tones, face out of frame or soft, clean bright tone. 가방이 화면 중심에 크게.
+[사진1 — ★대표 썸네일 · 아이템(가방) 클로즈업]
+A mid-size structured calfskin leather shoulder bag in warm camel tone, boxy silhouette with a short top handle and a clean front flap (금속 장식은 위치만, 로고 글자 없음), held at the hip of a woman in an airport-casual look; neck-down framing, the bag large and sharp as the clear focal point, soft neutral background. 가방이 화면 중심에 크게·선명하게(시선 집중, 과하지 않게).
 
-[사진2 — 브루클린 착장 전체]
-A young woman in a neutral airport-casual look (relaxed knit + wide trousers) carrying a mid-size structured leather shoulder bag on the shoulder, full styling visible showing waist-line balance, bright simple background, no logos.
+[사진2 — 공항룩 전체 착장]
+Neck-down full-outfit shot: the same warm-camel structured calfskin shoulder bag worn on the shoulder over a relaxed neutral knit and wide tailored trousers, waist-line balance visible, natural light, simple airport-casual setting.
 
 [사진3 — 소재·스트랩 디테일]
-Detail shot of the shoulder bag's strap, leather texture and structured silhouette on a plain surface, soft light, no readable logo.
-
-[본문 요약 카드 (선택 · 썸네일 아님)]
-LAYOUT: 아이템 카드
-HERO: 중간 크기 가죽 숄더백 클로즈업
-HEADLINE: "공항에서 눈에 띈 그 가방"
-KEY POINTS: "코치 브루클린28·테비" / "중간 크기=허리선 균형" / "리셀 기준 40만원대(공식가 확인)"
-TAKEAWAY: "가방 크기를 내 프레임에 맞추기"
-팔레트: 크림 + 카멜 + 아이보리, 깔끔하게
+Detail close-up of the bag's smooth calfskin texture, the structured corner and the shoulder-strap stitching on a plain surface, soft natural light.
 
 
 --- 출처(F목록) ---
@@ -80,8 +78,3 @@ TAKEAWAY: "가방 크기를 내 프레임에 맞추기"
 [F3] 브루클린 28 가격: 공식 한국가 미확인, 리셀(KREAM) 기준 40만원대 거래 — 리셀 플랫폼 (판매처 기준, 공식가 재확인 필요)
 [F4] 사진은 실제 키키 아닌 '가상 모델' 실사로 생성(실존 인물 사진·얼굴 복제 금지)
 출처 링크: fashionseoul.com(키키 공항 코치백 보도), kream.co.kr(리셀가). 공식 판매가는 코치 공식 한국 홈페이지에서 발행 전 재확인.
-
-
---- 함께 보면 좋은 글 ---
-"가방이 더 의젓하네" 카리나 블랙 레더 숄더백 | https://m.blog.naver.com/tenbillionsound/224435502548
-"흰 티에 청바지가 2천만원?" 김민하 샤넬룩, 알고 보니 더 놀라운 정체 | https://m.blog.naver.com/tenbillionsound/224442454016
