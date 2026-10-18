@@ -180,6 +180,7 @@ def card(d: dict, fname: str) -> str:
         + box("이미지 프롬프트 복사 (별도)", d["이미지"], "img")
         + rel_block(d.get("관련글") or [])
         + (f'<details><summary>출처(F목록)</summary><pre>{html.escape(d["출처"])}</pre></details>' if d["출처"] else "")
+        + revise_block(fname)
         + '</section>'
     )
 
@@ -209,19 +210,23 @@ def rel_block(rels):
     )
 
 
-def intake_card() -> str:
-    """제품 정보 입력칸(패션, 새 글 요청). 정적 페이지라 백엔드 없이 '요청서'를 만들어 복사해 준다.
-    대표가 제품 정보만 적고 복사 → 클로드(컨트롤타워 창)에 붙여넣으면 그 제품으로 글 생성."""
+def revise_block(fname: str) -> str:
+    """글마다 '제품정보 보완 → 다시 만들기'. 대표가 제품정보를 적어 보내면 그 글만 고쳐 다시 올린다.
+    접수함 워커로 {slug, text} 전송. 평소엔 접어 둬서 화면이 깔끔하게."""
+    if not (INTAKE and INTAKE_URL):
+        return ""
+    global _tid
+    _tid += 1
+    rid = f"rv{_tid}"
+    slug = fname[:-3] if fname.endswith(".md") else fname
     return (
-        '<section class="card intake">'
-        '<div class="ilab">제품 정보 넣기 — 새 글 요청</div>'
-        '<div class="itip">제품 정보나 링크를 통째로 여기 붙여넣고 <b>복사</b>를 누르세요. 클로드(컨트롤타워 창)에 붙여넣으면 '
-        '그 제품으로 글을 만들어 도우미에 올려 드려요. <b>인물·가격은 몰라도 돼요</b>(제가 찾습니다).</div>'
-        '<textarea class="ifield vis" id="f_free" placeholder="예: 코스 파빌리온 토트백 블랙 / 또는 제품·사진 링크 아무거나 붙여넣기"></textarea>'
-        '<button class="cp mk" id="mkbtn">보내기</button>'
-        '<div class="itip2" id="mktip">보내면 접수돼요. 제가 한 시간 안에 글로 만들어 여기 도우미에 올려 드려요(즉시 아님).</div>'
-        '<textarea id="intake_out" readonly></textarea>'
-        '</section>'
+        '<details class="rvwrap"><summary class="rvsum">제품정보 보완 → 다시 만들기</summary>'
+        '<div class="rvinner">'
+        '<div class="rvlab">품번·가격·공식 제품명/링크 등 아는 걸 적고 보내면, 제가 <b>이 글</b>을 그 정보로 고쳐 다시 올려요. (안 보내면 지금 글 그대로 발행하시면 돼요.)</div>'
+        f'<textarea class="ifield vis" id="{rid}" placeholder="예: 공식 제품명 ○○, 정가 ○○원, 공식몰/기사 링크 ..."></textarea>'
+        f'<button class="cp rv" data-slug="{html.escape(slug)}" data-src="{rid}">보내서 다시 만들기</button>'
+        f'<div class="rvtip" id="{rid}tip"></div>'
+        '</div></details>'
     )
 
 
@@ -300,6 +305,12 @@ h1{{font-size:20px;margin:6px 0 2px}}
 .ifield{{width:100%;border:1px solid var(--line);border-radius:9px;padding:10px;margin:5px 0;font-size:14px;font-family:inherit;background:#fff;color:var(--ink)}}
 textarea.ifield.vis{{position:static;left:auto;opacity:1;min-height:58px;resize:vertical}}
 .mk{{margin-top:8px;width:100%}}
+.rvwrap{{margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}}
+.rvsum{{color:var(--point);font-size:13px;font-weight:700;cursor:pointer}}
+.rvinner{{margin-top:8px}}
+.rvlab{{font-size:12px;color:var(--muted);margin-bottom:6px;line-height:1.5}}
+.rvtip{{font-size:12px;color:var(--muted);margin-top:6px}}
+.rv{{margin-top:6px;width:100%}}
 textarea{{position:absolute;left:-9999px;opacity:0}}
 details{{margin-top:10px}}
 summary{{color:var(--muted);font-size:13px;cursor:pointer}}
@@ -310,7 +321,6 @@ pre{{white-space:pre-wrap;font-size:12px;color:var(--muted);background:#f0ebe0;p
 <body><div class="wrap">
 <h1>{html.escape(NAME)} 발행 도우미</h1>
 <div class="sub">{now} 기준 · 글 {len(files)}편 · ①제목 하나 골라 복사 → ②본문 복사(사진 위치·해시태그 포함)해 네이버에 붙이기 → ③이미지 프롬프트 복사로 그림 생성</div>
-{intake_card() if INTAKE else ''}
 {filter_bar}
 {''.join(cards) if cards else empty}
 </div>
@@ -326,24 +336,20 @@ document.querySelectorAll('.fb').forEach(function(b){{
   }});
 }});
 var INTAKE_URL={intake_url_js};
-var mk=document.getElementById('mkbtn');
-if(mk){{ mk.addEventListener('click', function(){{
-  var free=document.getElementById('f_free');
-  var txt=(free?free.value.trim():'');
-  var tip=document.getElementById('mktip');
-  if(!txt){{ if(tip)tip.textContent='내용을 적어 주세요.'; return; }}
-  if(INTAKE_URL){{
-    mk.disabled=true; var old=mk.textContent; mk.textContent='보내는 중...';
-    fetch(INTAKE_URL,{{method:'POST',headers:{{'Content-Type':'application/json'}},body:JSON.stringify({{text:txt}})}})
+document.querySelectorAll('.rv').forEach(function(b){{
+  b.addEventListener('click', function(){{
+    var ta=document.getElementById(b.dataset.src);
+    var tip=document.getElementById(b.dataset.src+'tip');
+    var txt=ta?ta.value.trim():'';
+    if(!txt){{ if(tip)tip.textContent='내용을 적어 주세요.'; return; }}
+    if(!INTAKE_URL){{ if(tip)tip.textContent='전송 설정이 없어요(관리자 확인 필요).'; return; }}
+    b.disabled=true; var old=b.textContent; b.textContent='보내는 중...';
+    fetch(INTAKE_URL,{{method:'POST',headers:{{'Content-Type':'application/json'}},body:JSON.stringify({{slug:b.dataset.slug,text:txt}})}})
       .then(function(r){{return r.ok?r.json():Promise.reject(r.status);}})
-      .then(function(){{ mk.textContent='보냈어요'; mk.classList.add('done'); if(free)free.value=''; if(tip)tip.textContent='접수됐어요. 한 시간 안에 글로 만들어 올려 드릴게요.'; setTimeout(function(){{mk.textContent=old;mk.classList.remove('done');mk.disabled=false;}},2000); }})
-      .catch(function(){{ mk.textContent=old; mk.disabled=false; if(tip)tip.textContent='보내기가 안 됐어요. 잠시 뒤 다시 시도하거나, 내용을 클로드 창에 붙여넣어 주세요.'; }});
-  }} else {{
-    var o=document.getElementById('intake_out'); o.value='[패션 새 글 요청]\\n'+txt;
-    function ok2(){{ mk.textContent='복사됨'; mk.classList.add('done'); if(tip)tip.textContent='복사됐어요. 클로드 창에 붙여넣기 하세요.'; setTimeout(function(){{mk.textContent='보내기';mk.classList.remove('done');}},1400); }}
-    if(navigator.clipboard&&navigator.clipboard.writeText){{ navigator.clipboard.writeText(o.value).then(ok2,ok2); }} else {{ ok2(); }}
-  }}
-}}); }}
+      .then(function(){{ b.textContent='보냈어요'; b.classList.add('done'); if(ta)ta.value=''; if(tip)tip.textContent='접수됐어요. 한 시간 안에 이 글을 보완해 다시 올려 드릴게요.'; setTimeout(function(){{b.textContent=old;b.classList.remove('done');b.disabled=false;}},2500); }})
+      .catch(function(){{ b.textContent=old; b.disabled=false; if(tip)tip.textContent='보내기가 안 됐어요. 잠시 뒤 다시 시도해 주세요.'; }});
+  }});
+}});
 document.querySelectorAll('.cp').forEach(function(b){{
   b.addEventListener('click', function(){{
     if(b.id==='mkbtn') return;

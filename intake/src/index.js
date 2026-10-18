@@ -20,19 +20,23 @@ export default {
       });
     }
     let text = "";
+    let slug = "";
     try {
       const ct = request.headers.get("content-type") || "";
       if (ct.includes("application/json")) {
         const j = await request.json();
         text = (j.text || "").toString();
+        slug = (j.slug || "").toString();
       } else {
         const f = await request.formData();
         text = (f.get("text") || "").toString();
+        slug = (f.get("slug") || "").toString();
       }
     } catch (e) {
       text = "";
     }
     text = text.trim();
+    slug = slug.trim().slice(0, 120);
     if (!text) {
       return new Response(JSON.stringify({ ok: false, error: "empty" }), {
         status: 400, headers: { ...CORS, "content-type": "application/json" },
@@ -41,7 +45,7 @@ export default {
     if (text.length > 4000) text = text.slice(0, 4000);
     const id = Date.now() + "-" + Math.random().toString(36).slice(2, 8);
     // 14일 뒤 자동 만료(미처리분 쌓임 방지)
-    await env.REQ.put("req:" + id, JSON.stringify({ text, ts: new Date().toISOString() }), {
+    await env.REQ.put("req:" + id, JSON.stringify({ slug, text, ts: new Date().toISOString() }), {
       expirationTtl: 60 * 60 * 24 * 14,
     });
     return new Response(JSON.stringify({ ok: true }), {
