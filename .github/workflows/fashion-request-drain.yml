@@ -1,0 +1,57 @@
+# 패션 접수 드레인 (대표 2026-10-18)
+# 접수함 워커가 KV에 쌓은 요청을 꺼내 reports/패션-요청/ 로 커밋한다(생성 세션이 글로 만든다).
+name: 패션 접수 드레인
+on:
+  schedule:
+    - cron: "*/20 * * * *"   # 20분마다
+  push:
+    paths:
+      - ".github/workflows/fashion-request-drain.yml"
+permissions:
+  contents: write
+concurrency:
+  group: fashion-request-drain
+  cancel-in-progress: false
+jobs:
+  drain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: KV에서 요청 꺼내 커밋
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then echo "클플 키 없음"; exit 0; fi
+          ACC=$(printf '%s' "$CLOUDFLARE_ACCOUNT_ID" | grep -oiE '[0-9a-f]{32}' | head -1 || true)
+          echo "::add-mask::$ACC"; export CLOUDFLARE_ACCOUNT_ID="$ACC"
+          export CLOUDFLARE_API_TOKEN="$(printf '%s' "$CLOUDFLARE_API_TOKEN" | tr -d '[:space:]')"
+          TITLE="eok-fashion-intake-REQ"
+          npx --yes wrangler@4 kv namespace list > kvlist.json 2>/dev/null || echo '[]' > kvlist.json
+          NS=$(TITLE="$TITLE" python3 -c "import json,os; d=json.load(open('kvlist.json')) if open('kvlist.json').read().strip().startswith('[') else []; print(next((n['id'] for n in d if n.get('title')==os.environ['TITLE']),''))" 2>/dev/null || true)
+          if [ -z "$NS" ]; then echo "네임스페이스 없음(요청 없음)"; exit 0; fi
+          echo "::add-mask::$NS"
+          npx --yes wrangler@4 kv key list --namespace-id "$NS" > keys.json 2>/dev/null || echo '[]' > keys.json
+          NAMES=$(python3 -c "import json; d=json.load(open('keys.json')) if open('keys.json').read().strip().startswith('[') else []; print('\n'.join(k.get('name','') for k in d))" 2>/dev/null || true)
+          if [ -z "$NAMES" ]; then echo "요청 없음"; exit 0; fi
+          mkdir -p reports/패션-요청
+          while IFS= read -r KEY; do
+            [ -z "$KEY" ] && continue
+            npx --yes wrangler@4 kv key get "$KEY" --namespace-id "$NS" > val.json 2>/dev/null || continue
+            SAFE=$(printf '%s' "$KEY" | tr -c 'a-zA-Z0-9._-' '_')
+            SAFE="$SAFE" python3 -c "import json,os; d=json.load(open('val.json')); open('reports/패션-요청/'+os.environ['SAFE']+'.md','w',encoding='utf-8').write('# 접수 '+str(d.get('ts',''))+chr(10)+chr(10)+str(d.get('text','')))" 2>/dev/null || { echo "스킵 $KEY"; continue; }
+            npx --yes wrangler@4 kv key delete "$KEY" --namespace-id "$NS" 2>/dev/null || true
+          done <<< "$NAMES"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add reports/패션-요청 || true
+          if ! git diff --cached --quiet; then
+            git commit -m "패션 새 글 요청 접수(드레인) [skip ci]"
+            git push origin HEAD:main
+            echo "요청 커밋 완료" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "새 요청 없음" >> "$GITHUB_STEP_SUMMARY"
+          fi

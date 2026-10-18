@@ -23,6 +23,7 @@ KST = ZoneInfo("Asia/Seoul")
 NAME = "건강 블로그 (갱년기)"
 SHOW_GENDER = True   # 패션 등 다른 블로그는 build()에서 끈다
 INTAKE = False       # 패션: 제품 정보 입력칸(새 글 요청)을 띄운다
+INTAKE_URL = ""      # 접수함 워커 엔드포인트(있으면 '보내기', 없으면 복사 대체)
 
 
 def parse(md: str) -> dict:
@@ -217,22 +218,23 @@ def intake_card() -> str:
         '<div class="itip">제품 정보나 링크를 통째로 여기 붙여넣고 <b>복사</b>를 누르세요. 클로드(컨트롤타워 창)에 붙여넣으면 '
         '그 제품으로 글을 만들어 도우미에 올려 드려요. <b>인물·가격은 몰라도 돼요</b>(제가 찾습니다).</div>'
         '<textarea class="ifield vis" id="f_free" placeholder="예: 코스 파빌리온 토트백 블랙 / 또는 제품·사진 링크 아무거나 붙여넣기"></textarea>'
-        '<button class="cp mk" id="mkbtn">복사</button>'
-        '<div class="itip2" id="mktip">복사한 뒤 클로드 창에 붙여넣기. (칸 쓰기 싫으면 제품 정보를 클로드에 바로 붙여넣어도 똑같이 돼요.)</div>'
+        '<button class="cp mk" id="mkbtn">보내기</button>'
+        '<div class="itip2" id="mktip">보내면 접수돼요. 제가 한 시간 안에 글로 만들어 여기 도우미에 올려 드려요(즉시 아님).</div>'
         '<textarea id="intake_out" readonly></textarea>'
         '</section>'
     )
 
 
 def build(out_dir: str, drafts_dir: Path | None = None, name: str | None = None,
-          show_gender: bool = True, intake: bool = False) -> int:
-    global DRAFTS, NAME, SHOW_GENDER, INTAKE
+          show_gender: bool = True, intake: bool = False, intake_url: str = "") -> int:
+    global DRAFTS, NAME, SHOW_GENDER, INTAKE, INTAKE_URL
     if drafts_dir is not None:
         DRAFTS = drafts_dir
     if name is not None:
         NAME = name
     SHOW_GENDER = show_gender
     INTAKE = intake
+    INTAKE_URL = (intake_url or "").strip()
     out = ROOT / out_dir
     out.mkdir(parents=True, exist_ok=True)
     files = [p for p in DRAFTS.glob("*.md") if p.name != "README.md"] if DRAFTS.exists() else []
@@ -244,6 +246,7 @@ def build(out_dir: str, drafts_dir: Path | None = None, name: str | None = None,
         except Exception as e:  # 한 글이 깨져도 나머지는 보이게
             cards.append(f'<section class="card"><div class="title">[읽기 실패] {html.escape(p.name)}: {html.escape(str(e))}</div></section>')
     now = datetime.now(KST).strftime("%Y-%m-%d %H:%M")
+    intake_url_js = '"' + INTAKE_URL.replace('"', '').replace('\\', '') + '"' if INTAKE_URL else '""'
     empty = '<p class="empty">아직 생성된 초안이 없어요. 생성되면 여기에 자동으로 떠요.</p>'
     filter_bar = ('<div class="filter">'
                   '<button class="fb on" data-f="전체">전체</button>'
@@ -322,15 +325,24 @@ document.querySelectorAll('.fb').forEach(function(b){{
     }});
   }});
 }});
+var INTAKE_URL={intake_url_js};
 var mk=document.getElementById('mkbtn');
 if(mk){{ mk.addEventListener('click', function(){{
   var free=document.getElementById('f_free');
-  var txt='[패션 새 글 요청]\\n'+(free?free.value.trim():'');
-  var o=document.getElementById('intake_out'); o.value=txt;
+  var txt=(free?free.value.trim():'');
   var tip=document.getElementById('mktip');
-  function ok2(){{ mk.textContent='복사됨'; mk.classList.add('done'); if(tip)tip.textContent='복사됐어요. 클로드 창에 붙여넣기 하세요.'; setTimeout(function(){{mk.textContent='복사';mk.classList.remove('done');}},1400); }}
-  if(navigator.clipboard&&navigator.clipboard.writeText){{ navigator.clipboard.writeText(txt).then(ok2,function(){{o.style.position='static';o.style.opacity=1;o.select();document.execCommand('copy');o.style.position='absolute';o.style.opacity=0;ok2();}}); }}
-  else {{ o.style.position='static';o.style.opacity=1;o.select();document.execCommand('copy');o.style.position='absolute';o.style.opacity=0;ok2(); }}
+  if(!txt){{ if(tip)tip.textContent='내용을 적어 주세요.'; return; }}
+  if(INTAKE_URL){{
+    mk.disabled=true; var old=mk.textContent; mk.textContent='보내는 중...';
+    fetch(INTAKE_URL,{{method:'POST',headers:{{'Content-Type':'application/json'}},body:JSON.stringify({{text:txt}})}})
+      .then(function(r){{return r.ok?r.json():Promise.reject(r.status);}})
+      .then(function(){{ mk.textContent='보냈어요'; mk.classList.add('done'); if(free)free.value=''; if(tip)tip.textContent='접수됐어요. 한 시간 안에 글로 만들어 올려 드릴게요.'; setTimeout(function(){{mk.textContent=old;mk.classList.remove('done');mk.disabled=false;}},2000); }})
+      .catch(function(){{ mk.textContent=old; mk.disabled=false; if(tip)tip.textContent='보내기가 안 됐어요. 잠시 뒤 다시 시도하거나, 내용을 클로드 창에 붙여넣어 주세요.'; }});
+  }} else {{
+    var o=document.getElementById('intake_out'); o.value='[패션 새 글 요청]\\n'+txt;
+    function ok2(){{ mk.textContent='복사됨'; mk.classList.add('done'); if(tip)tip.textContent='복사됐어요. 클로드 창에 붙여넣기 하세요.'; setTimeout(function(){{mk.textContent='보내기';mk.classList.remove('done');}},1400); }}
+    if(navigator.clipboard&&navigator.clipboard.writeText){{ navigator.clipboard.writeText(o.value).then(ok2,ok2); }} else {{ ok2(); }}
+  }}
 }}); }}
 document.querySelectorAll('.cp').forEach(function(b){{
   b.addEventListener('click', function(){{
