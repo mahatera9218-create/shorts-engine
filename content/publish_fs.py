@@ -33,19 +33,24 @@ KST = timezone(timedelta(hours=9))
 
 
 def daily_max() -> int:
-    """하루 발행 상한 2편(오전 1 + 오후 1, 2026-10-17 대표 결정: 애드센스 승인 전 속도 조절)."""
-    return 2
+    """하루 발행 상한 3편(오전 1 + 오후 1 + 저녁 1, 2026-10-18 대표 결정: 본진 글 수 증량)."""
+    return 3
 
 
-PM_START_HOUR = 12  # KST 12시 이전=오전 구간, 이후=오후 구간
+PM_START_HOUR = 12   # KST 12시 이전=오전 구간
+EVE_START_HOUR = 18  # KST 18시 이후=저녁 구간 (12~17시=오후)
 
 
 def slot_of(hour: int) -> str:
-    return "am" if hour < PM_START_HOUR else "pm"
+    if hour < PM_START_HOUR:
+        return "am"
+    if hour < EVE_START_HOUR:
+        return "pm"
+    return "eve"
 
 
 def slot_filled(now: datetime | None = None) -> bool:
-    """지금 구간(오전/오후)에 오늘 이미 발행된 글이 있는가. 구간마다 1편만 나가게 한다."""
+    """지금 구간(오전/오후/저녁)에 오늘 이미 발행된 글이 있는가. 구간마다 1편만 나가게 한다."""
     now = now or datetime.now(KST)
     today = now.strftime("%Y-%m-%d")
     cur = slot_of(now.hour)
