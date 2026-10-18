@@ -1,7 +1,9 @@
 # 패션 제품정보 보완 요청함 (기존 글 수정용)
 
 도우미(eok-fashion-desk.pages.dev)에서 **글마다 '제품정보 보완 → 다시 만들기'**로 대표가 보낸 요청이
-접수함 워커(KV)를 거쳐 드레인(.github/workflows/fashion-request-drain.yml, 20분마다)으로 여기 `*.md`로 쌓인다.
+접수함 워커(KV)에 쌓인다. **타이머는 없다** — 대표가 "돌려줘"라고 요청하면 그때 클로드가
+reports/패션-요청/.poke 를 건드려 드레인(.github/workflows/fashion-request-drain.yml)을 켜서
+KV의 요청을 여기 `*.md`로 꺼내오고, 이어서 그 글들을 고친다.
 
 각 파일 맨 위:
 - `slug: <그 글의 slug>`  ← 어느 글을 고칠지(reports/패션글-초안/<slug>.md). 비어 있으면 어느 글인지 대표에게 확인.

@@ -2,11 +2,11 @@
 # 접수함 워커가 KV에 쌓은 요청을 꺼내 reports/패션-요청/ 로 커밋한다(생성 세션이 글로 만든다).
 name: 패션 접수 드레인
 on:
-  schedule:
-    - cron: "*/20 * * * *"   # 20분마다
+  # 타이머 없음 — 대표가 요청할 때만(클로드가 reports/패션-요청/.poke 를 건드려 켬) 돈다.
   push:
     paths:
       - ".github/workflows/fashion-request-drain.yml"
+      - "reports/패션-요청/.poke"
 permissions:
   contents: write
 concurrency:
