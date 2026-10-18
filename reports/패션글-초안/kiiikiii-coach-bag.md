@@ -82,5 +82,4 @@ TAKEAWAY: "가방이 포인트, 옷은 무채색으로"
 
 --- 함께 보면 좋은 글 ---
 "가방이 더 의젓하네" 카리나 블랙 레더 숄더백 | https://m.blog.naver.com/tenbillionsound/224435502548
-"가방이 이렇게 컸었나?" 현백코어 문가영 빅백 스타일링 다시 보게 되네 | https://m.blog.naver.com/tenbillionsound/224436224414
 "흰 티에 청바지가 2천만원?" 김민하 샤넬룩, 알고 보니 더 놀라운 정체 | https://m.blog.naver.com/tenbillionsound/224442454016
