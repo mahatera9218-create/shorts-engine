@@ -21,6 +21,7 @@ def main() -> None:
         drafts_dir=ROOT / "reports" / "패션글-초안",
         name="캐시미어 다이어리 (패션)",
         show_gender=False,
+        intake=True,
     ))
 
 
