@@ -1,0 +1,62 @@
+# 건강 블로그 축 조사 (대표 2026-10-18)
+# - config/seeds_health.yaml 을 고쳐 main에 올리면 한 번 돈다 (title-refs 방식).
+# - 수동 실행도 가능: Actions → 건강 축 조사 → Run workflow
+# 결과는 reports/market/<날짜>/ 에 커밋된다 (세무 조사와 날짜별 폴더로 분리).
+name: 건강 축 조사
+
+on:
+  push:
+    branches: [main]
+    paths: ["config/seeds_health.yaml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: repo-reports
+  cancel-in-progress: false
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      TZ: Asia/Seoul
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: 준비
+        run: pip install -r requirements.txt
+
+      - name: 건강 축 조사 실행
+        env:
+          NAVER_AD_API_KEY: ${{ secrets.NAVER_AD_API_KEY }}
+          NAVER_AD_SECRET_KEY: ${{ secrets.NAVER_AD_SECRET_KEY }}
+          NAVER_AD_CUSTOMER_ID: ${{ secrets.NAVER_AD_CUSTOMER_ID }}
+          NCP_APIGW_API_KEY_ID: ${{ secrets.NCP_APIGW_API_KEY_ID }}
+          NCP_APIGW_API_KEY: ${{ secrets.NCP_APIGW_API_KEY }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: python -m market.run --seeds seeds_health.yaml
+
+      - name: 결과 저장 (reports/ 커밋)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/
+          if git diff --cached --quiet; then
+            echo "바뀐 결과 없음"
+          else
+            git commit -m "건강 축 조사 결과 $(date +%F)"
+            for i in 1 2 3; do
+              git pull --rebase --autostash -X theirs origin "${GITHUB_REF_NAME}" && git push && exit 0
+              sleep $((i * 5))
+            done
+            echo "결과를 저장하지 못했습니다. Claude에게 알려주세요." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
