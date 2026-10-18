@@ -33,15 +33,13 @@ jobs:
           export CLOUDFLARE_API_TOKEN="$(printf '%s' "$CLOUDFLARE_API_TOKEN" | tr -d '[:space:]')"
           cd intake
           TITLE="eok-fashion-intake-REQ"
-          # 이미 있으면 그 id, 없으면 생성
-          LIST=$(npx --yes wrangler@4 kv namespace list 2>/dev/null || echo '[]')
-          ID=$(printf '%s' "$LIST" | python3 -c "import sys,json
-try: d=json.load(sys.stdin)
-except Exception: d=[]
-print(next((n['id'] for n in d if n.get('title')=='$TITLE'),''))" 2>/dev/null || true)
+          # 이미 있으면 그 id, 없으면 생성 (파싱은 한 줄로 — YAML 블록 안전)
+          npx --yes wrangler@4 kv namespace list > kvlist.json 2>/dev/null || echo '[]' > kvlist.json
+          ID=$(TITLE="$TITLE" python3 -c "import sys,json,os; d=json.load(open('kvlist.json')) if open('kvlist.json').read().strip().startswith('[') else []; print(next((n['id'] for n in d if n.get('title')==os.environ['TITLE']),''))" 2>/dev/null || true)
           if [ -z "$ID" ]; then
-            CREATE=$(npx --yes wrangler@4 kv namespace create "$TITLE" 2>&1 | tee /dev/stderr)
-            ID=$(printf '%s' "$CREATE" | grep -oiE '"?id"?[ =:]+"?[0-9a-f]{32}' | grep -oiE '[0-9a-f]{32}' | head -1)
+            npx --yes wrangler@4 kv namespace create "$TITLE" > kvcreate.log 2>&1 || true
+            cat kvcreate.log
+            ID=$(grep -oiE '[0-9a-f]{32}' kvcreate.log | head -1)
           fi
           if [ -z "$ID" ]; then echo "❌ KV 네임스페이스 id를 못 얻음" >> "$GITHUB_STEP_SUMMARY"; exit 1; fi
           echo "::add-mask::$ID"
