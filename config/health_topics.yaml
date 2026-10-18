@@ -4,7 +4,6 @@
 #   생성 후 그 주제를 done으로 옮긴다(또는 초안 파일 존재로 중복 방지). pending이 6개 미만이면 세션이 갱년기 롱테일 10개를 보충.
 # slug는 키워드를 영문/숫자로. 검증: 모든 숫자·효능은 공식 의학기관(질병관리청·건보공단·대한폐경학회·대학병원) 출처로.
 pending:
-  - { kw: "여자 갱년기 증상", slug: "women-menopause-symptoms" }
   - { kw: "남자 갱년기 증상", slug: "men-menopause-symptoms" }
   - { kw: "갱년기 열감 홍조 완화", slug: "menopause-hot-flashes" }
   - { kw: "갱년기 불면증 수면", slug: "menopause-insomnia" }
@@ -16,4 +15,5 @@ pending:
   - { kw: "폐경 전조증상 초기", slug: "perimenopause-signs" }
   - { kw: "갱년기 영양소 정보", slug: "menopause-nutrients" }
   - { kw: "갱년기 건강검진 체크", slug: "menopause-checkup" }
-done: []
+done:
+  - { kw: "여자 갱년기 증상", slug: "women-menopause-symptoms" }   # 2026-10-18 샘플(수동 생성)
