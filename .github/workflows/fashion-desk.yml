@@ -1,0 +1,66 @@
+# 패션 발행 도우미 배포 (대표 2026-10-18)
+# reports/패션글-초안/ 이 바뀌면 휴대폰용 버튼 페이지를 다시 만들어 Cloudflare Pages에 올린다.
+# 고정 주소: https://eok-fashion-desk.pages.dev (홈 화면에 추가, noindex)
+name: 패션 발행 도우미
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "reports/패션글-초안/**"
+      - "content/fashion_desk.py"
+      - "content/health_desk.py"
+      - ".github/workflows/fashion-desk.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fashion-desk-deploy
+  cancel-in-progress: false
+
+env:
+  PROJECT: eok-fashion-desk
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: 페이지 만들기
+        run: |
+          pip install -r requirements.txt
+          python -m content.fashion_desk site-fashion
+      - name: Cloudflare Pages에 올리기
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "⚠️ Cloudflare 키가 없어 올리지 않았습니다" >> "$GITHUB_STEP_SUMMARY"; exit 0
+          fi
+          set -o pipefail
+          ACC=$(printf '%s' "$CLOUDFLARE_ACCOUNT_ID" | grep -oiE '[0-9a-f]{32}' | head -1 || true)
+          [ -z "$ACC" ] && { echo "❌ CLOUDFLARE_ACCOUNT_ID 형식이 이상합니다" >> "$GITHUB_STEP_SUMMARY"; exit 1; }
+          echo "::add-mask::$ACC"
+          export CLOUDFLARE_ACCOUNT_ID="$ACC"
+          export CLOUDFLARE_API_TOKEN="$(printf '%s' "$CLOUDFLARE_API_TOKEN" | tr -d '[:space:]')"
+          npx --yes wrangler@4 pages project create "$PROJECT" --production-branch main 2>/dev/null || true
+          ok=""
+          for wait in 5 60 120; do
+            sleep "$wait"
+            if npx --yes wrangler@4 pages deploy site-fashion --project-name "$PROJECT" --branch main --commit-dirty=true | tee deploy.log; then
+              ok=1; break
+            fi
+          done
+          [ -z "$ok" ] && { echo "❌ 패션 발행 도우미를 올리지 못했습니다. Claude에게 알려주세요." >> "$GITHUB_STEP_SUMMARY"; exit 1; }
+          echo "## 캐시미어 다이어리(패션) 발행 도우미" >> "$GITHUB_STEP_SUMMARY"
+          echo "고정 주소: https://$PROJECT.pages.dev" >> "$GITHUB_STEP_SUMMARY"
