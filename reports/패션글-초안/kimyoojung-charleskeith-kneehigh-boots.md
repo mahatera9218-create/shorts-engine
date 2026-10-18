@@ -2,7 +2,7 @@
 
 키워드: 김유정 공항패션 찰스앤키스 니하이 부츠 (아이템=신발)
 
-사진 확인: https://www.google.com/search?tbm=isch&q=김유정+인천공항+파리패션위크+찰스앤키스
+사진 확인: https://www.mt.co.kr/living/2026/10/01/2026100119452355520
 
 제목 후보:
 1. "아역 때부터 봐 왔는데.." 파리 가는 공항룩 완성한 그 배우의 '니하이 부츠'
@@ -14,7 +14,7 @@
 
 ---
 
-공항 출국 사진인데 런웨이 뒤편 같을 때가 있어요. 위에서 아래로 쭉 떨어지는 라인이 깔끔하더니, 마지막에 시선이 '발끝'에서 멈추더라고요. 무릎 위까지 올라오는 롱부츠, 거기 달린 태슬이 포인트였어요. 아역 때부터 봐 온 배우 김유정이 파리패션위크로 떠나는 길에 신은 찰스앤키스(Charles & Keith) 니하이 부츠 이야기예요.
+공항 출국 사진인데 런웨이 뒤편 같을 때가 있어요. 위에서 아래로 쭉 떨어지는 라인이 깔끔하더니, 마지막에 시선이 '발끝'에서 멈추더라고요. 무릎 위까지 올라오는 다크 브라운 롱부츠, 옆에 달린 긴 태슬이 포인트였어요. 아역 때부터 봐 온 배우 김유정이 파리패션위크로 떠나는 길에 신은 찰스앤키스(Charles & Keith) 니하이 부츠 이야기예요.
 
 [사진1]
 
@@ -22,7 +22,7 @@
 
 전체를 차분한 톤으로 정리하면, 가장 '길이와 질감이 다른 것' 하나로 눈이 가요. 이번엔 그게 무릎 위까지 오는 니하이 부츠였어요.
 
-롱부츠는 다리 선을 하나로 이어 줘서 하체가 길고 매끈하게 읽혀요. 특히 부츠 색과 하의 색을 비슷하게 맞추면 발목에서 끊기지 않고 선이 쭉 이어져 키가 더 커 보이는 효과가 생겨요. 여기에 태슬(술 장식)과 지퍼 디테일이 살짝 들어가니, 밋밋할 수 있는 롱부츠에 '움직임'이 생기면서 심심하지 않은 거죠.
+롱부츠는 다리 선을 하나로 이어 줘서 하체가 길고 매끈하게 읽혀요. 특히 부츠 색과 하의 색을 비슷하게 맞추면 발목에서 끊기지 않고 선이 쭉 이어져 키가 더 커 보이는 효과가 생겨요. 여기에 긴 태슬(술 장식)과 투웨이 지퍼 디테일이 들어가니, 밋밋할 수 있는 롱부츠에 '움직임'이 생기면서 심심하지 않은 거죠.
 
 [사진2]
 
@@ -61,19 +61,19 @@
 Photorealistic editorial fashion photograph, square 1:1, natural light or clean studio, sharp focus. Standard fashion-model body type (날씬~보통, 균형 잡힌 비율). 얼굴·머리는 프레임 밖(다리·발 중심), 특정 실존 인물을 닮지 않게. No brand logo, no readable text, no price tag, no watermark.
 
 [사진1 — ★대표 썸네일 · 아이템(니하이 부츠) 클로즈업]
-Close-up of knee-high leather boots in a deep neutral tone worn by a woman in an airport-casual look, the boots sharp and large as the clear focal point, a small tassel-and-zip detail on the side clearly visible, legs-and-feet framing (허리 아래), soft neutral background. 부츠가 화면 중심에 크게·선명하게(시선 집중, 과하지 않게).
+Close-up of knee-high leather boots in dark brown worn by a woman in an airport-casual look, the boots sharp and large as the clear focal point, a long side tassel and a two-way zip clearly visible, legs-and-feet framing (허리 아래), soft neutral background. 부츠가 화면 중심에 크게·선명하게(시선 집중, 과하지 않게).
 
 [사진2 — 공항룩 전체 착장(다리 라인 중심)]
-Lower-body framing (목 아래): the same deep-neutral knee-high leather boots worn with tonal trousers tucked to keep one continuous leg line, a relaxed loose top above, a black tote bag in hand, long clean silhouette, natural light, simple airport setting.
+Lower-body framing (목 아래): the same dark-brown knee-high leather boots worn with tonal trousers tucked to keep one continuous leg line, a relaxed loose top above, a black trapeze-silhouette tote bag in hand, long clean silhouette, natural light, simple airport setting.
 
 [사진3 — 태슬·지퍼 디테일]
-Detail close-up of the knee-high boot's side tassel and zip pull, smooth leather texture and the top-line fit around the knee, on a plain surface, soft natural light.
+Detail close-up of the dark-brown knee-high boot's long side tassel and two-way zip pull, smooth leather texture and the top-line fit around the knee, on a plain surface, soft natural light.
 
 
 --- 출처(F목록) ---
-[F1] 배우 김유정, 2026년 9월 30일 파리패션위크 참석차 인천공항 출국 — 찰스앤키스(Charles & Keith) '에이더 태슬 집 니하이 부츠(Aether Tassel-Zip Knee-High Boots)'와 '지네브라 토트백(Ginevra Tote Bag)' 착용 (2026-10-01 패션 매체 보도, 확인)
+[F1] 배우 김유정, 2026년 9월 30일 파리패션위크 참석차 인천공항 출국 — 찰스앤키스(Charles & Keith) '에이더 태슬 집 니하이 부츠(Aether Tassel-Zip Knee-High Boots, 다크 브라운)'와 '지네브라 토트백(Ginevra Tote Bag, 블랙)' 착용 (머니투데이·싱글리스트·패션비즈 2026-10-01 보도, 확인)
 [F2] 찰스앤키스는 싱가포르 기반 컨템퍼러리(가성비 디자이너) 브랜드 — 공식 온라인 스토어·매장 판매 (일반 사실)
-[F3] 니하이 부츠 특징: 무릎 위 길이, 측면 태슬·지퍼 디테일 (보도, 확인)
+[F3] 부츠 특징: 무릎 위 길이, 긴 측면 태슬 + 투웨이 지퍼 / 토트백: 블랙 트라페즈 실루엣 (패션비즈 보도, 확인)
 [F4] 에이더 태슬 집 니하이 부츠 공식 한국 판매가: 미확인(발행 전 찰스앤키스 공식 온라인 스토어에서 재확인)
 [F5] 사진은 실제 김유정 아닌 '가상 모델' 실사로 생성(실존 인물 사진·얼굴 복제 금지)
-출처 링크: 패션 매체 보도(김유정 인천공항 파리패션위크 출국, 찰스앤키스 니하이 부츠·지네브라 토트백, 2026-10-01). 공식 판매가는 찰스앤키스 공식 온라인 스토어에서 발행 전 재확인.
+출처 링크: mt.co.kr/living/2026/10/01/2026100119452355520(머니투데이 '찰스앤키스, 김유정 공항패션' 보도), slist.kr/news/articleView.html?idxno=770215(싱글리스트). 공식 판매가는 찰스앤키스 공식 온라인 스토어에서 발행 전 재확인.
