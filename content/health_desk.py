@@ -21,6 +21,7 @@ from market.common import ROOT
 DRAFTS = ROOT / "reports" / "건강글-초안"
 KST = ZoneInfo("Asia/Seoul")
 NAME = "건강 블로그 (갱년기)"
+SHOW_GENDER = True   # 패션 등 다른 블로그는 build()에서 끈다
 
 
 def parse(md: str) -> dict:
@@ -121,10 +122,15 @@ def card(d: dict, fname: str) -> str:
         if cand_rows else '<div class="lab2">제목 후보 없음</div>'
     )
     sx = d.get("대상") or "공용"
-    sx_color = {"여성": "#c05f8a", "남성": "#3a6ea5", "공용": "#6b645c"}[sx]
-    sx_chip = f'<span class="sx" style="background:{sx_color}">{sx}</span>'
+    if SHOW_GENDER:
+        sx_color = {"여성": "#c05f8a", "남성": "#3a6ea5", "공용": "#6b645c"}[sx]
+        sx_chip = f'<span class="sx" style="background:{sx_color}">{sx}</span>'
+        data_sex = f' data-sex="{sx}"'
+    else:
+        sx_chip = ""
+        data_sex = ""
     return (
-        f'<section class="card" data-sex="{sx}">'
+        f'<section class="card"{data_sex}>'
         f'<div class="head"><span class="kw">{kw}</span>{sx_chip}{badge(d["검증"])}</div>'
         + titles
         + box("본문 복사 (사진 위치·해시태그 포함)", d["본문"])
@@ -134,7 +140,13 @@ def card(d: dict, fname: str) -> str:
     )
 
 
-def build(out_dir: str) -> int:
+def build(out_dir: str, drafts_dir: Path | None = None, name: str | None = None, show_gender: bool = True) -> int:
+    global DRAFTS, NAME, SHOW_GENDER
+    if drafts_dir is not None:
+        DRAFTS = drafts_dir
+    if name is not None:
+        NAME = name
+    SHOW_GENDER = show_gender
     out = ROOT / out_dir
     out.mkdir(parents=True, exist_ok=True)
     files = [p for p in DRAFTS.glob("*.md") if p.name != "README.md"] if DRAFTS.exists() else []
@@ -147,6 +159,12 @@ def build(out_dir: str) -> int:
             cards.append(f'<section class="card"><div class="title">[읽기 실패] {html.escape(p.name)}: {html.escape(str(e))}</div></section>')
     now = datetime.now(KST).strftime("%Y-%m-%d %H:%M")
     empty = '<p class="empty">아직 생성된 초안이 없어요. 생성되면 여기에 자동으로 떠요.</p>'
+    filter_bar = ('<div class="filter">'
+                  '<button class="fb on" data-f="전체">전체</button>'
+                  '<button class="fb" data-f="여성">여성</button>'
+                  '<button class="fb" data-f="남성">남성</button>'
+                  '<button class="fb" data-f="공용">공용</button>'
+                  '</div>') if SHOW_GENDER else ''
     page = f"""<!doctype html>
 <html lang="ko"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
@@ -187,12 +205,7 @@ pre{{white-space:pre-wrap;font-size:12px;color:var(--muted);background:#f0ebe0;p
 <body><div class="wrap">
 <h1>{html.escape(NAME)} 발행 도우미</h1>
 <div class="sub">{now} 기준 · 글 {len(files)}편 · ①제목 하나 골라 복사 → ②본문 복사(사진 위치·해시태그 포함)해 네이버에 붙이기 → ③이미지 프롬프트 복사로 그림 생성</div>
-<div class="filter">
-  <button class="fb on" data-f="전체">전체</button>
-  <button class="fb" data-f="여성">여성</button>
-  <button class="fb" data-f="남성">남성</button>
-  <button class="fb" data-f="공용">공용</button>
-</div>
+{filter_bar}
 {''.join(cards) if cards else empty}
 </div>
 <script>
