@@ -136,6 +136,12 @@ export default async function PostPage({
         <Link href="/p/about">{SITE_NAME}</Link>
         <span>·</span>
         <span>{formatDate(post.date)}</span>
+        {post.modified && post.modified.slice(0, 10) !== post.date.slice(0, 10) ? (
+          <>
+            <span>·</span>
+            <span>마지막 업데이트 {formatDate(post.modified)}</span>
+          </>
+        ) : null}
       </div>
 
       {stock || feat ? (
