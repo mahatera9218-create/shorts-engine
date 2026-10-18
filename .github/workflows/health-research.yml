@@ -42,7 +42,15 @@ jobs:
           NCP_APIGW_API_KEY_ID: ${{ secrets.NCP_APIGW_API_KEY_ID }}
           NCP_APIGW_API_KEY: ${{ secrets.NCP_APIGW_API_KEY }}
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
-        run: python -m market.run --seeds seeds_health.yaml
+        # run.py가 --seeds를 지원하면 그걸 쓰고(브랜치), 아니면(main 현재) 건강 씨앗을 seeds.yaml로 임시 복사해 실행.
+        # 복사본은 reports/만 커밋하므로 seeds.yaml 원본은 저장소에 그대로 남는다(세무 씨앗 불변).
+        run: |
+          if python -m market.run --help 2>/dev/null | grep -q -- "--seeds"; then
+            python -m market.run --seeds seeds_health.yaml
+          else
+            cp config/seeds_health.yaml config/seeds.yaml
+            python -m market.run
+          fi
 
       - name: 결과 저장 (reports/ 커밋)
         run: |
