@@ -1,5 +1,5 @@
 date: '2026-10-18'
-updated: '10:17'
+updated: '18:47'
 items:
 - kw: SK하이닉스
   rise: 2.1
@@ -43,11 +43,11 @@ items:
   blog24h: 100
   section: 국내주식
   score: 124
-- kw: TSMC
-  rise: 5.02
-  volume: 49600
+- kw: 일라이릴리
+  rise: 2.43
+  volume: 59800
   named: true
-  blog24h: 100
+  blog24h: 95
   section: 해외주식
   score: 123
 - kw: 삼성전자주가
@@ -103,6 +103,6 @@ items:
   rise: 1.01
   volume: 36870
   named: true
-  blog24h: 29
+  blog24h: 54
   section: ''
-  score: 47
+  score: 52
