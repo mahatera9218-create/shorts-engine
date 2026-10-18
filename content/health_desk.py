@@ -32,7 +32,10 @@ def parse(md: str) -> dict:
     본문 블록에는 사진 자리([사진N])와 해시태그가 함께 들어 있어 '본문 복사' 한 번으로 다 복사된다.
     이미지 프롬프트는 별도.
     """
-    d = {"검증": "", "키워드": "", "대상": "", "후보": [], "추천": "", "본문": "", "이미지": "", "출처": "", "사진확인": ""}
+    d = {"검증": "", "키워드": "", "대상": "", "후보": [], "추천": "", "본문": "", "이미지": "", "출처": "", "사진확인": "", "생성일": ""}
+    m = re.search(r"^생성일\s*[:：]\s*([0-9]{4}-[0-9]{2}-[0-9]{2})", md, re.M)
+    if m:
+        d["생성일"] = m.group(1).strip()
     m = re.search(r"^검증:\s*(.+)$", md, re.M)
     if m:
         d["검증"] = m.group(1).strip()
@@ -170,9 +173,17 @@ def card(d: dict, fname: str) -> str:
     else:
         sx_chip = ""
         data_sex = ""
+    _today = datetime.now(KST).strftime("%Y-%m-%d")
+    _gday = d.get("생성일") or ""
+    if _gday == _today:
+        day_chip = '<span class="today">오늘</span>'
+    elif _gday:
+        day_chip = f'<span class="daychip">{html.escape(_gday)}</span>'
+    else:
+        day_chip = ""
     return (
         f'<section class="card"{data_sex}>'
-        f'<div class="head"><span class="kw">{kw}</span>{sx_chip}{badge(d["검증"])}</div>'
+        f'<div class="head"><span class="kw">{kw}</span>{day_chip}{sx_chip}{badge(d["검증"])}</div>'
         + titles
         + photo_check(d.get("사진확인") or "")
         + box("본문 복사 (사진 위치·관련글·해시태그 포함)", d["본문"])
@@ -245,13 +256,21 @@ def build(out_dir: str, drafts_dir: Path | None = None, name: str | None = None,
     out.mkdir(parents=True, exist_ok=True)
     files = [p for p in DRAFTS.glob("*.md") if p.name != "README.md"] if DRAFTS.exists() else []
     files.sort(key=lambda p: p.stat().st_mtime, reverse=True)
-    cards = []
+    today = datetime.now(KST).strftime("%Y-%m-%d")
+    items = []  # (오늘 여부, mtime, html)
     for p in files:
         try:
             txt = p.read_text(encoding="utf-8")
-            cards.append(research_card(txt, p.name) if RESEARCH else card(parse(txt), p.name))
+            if RESEARCH:
+                html_card, is_today = research_card(txt, p.name), False
+            else:
+                d = parse(txt)
+                html_card, is_today = card(d, p.name), (d.get("생성일") == today)
         except Exception as e:  # 한 글이 깨져도 나머지는 보이게
-            cards.append(f'<section class="card"><div class="title">[읽기 실패] {html.escape(p.name)}: {html.escape(str(e))}</div></section>')
+            html_card, is_today = f'<section class="card"><div class="title">[읽기 실패] {html.escape(p.name)}: {html.escape(str(e))}</div></section>', False
+        items.append((is_today, p.stat().st_mtime, html_card))
+    items.sort(key=lambda t: (not t[0], -t[1]))  # 오늘 글 먼저, 그다음 최신순
+    cards = [h for _, _, h in items]
     now = datetime.now(KST).strftime("%Y-%m-%d %H:%M")
     if RESEARCH:
         sub_line = (f"{now} 기준 · 조사 세트 {len(files)}건 · 카드의 ‘복사’(끝에 ‘출발’ 포함) → "
@@ -284,6 +303,8 @@ h1{{font-size:20px;margin:6px 0 2px}}
 .kw{{font-size:13px;color:var(--muted);flex:1}}
 .badge{{color:#fff;font-size:11px;padding:3px 8px;border-radius:20px;white-space:nowrap}}
 .sx{{color:#fff;font-size:11px;padding:3px 9px;border-radius:20px;white-space:nowrap;font-weight:700}}
+.today{{background:#2e7d52;color:#fff;font-size:11px;padding:3px 9px;border-radius:20px;white-space:nowrap;font-weight:700}}
+.daychip{{background:#efe9dd;color:var(--muted);font-size:11px;padding:3px 8px;border-radius:20px;white-space:nowrap}}
 .filter{{display:flex;gap:8px;margin:0 0 16px;flex-wrap:wrap}}
 .fb{{border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:13px;padding:7px 14px;border-radius:20px;cursor:pointer}}
 .fb.on{{background:var(--point);color:#fff;border-color:var(--point)}}
