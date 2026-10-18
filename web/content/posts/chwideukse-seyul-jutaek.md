@@ -1,5 +1,5 @@
 ---
-title: 2026 주택 취득세율 총정리｜가격·주택수·생애최초 감면
+title: 집 살 때 취득세 얼마? 2026 주택수·가격별 확인
 slug: chwideukse-seyul-jutaek
 category: realty
 date: 2026-10-18T13:35:07+09:00
