@@ -14,6 +14,14 @@ from market.common import ROOT
 from . import health_desk
 
 
+def _intake_url() -> str:
+    p = ROOT / "config" / "intake_url.txt"
+    try:
+        return p.read_text(encoding="utf-8").strip()
+    except Exception:
+        return ""
+
+
 def main() -> None:
     out_dir = sys.argv[1] if len(sys.argv) > 1 else "site-fashion"
     sys.exit(health_desk.build(
@@ -22,6 +30,7 @@ def main() -> None:
         name="캐시미어 다이어리 (패션)",
         show_gender=False,
         intake=True,
+        intake_url=_intake_url(),
     ))
 
 
