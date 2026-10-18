@@ -346,7 +346,10 @@ document.querySelectorAll('.cp').forEach(function(b){{
 </body></html>"""
     (out / "index.html").write_text(page, encoding="utf-8")
     (out / "robots.txt").write_text("User-agent: *\nDisallow: /\n", encoding="utf-8")
-    (out / "_headers").write_text("/*\n  X-Robots-Tag: noindex, nofollow\n", encoding="utf-8")
+    (out / "_headers").write_text(
+        "/*\n  X-Robots-Tag: noindex, nofollow\n  Cache-Control: no-store, must-revalidate\n",
+        encoding="utf-8",
+    )
     print(f"건강 도우미 생성: {out}/index.html (글 {len(files)}편)")
     return 0
 
