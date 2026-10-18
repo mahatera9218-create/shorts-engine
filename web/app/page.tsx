@@ -3,7 +3,7 @@ import { getPosts, CATEGORY_ORDER } from "@/lib/wp";
 import PostCard from "@/components/PostCard";
 
 import type { Metadata } from "next";
-import { SITE_NAME, SITE_URL, SITE_DESC } from "@/lib/wp";
+import { SITE_NAME, SITE_URL, SITE_DESC, EDITOR_NAME } from "@/lib/wp";
 
 export const revalidate = 600;
 
@@ -19,7 +19,7 @@ export default async function Home() {
         dangerouslySetInnerHTML={{
           __html: JSON.stringify([
             { "@context": "https://schema.org", "@type": "WebSite", name: SITE_NAME, url: SITE_URL, description: SITE_DESC, inLanguage: "ko-KR" },
-            { "@context": "https://schema.org", "@type": "Organization", name: SITE_NAME, url: SITE_URL, logo: `${SITE_URL}/logo.webp` },
+            { "@context": "https://schema.org", "@type": "Organization", name: SITE_NAME, url: SITE_URL, logo: `${SITE_URL}/logo.webp`, founder: { "@type": "Person", name: EDITOR_NAME } },
           ]),
         }}
       />
