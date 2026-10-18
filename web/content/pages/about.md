@@ -11,4 +11,4 @@ slug: about
 <h2>하지 않는 것</h2>
 <p>투자 권유, 수익 보장, 절세 과장을 하지 않습니다. 광고·협찬 글은 반드시 표시합니다. 이 블로그의 글은 일반 정보 제공이 목적이며, 세무·법률 자문을 대체하지 않습니다.</p>
 <h2>문의</h2>
-<ul><li>운영자·편집 책임자: Aaron H. Lee</li><li>이메일: mahatera9218@gmail.com</li></ul>
+<ul><li>운영자·편집 책임자: HYUNBONG LEE</li><li>이메일: mahatera9218@gmail.com</li></ul>

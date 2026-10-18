@@ -4,7 +4,7 @@ slug: contact
 ---
 <p>Yield Briefing에 관심 가져 주셔서 감사합니다. 아래로 문의하실 수 있습니다.</p>
 <h2>문의</h2>
-<ul><li><strong>운영자·편집 책임자:</strong> Aaron H. Lee</li><li><strong>이메일:</strong> mahatera9218@gmail.com</li></ul>
+<ul><li><strong>운영자·편집 책임자:</strong> HYUNBONG LEE</li><li><strong>이메일:</strong> mahatera9218@gmail.com</li></ul>
 <p>광고·협찬·제휴, 정보 정정 요청, 기타 문의를 환영합니다. 영업일 기준으로 순차적으로 답변드립니다.</p>
 <h2>정보 정정 요청</h2>
 <p>본 블로그의 내용 중 사실과 다른 부분을 발견하시면 위 이메일로 알려 주세요. 확인 후 신속히 바로잡고, 글의 &#x27;최종 수정일&#x27;을 갱신합니다.</p>

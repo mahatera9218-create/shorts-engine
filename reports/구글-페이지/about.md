@@ -23,5 +23,5 @@
 
 ## 문의
 
-- 운영자·편집 책임자: Aaron H. Lee
+- 운영자·편집 책임자: HYUNBONG LEE
 - 이메일: mahatera9218@gmail.com
