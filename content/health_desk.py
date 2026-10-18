@@ -76,7 +76,16 @@ def parse(md: str) -> dict:
     after_img = img_split[1] if len(img_split) > 1 else ""
     src_split = re.split(r"^---\s*출처.*?---\s*$", after_img, maxsplit=1, flags=re.M)
     d["이미지"] = src_split[0].strip()
-    d["출처"] = (src_split[1].strip() if len(src_split) > 1 else "")
+    src_rest = (src_split[1] if len(src_split) > 1 else "")
+    # '--- 함께 보면 좋은 글 ---' 블록(제목 | URL 줄들)을 출처에서 떼어 관련글로
+    d["관련글"] = []
+    rel_split = re.split(r"^---\s*함께 보면 좋은 글\s*---\s*$", src_rest, maxsplit=1, flags=re.M)
+    d["출처"] = rel_split[0].strip()
+    if len(rel_split) > 1:
+        for ln in rel_split[1].splitlines():
+            if "|" in ln and "http" in ln:
+                title, url = ln.rsplit("|", 1)
+                d["관련글"].append((title.strip(" -*·"), url.strip()))
     return d
 
 
@@ -135,8 +144,28 @@ def card(d: dict, fname: str) -> str:
         + titles
         + box("본문 복사 (사진 위치·해시태그 포함)", d["본문"])
         + box("이미지 프롬프트 복사 (별도)", d["이미지"], "img")
+        + rel_block(d.get("관련글") or [])
         + (f'<details><summary>출처(F목록)</summary><pre>{html.escape(d["출처"])}</pre></details>' if d["출처"] else "")
         + '</section>'
+    )
+
+
+def rel_block(rels):
+    """함께 보면 좋은 글: 클릭 링크로 보여 주고(뜨게), 전체 복사 버튼도 준다."""
+    if not rels:
+        return ""
+    global _tid
+    links = "".join(
+        f'<div class="rl"><a href="{html.escape(u)}" target="_blank" rel="noopener">{html.escape(t)}</a></div>'
+        for t, u in rels
+    )
+    copytext = "\n".join(f"{t} {u}" for t, u in rels)
+    _tid += 1
+    tid = f"t{_tid}"
+    return (
+        '<div class="relwrap"><div class="rlab">함께 보면 좋은 글 (본문 해시태그 위에 넣기)'
+        f'<button class="cp" data-t="{tid}">링크 복사</button></div>{links}'
+        f'<textarea id="{tid}" readonly>{html.escape(copytext)}</textarea></div>'
     )
 
 
@@ -195,6 +224,11 @@ h1{{font-size:20px;margin:6px 0 2px}}
 .cp{{border:0;background:var(--point);color:#fff;font-size:13px;padding:8px 14px;border-radius:9px;cursor:pointer;white-space:nowrap}}
 .tcp{{padding:6px 12px;font-size:12px}}
 .cp.done{{background:#2e7d52}}
+.relwrap{{margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}}
+.rlab{{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-bottom:6px}}
+.rlab .cp{{margin-left:auto}}
+.rl{{margin:4px 0}}
+.rl a{{color:var(--point);font-size:13px;text-decoration:none;line-height:1.4}}
 textarea{{position:absolute;left:-9999px;opacity:0}}
 details{{margin-top:10px}}
 summary{{color:var(--muted);font-size:13px;cursor:pointer}}
