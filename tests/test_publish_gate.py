@@ -10,28 +10,28 @@ from content import publish_fs as pf
 
 class SlotTest(unittest.TestCase):
     def test_slot_of(self):
-        self.assertEqual(pf.slot_of(9), "am")
-        self.assertEqual(pf.slot_of(11), "am")
-        self.assertEqual(pf.slot_of(12), "pm")
-        self.assertEqual(pf.slot_of(16), "pm")
-        self.assertEqual(pf.slot_of(17), "pm")
-        self.assertEqual(pf.slot_of(18), "eve")
-        self.assertEqual(pf.slot_of(21), "eve")
+        self.assertEqual(pf.slot_of(9), "s1")
+        self.assertEqual(pf.slot_of(10), "s2")
+        self.assertEqual(pf.slot_of(13), "s3")
+        self.assertEqual(pf.slot_of(16), "s4")
+        self.assertEqual(pf.slot_of(19), "s5")
+
 
     def test_slot_filled_only_same_half(self):
         with tempfile.TemporaryDirectory() as d:
             posts = Path(d)
-            (posts / "a.md").write_text("---\nslug: a\ndate: 2026-10-17T09:20:00+09:00\n---\nx", encoding="utf-8")
+            # 10:23 발행(s2 구간)
+            (posts / "a.md").write_text("---\nslug: a\ndate: 2026-10-17T10:23:00+09:00\n---\nx", encoding="utf-8")
             with mock.patch.object(pf, "POSTS_OUT", posts):
-                am = datetime(2026, 10, 17, 10, 41, tzinfo=pf.KST)
-                pm = datetime(2026, 10, 17, 15, 9, tzinfo=pf.KST)
-                other_day = datetime(2026, 10, 18, 10, 41, tzinfo=pf.KST)
-                self.assertTrue(pf.slot_filled(am))
-                self.assertFalse(pf.slot_filled(pm))
+                same_slot = datetime(2026, 10, 17, 11, 7, tzinfo=pf.KST)   # s2: 이미 찬 구간
+                other_slot = datetime(2026, 10, 17, 15, 9, tzinfo=pf.KST)  # s4: 빈 구간
+                other_day = datetime(2026, 10, 18, 11, 7, tzinfo=pf.KST)
+                self.assertTrue(pf.slot_filled(same_slot))
+                self.assertFalse(pf.slot_filled(other_slot))
                 self.assertFalse(pf.slot_filled(other_day))
 
-    def test_daily_max_is_three(self):
-        self.assertEqual(pf.daily_max(), 3)
+    def test_daily_max_is_five(self):
+        self.assertEqual(pf.daily_max(), 5)
 
 
 class VerifyGateTest(unittest.TestCase):
