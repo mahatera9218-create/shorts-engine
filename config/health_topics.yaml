@@ -7,8 +7,19 @@
 # 정보형 중심, 영양제 효능 단정·제품 홍보 금지. 숫자·효능은 공식 의학기관 출처로. slug는 영문/숫자.
 # 규칙: pending에서 초안(reports/건강글-초안/<slug>.md) 없는 주제를 위에서부터 2개 생성→done 이동. pending<6이면 세 부류 고루 롱테일 보충.
 pending:
-  # seg3 — 의심 중(감별·자가점검): 검색 유입 가장 큼, 최우선
-  - { seg: 3, kw: "이 증상 갱년기일까 피로 어지럼", slug: "is-it-menopause-fatigue" }
+  # ★ 핵심 전략 '증상 엮기'(seg3 감별): 흔한 증상 키워드(검색량 큼) → "혹시 갱년기? 이렇게 구분".
+  #   단정 금지 — "갱년기일 수도/아닐 수도, 감별 포인트, 애매하면 병원". 검색 유입 최우선.
+  - { seg: 3, kw: "이유 없는 피로 혹시 갱년기", slug: "fatigue-menopause" }
+  - { seg: 3, kw: "손발 저림 갱년기 신호일까", slug: "tingling-menopause" }
+  - { seg: 3, kw: "가슴 두근거림 갱년기", slug: "palpitation-menopause" }
+  - { seg: 3, kw: "어지럼증 갱년기 관련", slug: "dizziness-menopause" }
+  - { seg: 3, kw: "건망증 기억력 저하 갱년기", slug: "memory-menopause" }
+  - { seg: 3, kw: "어깨 목 결림 갱년기", slug: "stiff-shoulder-menopause" }
+  - { seg: 3, kw: "우울 불안 갱년기 구분", slug: "mood-vs-menopause" }
+  - { seg: 3, kw: "질 건조 성교통 갱년기", slug: "dryness-menopause" }
+  - { seg: 3, kw: "요실금 잦은 소변 갱년기", slug: "bladder-menopause" }
+  - { seg: 3, kw: "피부 가려움 건조 갱년기", slug: "itch-menopause" }
+  - { seg: 3, kw: "이 증상 갱년기일까 종합 자가점검", slug: "is-it-menopause-fatigue" }
   - { seg: 3, kw: "갱년기 갑상선 우울증 구분", slug: "menopause-vs-thyroid" }
   - { seg: 3, kw: "갱년기 무슨 검사 어디서", slug: "menopause-which-test" }
   # seg1 — 이미 겪는 중(증상별 완화 how-to)
