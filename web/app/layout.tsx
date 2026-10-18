@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import fs from "node:fs";
 import path from "node:path";
-import { SITE_NAME, SITE_URL, SITE_DESC } from "@/lib/wp";
+import { SITE_NAME, SITE_URL, SITE_DESC, EDITOR_NAME, CONTACT_EMAIL } from "@/lib/wp";
 import Menu from "@/components/Menu";
 import AdsenseLoader from "@/components/AdsenseLoader";
 
@@ -66,7 +66,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link href="/tools" prefetch={false}>판정 도구</Link>
               <Link href="/p/about" prefetch={false}>소개</Link>
             </div>
-            © {new Date().getFullYear()} {SITE_NAME} · 일반 정보 제공 목적이며 개별
+            © {new Date().getFullYear()} {SITE_NAME} · 운영·편집 책임 {EDITOR_NAME} · 문의 {CONTACT_EMAIL} · 일반 정보 제공 목적이며 개별
             사안은 국세청(126)·세무 전문가 확인을 권합니다.
           </div>
         </footer>

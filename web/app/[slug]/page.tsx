@@ -11,6 +11,7 @@ import {
   formatDate,
   SITE_NAME,
   SITE_URL,
+  EDITOR_NAME,
 } from "@/lib/wp";
 import { stockPhoto, stockPhotos } from "@/lib/photos";
 import PostCard from "@/components/PostCard";
@@ -185,6 +186,7 @@ export default async function PostPage({
             image: hero ? [hero] : undefined,
             author: { "@type": "Organization", name: SITE_NAME, url: SITE_URL },
             publisher: { "@type": "Organization", name: SITE_NAME, url: SITE_URL },
+            accountablePerson: { "@type": "Person", name: EDITOR_NAME },
             datePublished: post.date,
             dateModified: post.modified,
             mainEntityOfPage: `${SITE_URL}/${post.slug}`,
