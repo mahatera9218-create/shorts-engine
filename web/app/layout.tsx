@@ -4,7 +4,6 @@ import fs from "node:fs";
 import path from "node:path";
 import { SITE_NAME, SITE_URL, SITE_DESC, EDITOR_NAME, CONTACT_EMAIL } from "@/lib/wp";
 import Menu from "@/components/Menu";
-import AdsenseLoader from "@/components/AdsenseLoader";
 
 const ADSENSE_CLIENT =
   process.env.NEXT_PUBLIC_ADSENSE_CLIENT || "ca-pub-6435261744776184";
@@ -26,7 +25,7 @@ export const metadata: Metadata = {
         "77856750d7c78447f76f81fc80a91308d2af573b",
         "18ac1493a909859444407b5105f7b234e15c242e", // 2026-10-18 서치어드바이저 추가 소유확인
       ],
-      // 애드센스 소유확인(스크립트 대신 공식 메타 방식 — 광고 JS는 AdsenseLoader가 지연 로드).
+      // 애드센스 소유확인 메타(광고 JS는 head의 adsbygoogle 스크립트가 로드).
       ...(ADSENSE_CLIENT ? { "google-adsense-account": ADSENSE_CLIENT } : {}),
     },
   },
@@ -40,9 +39,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ko" suppressHydrationWarning>
       <head>
         <style dangerouslySetInnerHTML={{ __html: CSS }} />
+        {/* 애드센스 광고 스크립트 — head에 고정(심사 크롤러가 바로 감지). 소유확인 메타와 함께 둔다. */}
+        {ADSENSE_CLIENT ? (
+          <script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+            crossOrigin="anonymous"
+          />
+        ) : null}
       </head>
       <body>
-        <AdsenseLoader />
         <header className="site-header">
           <div className="container inner">
             <Link href="/" className="brand" aria-label={SITE_NAME}>
