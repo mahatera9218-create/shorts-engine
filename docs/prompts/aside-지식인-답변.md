@@ -17,10 +17,24 @@
 2) 답변 초안 쓰기 (질문마다)
 - 질문자의 상황에 맞춘 성실한 답변을 쓴다. 공식 기준(국세청·건강보험공단·국가법령)에 근거하고, 확실하지 않은 숫자는 단정하지 말고 "공단/국세청 확인 권고"로.
 - 가짜 경험("제가 해봤는데")·세무사 사칭 금지. 광고 말투 금지. 사람이 쓴 것처럼 담백하게.
-- astacgroup 링크는 **정말 도움될 때만, 답변 맨 끝에 1개**. 해당 판정 도구가 있을 때만:
-  · 피부양자 → https://astacgroup.com/tools/dependent-nhis
-  · (그 외 관련 도구/글이 분명할 때만 해당 주소, 애매하면 링크 없이)
-- 링크 없이도 답이 완결되게 쓴다. 링크는 "더 자세히 따져볼 수 있는 도구" 정도로만.
+- **링크는 관련 있는 게 있으면 기본으로 넣는다(답변 맨 끝).** 두 가지를 넣을 수 있다:
+  · **글 링크**("더 자세한 기준·표는 여기서 → ") : 질문 주제에 맞는 astacgroup 글.
+  · **도구 링크**("내 경우는 바로 판정 → ") : 질문이 '내가 해당되나/얼마냐'면 판정 도구.
+  둘 다 맞으면 둘 다, 하나만 맞으면 하나만. 아무것도 안 맞으면 링크 없이.
+- 주제별 주소(열어서 실제로 뜨는지 확인하고 붙인다. 안 뜨면 astacgroup.com 홈에서 비슷한 글을 찾는다):
+  · 피부양자/건강보험 → 도구 https://astacgroup.com/tools/dependent-nhis
+  · 양도세 1주택 비과세 → 글 https://astacgroup.com/yangdose-1jutaek-bigwase
+  · 취득세 → 글 https://astacgroup.com/chwideukse-seyul-jutaek · 생애최초 감면 https://astacgroup.com/iljose-gamse-saengae-choecho
+  · 종합부동산세 → 글 https://astacgroup.com/jongbuse-gibon-gongje
+  · 재산세 → 글 https://astacgroup.com/jaesan-se-nap-gi
+  · 소득세율 → 글 https://astacgroup.com/sodeukse-yulpyo-2026
+  · ISA → 글 https://astacgroup.com/isa-gyejwa-hyetaek-2026
+  · 연금저축·IRP → 글 https://astacgroup.com/yeongeum-irp-semuchul-gongje-2026
+  · 임대소득 → 도구 https://astacgroup.com/tools/rental-income
+  · 온라인 셀러 부가세 → 도구 https://astacgroup.com/tools/seller-vat
+  · 블로그·유튜브 사업자등록 → 도구 https://astacgroup.com/tools/creator-business
+  · 목록에 없는 주제면 astacgroup.com 홈을 열어 가장 가까운 글 주소를 찾아 넣는다.
+- **링크 없이도 답이 완결되게** 쓴다(링크는 "더 보고 싶으면"). 한 답변에 링크는 최대 2개(글 1 + 도구 1).
 
 3) 큐에 저장
 - 각 초안을 아래 양식으로 만들어 reports/지식인-답변-queue.md 에 붙일 수 있게 정리해 나에게 텍스트로 줘(파일 수정은 안 해도 됨, 내가 복사한다):
