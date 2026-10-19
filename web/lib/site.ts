@@ -91,9 +91,9 @@ export function stripHtml(html: string): string {
 export function formatDate(iso: string): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return "";
-  return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(
-    d.getDate(),
-  ).padStart(2, "0")}`;
+  // 한국 시간(KST) 기준으로 날짜를 찍는다. 빌드 서버(Vercel=UTC) 기준으로 찍으면
+  // 새벽에 발행한 글이 하루 전으로 보이던 문제를 없앤다. en-CA = YYYY-MM-DD.
+  return d.toLocaleDateString("en-CA", { timeZone: "Asia/Seoul" }).replace(/-/g, ".");
 }
 
 // slug로 안정적인 숫자 id(목록 key·중복 제거용).
