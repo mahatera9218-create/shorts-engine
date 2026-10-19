@@ -34,6 +34,8 @@
 
 그래서 어지럼이 반복되면 갱년기만 떠올리기보다, 위 원인들을 함께 확인해 보는 게 안전해요.
 
+[요약카드]
+
 [사진3]
 
 이럴 땐 미루지 말고 병원으로
@@ -48,7 +50,7 @@
 --- 이미지 프롬프트 ---
 
 [공통 스타일]
-Photorealistic, natural light, clean simple background, soft focus. Korean middle-aged person, modest everyday clothing. No text, no logo, no watermark. 과하거나 자극적이지 않게, 정보성 건강 블로그 톤.
+Photorealistic, natural light, clean simple background, soft focus. Korean middle-aged person, modest everyday clothing. No text, no logo, no watermark. 과하거나 자극적이지 않게, 정보성 건강 블로그 톤. 모든 컷 정사각형 1:1, 800×800 이상(요약카드만 한글 글자 허용, 실사는 글자 없음).
 
 [사진1 — ★대표 썸네일 · 부위 클로즈업(시선 집중, 자극 않게)]
 Close-up of a middle-aged Korean woman lightly pressing her temple/forehead with her fingertips, a slightly dizzy, off-balance expression, standing by a window in daylight. 관자놀이·이마에 손 얹은 모습이 화면 중심에 또렷하게, 부드럽고 차분한 톤.
@@ -58,6 +60,14 @@ A middle-aged person steadying themselves with one hand on a chair or wall while
 
 [사진3 — 진료·상담 분위기]
 A calm hospital/clinic consultation desk scene, a doctor's hand gesturing while explaining, patient seated, soft neutral tones, no readable text on screens.
+
+[요약카드 — 한글 인포 요약카드 (본문 요약, 썸네일 아님)]
+A clean Korean-language info summary card, soft pastel background, large clear Hangul text, no photo of a person, no logo, no watermark, calm informative tone. 제목 "중년 어지럼, 이렇게 가려보기" + 아래 4줄 불릿:
+• 귀 문제(이석증·메니에르) — 머리 움직일 때 핑
+• 일어설 때 핑 — 기립성 저혈압
+• 빈혈·갑상선·혈당 — 피검사로 확인
+• 말 어눌·한쪽 힘빠짐·복시·심한 두통 → 바로 응급실
+(글자가 또렷하고 오타 없게. 효능·공포·제품명 금지.)
 
 
 --- 출처(F목록) ---

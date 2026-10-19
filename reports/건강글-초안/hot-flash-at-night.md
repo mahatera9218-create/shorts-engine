@@ -30,6 +30,8 @@
 
 작은 것 같아도 몇 가지만 꾸준히 바꿔도 밤이 한결 편해지는 경우가 많아요.
 
+[요약카드]
+
 [사진3]
 
 그래도 힘들면 혼자 참지 마세요
@@ -44,7 +46,7 @@
 --- 이미지 프롬프트 ---
 
 [공통 스타일]
-Photorealistic, soft bedroom night light, calm tone, soft focus. Korean middle-aged woman, comfortable sleepwear. No text, no logo, no watermark. 자극적이지 않게, 차분한 건강 정보 톤.
+Photorealistic, soft bedroom night light, calm tone, soft focus. Korean middle-aged woman, comfortable sleepwear. No text, no logo, no watermark. 자극적이지 않게, 차분한 건강 정보 톤. 모든 컷 정사각형 1:1, 800×800 이상(요약카드만 한글 글자 허용, 실사는 글자 없음).
 
 [사진1 — ★대표 썸네일 · 부위 클로즈업(시선 집중, 자극 않게)]
 Close-up of a middle-aged Korean woman at night fanning her neck/décolletage with her hand, light sheen of sweat on the neck, dim warm bedroom light. 목·쇄골 부위와 부채질하는 손이 화면 중심에, 더운 느낌이 드러나되 과하지 않게.
@@ -54,6 +56,14 @@ A tidy bedroom set up for cooling sleep: light cotton bedding, a small electric 
 
 [사진3 — 상담 분위기]
 A calm gynecology/menopause clinic consultation, a doctor listening and explaining to a seated middle-aged woman, soft neutral tones, no readable text.
+
+[요약카드 — 한글 인포 요약카드 (본문 요약, 썸네일 아님)]
+A clean Korean-language info summary card, soft calm night-tone pastel background, large clear Hangul text, no photo of a person, no logo, no watermark. 제목 "밤 열감, 이렇게 달래보기" + 아래 4줄 불릿:
+• 침실 시원하게 — 면 잠옷·가벼운 침구·선풍기
+• 저녁엔 카페인·술·매운 음식 줄이기
+• 자기 전 미지근한 물로 가볍게 샤워
+• 계속 힘들면 산부인과·갱년기 클리닉 상담
+(글자가 또렷하고 오타 없게. 효능 단정·공포·제품명 금지.)
 
 
 --- 출처(F목록) ---
