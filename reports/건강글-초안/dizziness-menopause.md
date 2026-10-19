@@ -52,8 +52,8 @@
 [공통 스타일]
 Photorealistic, natural light, clean simple background, soft focus. Korean middle-aged person, modest everyday clothing. No text, no logo, no watermark. 과하거나 자극적이지 않게, 정보성 건강 블로그 톤. 모든 컷 정사각형 1:1, 800×800 이상(요약카드만 한글 글자 허용, 실사는 글자 없음).
 
-[사진1 — ★대표 썸네일 · 부위 클로즈업(시선 집중, 자극 않게)]
-Close-up of a middle-aged Korean woman lightly pressing her temple/forehead with her fingertips, a slightly dizzy, off-balance expression, standing by a window in daylight. 관자놀이·이마에 손 얹은 모습이 화면 중심에 또렷하게, 부드럽고 차분한 톤.
+[사진1 — 대표 썸네일 · 강한 긴장]
+Dramatic close-up of a middle-aged Korean woman suddenly staggering, gripping a wall or handrail hard, eyes squeezed shut, the room visibly tilted and blurred around her as if about to collapse. Harsh light, motion blur, high-tension "about to fall" moment. Face and gripping hand centered, nothing cropped. Striking — no gore.
 
 [사진2 — 일어설 때 어지러운 순간]
 A middle-aged person steadying themselves with one hand on a chair or wall while rising from a sofa, momentary light-headed posture, home interior, natural light.
