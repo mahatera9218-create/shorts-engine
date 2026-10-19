@@ -258,7 +258,18 @@ def build(out_dir: str, drafts_dir: Path | None = None, name: str | None = None,
     files.sort(key=lambda p: p.stat().st_mtime, reverse=True)
     today_dt = datetime.now(KST)
     today = today_dt.strftime("%Y-%m-%d")
-    DESK_DAYS = 5  # 건강: 생성일 기준 최근 5일 글만 도우미에 띄움(지난 글 자동 숨김)
+    # 오늘(=가장 최근 생성일)분만 보여준다 (대표 2026-10-19). 생성일 없는 옛 글·지난 날짜는 숨김.
+    latest_day = ""
+    if not RESEARCH:
+        _days = []
+        for _p in files:
+            try:
+                _g = parse(_p.read_text(encoding="utf-8")).get("생성일") or ""
+            except Exception:
+                _g = ""
+            if _g:
+                _days.append(_g)
+        latest_day = max(_days) if _days else today
     items = []  # (오늘 여부, mtime, html)
     for p in files:
         try:
@@ -268,13 +279,8 @@ def build(out_dir: str, drafts_dir: Path | None = None, name: str | None = None,
             else:
                 d = parse(txt)
                 gday = d.get("생성일") or ""
-                if gday:  # 생성일이 있으면 노후 글은 숨김(어사이드가 당일 글만 보게)
-                    try:
-                        age = (today_dt.date() - datetime.strptime(gday, "%Y-%m-%d").date()).days
-                        if age > DESK_DAYS:
-                            continue
-                    except ValueError:
-                        pass
+                if gday != latest_day:  # 오늘(가장 최근 생성일) 분만 보여준다 (대표 2026-10-19)
+                    continue
                 html_card, is_today = card(d, p.name), (gday == today)
         except Exception as e:  # 한 글이 깨져도 나머지는 보이게
             html_card, is_today = f'<section class="card"><div class="title">[읽기 실패] {html.escape(p.name)}: {html.escape(str(e))}</div></section>', False
