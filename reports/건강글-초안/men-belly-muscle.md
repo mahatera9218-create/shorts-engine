@@ -28,6 +28,8 @@
 
 같은 증상이 다른 이유에서도 올 수 있어요. 갑상선 기능 저하, 우울감, 수면 부족, 운동 부족과 과식 같은 생활 습관도 뱃살과 기력 저하를 만들거든요. 인터넷의 자가진단 설문은 '의심해 볼 계기'일 뿐, 그것만으로 남성 갱년기라고 진단할 수는 없다고 해요. 그러니 "검사해 보니 나는 아니었다"는 경우도 많아요.
 
+[요약카드]
+
 [사진3]
 
 확인은 병원에서, 관리는 생활에서
@@ -52,6 +54,14 @@ A middle-aged man sitting on a sofa looking tired and low-energy, hand on the ba
 
 [사진3 — 혈액검사·진료]
 A clinic blood-draw or consultation scene: a forearm with a blood test in progress or a doctor explaining to a seated middle-aged man, calm neutral tones, no readable text.
+
+[요약카드 — 한글 인포 요약카드 (본문 요약, 썸네일 아님)]
+A clean Korean-language info summary card, soft neutral pastel background, large clear Hangul text, no photo of a person, no logo, no watermark, calm informative tone. 제목 "남성 갱년기, 이렇게 체크" + 아래 4줄 불릿:
+• 뱃살↑·근력↓·피로·의욕/성욕 저하
+• 자가설문만으론 진단 불가 — 계기일 뿐
+• 확인은 오전 혈액검사(테스토스테론)
+• 관리 — 근력운동·충분한 수면·절주
+(글자가 또렷하고 오타 없게. 효능 단정·공포·제품명 금지.)
 
 
 --- 출처(F목록) ---
