@@ -1,5 +1,5 @@
 date: '2026-10-19'
-updated: '10:30'
+updated: '20:04'
 items:
 - kw: 이영애
   rise: 6.33
@@ -23,44 +23,44 @@ items:
   rise: 2.63
   volume: 26750
   named: true
-  blog24h: 22
-  score: 103
+  blog24h: 54
+  score: 110
 - kw: 하니
   rise: 1.55
   volume: 51860
   named: true
   blog24h: 100
   score: 96
-- kw: 한소희
-  rise: 1.26
-  volume: 177500
-  named: true
-  blog24h: 92
-  score: 84
-- kw: 정유미
-  rise: 1.61
-  volume: 61230
-  named: true
-  blog24h: 15
-  score: 83
 - kw: 엄정화
   rise: 1.41
   volume: 49530
   named: true
-  blog24h: 40
-  score: 75
+  blog24h: 100
+  score: 87
+- kw: 정유미
+  rise: 1.61
+  volume: 61230
+  named: true
+  blog24h: 33
+  score: 87
+- kw: 한소희
+  rise: 1.26
+  volume: 177500
+  named: true
+  blog24h: 100
+  score: 86
+- kw: 박보영
+  rise: 1.26
+  volume: 85440
+  named: true
+  blog24h: 97
+  score: 81
 - kw: 사나
   rise: 1.28
   volume: 21650
   named: true
   blog24h: 100
   score: 75
-- kw: 박보영
-  rise: 1.26
-  volume: 85440
-  named: true
-  blog24h: 30
-  score: 67
 - kw: 백팩
   rise: 1.26
   volume: 79300
