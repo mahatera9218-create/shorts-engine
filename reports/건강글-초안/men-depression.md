@@ -45,8 +45,8 @@
 [공통 스타일]
 Photorealistic, 8k, highly detailed. East Asian / Korean man in his late 40s–50s, everyday setting. 1:1 square, 1024x1024. No text, no logos, no medical gore.
 
-[사진1 — 대표 썸네일 · 긴장감]
-Close-up of a Korean man in his late 40s sitting alone on a sofa at night, slumped, resting his forehead on his hand with a tired, low, dispirited expression. Dim cool low light, slightly desaturated, heavy quiet mood. Face and upper body in frame, centered with margin, nothing cropped. Conveys "lately I just don't feel like myself" — low energy, not scary.
+[사진1 — 대표 썸네일 · 강한 긴장]
+Dramatic close-up of a Korean man in his late 40s collapsed back on the sofa in a dark living room at night, hand dragging down his face, utterly drained and hopeless expression, only the cold TV glow lighting him. Stark cinematic low-key light, high contrast, heavy "I just can't anymore" mood. Face and upper body centered, nothing cropped. Hits hard — no gore.
 
 [사진2 — calm]
 The same man walking outdoors in soft morning light, a bit more upright, calm and reassuring mood.

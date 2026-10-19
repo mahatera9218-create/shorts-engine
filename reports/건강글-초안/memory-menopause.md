@@ -45,8 +45,8 @@
 [공통 스타일]
 Photorealistic, 8k, highly detailed. East Asian / Korean woman in her late 40s–50s, everyday home setting. 1:1 square, 1024x1024. No text, no logos, no medical gore.
 
-[사진1 — 대표 썸네일 · 긴장감]
-Close-up of a Korean woman in her late 40s at the kitchen table, pressing her temple with one hand, looking worried and lost in thought, a half-forgotten task in front of her. Dim, cool early-morning light, slightly desaturated. Full face and hands in frame, centered with margin, nothing cropped. Conveys quiet urgency ("this might be me") — not scary.
+[사진1 — 대표 썸네일 · 강한 긴장]
+Dramatic close-up of a Korean woman in her late 40s frozen in her kitchen, eyes wide in alarm, one hand clutching her head, as a forgotten pot boils over and smokes on the stove behind her. Harsh cool light, high contrast, tense "oh no, I forgot again" moment. Face and upper body centered, nothing cropped. Striking and attention-grabbing — no gore.
 
 [사진2 — calm]
 The same woman walking calmly in a park in soft warm daylight, relaxed expression. Reassuring mood.

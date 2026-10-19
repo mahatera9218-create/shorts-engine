@@ -46,8 +46,8 @@
 [공통 스타일]
 Photorealistic, natural light, clean simple background, soft focus. Korean middle-aged man, casual everyday clothing. No text, no logo, no watermark. 과하거나 자극적이지 않게, 정보성 건강 블로그 톤. 모든 컷 정사각형 1:1, 800×800 이상(요약카드만 한글 글자 허용, 실사는 글자 없음).
 
-[사진1 — ★대표 썸네일 · 부위 클로즈업(시선 집중, 자극 않게)]
-Waist-level close-up of a middle-aged Korean man in a plain t-shirt gently holding/looking at his slightly protruding belly, mild concerned mood, neutral background. 허리·복부가 화면 중심에 또렷하게, 얼굴은 흐릿하거나 프레임 위쪽, 과하지 않게.
+[사진1 — 대표 썸네일 · 강한 긴장]
+Dramatic close-up of a middle-aged Korean man gripping his protruding belly with both hands, looking down in dismay, t-shirt stretched tight, stark hard side light carving out the belly. High contrast, blunt "when did this happen to me" mood. Waist and torso centered (face soft/upper frame), nothing cropped. Striking — no gore.
 
 [사진2 — 기력 저하 느낌]
 A middle-aged man sitting on a sofa looking tired and low-energy, hand on the back of his neck, home interior, soft daylight.

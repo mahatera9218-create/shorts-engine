@@ -45,8 +45,8 @@
 [공통 스타일]
 Photorealistic, 8k, highly detailed. East Asian / Korean woman in her 50s, everyday setting, modest and tasteful (no exposure). 1:1 square, 1024x1024. No text, no logos, no medical gore.
 
-[사진1 — 대표 썸네일 · 긴장감]
-Close-up of a Korean woman in her early 50s sitting on the edge of a bed at night, looking down with a troubled, uneasy expression, one hand resting on her lap. Dim, cool low light, slightly desaturated, quiet and private mood. Face and upper body in frame, centered with margin, nothing cropped. Conveys "I've been quietly putting up with this" — modest, not explicit, not scary.
+[사진1 — 대표 썸네일 · 강한 긴장]
+Dramatic close-up of a Korean woman in her early 50s curled on the edge of the bed at night, face tense with discomfort, brow furrowed, one hand pressed to her lower abdomen. Dark room, single hard light, high contrast, raw uneasy mood. Modest (no exposure), face and upper body centered, nothing cropped. Attention-grabbing — not explicit, no gore.
 
 [사진2 — calm]
 The same woman talking calmly and reassuringly with a female doctor in a bright clinic consultation room, soft warm light.
