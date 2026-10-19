@@ -46,7 +46,7 @@
 --- 이미지 프롬프트 ---
 
 [공통 스타일]
-Photorealistic, soft bedroom night light, calm tone, soft focus. Korean middle-aged woman, comfortable sleepwear. No text, no logo, no watermark. 자극적이지 않게, 차분한 건강 정보 톤.
+Photorealistic, soft bedroom night light, calm tone, soft focus. Korean middle-aged woman, comfortable sleepwear. No text, no logo, no watermark. 자극적이지 않게, 차분한 건강 정보 톤. 모든 컷 정사각형 1:1, 800×800 이상(요약카드만 한글 글자 허용, 실사는 글자 없음).
 
 [사진1 — ★대표 썸네일 · 부위 클로즈업(시선 집중, 자극 않게)]
 Close-up of a middle-aged Korean woman at night fanning her neck/décolletage with her hand, light sheen of sweat on the neck, dim warm bedroom light. 목·쇄골 부위와 부채질하는 손이 화면 중심에, 더운 느낌이 드러나되 과하지 않게.
