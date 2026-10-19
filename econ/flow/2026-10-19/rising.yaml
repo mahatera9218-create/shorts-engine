@@ -1,108 +1,66 @@
 date: '2026-10-19'
-updated: 07:34
+updated: '10:27'
 items:
-- kw: SK하이닉스
-  rise: 2.1
-  volume: 6333600
-  named: true
-  blog24h: 100
-  section: 국내주식
-  score: 140
 - kw: 테슬라
-  rise: 3.88
+  rise: 3.84
   volume: 1089400
   named: true
   blog24h: 100
   section: 해외주식
   score: 140
 - kw: 테슬라주가
-  rise: 3.06
+  rise: 2.49
   volume: 494800
   named: true
   blog24h: 100
   section: 해외주식
   score: 136
-- kw: 미국금리
-  rise: 2.03
-  volume: 62200
-  named: true
-  blog24h: 100
-  section: 생활경제
-  score: 124
-- kw: 삼성전자
-  rise: 1.73
-  volume: 10544700
-  named: true
-  blog24h: 100
-  section: 국내주식
-  score: 124
-- kw: 애플주가
-  rise: 1.94
-  volume: 118800
-  named: true
-  blog24h: 97
-  section: 해외주식
-  score: 123
-- kw: TSMC
-  rise: 5.02
-  volume: 49400
+- kw: 애플
+  rise: 1.43
+  volume: 686500
   named: true
   blog24h: 100
   section: 해외주식
-  score: 123
-- kw: 삼성전자주가
-  rise: 1.69
-  volume: 15647300
+  score: 104
+- kw: 아파트
+  rise: 0.98
+  volume: 51380
   named: true
   blog24h: 100
-  section: 국내주식
-  score: 121
-- kw: 국제유가
-  rise: 1.11
-  volume: 1462500
-  named: true
-  blog24h: 100
-  section: 생활경제
-  score: 87
-- kw: 환율
-  rise: 1.03
-  volume: 13642200
-  named: true
-  blog24h: 100
-  section: 환율
-  score: 82
-- kw: 달러환율
+  section: 부동산
+  score: 62
+- kw: 아파트매매
   rise: 1.01
-  volume: 3095500
+  volume: 33350
   named: true
   blog24h: 100
-  section: 환율
-  score: 81
+  section: 부동산
+  score: 61
 - kw: 재산세
-  rise: 1.14
+  rise: 0.95
   volume: 58900
   named: true
-  blog24h: 97
+  blog24h: 100
   section: ''
-  score: 71
-- kw: 주택담보대출
-  rise: 0.97
-  volume: 88300
+  score: 61
+- kw: 기름값
+  rise: 0.98
+  volume: 36110
+  named: true
+  blog24h: 100
+  section: 생활경제
+  score: 60
+- kw: 주담대금리
+  rise: 0.91
+  volume: 40360
   named: true
   blog24h: 100
   section: 부동산
-  score: 64
-- kw: 주담대금리
-  rise: 1.04
-  volume: 40360
+  score: 56
+- kw: 인도네시아환율
+  rise: 0.9
+  volume: 92000
   named: true
-  blog24h: 82
-  section: 부동산
-  score: 60
-- kw: 양도세계산기
-  rise: 1.01
-  volume: 36780
-  named: true
-  blog24h: 15
-  section: ''
-  score: 44
+  blog24h: 23
+  section: 환율
+  score: 45
