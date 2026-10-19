@@ -9,9 +9,7 @@
 pending:
   # ★ 핵심 전략 '증상 엮기'(seg3 감별): 흔한 증상 키워드(검색량 큼) → "혹시 갱년기? 이렇게 구분".
   #   단정 금지 — "갱년기일 수도/아닐 수도, 감별 포인트, 애매하면 병원". 검색 유입 최우선.
-  - { seg: 3, kw: "건망증 기억력 저하 갱년기", slug: "memory-menopause" }
   - { seg: 3, kw: "우울 불안 갱년기 구분", slug: "mood-vs-menopause" }
-  - { seg: 3, sex: 여성, kw: "질 건조 성교통 갱년기", slug: "dryness-menopause" }
   - { seg: 3, sex: 여성, kw: "요실금 잦은 소변 갱년기", slug: "bladder-menopause" }
   - { seg: 3, kw: "피부 가려움 건조 갱년기", slug: "itch-menopause" }
   - { seg: 3, kw: "이 증상 갱년기일까 종합 자가점검", slug: "is-it-menopause-fatigue" }
@@ -19,7 +17,6 @@ pending:
   - { seg: 3, kw: "갱년기 무슨 검사 어디서", slug: "menopause-which-test" }
   # ★ 남성 갱년기(성별 균형) — sex: 남성. 남성도 증상-엮기(기력·성욕·근력·뱃살·수면)로.
   - { seg: 3, sex: 남성, kw: "남자 성욕 감퇴 혹시 남성 갱년기", slug: "men-libido" }
-  - { seg: 3, sex: 남성, kw: "남자 우울 의욕저하 갱년기", slug: "men-depression" }
   - { seg: 1, sex: 남성, kw: "남성 갱년기 관리 운동 생활습관", slug: "men-menopause-care" }
   # seg1 — 이미 겪는 중(증상별 완화 how-to)
   - { seg: 1, kw: "갱년기 불면 잠 잘 자는 법", slug: "menopause-sleep-tips" }
@@ -41,3 +38,6 @@ done:
   - { seg: 3, kw: "어지럼증 갱년기 관련", slug: "dizziness-menopause" }   # 2026-10-19 자동(공용)
   - { seg: 1, sex: 여성, kw: "갱년기 열감 밤에 심할 때", slug: "hot-flash-at-night" }   # 2026-10-19 자동(여성)
   - { seg: 3, sex: 남성, kw: "남자 뱃살 근력 감소 갱년기", slug: "men-belly-muscle" }   # 2026-10-19 자동(남성)
+  - { seg: 3, kw: "건망증 기억력 저하 갱년기", slug: "memory-menopause" }   # 2026-10-19 수동(공용)
+  - { seg: 3, sex: 여성, kw: "질 건조 성교통 갱년기", slug: "dryness-menopause" }   # 2026-10-19 수동(여성)
+  - { seg: 3, sex: 남성, kw: "남자 우울 의욕저하 갱년기", slug: "men-depression" }   # 2026-10-19 수동(남성)
