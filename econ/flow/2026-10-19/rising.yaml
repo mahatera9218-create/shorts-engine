@@ -1,5 +1,5 @@
 date: '2026-10-19'
-updated: '10:27'
+updated: '20:01'
 items:
 - kw: 테슬라
   rise: 3.84
@@ -61,6 +61,6 @@ items:
   rise: 0.9
   volume: 92000
   named: true
-  blog24h: 23
+  blog24h: 76
   section: 환율
-  score: 45
+  score: 55
