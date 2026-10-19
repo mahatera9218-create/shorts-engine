@@ -90,3 +90,49 @@ topics:
   - slug: hwangeup-app-sugsuryo-gujo
     cat: tax
     topic: 세금 환급·종합소득세 신고 앱의 수수료 구조 이해하기 (환급액 기준 후불 수수료 방식, 신고 대행 vs 직접 신고 차이, 이용 전 공식 안내에서 확인할 항목 체크리스트). 특정 앱의 수수료율 숫자는 확인되지 않은 한 단정하지 말고 '각 서비스 공식 안내 확인'으로 쓴다
+  # 자동 보충 2026-10-19 (클로드 예약, 거래의도형 세무·연금·재테크 evergreen)
+  - slug: yeongeum-suryeong-se-1500
+    cat: pension
+    topic: 연금저축·IRP 연금 수령 시 세금 (연금소득세율, 연 1,500만원 기준 분리과세·종합과세 선택, 세액공제받은 원금과 운용수익의 과세)
+  - slug: toejikgeum-se-gyesan
+    cat: pension
+    topic: 퇴직금·퇴직소득세 계산 구조 (근속연수공제·환산급여공제, IRP 이전 시 과세이연)
+  - slug: jutaek-yeonkeum-yogeon
+    cat: pension
+    topic: 주택연금(역모기지) 가입 요건과 수령 방식 (연령·주택가격 기준, 재산세·세제 혜택, 신청 절차)
+  - slug: jadongcha-chwideukse
+    cat: tax
+    topic: 자동차 취득세율과 과세표준 (신차·중고차 기준, 경차·전기차 감면, 신청·납부 시기)
+  - slug: sangsokse-yeonbu-yeonnap
+    cat: tax
+    topic: 상속세 분납과 연부연납 신청 요건 (납부세액 기준, 기간·가산이자, 물납·납부유예)
+  - slug: jeungyeose-singo-bangbeop
+    cat: tax
+    topic: 증여세 신고 방법과 기한 (홈택스 신고 절차, 신고기한 3개월, 무신고 가산세, 부동산 증여 평가)
+  - slug: budaese-hwangeup-yogeon
+    cat: tax
+    topic: 부가가치세 환급 요건과 시기 (일반과세자 매입세액 환급, 조기환급 대상, 신청 방법)
+  - slug: geullo-janglyeogeum-yogeon
+    cat: tax
+    topic: 근로장려금·자녀장려금 신청 요건과 지급액 (소득·재산 기준, 신청 기간, 반기 지급)
+  - slug: gukmin-yeonkeum-chunap
+    cat: pension
+    topic: 국민연금 추후납부와 임의가입 (대상·보험료·한도, 노령연금 수령액 늘리는 법)
+  - slug: cheongnyeon-doyak-gyejwa
+    cat: jaetech
+    topic: 청년도약계좌 가입 요건과 정부기여금 (소득 기준, 비과세 혜택, 만기·중도해지 조건)
+  - slug: yeongeum-jeochuk-jungdo-inchul
+    cat: pension
+    topic: 연금저축·IRP 중도인출과 해지 시 세금 (기타소득세 16.5%, 부득이한 사유 분리과세 요건)
+  - slug: isa-mangi-yeongeum-ijeon
+    cat: jaetech
+    topic: ISA 만기자금 연금계좌 전환 혜택 (이전 금액의 10%·연 300만원 추가 세액공제 요건·절차)
+  - slug: danseun-gyeongbiyul-gijun
+    cat: tax
+    topic: 종합소득세 단순경비율과 기준경비율 (프리랜서·개인사업자 적용 기준, 수입금액 기준, 장부 vs 추계신고)
+  - slug: yangdose-janggi-boyu-gongje
+    cat: realty
+    topic: 양도소득세 장기보유특별공제율 (보유·거주 기간별 공제율 표, 1세대1주택 최대 80% 요건)
+  - slug: budambu-jeungyeo-gyesan
+    cat: tax
+    topic: 부담부증여 세금 계산 (승계 채무분 양도소득세·나머지 증여세, 유리한 경우와 요건)
