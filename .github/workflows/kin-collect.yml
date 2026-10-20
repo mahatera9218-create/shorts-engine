@@ -1,0 +1,50 @@
+# 지식iN 답변 후보 매일 수집 — 네이버 공식 검색 API(API HUB 지식iN)로 최신 질문 제목·링크를 모아 reports/지식인-후보.md에 커밋.
+# - AI 비용 없음. 답변 초안은 새벽 Claude 예약 작업이 이 파일을 보고 쓴다. 게시는 대표가 손으로(자동 게시 금지).
+name: 지식iN 후보 수집
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["content/kin_collect.py", ".github/workflows/kin-collect.yml"]
+  schedule:
+    - cron: "41 19 * * *"   # 매일 KST 04:41 (새벽 Claude 작성 04:52 직전)
+
+permissions:
+  contents: write
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      TZ: Asia/Seoul
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: 준비
+        run: pip install -r requirements.txt
+      - name: 지식iN 최신 질문 수집
+        env:
+          NCP_APIGW_API_KEY_ID: ${{ secrets.NCP_APIGW_API_KEY_ID }}
+          NCP_APIGW_API_KEY: ${{ secrets.NCP_APIGW_API_KEY }}
+        run: |
+          set -o pipefail
+          python -m content.kin_collect | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: 커밋·푸시
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/지식인-후보.md 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "새 후보 없음 — 커밋 생략." >> "$GITHUB_STEP_SUMMARY"; exit 0
+          fi
+          git commit -m "지식iN 후보 수집 ($(date +%F))"
+          for i in 1 2 3 4; do
+            git pull --rebase --autostash origin main && git push origin HEAD:main && exit 0
+            sleep $((i * 3))
+          done
+          exit 1
