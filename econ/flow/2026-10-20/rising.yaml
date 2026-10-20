@@ -1,47 +1,33 @@
 date: '2026-10-20'
-updated: 08:56
+updated: '10:58'
 items:
 - kw: 테슬라
-  rise: 3.84
+  rise: 1.44
   volume: 1117300
   named: true
   blog24h: 100
   section: 해외주식
-  score: 140
-- kw: 테슬라주가
-  rise: 2.49
-  volume: 502300
-  named: true
-  blog24h: 100
-  section: 해외주식
-  score: 136
-- kw: 애플
-  rise: 1.43
-  volume: 670700
-  named: true
-  blog24h: 100
-  section: 해외주식
-  score: 103
+  score: 106
 - kw: 아파트
-  rise: 0.98
+  rise: 1.01
   volume: 50800
   named: true
   blog24h: 100
   section: 부동산
-  score: 62
+  score: 63
 - kw: 아파트매매
-  rise: 1.01
+  rise: 1.05
   volume: 33450
   named: true
   blog24h: 100
   section: 부동산
-  score: 61
-- kw: 재산세
-  rise: 0.95
-  volume: 56600
+  score: 63
+- kw: 주담대금리
+  rise: 0.97
+  volume: 40600
   named: true
   blog24h: 100
-  section: ''
+  section: 부동산
   score: 60
 - kw: 기름값
   rise: 0.98
@@ -50,17 +36,31 @@ items:
   blog24h: 100
   section: 생활경제
   score: 59
-- kw: 주담대금리
-  rise: 0.91
-  volume: 40600
-  named: true
-  blog24h: 100
-  section: 부동산
-  score: 56
-- kw: 인도네시아환율
+- kw: 위안환율
   rise: 0.9
+  volume: 51420
+  named: true
+  blog24h: 83
+  section: 환율
+  score: 53
+- kw: 인도네시아환율
+  rise: 0.93
   volume: 93800
   named: true
-  blog24h: 25
+  blog24h: 50
   section: 환율
-  score: 45
+  score: 52
+- kw: 뉴질랜드환율
+  rise: 0.96
+  volume: 110000
+  named: true
+  blog24h: 17
+  section: 환율
+  score: 48
+- kw: 양도세계산기
+  rise: 0.9
+  volume: 37030
+  named: true
+  blog24h: 40
+  section: ''
+  score: 43
