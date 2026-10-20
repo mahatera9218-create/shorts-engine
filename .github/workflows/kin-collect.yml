@@ -8,7 +8,10 @@ on:
     branches: [main]
     paths: ["content/kin_collect.py", ".github/workflows/kin-collect.yml"]
   schedule:
-    - cron: "41 19 * * *"   # 매일 KST 04:41 (새벽 Claude 작성 04:52 직전)
+    # 하루 3회 수집(각 배치 작성 10분 전): KST 08:50 / 11:50 / 15:50
+    - cron: "50 23 * * *"   # KST 08:50
+    - cron: "50 2 * * *"    # KST 11:50
+    - cron: "50 6 * * *"    # KST 15:50
 
 permissions:
   contents: write
