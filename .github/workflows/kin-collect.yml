@@ -7,11 +7,12 @@ on:
   push:
     branches: [main]
     paths: ["content/kin_collect.py", ".github/workflows/kin-collect.yml"]
-  schedule:
-    # 하루 3회 수집(각 배치 작성 10분 전): KST 08:50 / 11:50 / 15:50
-    - cron: "50 23 * * *"   # KST 08:50
-    - cron: "50 2 * * *"    # KST 11:50
-    - cron: "50 6 * * *"    # KST 15:50
+  # 자동 수집 중단(대표 2026-10-21). 다시 켜려면 아래 schedule 주석을 해제.
+  # schedule:
+  #   # 하루 3회 수집(각 배치 작성 10분 전): KST 08:50 / 11:50 / 15:50
+  #   - cron: "50 23 * * *"   # KST 08:50
+  #   - cron: "50 2 * * *"    # KST 11:50
+  #   - cron: "50 6 * * *"    # KST 15:50
 
 permissions:
   contents: write
