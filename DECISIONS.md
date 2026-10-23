@@ -662,3 +662,9 @@
 - 제목: **재작성 제거**(제목은 본문에서 나오므로 다시 안 씀). 클로드가 제목 후보 5개 + GPT 5개 = 10개 보여주고 대표가 발행 때 고름. → 클로드-경제-글 탭을 '초안 1개'에서 '후보 5개'로 수정.
 - v2(후): 소제목 인용·볼드 서식, 글 끝 관련 글 링크(어사이드가 발행글을 시트에 누적 → 클로드가 끌어와 삽입).
 - 반영: docs/prompts/aside-경제-루틴-자동.md(신규: 시트 양식+루틴 지시문+예약), 클로드-경제-글.md(제목 후보 5개), 경제-운영-가이드.md.
+
+## 2026-10-23 — 틈새 키워드 조사 도구 복구 (market.niche)
+- 대표 요청: 예전처럼 키워드별 월 검색량(PC·모바일)·블로그 문서수·경쟁강도(문서÷검색) 조사 도구. 증시(바뀌는 핫종목)·부동산(검색량↑·경쟁↓ 찾기)만, 금·환율은 고정이라 제외.
+- 저장소에 기존 코드(market/naver_ad·naver_hub·scoring 등) 그대로 있어, 요청 칼럼만 내는 **간단 러너 market/niche.py** 신설 + **config/niche_keywords.yaml**(증시·부동산 씨앗) + **.github/workflows/keyword-niche.yml**(workflow_dispatch + 주1회). 출력: reports/검색량/틈새-<날짜>.md (그룹별, 틈새순).
+- 이건 네이버 **공식 API**라 코드·GitHub Secrets가 맞는 자리(발행 자동화와 다름). 필요 Secrets 5개: NAVER_AD_API_KEY·NAVER_AD_SECRET_KEY·NAVER_AD_CUSTOMER_ID·NCP_APIGW_API_KEY_ID·NCP_APIGW_API_KEY. --sample로 표 모양 검증 완료(키 불필요).
+- 쓰임: 이 틈새표로 요일 고정 키워드 배치표(증시 로테이션+부동산 틈새)를 채워 자동 발행 루틴에 공급.
