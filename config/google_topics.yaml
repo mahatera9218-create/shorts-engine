@@ -136,3 +136,49 @@ topics:
   - slug: budambu-jeungyeo-gyesan
     cat: tax
     topic: 부담부증여 세금 계산 (승계 채무분 양도소득세·나머지 증여세, 유리한 경우와 요건)
+  # 거래의도형 보충(2026-10-23, 클로드 예약) — 요건·한도·비용·신청·비교·기한 중심, 투자권유·종목·단정전망 금지
+  - slug: jongbuse-1jutaek-gongje
+    cat: tax
+    topic: 종합부동산세 1세대1주택 세액공제 (고령자·장기보유 공제율, 중복 적용 한도, 합산배제 신청 기한). 공식 기준으로 숫자를 쓴다
+  - slug: sinyongkadeu-sodeukgongje
+    cat: tax
+    topic: 연말정산 신용카드 소득공제 (총급여 25% 초과분, 공제율·공제 한도, 전통시장·대중교통·현금영수증 추가공제). 공식 기준으로 숫자를 쓴다
+  - slug: toejik-yeonkeum-db-dc
+    cat: pension
+    topic: 퇴직연금 DB형과 DC형 차이와 선택 (적립·운용 책임, 수수료, 중도인출·IRP 이전 요건). 상품 비교이며 투자권유 아님
+  - slug: jutaek-imdae-saeopja
+    cat: realty
+    topic: 주택임대사업자 등록 세제 혜택과 의무 (취득세·재산세 감면, 종부세 합산배제, 의무임대기간·위반 과태료). 공식 기준으로 숫자를 쓴다
+  - slug: ilsijeok-2jutaek-bigwase
+    cat: realty
+    topic: 일시적 1가구 2주택 양도세 비과세 요건 (종전주택 처분기한, 신규주택 취득 1년 요건, 세대 기준). 공식 기준으로 숫자를 쓴다
+  - slug: chwideukse-jungwa-dajutaek
+    cat: tax
+    topic: 다주택자 부동산 취득세 중과세율 (주택 수·조정지역 기준 세율, 생애최초 감면과 비교, 일시적 2주택 예외). 공식 기준으로 숫자를 쓴다
+  - slug: jutaek-yeonkeum-haeji
+    cat: pension
+    topic: 주택연금 중도해지와 상환 (정산 방법, 초기보증료 환급 여부, 재가입 제한 기간·비용). 공식 기준으로 숫자를 쓴다
+  - slug: bigwase-jonghap-jeochuk
+    cat: jaetech
+    topic: 비과세 종합저축 가입 요건 (65세 이상·장애인 등 대상, 한도 5천만원, 이자·배당 비과세, 가입 기한). 공식 기준으로 숫자를 쓴다
+  - slug: hyeongeum-yeongsujeung
+    cat: tax
+    topic: 현금영수증 의무발행과 소득공제 (의무발행 기준금액, 미발급 가산세, 소득공제율·한도, 자진발급). 공식 기준으로 숫자를 쓴다
+  - slug: ganyi-gwase-bugase-singo
+    cat: tax
+    topic: 간이과세자 부가세 신고와 납부면제 (연매출 기준, 납부면제 4,800만원, 세금계산서 발급 의무, 신고 기한). 공식 기준으로 숫자를 쓴다
+  - slug: yeongeum-suryeong-hando
+    cat: pension
+    topic: 연금계좌 연금수령한도와 세금 (수령연차 계산, 한도 초과분 과세, 연 1,500만원 분리·종합과세 선택). 공식 기준으로 숫자를 쓴다
+  - slug: jaesanse-gwase-gijunil
+    cat: realty
+    topic: 재산세 과세기준일과 분납 (6월 1일 기준, 7월·9월 납부, 세부담상한, 분납 신청 요건·기한). 공식 기준으로 숫자를 쓴다
+  - slug: jungso-chwieop-gamse
+    cat: tax
+    topic: 중소기업 취업자 소득세 감면 (청년·고령자·장애인 대상, 감면율·감면 기간, 신청 방법·한도). 공식 기준으로 숫자를 쓴다
+  - slug: cheongnyeon-jutaekdream
+    cat: jaetech
+    topic: 청년 주택드림 청약통장 가입 요건 (연령·소득 기준, 금리, 소득공제, 기존 청약통장 전환). 공식 기준으로 숫자를 쓴다
+  - slug: sangsokse-baeuja-gongje
+    cat: tax
+    topic: 상속세 배우자 상속공제 (최소 5억·최대 30억 한도, 법정상속분 계산, 분할·신고 요건). 공식 기준으로 숫자를 쓴다
