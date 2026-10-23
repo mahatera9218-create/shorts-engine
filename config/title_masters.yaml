@@ -9,6 +9,9 @@ masters:
   ohye1991: ohye1991   # 패션 제목 고수 (대표 지정 2026-10-06: 패션 제목 추천은 jayuyu 대신 이 사람 방식)
   vividvortex: vividvortex   # 패션 참고 (대표 지정 2026-10-17): 셀럽·이슈 아닌데 방문자 많음 — 제목·주제 결 자동수집해 분석
   charming_vintage: charming_vintage   # 패션 참고 (대표 지정 2026-10-21): m.blog.naver.com/charming_vintage, 빈티지 패션 결 참고
+  jayuyu_mirror: jayuyu              # 패션 미러 대상 (대표 지정 2026-10-23): 연예인+아이템(검색) 축
+  kims718: kims718                  # 패션 미러 대상 (대표 지정 2026-10-23): [셀럽의옷장] 비교·반전형(홈유입)
+  somethingthatilove: somethingthatilove   # 패션 '훅 참고'만 (2026-10-23): 방문자 최다지만 패션+가십 하이브리드 → 훅 기법만, 통째 미러·사생활단정 금지
   nagoya07: nagoya07     # 건강 제목 참고 (대표 지정 2026-10-18): 갱년기 블로그 제목 결 자동수집
   andudtk12: andudtk12   # 건강 제목 참고 (대표 지정 2026-10-18): 갱년기 블로그 제목 결 자동수집
 
