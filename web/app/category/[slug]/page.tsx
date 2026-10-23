@@ -7,8 +7,10 @@ import {
 } from "@/lib/wp";
 import PostCard from "@/components/PostCard";
 
-export const revalidate = 600;
-export const dynamicParams = true;
+// 글이 모두 저장소 파일에 있으므로 빌드 때 전부 미리 만든다(완전 정적).
+// 서버리스 렌더가 없어 5xx 여지 0. 없는 주소는 정적 404. 새 글은 배포 때 반영.
+export const dynamic = "force-static";
+export const dynamicParams = false;
 
 export function generateStaticParams() {
   return CATEGORY_ORDER.map((c) => ({ slug: c.slug }));

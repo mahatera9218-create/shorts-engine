@@ -5,7 +5,8 @@ import PostCard from "@/components/PostCard";
 import type { Metadata } from "next";
 import { SITE_NAME, SITE_URL, SITE_DESC, EDITOR_NAME } from "@/lib/wp";
 
-export const revalidate = 600;
+// 홈도 빌드 때 미리 만든다(완전 정적). 새 글은 배포 때 반영.
+export const dynamic = "force-static";
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
 

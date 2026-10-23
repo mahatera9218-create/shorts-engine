@@ -6,8 +6,9 @@ import {
   stripHtml,
 } from "@/lib/wp";
 
-export const revalidate = 3600;
-export const dynamicParams = true;
+// 고정 페이지도 빌드 때 전부 미리 만든다(완전 정적). 서버리스 렌더 없음 → 5xx 여지 0.
+export const dynamic = "force-static";
+export const dynamicParams = false;
 
 export async function generateStaticParams() {
   const slugs = await getAllPageSlugs();
