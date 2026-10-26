@@ -227,3 +227,49 @@ topics:
   - slug: ltv-dsr-hando
     cat: realty
     topic: LTV·DSR 규제 비율과 한도 (주택담보대출 LTV 지역별, DSR 40% 계산, 스트레스 DSR, 생애최초·실수요 완화). 공식 기준으로 숫자를 쓴다
+  # 자동 보충 2026-10-26 (연금 카테고리 균등용, 클로드 예약)
+  - slug: gukmin-yeongeum-jangae-yeongeum
+    cat: pension
+    topic: 국민연금 장애연금 수급 요건 (장애등급·가입 중 질병, 지급률, 청구 기한, 일시보상금). 공식 기준으로 숫자를 쓴다
+  - slug: gukmin-yeongeum-banhwan-ilsigeum
+    cat: pension
+    topic: 국민연금 반환일시금과 반납 (지급 요건·이자, 반납으로 가입기간 복원, 신청 방법). 공식 기준으로 숫자를 쓴다
+  - slug: gukmin-yeongeum-bunhal-yeongeum
+    cat: pension
+    topic: 이혼 시 국민연금 분할연금 (혼인기간 요건, 청구 기한, 분할 비율, 재혼 영향). 공식 기준으로 숫자를 쓴다
+  - slug: gukmin-yeongeum-yeongi-yeongeum
+    cat: pension
+    topic: 국민연금 연기연금 신청 (연기 가능 기간, 월 가산율, 최대 증액률, 소득 요건). 공식 기준으로 숫자를 쓴다
+  - slug: gukmin-yeongeum-imui-gyesok
+    cat: pension
+    topic: 국민연금 임의계속가입 (60세 이후 가입 연장, 신청 기한, 가입기간 채우기). 공식 기준으로 숫자를 쓴다
+  - slug: gukmin-yeongeum-crdit
+    cat: pension
+    topic: 국민연금 출산·군복무 크레딧 (인정 기간, 대상, 신청 방법). 공식 기준으로 숫자를 쓴다
+  - slug: gukmin-yeongeum-nappu-yeoe
+    cat: pension
+    topic: 국민연금 납부예외 신청 (실직·사업중단 시 요건, 기간, 추후 보완 방법). 공식 기준으로 숫자를 쓴다
+  - slug: duruni-boheomlyo-jiwon
+    cat: pension
+    topic: 두루누리 사회보험료 지원 (소상공인·근로자 요건, 지원율·한도, 신청 방법). 공식 기준으로 숫자를 쓴다
+  - slug: toejik-yeonkeum-irp-ijeon
+    cat: pension
+    topic: 퇴직급여 IRP 의무이전 (의무이전 대상·예외, 이전 절차, 수령 방법). 공식 기준으로 숫자를 쓴다
+  - slug: toejikgeum-junggan-jeongsan
+    cat: pension
+    topic: 퇴직금 중간정산 사유 (법정 사유, 세금, 퇴직소득 산정 영향). 공식 기준으로 숫자를 쓴다
+  - slug: toejik-sodeukse-gyesan
+    cat: pension
+    topic: 퇴직소득세 계산 (근속연수공제, 환산급여, 연분연승법, 감면). 공식 기준으로 숫자를 쓴다
+  - slug: yeongeum-jeochuk-irp-chai
+    cat: pension
+    topic: 연금저축과 IRP 차이 (납입 한도, 수수료, 중도인출, 세액공제 비교). 공식 기준으로 숫자를 쓴다
+  - slug: gaein-yeongeum-bohom-bigwase
+    cat: pension
+    topic: 연금보험(개인) 비과세 요건 (10년 유지, 월납·일시납 한도, 중도해지 과세). 공식 기준으로 숫자를 쓴다
+  - slug: irp-suryeong-bangbeop
+    cat: pension
+    topic: IRP 연금수령 방식 (연금수령한도, 연금소득세, 종합과세 기준). 공식 기준으로 숫자를 쓴다
+  - slug: gukmin-yeongeum-sodeukwolaek-sangha
+    cat: pension
+    topic: 국민연금 기준소득월액 상·하한 (산정 방식, 매년 조정, 보험료 영향). 공식 기준으로 숫자를 쓴다
