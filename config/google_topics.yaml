@@ -182,3 +182,48 @@ topics:
   - slug: sangsokse-baeuja-gongje
     cat: tax
     topic: 상속세 배우자 상속공제 (최소 5억·최대 30억 한도, 법정상속분 계산, 분할·신고 요건). 공식 기준으로 숫자를 쓴다
+  - slug: gukmin-yeongeum-jogi-suryeong
+    cat: pension
+    topic: 국민연금 조기수령 요건과 감액률 (최대 5년 조기, 1년당 감액률, 소득 있으면 감액·정지, 신청 방법). 공식 기준으로 숫자를 쓴다
+  - slug: irp-jungdo-inchul
+    cat: pension
+    topic: IRP 중도인출 요건과 세금 (법정 인출 사유, 세액공제 원금·수익 과세, 기타소득세 16.5% vs 연금소득세, 불이익). 공식 기준으로 숫자를 쓴다
+  - slug: gukmin-yeongeum-imui-gaip
+    cat: pension
+    topic: 국민연금 임의가입 요건과 보험료 (전업주부·학생 대상, 보험료 하한·상한, 가입 신청·탈퇴, 연금 수령). 공식 기준으로 숫자를 쓴다
+  - slug: gukmin-yeongeum-yujok-yeongeum
+    cat: pension
+    topic: 국민연금 유족연금 수급 요건 (가입기간·유족 범위·순위, 지급률, 중복급여 조정, 신청 기한). 공식 기준으로 숫자를 쓴다
+  - slug: gicho-yeongeum-suryeong
+    cat: pension
+    topic: 기초연금 수급 요건과 금액 (65세 이상 소득인정액 선정기준액, 국민연금 연계 감액, 신청 방법·기한). 공식 기준으로 숫자를 쓴다
+  - slug: yegeumja-boho-hando
+    cat: jaetech
+    topic: 예금자보호 한도와 적용 대상 (보호 한도 상향, 보호 대상 금융회사·상품, 1인당·금융사별 적용, 제외 상품). 공식 기준으로 숫자를 쓴다
+  - slug: noran-usan-gongje
+    cat: jaetech
+    topic: 노란우산공제 가입 요건과 공제 한도 (소상공인·개인사업자 대상, 소득공제 한도 구간, 공제금 압류 보호, 중도해지 불이익). 공식 기준으로 숫자를 쓴다
+  - slug: jutaek-cheongyak-sodeukgongje
+    cat: jaetech
+    topic: 주택청약종합저축 소득공제 요건 (무주택 세대주, 납입액 소득공제율·한도, 총급여 기준, 중도해지 추징). 공식 기준으로 숫자를 쓴다
+  - slug: yeongeum-jeochuk-ijeon
+    cat: jaetech
+    topic: 연금저축 계좌이전 방법과 유의점 (이전 절차·비용, 세제 유지 조건, 연금저축-IRP 상호 이전, 해지 아닌 이전). 공식 기준으로 숫자를 쓴다
+  - slug: yeongeum-jeochuk-bohom-vs-pundeu
+    cat: jaetech
+    topic: 연금저축보험 vs 연금저축펀드 비교 (원리금보장·실적배당 차이, 수수료, 중도해지 불이익, 갈아타기). 공식 기준으로 숫자를 쓴다
+  - slug: jeonwolse-singo-daesang
+    cat: realty
+    topic: 전월세 신고제 대상과 기한 (보증금·월세 기준금액, 신고 대상 지역, 신고 기한 30일, 과태료). 공식 기준으로 숫자를 쓴다
+  - slug: jeonse-bojeung-banhwan-gaip
+    cat: realty
+    topic: 전세보증금 반환보증 가입 요건과 비용 (가입 대상·보증금 한도, 보증료율, 가입 기한, 집주인 동의 여부). 공식 기준으로 숫자를 쓴다
+  - slug: jeonipsingo-hwakjeongilja
+    cat: realty
+    topic: 전입신고와 확정일자 받는 법 (대항력·우선변제권, 신청 방법·기한, 보증금 보호 순서, 온라인 신청). 공식 기준으로 숫자를 쓴다
+  - slug: cheongyak-1sunwi-yogeon
+    cat: realty
+    topic: 주택청약 1순위 요건 (청약통장 가입기간·납입횟수, 지역별 예치금, 무주택·세대주 요건, 규제지역 차이). 공식 기준으로 숫자를 쓴다
+  - slug: ltv-dsr-hando
+    cat: realty
+    topic: LTV·DSR 규제 비율과 한도 (주택담보대출 LTV 지역별, DSR 40% 계산, 스트레스 DSR, 생애최초·실수요 완화). 공식 기준으로 숫자를 쓴다
