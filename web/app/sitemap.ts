@@ -16,10 +16,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     url: `${SITE_URL}/p/${slug}`,
   }));
 
+  // 글 3개 이상인 카테고리만 사이트맵에 넣는다(얇은 카테고리는 noindex라 제외).
   const catUrls = CATEGORY_ORDER.map((c) => ({
-    url: `${SITE_URL}/category/${c.slug}`,
-    lastModified: posts.find((p) => postCategory(p)?.slug === c.slug)?.modified,
-  }));
+    slug: c.slug,
+    count: posts.filter((p) => postCategory(p)?.slug === c.slug).length,
+  }))
+    .filter((c) => c.count >= 3)
+    .map((c) => ({
+      url: `${SITE_URL}/category/${c.slug}`,
+      lastModified: posts.find((p) => postCategory(p)?.slug === c.slug)?.modified,
+    }));
   const toolUrls = TOOLS.some((t) => t.published)
     ? [{ url: `${SITE_URL}/tools` }, ...TOOLS.filter((t) => t.published).map((t) => ({ url: `${SITE_URL}/tools/${t.slug}`, lastModified: t.checked }))]
     : [];

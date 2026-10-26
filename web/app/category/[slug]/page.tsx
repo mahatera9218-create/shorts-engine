@@ -23,10 +23,17 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const known = CATEGORY_ORDER.find((c) => c.slug === params.slug);
   const name = known?.name ?? params.slug;
+  // 글이 3개 미만인 카테고리는 내용이 얇아 구글이 'soft 404'로 본다.
+  // 글이 쌓일 때까지 색인에서 빼되(링크는 따라가게 follow:true), 3개 이상이면 자동 색인.
+  const count = (await getPostsByCategorySlug(params.slug, 30)).length;
+  const thin = count < 3;
   return {
     title: `${name} 글 모음`,
     description: `${SITE_NAME}의 ${name} 관련 글 모음.`,
     alternates: { canonical: `/category/${params.slug}` },
+    robots: thin
+      ? { index: false, follow: true }
+      : { index: true, follow: true },
   };
 }
 
