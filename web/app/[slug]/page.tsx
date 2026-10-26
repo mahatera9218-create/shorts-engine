@@ -62,15 +62,15 @@ export async function generateMetadata({
 }
 
 // 본문 HTML의 ## 섹션(<h2>) 사이사이에 사진을 끼워 넣는다(장식용, alt 비움).
-// 두 번째 섹션부터 한 섹션 걸러 한 장씩, 사진이 떨어질 때까지.
+// 두 번째 섹션(i=1)부터 섹션마다 한 장씩, 사진이 떨어질 때까지(이미지 수 증량, 대표 2026-10-26).
 function injectBodyImages(html: string, imgs: string[]): string {
   if (imgs.length === 0) return html;
   const parts = html.split(/(?=<h2)/);
-  if (parts.length < 3) return html;
+  if (parts.length < 2) return html;
   let k = 0;
   const out: string[] = [];
   for (let i = 0; i < parts.length; i++) {
-    if (i >= 2 && (i - 2) % 2 === 0 && k < imgs.length) {
+    if (i >= 1 && k < imgs.length) {
       out.push(
         `<figure class="body-photo"><img src="${sized(imgs[k], 800)}" alt="" loading="lazy" decoding="async" width="800" height="450"/></figure>`,
       );
@@ -121,7 +121,7 @@ export default async function PostPage({
   const stock = await stockPhoto(cat?.slug, post.slug);
   const hero = stock ?? feat?.url ?? null;
   // 본문 중간에 넣을 사진(대표 사진과 겹치지 않게). 섹션 사이사이에 배치.
-  const bodyPhotos = await stockPhotos(cat?.slug, `${post.slug}-body`, 3, stock);
+  const bodyPhotos = await stockPhotos(cat?.slug, `${post.slug}-body`, 6, stock);
   const bodyHtml = injectBodyImages(post.content.rendered, bodyPhotos);
   const faq = extractFaq(post.content.rendered);
   const related = await getRelated(post, 3);

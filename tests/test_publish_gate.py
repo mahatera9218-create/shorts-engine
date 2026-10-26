@@ -13,8 +13,11 @@ class SlotTest(unittest.TestCase):
         self.assertEqual(pf.slot_of(9), "s1")
         self.assertEqual(pf.slot_of(10), "s2")
         self.assertEqual(pf.slot_of(13), "s3")
-        self.assertEqual(pf.slot_of(16), "s4")
-        self.assertEqual(pf.slot_of(19), "s5")
+        self.assertEqual(pf.slot_of(15), "s4")
+        self.assertEqual(pf.slot_of(17), "s5")
+        self.assertEqual(pf.slot_of(19), "s6")
+        self.assertEqual(pf.slot_of(21), "s7")
+        self.assertEqual(pf.slot_of(23), "s8")
 
 
     def test_slot_filled_only_same_half(self):
@@ -30,8 +33,25 @@ class SlotTest(unittest.TestCase):
                 self.assertFalse(pf.slot_filled(other_slot))
                 self.assertFalse(pf.slot_filled(other_day))
 
-    def test_daily_max_is_five(self):
-        self.assertEqual(pf.daily_max(), 5)
+    def test_daily_max_is_eight(self):
+        self.assertEqual(pf.daily_max(), 8)
+
+    def test_next_draft_picks_laggard_category(self):
+        # 발행수: tax 2, realty 0 → 두 카테고리 초안이 모두 대기면 realty(뒤처진 쪽)를 먼저 고른다.
+        with tempfile.TemporaryDirectory() as d:
+            posts = Path(d) / "posts"; posts.mkdir()
+            queue = Path(d) / "queue"; queue.mkdir()
+            for i in (1, 2):
+                (posts / f"t{i}.md").write_text(
+                    f"---\nslug: t{i}\ncategory: tax\ndate: 2026-10-26T09:00:00+09:00\n---\nx",
+                    encoding="utf-8")
+            (queue / "01-taxdraft.md").write_text(
+                "제목: t\n슬러그: taxdraft\n분류: tax\n검증: 확인됨\n\n---\n\n본문", encoding="utf-8")
+            (queue / "02-realtydraft.md").write_text(
+                "제목: r\n슬러그: realtydraft\n분류: realty\n검증: 확인됨\n\n---\n\n본문", encoding="utf-8")
+            with mock.patch.object(pf, "POSTS_OUT", posts), mock.patch.object(pf, "QUEUE", queue):
+                f, slug = pf.next_draft(set())
+                self.assertEqual(slug, "realtydraft")
 
 
 class VerifyGateTest(unittest.TestCase):

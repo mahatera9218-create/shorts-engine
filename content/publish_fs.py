@@ -32,23 +32,33 @@ PAGES_OUT = ROOT / "web" / "content" / "pages"
 KST = timezone(timedelta(hours=9))
 
 
+CATS = ("jaetech", "realty", "tax", "pension")  # 사이트 카테고리(균등 발행 대상)
+
+
 def daily_max() -> int:
-    """하루 발행 상한 5편(2026-10-18 대표 결정: 본진 글 수 증량). 구간 5개에 1편씩, 하루 종일 퍼지게."""
-    return 5
+    """하루 발행 상한 8편(2026-10-26 대표 결정: 발행량 증량·카테고리 균등).
+    8구간에 1편씩 → 카테고리 4개에 하루 2편씩 골고루."""
+    return 8
 
 
-# KST 시각을 5개 구간으로 나눠, 구간마다 1편만 나가게 한다(하루 5편, 자연스럽게 분산).
-# s1 아침(<10) · s2 오전(10~11) · s3 점심(12~14) · s4 오후(15~17) · s5 저녁(≥18)
+# KST 시각을 8개 구간으로 나눠, 구간마다 1편만 나가게 한다(하루 8편, 아침~밤 분산).
+# s1 <10 · s2 10~11 · s3 12~13 · s4 14~15 · s5 16~17 · s6 18~19 · s7 20~21 · s8 ≥22
 def slot_of(hour: int) -> str:
     if hour < 10:
         return "s1"
     if hour < 12:
         return "s2"
-    if hour < 15:
+    if hour < 14:
         return "s3"
-    if hour < 18:
+    if hour < 16:
         return "s4"
-    return "s5"
+    if hour < 18:
+        return "s5"
+    if hour < 20:
+        return "s6"
+    if hour < 22:
+        return "s7"
+    return "s8"
 
 
 def slot_filled(now: datetime | None = None) -> bool:
@@ -112,7 +122,21 @@ def published_today() -> int:
     return n
 
 
+def published_count_by_cat() -> dict[str, int]:
+    """이미 발행된 글의 카테고리별 개수(web/content/posts frontmatter 기준)."""
+    counts: dict[str, int] = {}
+    for f in POSTS_OUT.glob("*.md") if POSTS_OUT.exists() else []:
+        m = re.search(r"^category:\s*(\S+)", f.read_text(encoding="utf-8"), re.M)
+        if m:
+            counts[m.group(1)] = counts.get(m.group(1), 0) + 1
+    return counts
+
+
 def next_draft(existing: set[str]) -> tuple[Path | None, str | None]:
+    """발행 수가 가장 적은 카테고리부터 채운다(카테고리 균등). 같은 카테고리 안에선 파일 이름 순.
+    → 한쪽(세금)에 쏠리지 않고, 뒤처진 카테고리를 먼저 올려 수를 맞춘다(대표 2026-10-26)."""
+    counts = published_count_by_cat()
+    cands: list[tuple[int, str, Path, str]] = []
     for f in sorted(QUEUE.glob("*.md")):
         slug = wp.draft_slug(f)
         if not slug or slug in existing:
@@ -120,8 +144,13 @@ def next_draft(existing: set[str]) -> tuple[Path | None, str | None]:
         if not is_publishable(f):
             print(f"[보류] {f.name}: 숫자 검증 전('검증:' 줄이 없거나 미확인)")
             continue
-        return f, slug
-    return None, None
+        cat = wp.draft_category(f) or ""
+        cands.append((counts.get(cat, 0), f.name, f, slug))
+    if not cands:
+        return None, None
+    # (해당 카테고리 발행수 오름차순, 파일명 오름차순) → 가장 뒤처진 카테고리의 가장 앞 초안.
+    cands.sort(key=lambda c: (c[0], c[1]))
+    return cands[0][2], cands[0][3]
 
 
 def make_excerpt(body: str, limit: int = 150) -> str:

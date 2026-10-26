@@ -23,6 +23,7 @@ from market.common import ROOT, missing_secrets
 from content import wp
 
 QUEUE = ROOT / "reports" / "구글글-초안"
+POSTS_OUT = ROOT / "web" / "content" / "posts"
 TOPICS = ROOT / "config" / "google_topics.yaml"
 PROMPT = ROOT / "prompts" / "project" / "클로드-경제-글-구글.md"
 
@@ -60,6 +61,31 @@ def next_index() -> int:
         if m:
             mx = max(mx, int(m.group(1)))
     return mx + 1
+
+
+def cat_load() -> dict[str, int]:
+    """카테고리별 '지금까지 쌓인 글 수' = 발행된 글 + 대기 초안. 뒤처진 카테고리를 먼저 채우는 데 쓴다."""
+    load: dict[str, int] = {}
+    for f in POSTS_OUT.glob("*.md") if POSTS_OUT.exists() else []:
+        m = re.search(r"^category:\s*(\S+)", f.read_text(encoding="utf-8"), re.M)
+        if m:
+            load[m.group(1)] = load.get(m.group(1), 0) + 1
+    for f in QUEUE.glob("*.md") if QUEUE.exists() else []:
+        c = wp.draft_category(f)
+        if c:
+            load[c] = load.get(c, 0) + 1
+    return load
+
+
+def balance_pending(pending: list[dict]) -> list[dict]:
+    """대기 주제를 '카테고리 부하가 적은 순'으로 정렬 → 뒤처진 카테고리부터 생성(수 맞추기).
+    부하가 같으면 기존(YAML) 순서 유지(안정 정렬)."""
+    load = dict(cat_load())
+    order: list[tuple[int, int, dict]] = []
+    for i, t in enumerate(pending):
+        order.append((load.get(t.get("cat", ""), 0), i, t))
+    order.sort(key=lambda x: (x[0], x[1]))
+    return [t for _, _, t in order]
 
 
 def _system(existing_slugs: list[str]) -> list[str]:
@@ -124,12 +150,19 @@ def replenish_topics(llm, topics: list[dict], n: int = REFILL) -> int:
     config/google_topics.yaml 맨 아래에 덧붙인다. 반환: 실제로 추가한 개수."""
     known = {t["slug"] for t in topics}
     sample = "\n".join(f"- {t['slug']}: {t['topic']}" for t in topics[-40:])
+    # 카테고리 균등: 글 수가 적은 카테고리를 먼저 채우도록 LLM에 알려 준다(대표 2026-10-26).
+    load = cat_load()
+    behind = sorted(CATS, key=lambda c: load.get(c, 0))
+    load_line = ", ".join(f"{c}={load.get(c, 0)}편" for c in behind)
     system = [
         "너는 한국 세무·절세·연금·재테크 정보 블로그의 주제 기획자다. 검색 수요가 있고 거래의도"
         "(요건·한도·비용·신청 방법·비교·기한)가 있는 evergreen 주제만 제안한다. 투자 권유·종목 추천·"
         "단정 전망 주제, 시사 뉴스성 주제는 제외. slug는 영문 소문자-하이픈. cat은 "
         f"{', '.join(CATS)} 중 하나. topic은 한글 한 줄(핵심 키워드와 다룰 범위)."]
     prompt = (f"새 주제 {n}개를 제안하라. 아래 기존 주제와 겹치거나 비슷하면 안 된다.\n"
+              f"카테고리별 현재 글 수(적은 순): {load_line}.\n"
+              f"**글 수가 적은 카테고리({behind[0]}, {behind[1]})에 주제를 더 많이 배정**해 "
+              f"카테고리 수를 맞춰라. tax는 이미 많으니 최소화.\n"
               f"기존 주제(최근 일부):\n{sample}")
     out = llm.ask_json(system, prompt, TOPIC_SCHEMA, model="claude-sonnet-5-5",
                        effort="medium", max_tokens=4000, stage="주제보충")
@@ -199,6 +232,8 @@ def main(argv: list[str] | None = None) -> int:
     QUEUE.mkdir(parents=True, exist_ok=True)
     idx = next_index()
     made = 0
+    # 카테고리 균등: 글 수가 적은 카테고리의 주제부터 생성한다(대표 2026-10-26).
+    pending = balance_pending(pending)
     for t in pending[: args.count]:
         try:
             p = generate_one(llm, t, sorted(done), idx)
