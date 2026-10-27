@@ -273,3 +273,95 @@ topics:
   - slug: gukmin-yeongeum-sodeukwolaek-sangha
     cat: pension
     topic: 국민연금 기준소득월액 상·하한 (산정 방식, 매년 조정, 보험료 영향). 공식 기준으로 숫자를 쓴다
+  # 자동 보충 2026-10-27 (realty·jaetech 뒤처짐 해소)
+  - slug: saengae-choecho-chwideukse-gamchae
+    cat: realty
+    topic: 생애최초 주택 취득세 감면 (감면 한도 200만원, 소득·주택가격 요건, 신청 방법·기한). 공식 기준으로 숫자를 쓴다
+  - slug: imdaecha-gaengsin-cheonggu
+    cat: realty
+    topic: 주택임대차 계약갱신청구권과 전월세 상한 (행사 요건·기한, 5% 상한, 집주인 거절 사유). 공식 기준으로 숫자를 쓴다
+  - slug: soaek-imchain-choeusun-byeonje
+    cat: realty
+    topic: 소액임차인 최우선변제 (지역별 보증금 기준·변제 한도, 대항요건, 배당 순위). 공식 기준으로 숫자를 쓴다
+  - slug: junggae-susuryo-sangan
+    cat: realty
+    topic: 부동산 중개보수 요율과 상한 (매매·임대 구간별 요율, 상한, 부가세 포함 여부). 공식 기준으로 숫자를 쓴다
+  - slug: janggi-susun-chungdanggeum
+    cat: realty
+    topic: 장기수선충당금 반환 (부담 주체, 임차인 정산·반환 청구, 관리규약). 공식 기준으로 숫자를 쓴다
+  - slug: jutaek-imcha-chaipgeum-gongje
+    cat: realty
+    topic: 주택임차차입금 원리금상환 소득공제 (대상·한도, 무주택 요건, 신청). 공식 기준으로 숫자를 쓴다
+  - slug: wolse-sekaek-gongje
+    cat: realty
+    topic: 월세 세액공제 (소득·주택 요건, 공제율·한도, 현금영수증 대안). 공식 기준으로 숫자를 쓴다
+  - slug: janggi-jutaek-jeodang-gongje
+    cat: realty
+    topic: 장기주택저당차입금 이자상환 소득공제 (상환기간·금리 유형별 한도, 요건). 공식 기준으로 숫자를 쓴다
+  - slug: budongsan-gyeyakgeum-haeyak
+    cat: realty
+    topic: 부동산 계약금 배액배상과 해약 (해약 요건, 위약금, 가계약금 반환 여부). 공식 기준으로 숫자를 쓴다
+  - slug: dagagu-dasedae-chai
+    cat: realty
+    topic: 다가구주택과 다세대주택 차이 (세대 수·소유 구조, 1주택 판정, 세금 차이). 공식 기준으로 숫자를 쓴다
+  - slug: gongsi-gagyeok-iuisincheong
+    cat: realty
+    topic: 공시가격 이의신청 (열람·의견제출 기간, 절차, 재산세·건보료 영향). 공식 기준으로 숫자를 쓴다
+  - slug: sangga-imdaecha-gaengsin
+    cat: realty
+    topic: 상가임대차 계약갱신요구권 (10년 보장, 환산보증금 기준, 권리금 회수 보호). 공식 기준으로 숫자를 쓴다
+  - slug: jeonse-daehangryeok-usun
+    cat: realty
+    topic: 전세 대항력과 우선변제권 (전입신고·확정일자 효과, 발생 시점, 보증금 보호). 공식 기준으로 숫자를 쓴다
+  - slug: jaegeonchuk-chogwaiik
+    cat: realty
+    topic: 재건축초과이익환수 (부과 대상·기준, 면제 구간, 산정 방식). 공식 기준으로 숫자를 쓴다
+  - slug: budongsan-sangsok-chwideukse
+    cat: realty
+    topic: 상속 부동산 취득세 (상속 취득세율, 신고·납부 기한, 감면·중과 여부). 공식 기준으로 숫자를 쓴다
+  # 자동 보충 2026-10-27 (jaetech)
+  - slug: isa-yuhyeong-bigyo
+    cat: jaetech
+    topic: ISA 중개형·신탁형·일임형 비교 (수수료·운용·투자대상 차이, 비과세 한도 공통). 공식 기준으로 숫자를 쓴다
+  - slug: geumsodeuk-geonbopyo
+    cat: jaetech
+    topic: 금융소득과 건강보험료 (2천만원 초과 시 피부양자 탈락·지역가입 영향). 공식 기준으로 숫자를 쓴다
+  - slug: haeoe-jusik-yangdose
+    cat: jaetech
+    topic: 해외주식 양도소득세 (250만원 기본공제, 22% 세율, 신고 기한·손익통산). 공식 기준으로 숫자를 쓴다
+  - slug: chaegwon-tuja-gwase
+    cat: jaetech
+    topic: 채권 투자 세금 (이자소득세 원천징수, 매매차익 과세 여부, 장내·장외). 공식 기준으로 숫자를 쓴다
+  - slug: etf-segeum-gukla
+    cat: jaetech
+    topic: 국내 ETF와 해외상장 ETF 세금 (배당소득세·양도세 차이, 과세 방식). 공식 기준으로 숫자를 쓴다
+  - slug: yegeum-ija-sodeukse
+    cat: jaetech
+    topic: 예·적금 이자소득세 (15.4% 원천징수 구성, 비과세·세금우대 상품). 공식 기준으로 숫자를 쓴다
+  - slug: isa-sonik-tongsan
+    cat: jaetech
+    topic: ISA 손익통산과 비과세 한도 (순이익 기준 과세, 초과분 9.9% 분리과세). 공식 기준으로 숫자를 쓴다
+  - slug: jeungwon-georae-se
+    cat: jaetech
+    topic: 증권거래세율 (코스피·코스닥 세율, 농어촌특별세 포함, 비과세 대상). 공식 기준으로 숫자를 쓴다
+  - slug: yeongeum-gyejwa-sewat-gongje
+    cat: jaetech
+    topic: 연금계좌 세액공제 (연 900만원 한도, 공제율, 총급여 기준 차등). 공식 기준으로 숫자를 쓴다
+  - slug: sogeumeok-juju-gijun
+    cat: jaetech
+    topic: 소액주주와 대주주 양도세 기준 (지분율·보유금액 기준, 과세 여부·세율). 공식 기준으로 숫자를 쓴다
+  - slug: haeoe-geumyung-gyejwa-singo
+    cat: jaetech
+    topic: 해외금융계좌 신고 (5억원 기준, 신고 기한, 미신고 과태료). 공식 기준으로 숫자를 쓴다
+  - slug: jeongi-yegeum-jungdo-iyul
+    cat: jaetech
+    topic: 정기예금 중도해지 이율과 세금 (중도해지 이율 산정, 이자 과세, 예금자보호). 공식 기준으로 숫자를 쓴다
+  - slug: oehwa-yegeum-hwancha-gwase
+    cat: jaetech
+    topic: 외화예금 세금 (이자소득세, 환차익 과세 여부, 예금자보호). 공식 기준으로 숫자를 쓴다
+  - slug: p2p-tuja-sodeukse
+    cat: jaetech
+    topic: P2P(온라인투자연계금융) 투자 세금 (이자소득 원천징수율, 신고, 손실 처리). 공식 기준으로 숫자를 쓴다
+  - slug: cheongnyeon-jeokgeum-jiwon-bigyo
+    cat: jaetech
+    topic: 청년 지원 적금·계좌 비교 (가입 요건·소득 기준·만기, 세제·정부기여 혜택 차이). 공식 기준으로 숫자를 쓴다
