@@ -217,26 +217,40 @@ h1 em{font-style:normal;font-family:var(--f-disp);font-stretch:125%;font-weight:
 @keyframes l3n{0%,18%{transform:translateY(24px);opacity:0}28%,100%{transform:none;opacity:1}}
 @keyframes l3s{0%,22%{transform:translateY(18px);opacity:0}32%,100%{transform:none;opacity:1}}
 
-/* ---------- 타이밍: 같은 거리, 다른 곡선 ---------- */
+/* ---------- 타이밍: 위 = 효과 없음, 아래 = 효과 적용 ---------- */
 .fx-tm{background:linear-gradient(#1B2033,var(--scr))}
-.gbox{left:20px;top:16px;width:80px;height:62px;border-left:1px solid rgba(255,255,255,.35);border-bottom:1px solid rgba(255,255,255,.35)}
-.gbox svg{left:0;top:0;width:80px;height:62px;overflow:visible}
-.gx{left:0;bottom:0;width:0;height:0;animation:mv calc(2.6s*var(--spd)) linear infinite;--dx:80px}
-.gy{left:0;top:0;width:0;height:0;animation:mvY calc(2.6s*var(--spd)) infinite;animation-timing-function:var(--ez)}
-.gy::before{content:"";position:absolute;left:-4px;top:-4px;width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.2)}
-@keyframes mvY{0%,12%{transform:translateY(0)}72%,100%{transform:translateY(-62px)}}
-.glab{font-family:var(--f-mono);font-size:8px;color:rgba(255,255,255,.5)}
-.gl-t{left:20px;top:82px}.gl-p{left:4px;top:14px;writing-mode:vertical-rl;transform:rotate(180deg)}
-.ezname{left:114px;top:22px;width:112px;font-family:var(--f-mono);font-size:10px;line-height:1.5;color:#fff}
-.ezname em{font-style:normal;display:block;color:rgba(255,255,255,.55);font-size:9px}
-.trk{left:20px;width:200px;height:1px;background:rgba(255,255,255,.25)}
-.trk.t1{top:118px}.trk.t2{top:152px}
-.trk .ball2{left:0;top:-7px;width:14px;height:14px;border-radius:50%;animation:mv calc(2.6s*var(--spd)) infinite;--dx:186px}
-.t1 .ball2{background:rgba(255,255,255,.4);animation-timing-function:linear}
-.t2 .ball2{background:var(--c-tm);animation-timing-function:var(--ez);box-shadow:0 0 12px rgba(37,173,146,.6)}
-.trk span{left:0;top:-19px;font-family:var(--f-mono);font-size:8px;color:rgba(255,255,255,.55)}
-.trk .goal{left:199px;top:-12px;width:1px;height:24px;background:rgba(255,255,255,.6)}
-@keyframes mv{0%,12%{transform:translateX(0)}72%,100%{transform:translateX(var(--dx))}}
+.lane{left:0;width:240px;height:90px;overflow:hidden}
+.lane.top{top:0;border-bottom:1px dashed rgba(255,255,255,.18)}
+.lane.bot{top:90px}
+.lane .lb{left:12px;top:8px;font:600 9px/1 var(--f-mono);letter-spacing:.04em;color:rgba(255,255,255,.5)}
+.lane.bot .lb{color:#7FE3CD}
+.lane.top .mv{animation-timing-function:linear!important}
+.lane.top .mv,.lane.top .mv *{filter:saturate(.25) brightness(.85)}
+/* Ease Out: 자막이 들어와 멈춤 */
+.pill{left:24px;top:36px;height:30px;padding:0 14px;border-radius:15px;background:#fff;color:#151927;font-size:13px;font-weight:700;line-height:30px;white-space:nowrap;animation:eo calc(2.6s*var(--spd)) var(--ez) infinite}
+.pill::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--c-tm);margin-right:7px;vertical-align:1px}
+@keyframes eo{0%,12%{transform:translateX(-190px);opacity:1}62%,90%{transform:translateX(0);opacity:1}100%{transform:translateX(0);opacity:0}}
+/* Ease In-Out: 사진을 A칸에서 B칸으로 */
+.slot2{top:32px;width:46px;height:38px;border:1.5px dashed rgba(255,255,255,.35);border-radius:4px}
+.slot2 span{left:0;right:0;top:40px;text-align:center;font:9px/1 var(--f-mono);color:rgba(255,255,255,.45)}
+.photo{left:26px;top:34px;width:42px;height:34px;border-radius:3px;background:linear-gradient(var(--sky-a),var(--sky-b));overflow:hidden;box-shadow:0 4px 10px rgba(0,0,0,.4);animation:eio calc(2.4s*var(--spd)) var(--ez) infinite alternate}
+.photo::after{content:"";position:absolute;left:0;right:0;bottom:0;height:13px;background:var(--mtn);clip-path:polygon(0 100%,30% 0,55% 60%,80% 10%,100% 100%)}
+@keyframes eio{0%,10%{transform:translateX(0)}90%,100%{transform:translateX(146px)}}
+/* Overshoot: 구독 버튼이 톡 튀어나옴 */
+.btnx{left:62px;top:28px;width:116px;height:40px}
+.btnx .ghost{inset:0;border:1.5px dashed rgba(255,255,255,.35);border-radius:20px}
+.btnx .sub{inset:0;border-radius:20px;background:#FF3B3B;color:#fff;font-size:15px;font-weight:700;display:grid;place-items:center;animation:os calc(2.4s*var(--spd)) var(--ez) infinite,fade calc(2.4s*var(--spd)) linear infinite}
+@keyframes os{0%,15%{transform:scale(0)}55%,100%{transform:scale(1)}}
+@keyframes fade{0%,88%{opacity:1}100%{opacity:0}}
+/* Anticipation: 움츠렸다가 튀어 나감 */
+.runner{left:40px;bottom:16px;width:28px;height:28px;border-radius:8px;background:var(--hero);transform-origin:50% 100%}
+.runner i{top:9px;width:4px;height:7px;border-radius:2px;background:#fff}
+.runner i:first-child{left:13px}.runner i+i{left:20px}
+.lane .floor2{left:16px;right:16px;bottom:15px;height:1px;background:rgba(255,255,255,.3)}
+.top .runner{animation:run0 calc(2.6s*var(--spd)) infinite}
+.bot .runner{animation:run1 calc(2.6s*var(--spd)) infinite}
+@keyframes run0{0%{transform:none;opacity:0}8%,40%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.5,0,.9,.5)}62%,100%{transform:translateX(210px);opacity:1}}
+@keyframes run1{0%{transform:none;opacity:0}8%,18%{transform:none;opacity:1}34%,40%{transform:translateX(-14px) scale(1.15,.78);animation-timing-function:cubic-bezier(.5,0,.9,.5)}62%{transform:translateX(210px) scale(1.2,.88)}100%{transform:translateX(210px)}}
 
 /* Squash & stretch */
 .fx-sq{background:linear-gradient(#1B2033,var(--scr))}
@@ -537,12 +551,12 @@ h1 em{font-style:normal;font-family:var(--f-disp);font-stretch:125%;font-weight:
       <span class="n">Group D · 5</span>
       <p class="code">TIMING</p>
       <h2>타이밍·물리</h2>
-      <p>같은 거리를 같은 시간에 움직여도 속도 곡선에 따라 느낌이 달라집니다. 위의 모든 모션에 깔리는 바탕입니다. 회색 공은 일정한 속도(linear) 기준입니다.</p>
+      <p>같은 거리를 같은 시간에 움직여도 속도 곡선에 따라 느낌이 달라집니다. 위의 모든 모션에 깔리는 바탕입니다. 액자 위칸은 효과 없이, 아래칸은 효과를 적용한 같은 움직임입니다.</p>
       <ul><li>Ease Out</li><li>Ease In-Out</li><li>Overshoot</li><li>Anticipation</li><li>Squash</li></ul>
     </section>
 
     <article class="tile" data-c="tm" style="--ez:cubic-bezier(.16,1,.3,1)">
-      <div class="stage"><div class="scene fx-tm" data-curve="M0,100 C16,0 30,0 100,0" data-label="ease-out|빠르게 출발 → 살살 멈춤"></div></div>
+      <div class="stage"><div class="scene fx-tm"><div class="lane top"><span class="lb">효과 없음 (일정한 속도)</span><div class="pill mv">자막이 들어와요</div></div><div class="lane bot"><span class="lb">EASE OUT · 살살 멈춤</span><div class="pill mv">자막이 들어와요</div></div></div></div>
       <div class="name"><h3>Ease Out</h3><span class="kr">이즈 아웃</span></div>
       <p class="desc">빠르게 출발해서 부드럽게 멈춥니다. 화면에 들어오는 요소라면 거의 항상 이것부터 씁니다.</p>
       <p class="use"><b>쓰는 곳</b>자막·버튼·사진의 등장</p>
@@ -550,7 +564,7 @@ h1 em{font-style:normal;font-family:var(--f-disp);font-stretch:125%;font-weight:
     </article>
 
     <article class="tile" data-c="tm" style="--ez:cubic-bezier(.65,0,.35,1)">
-      <div class="stage"><div class="scene fx-tm" data-curve="M0,100 C65,100 35,0 100,0" data-label="ease-in-out|천천히 → 빠르게 → 천천히"></div></div>
+      <div class="stage"><div class="scene fx-tm"><div class="lane top"><span class="lb">효과 없음 (일정한 속도)</span><div class="slot2" style="left:24px"><span>A</span></div><div class="slot2" style="left:170px"><span>B</span></div><div class="photo mv"></div></div><div class="lane bot"><span class="lb">EASE IN-OUT · 천천히-빠르게-천천히</span><div class="slot2" style="left:24px"><span>A</span></div><div class="slot2" style="left:170px"><span>B</span></div><div class="photo mv"></div></div></div></div>
       <div class="name"><h3>Ease In-Out</h3><span class="kr">이즈 인아웃</span><span class="add">추천</span></div>
       <p class="desc">천천히 출발해 중간에 빨라지고 다시 천천히 도착합니다. 화면 안에서 A 지점→B 지점으로 옮길 때 자연스럽습니다.</p>
       <p class="use"><b>쓰는 곳</b>카메라 무브, 위치 이동</p>
@@ -558,7 +572,7 @@ h1 em{font-style:normal;font-family:var(--f-disp);font-stretch:125%;font-weight:
     </article>
 
     <article class="tile" data-c="tm" style="--ez:cubic-bezier(.34,1.56,.64,1)">
-      <div class="stage"><div class="scene fx-tm" data-curve="M0,100 C34,-56 64,0 100,0" data-label="overshoot|목표를 지나쳤다 복귀" data-goal></div></div>
+      <div class="stage"><div class="scene fx-tm"><div class="lane top"><span class="lb">효과 없음</span><div class="btnx"><div class="ghost"></div><div class="sub mv">구독</div></div></div><div class="lane bot"><span class="lb">OVERSHOOT · 점선을 넘었다 돌아옴</span><div class="btnx"><div class="ghost"></div><div class="sub mv">구독</div></div></div></div></div>
       <div class="name"><h3>Overshoot</h3><span class="kr">오버슈트</span></div>
       <p class="desc">목표 선을 살짝 지나쳤다가 되돌아와 멈춥니다. 통통 튀는 탄력과 경쾌함을 줍니다.</p>
       <p class="use"><b>쓰는 곳</b>스티커, 아이콘, 구독 버튼 등장</p>
@@ -566,7 +580,7 @@ h1 em{font-style:normal;font-family:var(--f-disp);font-stretch:125%;font-weight:
     </article>
 
     <article class="tile" data-c="tm" style="--ez:cubic-bezier(.55,-.45,.35,1)">
-      <div class="stage"><div class="scene fx-tm" data-curve="M0,100 C55,145 35,0 100,0" data-label="anticipation|뒤로 움츠렸다 출발"></div></div>
+      <div class="stage"><div class="scene fx-tm"><div class="lane top"><span class="lb">효과 없음 (바로 출발)</span><div class="floor2"></div><div class="runner mv"><i></i><i></i></div></div><div class="lane bot"><span class="lb">ANTICIPATION · 움츠렸다 출발</span><div class="floor2"></div><div class="runner mv"><i></i><i></i></div></div></div></div>
       <div class="name"><h3>Anticipation</h3><span class="kr">예비 동작</span><span class="add">추천</span></div>
       <p class="desc">움직이기 직전에 반대쪽으로 살짝 움츠립니다. 다음 동작을 미리 알려 줘서 눈이 따라가기 쉽습니다.</p>
       <p class="use"><b>쓰는 곳</b>캐릭터 점프, 화면 밖으로 날아가는 요소</p>
@@ -672,21 +686,6 @@ h1 em{font-style:normal;font-family:var(--f-disp);font-stretch:125%;font-weight:
 (function(){
   var LAND='<div class="sky"></div><div class="sun"></div><div class="mtn far" style="left:-10px;width:170px;height:90px"></div><div class="mtn" style="left:110px;width:150px;height:70px"></div><div class="ground"></div><div class="tree" style="left:40px"></div><div class="tree" style="left:186px"></div><div class="hero"><i></i><i></i></div>';
   document.querySelectorAll('[data-land]').forEach(function(el){el.innerHTML=LAND;});
-
-  // 타이밍 장면: 그래프(시간→위치) + 기준 공(linear) + 곡선 공
-  document.querySelectorAll('.fx-tm').forEach(function(el){
-    var lab=(el.getAttribute('data-label')||'').split('|');
-    var goal=el.hasAttribute('data-goal')?'<i class="goal"></i>':'';
-    el.innerHTML=
-      '<div class="gbox"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">'+
-      '<path d="M0,100 L100,0" fill="none" stroke="rgba(255,255,255,.25)" stroke-dasharray="3 3" vector-effect="non-scaling-stroke"/>'+
-      '<path d="'+el.getAttribute('data-curve')+'" fill="none" stroke="#25AD92" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>'+
-      '<div class="gx"><div class="gy"></div></div></div>'+
-      '<span class="glab gl-t">시간 →</span><span class="glab gl-p">위치</span>'+
-      '<div class="ezname">'+lab[0]+'<em>'+(lab[1]||'')+'</em></div>'+
-      '<div class="trk t1"><span>linear</span><i class="ball2"></i>'+goal+'</div>'+
-      '<div class="trk t2"><span>'+lab[0]+'</span><i class="ball2"></i>'+goal+'</div>';
-  });
 
   // 액자 크기에 맞춰 240×180 장면을 확대·축소
   var stages=document.querySelectorAll('.stage');
