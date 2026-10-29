@@ -289,6 +289,24 @@ h1 em{font-style:normal;font-family:var(--f-disp);font-stretch:125%;font-weight:
 @keyframes mr{0%,8%{transform:translateY(110%)}30%,74%{transform:none}90%,100%{transform:translateY(-110%)}}
 .mklab{left:34px;top:128px;font-family:var(--f-mono);font-size:8.5px;color:rgba(255,255,255,.5)}
 
+/* 프롬프트 시트 */
+.tile[data-prompt]{cursor:pointer;transition:transform .15s,border-color .15s}
+.tile[data-prompt]:hover{border-color:var(--ink2);transform:translateY(-2px)}
+.tile[data-prompt]:focus-visible{outline:2px solid var(--hue);outline-offset:2px}
+.ptag{position:absolute;right:10px;top:10px;z-index:6;font:600 9.5px/1 var(--f-mono);letter-spacing:.04em;color:#fff;background:rgba(10,12,22,.7);border:1px solid rgba(255,255,255,.3);border-radius:3px;padding:4px 6px;pointer-events:none}
+.scrim{position:fixed;inset:0;background:rgba(8,10,16,.45);z-index:40}
+.sheet{position:fixed;left:50%;bottom:0;transform:translateX(-50%);z-index:41;width:min(640px,100%);background:var(--mat);color:var(--ink);border:1px solid var(--line);border-bottom:0;border-radius:14px 14px 0 0;box-shadow:0 -12px 40px rgba(0,0,0,.3);
+  padding:18px max(18px,env(safe-area-inset-right,0px)) calc(18px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:12px}
+.sheet-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.sheet h4{margin:0;font-family:var(--f-disp);font-stretch:112%;font-weight:800;font-size:19px;display:flex;align-items:center;gap:8px}
+.sheet h4::before{content:"";width:9px;height:9px;border-radius:2px;background:var(--hue)}
+.sheet .x{font:500 13px/1 var(--f-body);background:none;border:1px solid var(--line);color:var(--ink2);border-radius:999px;padding:8px 12px;cursor:pointer}
+.ptxt{margin:0;font-size:15px;line-height:1.7;background:var(--wall);border:1px solid var(--line);border-radius:8px;padding:14px;user-select:all;-webkit-user-select:all;overflow-wrap:anywhere}
+.ptxt mark{background:none;color:var(--ink);font-weight:700;box-shadow:inset 0 -.45em 0 color-mix(in srgb,var(--hue) 45%,transparent)}
+.sheet-bot{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.sheet-bot small{color:var(--ink2);font-size:12px}
+.copy{background:var(--ink);color:var(--wall);border-color:var(--ink)}
+
 /* 일시정지 */
 .paused .stage *,.paused .stage *::before,.paused .stage *::after{animation-play-state:paused!important}
 
@@ -305,6 +323,7 @@ h1 em{font-style:normal;font-family:var(--f-disp);font-stretch:125%;font-weight:
     </div>
     <div class="side">
       <p class="starter"><b>처음이라면 이 세 개부터:</b> Ease Out(모든 등장의 기본) · Stagger(목록·자막) · Lower 3rd(인물 소개). 이것만 써도 화면이 훨씬 정돈돼 보입니다.</p>
+      <p class="starter"><b>액자를 누르면</b> 바로 쓸 수 있는 짧은 프롬프트가 나옵니다. <b>[ ]</b> 안만 원하는 내용으로 바꿔서 쓰세요.</p>
       <div class="ctrl">
         <button class="btn" id="btn-play" type="button" aria-pressed="false"><svg viewBox="0 0 12 12" aria-hidden="true"><rect x="1" y="1" width="3.5" height="10"/><rect x="7.5" y="1" width="3.5" height="10"/></svg><span>일시정지</span></button>
         <button class="btn" id="btn-slow" type="button" aria-pressed="false">0.5배속으로 보기</button>
@@ -635,6 +654,13 @@ h1 em{font-style:normal;font-family:var(--f-disp);font-stretch:125%;font-weight:
   </footer>
 </div>
 
+<div class="scrim" id="scrim" hidden></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" hidden>
+  <div class="sheet-top"><h4 id="sheet-title">Pan</h4><button class="x" id="sheet-close" type="button">닫기</button></div>
+  <p class="ptxt" id="sheet-text"></p>
+  <div class="sheet-bot"><small>[ ] 부분만 바꾸면 됩니다</small><button class="btn copy" id="sheet-copy" type="button">프롬프트 복사</button></div>
+</div>
+
 <script>
 (function(){
   var LAND='<div class="sky"></div><div class="sun"></div><div class="mtn far" style="left:-10px;width:170px;height:90px"></div><div class="mtn" style="left:110px;width:150px;height:70px"></div><div class="ground"></div><div class="tree" style="left:40px"></div><div class="tree" style="left:186px"></div><div class="hero"><i></i><i></i></div>';
@@ -687,5 +713,57 @@ h1 em{font-style:normal;font-family:var(--f-disp);font-stretch:125%;font-weight:
   var last=performance.now();
   function tick(now){var dt=Math.min((now-last)/1000,.1);last=now;if(!state.paused)state.t+=dt/state.spd;render(state.t);requestAnimationFrame(tick);}
   render(state.t);requestAnimationFrame(tick);
+
+  // 액자를 누르면 프롬프트
+  var P={
+    'Pan':'[장면]을 왼쪽에서 오른쪽으로 천천히 훑는 팬 카메라 무브, 4초, 부드러운 ease-in-out',
+    'Dolly':'[피사체]를 향해 카메라가 천천히 다가가는 돌리 인, 피사체는 크게·배경은 조금만 커지게, 4초',
+    'Zoom':'[강조할 부분]으로 부드럽게 줌 인, 화면 전체가 같은 비율로 확대, 3초',
+    'Orbit':'[제품]을 가운데 두고 카메라가 주위를 한 바퀴 도는 360도 오빗 샷, 6초, 일정한 속도',
+    'Snap Zoom':'[강조할 순간]에 0.2초 만에 확 당기는 스냅 줌, 살짝 모션 블러, 당긴 뒤 1초 멈춤',
+    'Dissolve':'[장면 A]에서 [장면 B]로 0.8초 동안 겹쳐 바뀌는 디졸브 전환',
+    'Wipe':'[장면 A]에서 [장면 B]로 왼쪽→오른쪽 와이프 전환, 0.6초, 경계에 얇은 흰 선',
+    'Iris':'화면 가운데 원이 열리며 [장면 B]가 나타나는 아이리스 인 전환, 0.6초',
+    'Glitch':'[장면 A]에서 [장면 B]로 0.3초 글리치 전환, 빨강·파랑 색 분리와 가로 줄 노이즈',
+    'Match Cut':'[장면 A의 물체]와 같은 위치·같은 크기의 [장면 B의 물체]로 바로 이어 붙이는 매치 컷',
+    'Type On':'"[문장]"이 검색창에 한 글자씩 입력되는 타이핑 애니메이션, 글자당 0.07초, 깜빡이는 커서',
+    'Stagger':'[항목 1], [항목 2], [항목 3]이 0.1초 간격으로 차례로 튀어나오는 목록 애니메이션',
+    'Count Up':'[라벨] 숫자가 0에서 [목표 숫자]까지 1.5초 동안 올라가는 카운트 업, 끝에서 느려지게',
+    'Word Morph':'"[고정 문구]" 뒤 단어가 [단어 1] → [단어 2] → [단어 3]로 흐려지며 바뀌는 워드 모프',
+    'Lower 3rd':'화면 왼쪽 아래에 이름 "[이름]", 직함 "[직함]" 하단 자막, 색 띠가 먼저 나오고 글자가 뒤따름, 4초 유지',
+    'Ease Out':'[요소]가 화면 밖에서 빠르게 들어와 부드럽게 멈추는 등장, ease-out, 0.5초',
+    'Ease In-Out':'[요소]를 [시작 위치]에서 [끝 위치]로 천천히-빠르게-천천히 옮기기, ease-in-out, 0.8초',
+    'Overshoot':'[요소]가 튀어나오며 목표 크기를 살짝 넘었다가 돌아와 멈추는 오버슈트 등장, 0.5초',
+    'Anticipation':'[요소]가 반대쪽으로 살짝 움츠렸다가 [방향]으로 빠르게 날아가는 예비 동작, 0.6초',
+    'Squash & Stretch':'[물체]가 바닥에 닿을 때 납작해지고 튀어 오를 때 길쭉해지는 스쿼시 앤 스트레치 바운스',
+    'Parallax':'[사진]을 먼 배경·중간·앞 3개 층으로 나눠 가까운 층일수록 빠르게 움직이는 패럴랙스, 6초',
+    'Loop':'[요소]가 첫 프레임과 마지막 프레임이 같아 끊김 없이 반복되는 2초 루프 애니메이션',
+    'Motion Path':'[아이콘]이 [출발점]에서 [도착점]까지 곡선 길을 따라 가는 방향으로 회전하며 이동, 3초',
+    'Shape Morph':'[도형 A]가 회전·색 변화와 함께 [도형 B]로 부드럽게 변하는 셰이프 모프, 1.2초',
+    'Mask Reveal':'"[제목]" 글자가 보이지 않는 선 아래에서 밀려 올라오는 마스크 리빌, 줄마다 0.15초 시차'
+  };
+  var sheet=document.getElementById('sheet'),scrim=document.getElementById('scrim'),sTitle=document.getElementById('sheet-title'),sText=document.getElementById('sheet-text'),sCopy=document.getElementById('sheet-copy'),opener=null,cur='';
+  function esc(s){return s.replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+  function openSheet(tile){
+    var name=tile.querySelector('h3').textContent;cur=tile.getAttribute('data-prompt');opener=tile;
+    sheet.setAttribute('data-c',tile.getAttribute('data-c'));sTitle.textContent=name;
+    sText.innerHTML=esc(cur).replace(/\[[^\]]+\]/g,function(m){return '<mark>'+m+'</mark>';});
+    sCopy.textContent='프롬프트 복사';sheet.hidden=false;scrim.hidden=false;sCopy.focus();
+  }
+  function closeSheet(){sheet.hidden=true;scrim.hidden=true;if(opener)opener.focus();}
+  document.querySelectorAll('article.tile').forEach(function(t){
+    var p=P[t.querySelector('h3').textContent];if(!p)return;
+    t.setAttribute('data-prompt',p);t.tabIndex=0;t.setAttribute('role','button');t.setAttribute('aria-label',t.querySelector('h3').textContent+' 프롬프트 보기');
+    var tag=document.createElement('span');tag.className='ptag';tag.textContent='눌러서 프롬프트';t.querySelector('.stage').appendChild(tag);
+    t.addEventListener('click',function(){openSheet(t);});
+    t.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openSheet(t);}});
+  });
+  scrim.addEventListener('click',closeSheet);document.getElementById('sheet-close').addEventListener('click',closeSheet);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!sheet.hidden)closeSheet();});
+  function selectText(){var r=document.createRange();r.selectNodeContents(sText);var s=window.getSelection();s.removeAllRanges();s.addRange(r);}
+  sCopy.addEventListener('click',function(){
+    var done=function(){sCopy.textContent='복사됨';},fail=function(){selectText();sCopy.textContent='글자를 길게 눌러 복사하세요';};
+    try{navigator.clipboard.writeText(cur).then(done,fail);}catch(e){fail();}
+  });
 })();
 </script>
