@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Motion Kit 체험</title>
+<style>
+:root{--bg:#F4F5F8;--card:#fff;--ink:#171A22;--ink2:#5D6475;--line:#E2E5EC;--brand:#3B5BFD;--warn:#E5484D}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0F1115;--card:#1A1D24;--ink:#ECEEF3;--ink2:#A0A7B5;--line:#2A2E38;--brand:#6F8BFF;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0F1115;--card:#1A1D24;--ink:#ECEEF3;--ink2:#A0A7B5;--line:#2A2E38;--brand:#6F8BFF;color-scheme:dark}
+*{box-sizing:border-box}
+html{padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64vh}
+@media (min-width:641px){body{padding-right:max(370px,env(safe-area-inset-right,0px));padding-bottom:48px}}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+.note{margin-top:16px;background:var(--card);border:1px dashed var(--line);border-radius:12px;padding:12px 14px;font-size:13.5px;color:var(--ink2)}
+.note b{color:var(--ink)}
+nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0}
+.logo{font-weight:800;font-size:18px;letter-spacing:-.02em}
+.bell{width:40px;height:40px;border-radius:12px;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;position:relative}
+.bell svg{width:20px;height:20px;fill:var(--ink)}
+.bell i{position:absolute;right:-4px;top:-4px;min-width:18px;height:18px;border-radius:9px;background:var(--warn);color:#fff;font:700 11px/18px sans-serif;font-style:normal;text-align:center;padding:0 4px}
+.hero h1{font-size:clamp(30px,6vw,46px);line-height:1.15;margin:0;letter-spacing:-.03em;text-wrap:balance}
+.hero p{margin:12px 0 20px;color:var(--ink2);max-width:46ch}
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+.btn{font:700 15px/1 inherit;font-family:inherit;border:0;border-radius:12px;padding:14px 20px;cursor:pointer;background:var(--brand);color:#fff}
+.btn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.btn:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+.stat small{display:block;color:var(--ink2);font-size:12px}
+.stat strong{font-size:clamp(18px,4vw,24px);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+h2{font-size:18px;margin:0 0 12px}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.cards .card:last-child{display:none}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.thumb{display:block;aspect-ratio:4/3;background:linear-gradient(135deg,#283363,#E8896A)}
+.card:nth-child(2) .thumb{background:linear-gradient(135deg,#1C7C77,#2AAE9C)}
+.card:nth-child(3) .thumb{background:linear-gradient(135deg,#5B3FA8,#9C7BEE)}
+.card div{padding:10px 12px;font-size:14px;font-weight:600}
+.card span{display:block;font-weight:400;color:var(--ink2);font-size:12.5px}
+.row{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.row p{margin:0;flex:1;min-width:0}
+.like{border:0;background:none;cursor:pointer;font-size:24px;line-height:1;color:var(--warn);padding:4px}
+.spin{width:22px;height:22px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--brand)}
+.form{display:flex;flex-direction:column;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+.form label{font-size:12px;color:var(--ink2)}
+.form input{font:inherit;color:var(--ink);background:var(--bg);border:2px solid var(--warn);border-radius:10px;padding:10px 12px}
+.form small{color:var(--warn);font-size:12px}
+footer{color:var(--ink2);font-size:12.5px;padding-bottom:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="note"><b>체험용 가짜 앱 화면입니다.</b> 패널(넓은 화면은 오른쪽, 휴대폰은 아래)에서 <b>요소 선택</b>을 누르고 화면의 아무 요소나 눌러 보세요. 효과·언제·길이·곡선을 바꾸면 바로 움직입니다. 몇 개는 미리 넣어 두었습니다.</p>
+
+  <nav>
+    <span class="logo" data-motion="fade">오늘앱</span>
+    <span class="bell" aria-label="알림 3개" data-motion="wiggle"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0-6 6v4l-2 3h16l-2-3V9a6 6 0 0 0-6-6zM10 19a2 2 0 0 0 4 0z"/></svg><i>3</i></span>
+  </nav>
+
+  <section class="hero">
+    <h1 data-motion="mask-up">할 일을 끝내는<br>가장 가벼운 방법</h1>
+    <p data-motion="fade-up" data-motion-delay="150">해야 할 일을 적고, 끝내면 지우세요. 매일 아침 오늘 할 일만 골라서 보여 드립니다.</p>
+    <div class="btns">
+      <button class="btn" type="button" data-motion="press">무료로 시작하기</button>
+      <button class="btn ghost" type="button" data-motion="ripple">둘러보기</button>
+    </div>
+  </section>
+
+  <section class="stats" data-motion="stagger">
+    <div class="stat"><small>이번 주 완료 (예시)</small><strong data-motion="count-up">128개</strong></div>
+    <div class="stat"><small>연속 기록 (예시)</small><strong data-motion="count-up">21일</strong></div>
+    <div class="stat"><small>아낀 시간 (예시)</small><strong data-motion="count-up">3.5시간</strong></div>
+  </section>
+
+  <section>
+    <h2>추천 루틴</h2>
+    <div class="cards" data-motion="stagger" data-motion-stagger="90">
+      <div class="card" data-motion="lift"><span class="thumb"></span><div>아침 10분 정리<span>할 일 3개만 고르기</span></div></div>
+      <div class="card" data-motion="lift"><span class="thumb"></span><div>점심 리셋<span>남은 일 다시 보기</span></div></div>
+      <div class="card" data-motion="lift"><span class="thumb"></span><div>저녁 마무리<span>내일로 넘기기</span></div></div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:10px">
+    <h2>효과를 직접 넣어 볼 요소</h2>
+    <div class="row"><p>장보기 목록 공유하기</p><button class="like" type="button" aria-label="좋아요">♥</button></div>
+    <div class="row"><span class="spin" aria-hidden="true"></span><p>동기화하는 중…</p></div>
+    <div class="form">
+      <label for="pw">비밀번호</label>
+      <input id="pw" type="password" value="123456" aria-describedby="pw-err">
+      <small id="pw-err">비밀번호가 틀렸어요</small>
+    </div>
+  </section>
+
+  <footer>Motion Kit 체험 화면 · 숫자는 예시입니다.</footer>
+</div>
+<script src="motion-kit.js" data-panel="open"></script>
+</body>
+</html>
