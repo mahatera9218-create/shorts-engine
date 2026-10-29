@@ -17,6 +17,9 @@
   var VERSION = '1.0.0';
   var SCRIPT = document.currentScript;
   var PANEL_MODE = (SCRIPT && SCRIPT.getAttribute('data-panel')) || 'auto';
+  // 북마크로 실행: 프로젝트에 파일이 없으니 패널을 바로 열고, 내보내기는 '라이브러리 없이'가 기본
+  var BOOKMARK = !!window.__MK_BM;
+  if (BOOKMARK) PANEL_MODE = 'open';
 
   /* ------------------------------------------------------------------ */
   /* 곡선                                                                */
@@ -445,7 +448,7 @@
   /* ------------------------------------------------------------------ */
   /* 조절 패널                                                            */
   /* ------------------------------------------------------------------ */
-  var host = null, root = null, panelOpen = false, picking = false, selected = null, exportMode = 'ai';
+  var host = null, root = null, panelOpen = false, picking = false, selected = null, exportMode = BOOKMARK ? 'plain' : 'ai';
   var STORE = 'motionkit:rules:' + location.pathname;
   function load() { try { return JSON.parse(localStorage.getItem(STORE) || '[]'); } catch (e) { return []; } }
   function save() { try { localStorage.setItem(STORE, JSON.stringify(rules)); } catch (e) { /* 저장 불가 환경 */ } }
@@ -672,7 +675,7 @@
     // 내보내기
     b.appendChild(h('h4', { text: '코드로 남기기' }));
     var tabs = h('div', { class: 'tabs' });
-    [['ai', 'AI에게 부탁'], ['plain', '라이브러리 없이'], ['code', '규칙 코드']].forEach(function (t) {
+    (BOOKMARK ? [['plain', 'AI에게 부탁'], ['ai', 'motion-kit 쓸 때']] : [['ai', 'AI에게 부탁'], ['plain', '라이브러리 없이'], ['code', '규칙 코드']]).forEach(function (t) {
       tabs.appendChild(h('button', { type: 'button', class: exportMode === t[0] ? 'on' : null, on: { click: function () { exportMode = t[0]; render(); } } }, [t[1]]));
     });
     b.appendChild(tabs);
