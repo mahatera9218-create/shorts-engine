@@ -1,0 +1,779 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>모션 그래픽 팩</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: 갤러리 벽. 카테고리마다 [설명 타일 1 + 모션 액자 5] = 6칸 → 6/3/2열 어디서나 빈칸 없는 바둑판 */
+:root{
+  --wall:#E3E6EA; --mat:#F8F9FA; --ink:#15171C; --ink2:#59606B; --line:#CBD0D7;
+  --on-hue:#121318;
+  --c-cam:#E8A43C; --c-tr:#EE6A50; --c-ty:#5B88F2; --c-tm:#25AD92; --c-ly:#9C7BEE;
+  /* 액자 속 화면(모니터)은 두 테마에서 같은 모습 */
+  --scr:#151927; --scr-ink:#F4F2EE; --vf:rgba(255,255,255,.5);
+  --sky-a:#283363; --sky-b:#E8896A; --sun:#FFD37E; --mtn-far:#6C70A8; --mtn:#454A7E; --gnd:#1D2136;
+  --hero:#FF6F5B; --tree:#2F6E5C; --A:#EF7158; --B:#2AAE9C;
+  --f-disp:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --spd:1;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --wall:#0F1115; --mat:#1A1D23; --ink:#ECEEF2; --ink2:#A2A9B4; --line:#2B3039; color-scheme:dark}}
+:root[data-theme="dark"]{--wall:#0F1115; --mat:#1A1D23; --ink:#ECEEF2; --ink2:#A2A9B4; --line:#2B3039; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--wall);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 48px}
+.page{max-width:1560px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+
+/* ---------- 머리말 ---------- */
+.top{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:20px 40px;align-items:end;border-bottom:1px solid var(--line);padding-bottom:20px}
+.eyebrow{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2);margin:0 0 6px}
+h1{font-size:clamp(30px,5vw,52px);line-height:1.08;margin:0;font-weight:700;letter-spacing:-.02em;text-wrap:balance}
+h1 em{font-style:normal;font-family:var(--f-disp);font-stretch:125%;font-weight:900;letter-spacing:-.01em}
+.lede{margin:10px 0 0;max-width:62ch;color:var(--ink2);font-size:15px}
+.side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.starter{margin:0;font-size:13px;color:var(--ink2)}
+.starter b{color:var(--ink)}
+.ctrl{display:flex;flex-wrap:wrap;gap:8px}
+.btn{font:600 13px/1 var(--f-body);color:var(--ink);background:var(--mat);border:1px solid var(--line);border-radius:999px;padding:10px 16px;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{border-color:var(--ink2)}
+.btn:focus-visible{outline:2px solid var(--c-ty);outline-offset:2px}
+.btn[aria-pressed="true"]{background:var(--ink);color:var(--wall);border-color:var(--ink)}
+.btn svg{width:12px;height:12px;fill:currentColor}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--ink2);margin:0;padding:0;list-style:none}
+.legend a{color:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.legend a:hover{color:var(--ink)}
+.dot{width:9px;height:9px;border-radius:2px;background:var(--hue);flex:none}
+.rm-note{font-size:12px;color:var(--ink2);margin:0}
+
+/* ---------- 바둑판 ---------- */
+.wall{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
+@media (max-width:1180px){.wall{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:640px){.wall{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.top{grid-template-columns:minmax(0,1fr)}}
+
+.tile{background:var(--mat);border:1px solid var(--line);border-radius:4px;padding:10px 10px 12px;display:flex;flex-direction:column;gap:8px;min-width:0;
+  box-shadow:0 1px 0 rgba(0,0,0,.04),0 6px 14px -10px rgba(0,0,0,.25)}
+[data-c="cam"]{--hue:var(--c-cam)} [data-c="tr"]{--hue:var(--c-tr)} [data-c="ty"]{--hue:var(--c-ty)} [data-c="tm"]{--hue:var(--c-tm)} [data-c="ly"]{--hue:var(--c-ly)}
+
+/* 카테고리 설명 타일 */
+.cat{container-type:inline-size;background:var(--hue);border-color:transparent;color:var(--on-hue);padding:16px 14px;gap:10px;scroll-margin-top:16px}
+.cat .code{font-family:var(--f-disp);font-stretch:125%;font-weight:900;font-size:min(30px,10cqi);line-height:1;letter-spacing:-.01em;margin:0;overflow-wrap:anywhere}
+.cat h2{font-size:17px;margin:0;font-weight:700}
+.cat p{margin:0;font-size:12.5px;line-height:1.5}
+.cat ul{margin:auto 0 0;padding:10px 0 0;list-style:none;border-top:1px solid rgba(18,19,24,.25);font-family:var(--f-mono);font-size:11px;display:flex;flex-wrap:wrap;gap:3px 10px}
+.cat .n{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.75}
+
+/* 모션 타일 = 액자 + 캡션 */
+.stage{position:relative;aspect-ratio:4/3;max-width:100%;overflow:hidden;background:var(--scr);border-radius:2px;
+  box-shadow:0 0 0 3px var(--mat),0 0 0 4px var(--line),inset 0 0 0 1px rgba(0,0,0,.5)}
+.stage::after{content:"";position:absolute;inset:7px;pointer-events:none;z-index:5;background:
+  linear-gradient(var(--vf),var(--vf)) left top/11px 1.5px no-repeat,linear-gradient(var(--vf),var(--vf)) left top/1.5px 11px no-repeat,
+  linear-gradient(var(--vf),var(--vf)) right top/11px 1.5px no-repeat,linear-gradient(var(--vf),var(--vf)) right top/1.5px 11px no-repeat,
+  linear-gradient(var(--vf),var(--vf)) left bottom/11px 1.5px no-repeat,linear-gradient(var(--vf),var(--vf)) left bottom/1.5px 11px no-repeat,
+  linear-gradient(var(--vf),var(--vf)) right bottom/11px 1.5px no-repeat,linear-gradient(var(--vf),var(--vf)) right bottom/1.5px 11px no-repeat}
+.scene{position:absolute;left:0;top:0;width:240px;height:180px;transform-origin:0 0;transform:scale(var(--k,1));overflow:hidden;color:var(--scr-ink);font-family:var(--f-body)}
+.scene *{position:absolute}
+
+.name{display:flex;align-items:baseline;flex-wrap:wrap;gap:2px 8px;margin:6px 0 0}
+.name h3{margin:0;font-family:var(--f-disp);font-stretch:112%;font-weight:800;font-size:17px;line-height:1.15;letter-spacing:-.005em;display:flex;align-items:center;gap:7px}
+.name h3::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--hue);flex:none}
+.name .kr{font-size:12px;color:var(--ink2)}
+.add{font:600 10px/1 var(--f-body);color:var(--ink);border:1px solid var(--ink2);border-radius:3px;padding:3px 5px}
+.desc{margin:0;font-size:12.5px;line-height:1.55}
+.use{margin:0;font-size:12px;color:var(--ink2)}
+.use b{color:var(--ink);font-weight:600;margin-right:4px}
+.spec{margin:auto 0 0;padding-top:8px;border-top:1px dashed var(--line);font-family:var(--f-mono);font-size:10.5px;color:var(--ink2);overflow-wrap:anywhere}
+
+/* ---------- 공통 장면: 언덕 풍경 ---------- */
+.sky{inset:0;background:linear-gradient(var(--sky-a),var(--sky-b) 78%)}
+.sun{left:160px;top:34px;width:34px;height:34px;border-radius:50%;background:var(--sun);box-shadow:0 0 24px rgba(255,211,126,.55)}
+.mtn{bottom:50px;background:var(--mtn);clip-path:polygon(50% 0,100% 100%,0 100%)}
+.mtn.far{background:var(--mtn-far)}
+.ground{left:0;right:0;bottom:0;height:52px;background:var(--gnd)}
+.tree{bottom:50px;width:22px;height:30px;border-radius:50% 50% 45% 45%;background:var(--tree)}
+.tree::after{content:"";position:absolute;left:9px;bottom:-8px;width:4px;height:9px;background:#3A2E2A}
+.hero{left:104px;bottom:44px;width:32px;height:32px;border-radius:9px;background:var(--hero);box-shadow:0 4px 0 rgba(0,0,0,.25)}
+.hero i{top:10px;width:5px;height:8px;border-radius:3px;background:#fff}
+.hero i:first-child{left:8px}.hero i+i{left:19px}
+.land,.lay,.world{left:0;top:0;width:240px;height:180px}
+
+/* Pan */
+.fx-pan .world{width:480px;animation:pan calc(4.5s*var(--spd)) cubic-bezier(.65,0,.35,1) infinite alternate}
+@keyframes pan{0%,8%{transform:translateX(0)}92%,100%{transform:translateX(-240px)}}
+/* Dolly: 가까운 층과 먼 층이 다르게 커진다 */
+.fx-dolly .bgL{transform-origin:50% 60%;animation:dollyB calc(4s*var(--spd)) cubic-bezier(.65,0,.35,1) infinite alternate}
+.fx-dolly .fgL{transform-origin:50% 67%;animation:dollyF calc(4s*var(--spd)) cubic-bezier(.65,0,.35,1) infinite alternate}
+@keyframes dollyB{0%,10%{transform:scale(1)}90%,100%{transform:scale(1.1)}}
+@keyframes dollyF{0%,10%{transform:scale(1)}90%,100%{transform:scale(1.9)}}
+/* Zoom: 전체가 같은 비율 */
+.fx-zoom .land{transform-origin:50% 67%;animation:zoom calc(4s*var(--spd)) cubic-bezier(.65,0,.35,1) infinite alternate}
+@keyframes zoom{0%,10%{transform:scale(1)}90%,100%{transform:scale(1.8)}}
+/* Orbit */
+.fx-orbit{background:radial-gradient(circle at 50% 60%,#2A3152,var(--scr) 70%)}
+.o3d{inset:0;perspective:420px;perspective-origin:50% 40%}
+.rig{left:95px;top:62px;width:50px;height:50px;transform-style:preserve-3d;animation:orbit calc(6s*var(--spd)) linear infinite}
+@keyframes orbit{from{transform:rotateX(-22deg) rotateY(0)}to{transform:rotateX(-22deg) rotateY(360deg)}}
+.rig .f{inset:0;border-radius:4px}
+.f.fr{background:var(--hero);transform:translateZ(25px)}
+.f.fr i{top:15px;width:6px;height:10px;border-radius:3px;background:#fff}
+.f.fr i:first-child{left:13px}.f.fr i+i{left:28px}
+.f.bk{background:#B94A3B;transform:rotateY(180deg) translateZ(25px)}
+.f.rt{background:#DB5A47;transform:rotateY(90deg) translateZ(25px)}
+.f.lf{background:#DB5A47;transform:rotateY(-90deg) translateZ(25px)}
+.f.tp{background:#FF9C88;transform:rotateX(90deg) translateZ(25px)}
+.floor{left:-50px;top:-50px;width:150px;height:150px;border-radius:50%;border:2px dashed rgba(255,255,255,.4);
+  background:radial-gradient(circle,rgba(255,255,255,.14),rgba(255,255,255,.03) 60%,transparent 61%);transform:rotateX(90deg) translateZ(-25px)}
+.floor::before{content:"";position:absolute;left:68px;top:-6px;width:10px;height:10px;border-radius:50%;background:var(--sun)}
+/* Snap zoom */
+.fx-snap .land{transform-origin:50% 67%;animation:snap calc(3s*var(--spd)) infinite}
+@keyframes snap{0%,34%{transform:scale(1);filter:blur(0);animation-timing-function:cubic-bezier(.8,0,.2,1)}
+  38%{filter:blur(1.5px)}41%{transform:scale(2.4);filter:blur(0)}80%{transform:scale(2.4);animation-timing-function:cubic-bezier(.6,0,.3,1)}92%,100%{transform:scale(1)}}
+.flash{inset:0;background:#fff;opacity:0;animation:flash calc(3s*var(--spd)) infinite;z-index:3}
+@keyframes flash{0%,38%{opacity:0}41%{opacity:.35}50%,100%{opacity:0}}
+
+/* ---------- 전환: 장면 A → B ---------- */
+.pane{inset:0;display:grid;place-items:center}
+.pane b{position:static;font-family:var(--f-disp);font-stretch:125%;font-weight:900;font-size:72px;line-height:1;color:rgba(255,255,255,.92)}
+.pane span{left:16px;bottom:14px;font-family:var(--f-mono);font-size:9px;letter-spacing:.1em;color:rgba(255,255,255,.8)}
+.pane.A{background:linear-gradient(135deg,var(--A),#C24E3E)}
+.pane.B{background:linear-gradient(135deg,var(--B),#1C7C77)}
+.fx-dissolve .B{animation:dis calc(3.6s*var(--spd)) linear infinite}
+@keyframes dis{0%,25%{opacity:0}60%,92%{opacity:1}100%{opacity:0}}
+.fx-wipe .B{animation:wipe calc(3.6s*var(--spd)) infinite}
+@keyframes wipe{0%,25%{clip-path:inset(0 100% 0 0);animation-timing-function:cubic-bezier(.65,0,.35,1)}55%,100%{clip-path:inset(0 0 0 0)}}
+.edge{left:-3px;top:0;bottom:0;width:3px;background:#fff;box-shadow:0 0 10px 2px rgba(255,255,255,.7);animation:edge calc(3.6s*var(--spd)) infinite;z-index:2}
+@keyframes edge{0%,24%{transform:translateX(0);opacity:0}25%{transform:translateX(0);opacity:1;animation-timing-function:cubic-bezier(.65,0,.35,1)}55%{transform:translateX(243px);opacity:1}56%,100%{opacity:0;transform:translateX(243px)}}
+.fx-iris .B{animation:iris calc(3.6s*var(--spd)) infinite}
+@keyframes iris{0%,25%{clip-path:circle(0 at 120px 90px);animation-timing-function:cubic-bezier(.5,0,.2,1)}58%,100%{clip-path:circle(160px at 120px 90px)}}
+.fx-glitch .A{animation:glA calc(3s*var(--spd)) steps(1,end) infinite}
+@keyframes glA{0%{transform:none}40%{transform:translate(-7px,1px);filter:hue-rotate(40deg)}42%{transform:translate(6px,-1px);filter:none}44%{transform:translate(-3px,0)}46%,100%{transform:none}}
+.fx-glitch .B{animation:glB calc(3s*var(--spd)) steps(1,end) infinite}
+@keyframes glB{0%{opacity:0}45%{opacity:1}47%{opacity:0}49%{opacity:1;transform:translateX(5px)}51%{opacity:0}52%{opacity:1;transform:none}96%,100%{opacity:0}}
+.fx-glitch .B b{animation:rgb calc(3s*var(--spd)) steps(1,end) infinite}
+@keyframes rgb{0%{text-shadow:none}45%{text-shadow:-5px 0 #FF2D55,5px 0 #00E5FF}58%,100%{text-shadow:none}}
+.sl{left:0;right:0;height:9px;opacity:0;z-index:2;animation:sl calc(3s*var(--spd)) steps(1,end) infinite}
+.sl.s1{top:42px;background:rgba(0,229,255,.75)}
+.sl.s2{top:96px;height:14px;background:rgba(255,45,85,.7);animation-delay:calc(.05s*var(--spd))}
+.sl.s3{top:134px;height:6px;background:rgba(255,255,255,.7);animation-delay:calc(.1s*var(--spd))}
+@keyframes sl{0%{opacity:0}40%{opacity:1;transform:translateX(-16px)}43%{transform:translateX(12px)}46%{opacity:0}49%{opacity:1;transform:translateX(-6px)}52%,100%{opacity:0;transform:none}}
+/* Match cut */
+.mA{inset:0;background:linear-gradient(var(--sky-a),var(--sky-b) 80%)}
+.mA .ball{background:var(--sun);box-shadow:0 0 28px rgba(255,211,126,.6)}
+.mA .hz{left:0;right:0;bottom:0;height:60px;background:var(--mtn);clip-path:polygon(0 40%,20% 10%,45% 45%,70% 5%,100% 35%,100% 100%,0 100%)}
+.mB{inset:0;background:linear-gradient(#3A3550,#24213A);animation:cut calc(3.2s*var(--spd)) steps(1,end) infinite}
+.mB .table{left:0;right:0;bottom:0;height:60px;background:#7A5137;box-shadow:inset 0 3px 0 #96664A}
+.mB .ball{background:radial-gradient(circle at 35% 35%,#FFB35A,#F07D1E 65%,#C95F10)}
+.mB .leaf{left:122px;top:36px;width:14px;height:8px;border-radius:0 80% 0 80%;background:#5BAE5B}
+.ball{left:92px;top:42px;width:56px;height:56px;border-radius:50%}
+@keyframes cut{0%{opacity:0}50%{opacity:1}100%{opacity:1}}
+.ring{left:86px;top:36px;width:68px;height:68px;border-radius:50%;border:1.5px dashed rgba(255,255,255,.8);z-index:2}
+.mtag{left:16px;bottom:14px;font-family:var(--f-mono);font-size:9px;letter-spacing:.1em;color:#fff}
+
+/* ---------- 텍스트 ---------- */
+.fx-type,.fx-stag,.fx-count,.fx-morph,.fx-mask{background:radial-gradient(circle at 30% 20%,#262C45,var(--scr) 75%)}
+.sbar{left:20px;top:70px;width:200px;height:40px;border-radius:20px;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.sbar .mg{left:15px;top:12px;width:13px;height:13px;border-radius:50%;border:2px solid #8A90A0}
+.sbar .mg::after{content:"";position:absolute;left:10px;top:11px;width:6px;height:2px;background:#8A90A0;transform:rotate(45deg)}
+.sbar .txt{left:38px;top:0;height:40px;display:flex;align-items:center;color:#1B1E27;font-size:14px;font-weight:500;white-space:nowrap}
+.txt>*{position:static}
+.caret{display:inline-block;width:2px;height:17px;background:#2E6BF0;margin-left:2px;animation:blink calc(.9s*var(--spd)) steps(1,end) infinite}
+@keyframes blink{0%{opacity:1}50%{opacity:0}}
+.hint{left:0;right:0;top:124px;text-align:center;font-family:var(--f-mono);font-size:9px;color:rgba(255,255,255,.5)}
+
+.stc{left:38px;top:26px;width:164px;height:128px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1)}
+.row{left:14px;height:16px;display:flex;align-items:center;gap:8px;opacity:0;animation:stag calc(3.4s*var(--spd)) cubic-bezier(.34,1.56,.64,1) infinite;animation-delay:calc(var(--i)*.14s*var(--spd));animation-fill-mode:both}
+.row>*{position:static}
+.row i{width:14px;height:14px;border-radius:50%;background:var(--hue,#5B88F2);flex:none}
+.row s{height:7px;border-radius:4px;background:rgba(255,255,255,.75)}
+@keyframes stag{0%{opacity:0;transform:translateX(-22px)}14%{opacity:1;transform:none}78%{opacity:1;transform:none}88%,100%{opacity:0;transform:translateX(14px)}}
+
+.cnt{left:0;right:0;top:44px;text-align:center}
+.cnt small{position:static;display:block;font-size:11px;color:rgba(255,255,255,.6);letter-spacing:.06em}
+.cnt strong{position:static;display:block;font-family:var(--f-disp);font-weight:800;font-stretch:110%;font-size:34px;line-height:1.2;font-variant-numeric:tabular-nums;color:#fff}
+.cbar{left:40px;top:116px;width:160px;height:6px;border-radius:3px;background:rgba(255,255,255,.12);overflow:hidden}
+.cbar i{left:0;top:0;bottom:0;width:0;background:var(--c-ty);border-radius:3px}
+
+.wm{left:0;right:0;top:46px;text-align:center}
+.wm>span{position:static;display:block;font-size:15px;color:rgba(255,255,255,.65)}
+.slot{left:0;right:0;top:74px;height:40px}
+.slot b{left:0;right:0;text-align:center;font-size:28px;font-weight:700;color:#fff;opacity:0;animation:wm calc(4.5s*var(--spd)) infinite;animation-delay:calc(var(--i)*1.5s*var(--spd))}
+.slot b:nth-child(2){color:#9FC0FF}.slot b:nth-child(3){color:#FFC9A0}
+@keyframes wm{0%{opacity:0;filter:blur(8px);transform:scale(.82);letter-spacing:.2em}9%{opacity:1;filter:blur(0);transform:none;letter-spacing:0}27%{opacity:1;filter:blur(0);transform:none;letter-spacing:0}36%,100%{opacity:0;filter:blur(8px);transform:scale(1.12);letter-spacing:-.05em}}
+
+.dim{inset:0;background:rgba(10,12,22,.25);z-index:1}
+.l3{left:14px;bottom:20px;z-index:2;height:40px;width:170px}
+.l3 .tag{left:0;top:0;width:5px;height:40px;background:var(--c-ty);transform-origin:50% 100%;animation:l3t calc(5s*var(--spd)) cubic-bezier(.16,1,.3,1) infinite}
+.l3 .box{left:5px;top:0;height:40px;width:150px;background:rgba(12,14,24,.88);overflow:hidden;animation:l3b calc(5s*var(--spd)) cubic-bezier(.16,1,.3,1) infinite}
+.l3 .nm{left:10px;top:5px;font-size:14px;font-weight:700;color:#fff;animation:l3n calc(5s*var(--spd)) cubic-bezier(.16,1,.3,1) infinite}
+.l3 .jb{left:10px;top:23px;font-size:9.5px;color:#A9C2FF;animation:l3s calc(5s*var(--spd)) cubic-bezier(.16,1,.3,1) infinite}
+@keyframes l3t{0%,6%{transform:scaleY(0)}14%,82%{transform:scaleY(1)}92%,100%{transform:scaleY(0)}}
+@keyframes l3b{0%,12%{clip-path:inset(0 100% 0 0)}24%,80%{clip-path:inset(0 0 0 0)}88%,100%{clip-path:inset(0 100% 0 0)}}
+@keyframes l3n{0%,18%{transform:translateY(24px);opacity:0}28%,100%{transform:none;opacity:1}}
+@keyframes l3s{0%,22%{transform:translateY(18px);opacity:0}32%,100%{transform:none;opacity:1}}
+
+/* ---------- 타이밍: 같은 거리, 다른 곡선 ---------- */
+.fx-tm{background:linear-gradient(#1B2033,var(--scr))}
+.gbox{left:20px;top:16px;width:80px;height:62px;border-left:1px solid rgba(255,255,255,.35);border-bottom:1px solid rgba(255,255,255,.35)}
+.gbox svg{left:0;top:0;width:80px;height:62px;overflow:visible}
+.gx{left:0;bottom:0;width:0;height:0;animation:mv calc(2.6s*var(--spd)) linear infinite;--dx:80px}
+.gy{left:0;top:0;width:0;height:0;animation:mvY calc(2.6s*var(--spd)) infinite;animation-timing-function:var(--ez)}
+.gy::before{content:"";position:absolute;left:-4px;top:-4px;width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.2)}
+@keyframes mvY{0%,12%{transform:translateY(0)}72%,100%{transform:translateY(-62px)}}
+.glab{font-family:var(--f-mono);font-size:8px;color:rgba(255,255,255,.5)}
+.gl-t{left:20px;top:82px}.gl-p{left:4px;top:14px;writing-mode:vertical-rl;transform:rotate(180deg)}
+.ezname{left:114px;top:22px;width:112px;font-family:var(--f-mono);font-size:10px;line-height:1.5;color:#fff}
+.ezname em{font-style:normal;display:block;color:rgba(255,255,255,.55);font-size:9px}
+.trk{left:20px;width:200px;height:1px;background:rgba(255,255,255,.25)}
+.trk.t1{top:118px}.trk.t2{top:152px}
+.trk .ball2{left:0;top:-7px;width:14px;height:14px;border-radius:50%;animation:mv calc(2.6s*var(--spd)) infinite;--dx:186px}
+.t1 .ball2{background:rgba(255,255,255,.4);animation-timing-function:linear}
+.t2 .ball2{background:var(--c-tm);animation-timing-function:var(--ez);box-shadow:0 0 12px rgba(37,173,146,.6)}
+.trk span{left:0;top:-19px;font-family:var(--f-mono);font-size:8px;color:rgba(255,255,255,.55)}
+.trk .goal{left:199px;top:-12px;width:1px;height:24px;background:rgba(255,255,255,.6)}
+@keyframes mv{0%,12%{transform:translateX(0)}72%,100%{transform:translateX(var(--dx))}}
+
+/* Squash & stretch */
+.fx-sq{background:linear-gradient(#1B2033,var(--scr))}
+.fl{left:16px;right:16px;top:150px;height:1px;background:rgba(255,255,255,.35)}
+.bw{top:30px;width:26px;height:26px;animation:drop calc(1.5s*var(--spd)) infinite}
+.bw.b1{left:58px}.bw.b2{left:156px}
+.bw i{inset:0;border-radius:50%;transform-origin:50% 100%}
+.b1 i{background:rgba(255,255,255,.4)}
+.b2 i{background:var(--c-tm);animation:squash calc(1.5s*var(--spd)) infinite}
+@keyframes drop{0%{transform:translateY(0);animation-timing-function:cubic-bezier(.45,0,.9,.55)}44%{transform:translateY(94px);animation-timing-function:linear}52%{transform:translateY(94px);animation-timing-function:cubic-bezier(.1,.45,.55,1)}100%{transform:translateY(0)}}
+@keyframes squash{0%{transform:scale(1,1)}36%{transform:scale(.86,1.2)}44%{transform:scale(1.45,.6)}52%{transform:scale(1.4,.62)}60%{transform:scale(.86,1.18)}80%,100%{transform:scale(1,1)}}
+.shd{top:150px;width:34px;height:6px;margin-top:-3px;border-radius:50%;background:rgba(0,0,0,.55);animation:shd calc(1.5s*var(--spd)) infinite}
+.shd.h1{left:54px}.shd.h2{left:152px}
+@keyframes shd{0%,100%{transform:scale(.5);opacity:.4}44%,52%{transform:scale(1.15);opacity:1}}
+.sqlab{top:160px;font-family:var(--f-mono);font-size:8.5px;color:rgba(255,255,255,.6)}
+
+/* ---------- 레이어·형태 ---------- */
+.px{left:0;width:480px;animation:pxm linear infinite}
+@keyframes pxm{from{transform:translateX(0)}to{transform:translateX(-240px)}}
+.px.p1{top:40px;height:92px;background:var(--mtn-far);clip-path:polygon(0 60%,12.5% 18%,25% 55%,37.5% 30%,50% 60%,62.5% 18%,75% 55%,87.5% 30%,100% 60%,100% 100%,0 100%);animation-duration:calc(16s*var(--spd))}
+.px.p2{top:84px;height:64px;background:var(--mtn);clip-path:polygon(0 70%,6% 45%,12.5% 34%,19% 46%,25% 62%,31% 48%,37.5% 38%,44% 52%,50% 70%,56% 45%,62.5% 34%,69% 46%,75% 62%,81% 48%,87.5% 38%,94% 52%,100% 70%,100% 100%,0 100%);animation-duration:calc(7s*var(--spd))}
+.px.p3{bottom:0;height:42px;background:var(--gnd);animation-duration:calc(2.4s*var(--spd))}
+.px.p3::before{content:"";position:absolute;left:0;right:0;top:-16px;height:22px;background:repeating-linear-gradient(90deg,#2F3556 0 5px,transparent 5px 40px)}
+.px.p3::after{content:"";position:absolute;left:0;right:0;top:-12px;height:3px;background:#2F3556}
+.fx-par .hero{bottom:34px;z-index:2;animation:bob calc(.4s*var(--spd)) ease-in-out infinite alternate}
+@keyframes bob{to{transform:translateY(-3px)}}
+
+.fx-loop{background:radial-gradient(circle at 50% 50%,#2A2547,var(--scr) 72%)}
+.lc{left:120px;top:90px;width:0;height:0}
+.ld{left:0;top:0;width:0;height:0;transform:rotate(calc(var(--i)*30deg)) translateY(-48px)}
+.ld i{left:-6px;top:-6px;width:12px;height:12px;border-radius:50%;background:var(--c-ly);animation:pulse calc(2s*var(--spd)) ease-in-out infinite;animation-delay:calc((var(--i) - 12)*(2s/12)*var(--spd))}
+@keyframes pulse{0%,100%{transform:scale(.35);opacity:.35}25%{transform:scale(1.1);opacity:1}55%{transform:scale(.35);opacity:.35}}
+.inf{left:0;right:0;top:76px;text-align:center;font-family:var(--f-disp);font-weight:800;font-size:24px;line-height:28px;color:#fff}
+
+.fx-path{background:linear-gradient(#1F2440,var(--scr))}
+.fx-path svg{left:0;top:0;width:240px;height:180px}
+.plane{left:0;top:0;width:22px;height:16px;background:#fff;clip-path:polygon(100% 50%,0 0,22% 50%,0 100%);
+  offset-path:path("M24,146 C70,6 150,176 216,40");offset-rotate:auto;animation:path calc(3.2s*var(--spd)) cubic-bezier(.65,0,.35,1) infinite}
+@keyframes path{0%,8%{offset-distance:0%}88%,100%{offset-distance:100%}}
+
+.fx-shape{background:radial-gradient(circle at 50% 45%,#2A2547,var(--scr) 72%)}
+.shp{left:88px;top:50px;width:64px;height:64px;animation:morph calc(4.8s*var(--spd)) cubic-bezier(.65,0,.35,1) infinite}
+@keyframes morph{0%,8%{border-radius:8px;transform:rotate(0);background:var(--A)}
+  33%,41%{border-radius:50%;transform:rotate(90deg);background:var(--B)}
+  66%,74%{border-radius:62% 38% 30% 70%/58% 32% 68% 42%;transform:rotate(180deg) scale(1.1,.9);background:var(--sun)}
+  100%{border-radius:8px;transform:rotate(360deg);background:var(--A)}}
+.shplab{left:0;right:0;top:140px;text-align:center;font-family:var(--f-mono);font-size:9px;color:rgba(255,255,255,.5)}
+
+.mk{left:34px;width:172px;overflow:hidden;outline:1px dashed rgba(255,255,255,.35);outline-offset:0}
+.mk.k1{top:46px;height:30px}.mk.k2{top:80px;height:40px}
+.mk b{left:0;top:0;font-weight:700;color:#fff;white-space:nowrap;animation:mr calc(3.6s*var(--spd)) cubic-bezier(.16,1,.3,1) infinite}
+.k1 b{font-size:20px;line-height:30px;color:rgba(255,255,255,.75)}
+.k2 b{font-size:30px;line-height:40px;animation-delay:calc(.15s*var(--spd));animation-fill-mode:both}
+@keyframes mr{0%,8%{transform:translateY(110%)}30%,74%{transform:none}90%,100%{transform:translateY(-110%)}}
+.mklab{left:34px;top:128px;font-family:var(--f-mono);font-size:8.5px;color:rgba(255,255,255,.5)}
+
+/* 프롬프트 시트 */
+.tile[data-prompt]{cursor:pointer;transition:transform .15s,border-color .15s}
+.tile[data-prompt]:hover{border-color:var(--ink2);transform:translateY(-2px)}
+.tile[data-prompt]:focus-visible{outline:2px solid var(--hue);outline-offset:2px}
+.ptag{position:absolute;right:10px;top:10px;z-index:6;font:600 9.5px/1 var(--f-mono);letter-spacing:.04em;color:#fff;background:rgba(10,12,22,.7);border:1px solid rgba(255,255,255,.3);border-radius:3px;padding:4px 6px;pointer-events:none}
+.scrim{position:fixed;inset:0;background:rgba(8,10,16,.45);z-index:40}
+.sheet{position:fixed;left:50%;bottom:0;transform:translateX(-50%);z-index:41;width:min(640px,100%);background:var(--mat);color:var(--ink);border:1px solid var(--line);border-bottom:0;border-radius:14px 14px 0 0;box-shadow:0 -12px 40px rgba(0,0,0,.3);
+  padding:18px max(18px,env(safe-area-inset-right,0px)) calc(18px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:12px}
+.sheet-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.sheet h4{margin:0;font-family:var(--f-disp);font-stretch:112%;font-weight:800;font-size:19px;display:flex;align-items:center;gap:8px}
+.sheet h4::before{content:"";width:9px;height:9px;border-radius:2px;background:var(--hue)}
+.sheet .x{font:500 13px/1 var(--f-body);background:none;border:1px solid var(--line);color:var(--ink2);border-radius:999px;padding:8px 12px;cursor:pointer}
+.ptxt{margin:0;font-size:15px;line-height:1.7;background:var(--wall);border:1px solid var(--line);border-radius:8px;padding:14px;user-select:all;-webkit-user-select:all;overflow-wrap:anywhere}
+.ptxt mark{background:none;color:var(--ink);font-weight:700;box-shadow:inset 0 -.45em 0 color-mix(in srgb,var(--hue) 45%,transparent)}
+.sheet-bot{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.sheet-bot small{color:var(--ink2);font-size:12px}
+.copy{background:var(--ink);color:var(--wall);border-color:var(--ink)}
+
+/* 일시정지 */
+.paused .stage *,.paused .stage *::before,.paused .stage *::after{animation-play-state:paused!important}
+
+.foot{border-top:1px solid var(--line);padding-top:16px;display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between;font-size:12px;color:var(--ink2)}
+.foot p{margin:0;max-width:70ch}
+</style>
+<style>[hidden]{display:none!important}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}</style>
+</head>
+<body>
+
+<div class="page">
+  <header class="top">
+    <div>
+      <p class="eyebrow">Motion Graphics Pack · 25 moves · 5 groups</p>
+      <h1>모션 그래픽 팩 <em>MOTION</em></h1>
+      <p class="lede">영상 편집을 처음 배우는 사람을 위한 한 장짜리 견본집입니다. 자주 쓰는 모션 25가지를 비슷한 것끼리 다섯 묶음으로 나눴고, 액자마다 그 효과가 실제로 어떻게 움직이는지 반복해서 보여 줍니다. 아래 수치는 쇼츠(9:16) 편집에서 무난하게 쓰이는 시작값입니다.</p>
+    </div>
+    <div class="side">
+      <p class="starter"><b>처음이라면 이 세 개부터:</b> Ease Out(모든 등장의 기본) · Stagger(목록·자막) · Lower 3rd(인물 소개). 이것만 써도 화면이 훨씬 정돈돼 보입니다.</p>
+      <p class="starter"><b>액자를 누르면</b> 바로 쓸 수 있는 짧은 프롬프트가 나옵니다. <b>[ ]</b> 안만 원하는 내용으로 바꿔서 쓰세요.</p>
+      <div class="ctrl">
+        <button class="btn" id="btn-play" type="button" aria-pressed="false"><svg viewBox="0 0 12 12" aria-hidden="true"><rect x="1" y="1" width="3.5" height="10"/><rect x="7.5" y="1" width="3.5" height="10"/></svg><span>일시정지</span></button>
+        <button class="btn" id="btn-slow" type="button" aria-pressed="false">0.5배속으로 보기</button>
+      </div>
+      <p class="rm-note" id="rm-note" hidden>기기에서 '동작 줄이기'가 켜져 있어 멈춘 상태로 시작했습니다. 재생을 누르면 움직입니다.</p>
+      <ul class="legend">
+        <li><a href="#g-cam" data-c="cam"><span class="dot"></span>카메라 무브</a></li>
+        <li><a href="#g-tr" data-c="tr"><span class="dot"></span>전환</a></li>
+        <li><a href="#g-ty" data-c="ty"><span class="dot"></span>텍스트</a></li>
+        <li><a href="#g-tm" data-c="tm"><span class="dot"></span>타이밍·물리</a></li>
+        <li><a href="#g-ly" data-c="ly"><span class="dot"></span>레이어·형태</a></li>
+        <li><span class="add">추천</span>&nbsp;요청 목록에 더한 5가지</li>
+      </ul>
+    </div>
+  </header>
+
+  <main class="wall">
+
+    <!-- ===== 카메라 무브 ===== -->
+    <section class="tile cat" id="g-cam" data-c="cam">
+      <span class="n">Group A · 5</span>
+      <p class="code">CAMERA</p>
+      <h2>카메라 무브</h2>
+      <p>화면 속 카메라가 움직이는 것처럼 보이게 합니다. 시선을 옮기고, 공간감을 만들고, 강조할 곳을 정합니다.</p>
+      <ul><li>Pan</li><li>Dolly</li><li>Zoom</li><li>Orbit</li><li>Snap Zoom</li></ul>
+    </section>
+
+    <article class="tile" data-c="cam">
+      <div class="stage"><div class="scene fx-pan"><div class="world">
+        <div class="sky"></div><div class="sun"></div>
+        <div class="mtn far" style="left:-10px;width:170px;height:90px"></div>
+        <div class="mtn" style="left:110px;width:150px;height:70px"></div>
+        <div class="mtn far" style="left:250px;width:150px;height:100px"></div>
+        <div class="mtn" style="left:350px;width:160px;height:64px"></div>
+        <div class="ground"></div>
+        <div class="tree" style="left:40px"></div><div class="tree" style="left:290px"></div><div class="tree" style="left:330px;height:40px"></div><div class="tree" style="left:430px"></div>
+        <div class="hero"><i></i><i></i></div>
+      </div></div></div>
+      <div class="name"><h3>Pan</h3><span class="kr">팬</span></div>
+      <p class="desc">카메라는 제자리에 두고 고개만 돌리듯 화면이 옆으로 흐릅니다.</p>
+      <p class="use"><b>쓰는 곳</b>넓은 풍경, 긴 표나 캡처 이미지를 훑을 때</p>
+      <p class="spec">3–5s · ease-in-out</p>
+    </article>
+
+    <article class="tile" data-c="cam">
+      <div class="stage"><div class="scene fx-dolly">
+        <div class="lay bgL"><div class="sky"></div><div class="sun"></div><div class="mtn far" style="left:-10px;width:170px;height:90px"></div><div class="mtn" style="left:110px;width:150px;height:70px"></div></div>
+        <div class="lay fgL"><div class="ground"></div><div class="tree" style="left:40px"></div><div class="tree" style="left:186px"></div><div class="hero"><i></i><i></i></div></div>
+      </div></div>
+      <div class="name"><h3>Dolly</h3><span class="kr">돌리</span></div>
+      <p class="desc">카메라가 실제로 앞으로 다가갑니다. 가까운 것은 크게, 먼 산은 조금만 커져서 깊이가 생깁니다.</p>
+      <p class="use"><b>쓰는 곳</b>인물·제품에 몰입시킬 때</p>
+      <p class="spec">앞 층 ×1.9 · 뒤 층 ×1.1</p>
+    </article>
+
+    <article class="tile" data-c="cam">
+      <div class="stage"><div class="scene fx-zoom"><div class="land" data-land></div></div></div>
+      <div class="name"><h3>Zoom</h3><span class="kr">줌</span></div>
+      <p class="desc">렌즈만 당깁니다. 모든 것이 같은 비율로 커져서 돌리보다 평평하게 보입니다. 옆 액자와 비교해 보세요.</p>
+      <p class="use"><b>쓰는 곳</b>특정 부분 강조, 스크린샷 확대</p>
+      <p class="spec">전체 ×1.8 · ease-in-out</p>
+    </article>
+
+    <article class="tile" data-c="cam">
+      <div class="stage"><div class="scene fx-orbit"><div class="o3d"><div class="rig">
+        <div class="floor"></div>
+        <b class="f fr"><i></i><i></i></b><b class="f bk"></b><b class="f rt"></b><b class="f lf"></b><b class="f tp"></b>
+      </div></div></div></div>
+      <div class="name"><h3>Orbit</h3><span class="kr">오빗</span></div>
+      <p class="desc">피사체를 가운데 두고 카메라가 그 주위를 빙 돕니다. 앞·옆·뒤가 차례로 보입니다.</p>
+      <p class="use"><b>쓰는 곳</b>제품 360° 소개, 3D 로고</p>
+      <p class="spec">1바퀴 6s · linear</p>
+    </article>
+
+    <article class="tile" data-c="cam">
+      <div class="stage"><div class="scene fx-snap"><div class="land" data-land></div><div class="flash"></div></div></div>
+      <div class="name"><h3>Snap Zoom</h3><span class="kr">스냅 줌</span></div>
+      <p class="desc">눈 깜짝할 사이에 확 당긴 뒤 잠깐 멈춥니다. "여기 보세요"라는 신호입니다.</p>
+      <p class="use"><b>쓰는 곳</b>반전, 리액션, 핵심 한 컷</p>
+      <p class="spec">0.15–0.25s · 빠른 ease + 살짝 블러</p>
+    </article>
+
+    <!-- ===== 전환 ===== -->
+    <section class="tile cat" id="g-tr" data-c="tr">
+      <span class="n">Group B · 5</span>
+      <p class="code">TRANSITION</p>
+      <h2>전환</h2>
+      <p>장면 A에서 장면 B로 넘어가는 방법입니다. 전환의 성격이 곧 영상의 분위기가 됩니다.</p>
+      <ul><li>Dissolve</li><li>Wipe</li><li>Iris</li><li>Glitch</li><li>Match Cut</li></ul>
+    </section>
+
+    <article class="tile" data-c="tr">
+      <div class="stage"><div class="scene fx-dissolve"><div class="pane A"><b>A</b><span>SCENE A</span></div><div class="pane B"><b>B</b><span>SCENE B</span></div></div></div>
+      <div class="name"><h3>Dissolve</h3><span class="kr">디졸브</span></div>
+      <p class="desc">A가 서서히 사라지면서 B가 겹쳐 나타납니다. 가장 부드러운 전환입니다.</p>
+      <p class="use"><b>쓰는 곳</b>시간 흐름, 차분한 분위기</p>
+      <p class="spec">0.5–1s · 투명도(opacity)</p>
+    </article>
+
+    <article class="tile" data-c="tr">
+      <div class="stage"><div class="scene fx-wipe"><div class="pane A"><b>A</b><span>SCENE A</span></div><div class="pane B"><b>B</b><span>SCENE B</span></div><div class="edge"></div></div></div>
+      <div class="name"><h3>Wipe</h3><span class="kr">와이프</span></div>
+      <p class="desc">선 하나가 화면을 쓸고 지나가면서 B로 바뀝니다. 방향을 바꾸면 느낌도 바뀝니다.</p>
+      <p class="use"><b>쓰는 곳</b>전후 비교, 챕터 구분</p>
+      <p class="spec">0.4–0.8s · ease-in-out</p>
+    </article>
+
+    <article class="tile" data-c="tr">
+      <div class="stage"><div class="scene fx-iris"><div class="pane A"><b>A</b><span>SCENE A</span></div><div class="pane B"><b>B</b><span>SCENE B</span></div></div></div>
+      <div class="name"><h3>Iris</h3><span class="kr">아이리스</span></div>
+      <p class="desc">원이 열리며 다음 장면을 보여 줍니다. 반대로 원이 닫히면 '아이리스 아웃'입니다.</p>
+      <p class="use"><b>쓰는 곳</b>인트로·엔딩, 한 곳에 시선 모으기</p>
+      <p class="spec">0.6s · 원형 마스크</p>
+    </article>
+
+    <article class="tile" data-c="tr">
+      <div class="stage"><div class="scene fx-glitch"><div class="pane A"><b>A</b><span>SCENE A</span></div><div class="pane B"><b>B</b><span>SCENE B</span></div><div class="sl s1"></div><div class="sl s2"></div><div class="sl s3"></div></div></div>
+      <div class="name"><h3>Glitch</h3><span class="kr">글리치</span></div>
+      <p class="desc">화면이 고장 난 듯 튀고 색이 빨강·파랑으로 갈라지며 넘어갑니다. 자주 쓰면 금방 질립니다.</p>
+      <p class="use"><b>쓰는 곳</b>테크·게임 주제, 충격 전환</p>
+      <p class="spec">0.2–0.4s · 계단식(steps)</p>
+    </article>
+
+    <article class="tile" data-c="tr">
+      <div class="stage"><div class="scene fx-match">
+        <div class="mA"><div class="ball"></div><div class="hz"></div><span class="mtag">해 SUN</span></div>
+        <div class="mB"><div class="table"></div><div class="ball"></div><div class="leaf"></div><span class="mtag">오렌지 ORANGE</span></div>
+        <div class="ring"></div>
+      </div></div>
+      <div class="name"><h3>Match Cut</h3><span class="kr">매치 컷</span></div>
+      <p class="desc">모양과 위치가 같은 두 장면을 한 번에 이어 붙입니다. 눈이 같은 자리를 계속 보게 돼서 매끄럽습니다.</p>
+      <p class="use"><b>쓰는 곳</b>해 → 오렌지처럼 재치 있는 연결</p>
+      <p class="spec">효과 없이 컷 · 같은 위치·같은 크기</p>
+    </article>
+
+    <!-- ===== 텍스트 ===== -->
+    <section class="tile cat" id="g-ty" data-c="ty">
+      <span class="n">Group C · 5</span>
+      <p class="code">TYPE</p>
+      <h2>텍스트</h2>
+      <p>글자와 숫자를 움직여 정보를 전달합니다. 소리를 끄고 보는 쇼츠에서 특히 중요합니다.</p>
+      <ul><li>Type On</li><li>Stagger</li><li>Count Up</li><li>Word Morph</li><li>Lower 3rd</li></ul>
+    </section>
+
+    <article class="tile" data-c="ty">
+      <div class="stage"><div class="scene fx-type">
+        <div class="sbar"><div class="mg"></div><div class="txt"><span id="type-out"></span><i class="caret"></i></div></div>
+        <div class="hint">한 글자씩 · 커서 깜빡임</div>
+      </div></div>
+      <div class="name"><h3>Type On</h3><span class="kr">타이핑</span></div>
+      <p class="desc">글자가 한 자씩 찍힙니다. 깜빡이는 커서를 붙이면 실제로 입력하는 느낌이 납니다.</p>
+      <p class="use"><b>쓰는 곳</b>검색창 연출, 핵심 문장</p>
+      <p class="spec">글자당 0.05–0.1s · 계단식</p>
+    </article>
+
+    <article class="tile" data-c="ty">
+      <div class="stage"><div class="scene fx-stag"><div class="stc">
+        <div class="row" style="--i:0;top:18px"><i></i><s style="width:110px"></s></div>
+        <div class="row" style="--i:1;top:44px;--hue:#25AD92"><i></i><s style="width:84px"></s></div>
+        <div class="row" style="--i:2;top:70px;--hue:#E8A43C"><i></i><s style="width:120px"></s></div>
+        <div class="row" style="--i:3;top:96px;--hue:#EE6A50"><i></i><s style="width:70px"></s></div>
+      </div></div></div>
+      <div class="name"><h3>Stagger</h3><span class="kr">스태거</span></div>
+      <p class="desc">같은 동작을 조금씩 시차를 두고 차례로 실행합니다. 한꺼번에 나올 때보다 읽는 순서가 생깁니다.</p>
+      <p class="use"><b>쓰는 곳</b>목록, 자막 단어, 아이콘 여러 개</p>
+      <p class="spec">간격 0.06–0.14s · overshoot</p>
+    </article>
+
+    <article class="tile" data-c="ty">
+      <div class="stage"><div class="scene fx-count">
+        <div class="cnt"><small>조회수</small><strong id="count-out">0</strong></div>
+        <div class="cbar"><i id="count-bar"></i></div>
+      </div></div>
+      <div class="name"><h3>Count Up</h3><span class="kr">카운트 업</span></div>
+      <p class="desc">숫자가 0부터 목표값까지 올라갑니다. 끝에서 느려지게 하면 마지막 숫자가 또렷하게 읽힙니다.</p>
+      <p class="use"><b>쓰는 곳</b>조회수, 금액, 퍼센트</p>
+      <p class="spec">1–2s · ease-out · 고정폭 숫자</p>
+    </article>
+
+    <article class="tile" data-c="ty">
+      <div class="stage"><div class="scene fx-morph">
+        <div class="wm"><span>편집을</span></div>
+        <div class="slot"><b style="--i:0">더 쉽게</b><b style="--i:1">더 빠르게</b><b style="--i:2">더 예쁘게</b></div>
+      </div></div>
+      <div class="name"><h3>Word Morph</h3><span class="kr">워드 모프</span></div>
+      <p class="desc">한 자리에서 단어가 녹아내리듯 다른 단어로 바뀝니다. 문장 틀은 그대로 두고 핵심어만 갈아 끼웁니다.</p>
+      <p class="use"><b>쓰는 곳</b>"더 쉽게 → 더 빠르게" 같은 반복 문구</p>
+      <p class="spec">단어당 1–1.5s · 블러 + 크기 + 자간</p>
+    </article>
+
+    <article class="tile" data-c="ty">
+      <div class="stage"><div class="scene fx-l3">
+        <div class="land" data-land></div><div class="dim"></div>
+        <div class="l3"><div class="tag"></div><div class="box"><span class="nm">홍길동</span><span class="jb">모션 디자이너 · 예시 자막</span></div></div>
+      </div></div>
+      <div class="name"><h3>Lower 3rd</h3><span class="kr">하단 자막</span></div>
+      <p class="desc">화면 아래쪽 1/3에 이름·직함을 띄우는 자막 바입니다. 색 띠가 먼저, 글자가 뒤따라 나옵니다.</p>
+      <p class="use"><b>쓰는 곳</b>인물 소개, 출처 표기</p>
+      <p class="spec">등장 0.4s · 유지 3–4s</p>
+    </article>
+
+    <!-- ===== 타이밍·물리 ===== -->
+    <section class="tile cat" id="g-tm" data-c="tm">
+      <span class="n">Group D · 5</span>
+      <p class="code">TIMING</p>
+      <h2>타이밍·물리</h2>
+      <p>같은 거리를 같은 시간에 움직여도 속도 곡선에 따라 느낌이 달라집니다. 위의 모든 모션에 깔리는 바탕입니다. 회색 공은 일정한 속도(linear) 기준입니다.</p>
+      <ul><li>Ease Out</li><li>Ease In-Out</li><li>Overshoot</li><li>Anticipation</li><li>Squash</li></ul>
+    </section>
+
+    <article class="tile" data-c="tm" style="--ez:cubic-bezier(.16,1,.3,1)">
+      <div class="stage"><div class="scene fx-tm" data-curve="M0,100 C16,0 30,0 100,0" data-label="ease-out|빠르게 출발 → 살살 멈춤"></div></div>
+      <div class="name"><h3>Ease Out</h3><span class="kr">이즈 아웃</span></div>
+      <p class="desc">빠르게 출발해서 부드럽게 멈춥니다. 화면에 들어오는 요소라면 거의 항상 이것부터 씁니다.</p>
+      <p class="use"><b>쓰는 곳</b>자막·버튼·사진의 등장</p>
+      <p class="spec">cubic-bezier(.16, 1, .3, 1)</p>
+    </article>
+
+    <article class="tile" data-c="tm" style="--ez:cubic-bezier(.65,0,.35,1)">
+      <div class="stage"><div class="scene fx-tm" data-curve="M0,100 C65,100 35,0 100,0" data-label="ease-in-out|천천히 → 빠르게 → 천천히"></div></div>
+      <div class="name"><h3>Ease In-Out</h3><span class="kr">이즈 인아웃</span><span class="add">추천</span></div>
+      <p class="desc">천천히 출발해 중간에 빨라지고 다시 천천히 도착합니다. 화면 안에서 A 지점→B 지점으로 옮길 때 자연스럽습니다.</p>
+      <p class="use"><b>쓰는 곳</b>카메라 무브, 위치 이동</p>
+      <p class="spec">cubic-bezier(.65, 0, .35, 1)</p>
+    </article>
+
+    <article class="tile" data-c="tm" style="--ez:cubic-bezier(.34,1.56,.64,1)">
+      <div class="stage"><div class="scene fx-tm" data-curve="M0,100 C34,-56 64,0 100,0" data-label="overshoot|목표를 지나쳤다 복귀" data-goal></div></div>
+      <div class="name"><h3>Overshoot</h3><span class="kr">오버슈트</span></div>
+      <p class="desc">목표 선을 살짝 지나쳤다가 되돌아와 멈춥니다. 통통 튀는 탄력과 경쾌함을 줍니다.</p>
+      <p class="use"><b>쓰는 곳</b>스티커, 아이콘, 구독 버튼 등장</p>
+      <p class="spec">cubic-bezier(.34, 1.56, .64, 1)</p>
+    </article>
+
+    <article class="tile" data-c="tm" style="--ez:cubic-bezier(.55,-.45,.35,1)">
+      <div class="stage"><div class="scene fx-tm" data-curve="M0,100 C55,145 35,0 100,0" data-label="anticipation|뒤로 움츠렸다 출발"></div></div>
+      <div class="name"><h3>Anticipation</h3><span class="kr">예비 동작</span><span class="add">추천</span></div>
+      <p class="desc">움직이기 직전에 반대쪽으로 살짝 움츠립니다. 다음 동작을 미리 알려 줘서 눈이 따라가기 쉽습니다.</p>
+      <p class="use"><b>쓰는 곳</b>캐릭터 점프, 화면 밖으로 날아가는 요소</p>
+      <p class="spec">cubic-bezier(.55, -.45, .35, 1)</p>
+    </article>
+
+    <article class="tile" data-c="tm">
+      <div class="stage"><div class="scene fx-sq">
+        <div class="fl"></div>
+        <div class="shd h1"></div><div class="shd h2"></div>
+        <div class="bw b1"><i></i></div><div class="bw b2"><i></i></div>
+        <span class="sqlab" style="left:48px">변형 없음</span><span class="sqlab" style="left:142px">스쿼시 적용</span>
+      </div></div>
+      <div class="name"><h3>Squash &amp; Stretch</h3><span class="kr">스쿼시</span></div>
+      <p class="desc">부딪힐 때 납작해지고, 빠르게 움직일 때 길쭉해집니다. 부피는 그대로 둬야 자연스럽습니다.</p>
+      <p class="use"><b>쓰는 곳</b>튀는 공, 귀여운 캐릭터, 버튼 누름</p>
+      <p class="spec">착지 가로 ×1.45 · 세로 ×0.6</p>
+    </article>
+
+    <!-- ===== 레이어·형태 ===== -->
+    <section class="tile cat" id="g-ly" data-c="ly">
+      <span class="n">Group E · 5</span>
+      <p class="code">LAYER &amp; SHAPE</p>
+      <h2>레이어·형태</h2>
+      <p>여러 층을 겹치고, 길을 그리고, 모양을 바꾸는 기법입니다. 사진 한 장이나 도형 하나로도 영상처럼 만들 수 있습니다.</p>
+      <ul><li>Parallax</li><li>Loop</li><li>Motion Path</li><li>Shape Morph</li><li>Mask Reveal</li></ul>
+    </section>
+
+    <article class="tile" data-c="ly">
+      <div class="stage"><div class="scene fx-par">
+        <div class="sky"></div><div class="sun" style="left:44px"></div>
+        <div class="px p1"></div><div class="px p2"></div><div class="px p3"></div>
+        <div class="hero"><i></i><i></i></div>
+      </div></div>
+      <div class="name"><h3>Parallax</h3><span class="kr">패럴랙스</span></div>
+      <p class="desc">먼 층은 느리게, 가까운 층은 빠르게 움직여서 평평한 그림에 깊이가 생깁니다.</p>
+      <p class="use"><b>쓰는 곳</b>사진 한 장을 영상처럼, 배경 루프</p>
+      <p class="spec">층별 속도 ×0.15 · ×0.35 · ×1</p>
+    </article>
+
+    <article class="tile" data-c="ly">
+      <div class="stage"><div class="scene fx-loop">
+        <div class="lc">
+          <div class="ld" style="--i:0"><i></i></div><div class="ld" style="--i:1"><i></i></div><div class="ld" style="--i:2"><i></i></div><div class="ld" style="--i:3"><i></i></div>
+          <div class="ld" style="--i:4"><i></i></div><div class="ld" style="--i:5"><i></i></div><div class="ld" style="--i:6"><i></i></div><div class="ld" style="--i:7"><i></i></div>
+          <div class="ld" style="--i:8"><i></i></div><div class="ld" style="--i:9"><i></i></div><div class="ld" style="--i:10"><i></i></div><div class="ld" style="--i:11"><i></i></div>
+        </div>
+        <div class="inf">∞</div>
+      </div></div>
+      <div class="name"><h3>Loop</h3><span class="kr">루프</span></div>
+      <p class="desc">마지막 프레임이 첫 프레임과 똑같아서 이음새 없이 끝없이 반복됩니다.</p>
+      <p class="use"><b>쓰는 곳</b>쇼츠 배경, 로딩, 다시 보기 유도</p>
+      <p class="spec">시작 = 끝 · 2s 주기</p>
+    </article>
+
+    <article class="tile" data-c="ly">
+      <div class="stage"><div class="scene fx-path">
+        <svg viewBox="0 0 240 180" aria-hidden="true"><path d="M24,146 C70,6 150,176 216,40" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.5" stroke-dasharray="4 5"/><circle cx="24" cy="146" r="4" fill="#9C7BEE"/><circle cx="216" cy="40" r="4" fill="#9C7BEE"/></svg>
+        <div class="plane"></div>
+      </div></div>
+      <div class="name"><h3>Motion Path</h3><span class="kr">모션 패스</span><span class="add">추천</span></div>
+      <p class="desc">직선 대신 미리 그려 둔 곡선 길을 따라 움직이고, 가는 방향으로 머리를 돌립니다.</p>
+      <p class="use"><b>쓰는 곳</b>지도 위 경로, 날아가는 아이콘</p>
+      <p class="spec">경로 + 자동 회전(auto-orient)</p>
+    </article>
+
+    <article class="tile" data-c="ly">
+      <div class="stage"><div class="scene fx-shape"><div class="shp"></div><div class="shplab">네모 → 원 → 물방울 → 네모</div></div></div>
+      <div class="name"><h3>Shape Morph</h3><span class="kr">셰이프 모프</span><span class="add">추천</span></div>
+      <p class="desc">도형 하나가 다른 도형으로 자연스럽게 변합니다. 모서리, 회전, 색을 한꺼번에 바꾸면 매끄럽습니다.</p>
+      <p class="use"><b>쓰는 곳</b>로고 변신, 아이콘 전환, 장면 연결</p>
+      <p class="spec">모양 + 회전 + 색 동시 · ease-in-out</p>
+    </article>
+
+    <article class="tile" data-c="ly">
+      <div class="stage"><div class="scene fx-mask">
+        <div class="mk k1"><b>오늘의</b></div>
+        <div class="mk k2"><b>꿀팁 3가지</b></div>
+        <span class="mklab">점선 = 마스크(보이는 창)</span>
+      </div></div>
+      <div class="name"><h3>Mask Reveal</h3><span class="kr">마스크 리빌</span><span class="add">추천</span></div>
+      <p class="desc">보이지 않는 창(마스크) 밖에 숨어 있던 글자가 창 안으로 밀려 올라옵니다.</p>
+      <p class="use"><b>쓰는 곳</b>제목 등장, 자막 강조</p>
+      <p class="spec">0.5s · ease-out · 줄마다 0.15s 시차</p>
+    </article>
+
+  </main>
+
+  <footer class="foot">
+    <p>모든 예시는 이 페이지 안에서 CSS로 그린 것이라 외부 영상·이미지를 쓰지 않았습니다. 프리미어·캡컷·애프터이펙트 등 대부분의 편집 툴에서 같은 이름이나 비슷한 이름으로 찾을 수 있습니다.</p>
+    <p>2026-10-29 작성</p>
+  </footer>
+</div>
+
+<div class="scrim" id="scrim" hidden></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" hidden>
+  <div class="sheet-top"><h4 id="sheet-title">Pan</h4><button class="x" id="sheet-close" type="button">닫기</button></div>
+  <p class="ptxt" id="sheet-text"></p>
+  <div class="sheet-bot"><small>[ ] 부분만 바꾸면 됩니다</small><button class="btn copy" id="sheet-copy" type="button">프롬프트 복사</button></div>
+</div>
+
+<script>
+(function(){
+  var LAND='<div class="sky"></div><div class="sun"></div><div class="mtn far" style="left:-10px;width:170px;height:90px"></div><div class="mtn" style="left:110px;width:150px;height:70px"></div><div class="ground"></div><div class="tree" style="left:40px"></div><div class="tree" style="left:186px"></div><div class="hero"><i></i><i></i></div>';
+  document.querySelectorAll('[data-land]').forEach(function(el){el.innerHTML=LAND;});
+
+  // 타이밍 장면: 그래프(시간→위치) + 기준 공(linear) + 곡선 공
+  document.querySelectorAll('.fx-tm').forEach(function(el){
+    var lab=(el.getAttribute('data-label')||'').split('|');
+    var goal=el.hasAttribute('data-goal')?'<i class="goal"></i>':'';
+    el.innerHTML=
+      '<div class="gbox"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">'+
+      '<path d="M0,100 L100,0" fill="none" stroke="rgba(255,255,255,.25)" stroke-dasharray="3 3" vector-effect="non-scaling-stroke"/>'+
+      '<path d="'+el.getAttribute('data-curve')+'" fill="none" stroke="#25AD92" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>'+
+      '<div class="gx"><div class="gy"></div></div></div>'+
+      '<span class="glab gl-t">시간 →</span><span class="glab gl-p">위치</span>'+
+      '<div class="ezname">'+lab[0]+'<em>'+(lab[1]||'')+'</em></div>'+
+      '<div class="trk t1"><span>linear</span><i class="ball2"></i>'+goal+'</div>'+
+      '<div class="trk t2"><span>'+lab[0]+'</span><i class="ball2"></i>'+goal+'</div>';
+  });
+
+  // 액자 크기에 맞춰 240×180 장면을 확대·축소
+  var stages=document.querySelectorAll('.stage');
+  function fit(st){var s=st.firstElementChild;if(s)s.style.setProperty('--k',st.clientWidth/240);}
+  if('ResizeObserver' in window){var ro=new ResizeObserver(function(es){es.forEach(function(e){fit(e.target);});});stages.forEach(function(s){ro.observe(s);});}
+  else{stages.forEach(fit);window.addEventListener('resize',function(){stages.forEach(fit);});}
+
+  // 재생 상태
+  var root=document.documentElement, state={paused:false,spd:1,t:0};
+  var playBtn=document.getElementById('btn-play'), slowBtn=document.getElementById('btn-slow');
+  var PAUSE='<svg viewBox="0 0 12 12" aria-hidden="true"><rect x="1" y="1" width="3.5" height="10"/><rect x="7.5" y="1" width="3.5" height="10"/></svg><span>일시정지</span>';
+  var PLAY='<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 1l9 5-9 5z"/></svg><span>재생</span>';
+  function setPaused(p){state.paused=p;root.classList.toggle('paused',p);playBtn.innerHTML=p?PLAY:PAUSE;playBtn.setAttribute('aria-pressed',String(p));}
+  playBtn.addEventListener('click',function(){setPaused(!state.paused);});
+  slowBtn.addEventListener('click',function(){
+    state.spd=state.spd===1?2:1;root.style.setProperty('--spd',state.spd);slowBtn.setAttribute('aria-pressed',String(state.spd===2));
+  });
+  var mq=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)');
+  if(mq&&mq.matches){state.t=2.4;setPaused(true);document.getElementById('rm-note').hidden=false;}
+
+  // 스크립트로 움직이는 두 장면: 타이핑, 카운트 업
+  var typeEl=document.getElementById('type-out'), TXT='모션 그래픽 배우기';
+  var cntEl=document.getElementById('count-out'), barEl=document.getElementById('count-bar'), TARGET=1284000;
+  function render(t){
+    var p=(t%4)/4, n=p<.55?Math.floor(p/.55*(TXT.length+1)):(p<.88?TXT.length:0);
+    typeEl.textContent=TXT.slice(0,Math.min(n,TXT.length));
+    var q=(t%3.6)/3.6, k=q<.12?0:(q>.7?1:(q-.12)/.58), e=1-Math.pow(1-k,3);
+    cntEl.textContent=Math.round(TARGET*e).toLocaleString('ko-KR');
+    barEl.style.width=(e*100)+'%';
+  }
+  var last=performance.now();
+  function tick(now){var dt=Math.min((now-last)/1000,.1);last=now;if(!state.paused)state.t+=dt/state.spd;render(state.t);requestAnimationFrame(tick);}
+  render(state.t);requestAnimationFrame(tick);
+
+  // 액자를 누르면 프롬프트
+  var P={
+    'Pan':'[장면]을 왼쪽에서 오른쪽으로 천천히 훑는 팬 카메라 무브, 4초, 부드러운 ease-in-out',
+    'Dolly':'[피사체]를 향해 카메라가 천천히 다가가는 돌리 인, 피사체는 크게·배경은 조금만 커지게, 4초',
+    'Zoom':'[강조할 부분]으로 부드럽게 줌 인, 화면 전체가 같은 비율로 확대, 3초',
+    'Orbit':'[제품]을 가운데 두고 카메라가 주위를 한 바퀴 도는 360도 오빗 샷, 6초, 일정한 속도',
+    'Snap Zoom':'[강조할 순간]에 0.2초 만에 확 당기는 스냅 줌, 살짝 모션 블러, 당긴 뒤 1초 멈춤',
+    'Dissolve':'[장면 A]에서 [장면 B]로 0.8초 동안 겹쳐 바뀌는 디졸브 전환',
+    'Wipe':'[장면 A]에서 [장면 B]로 왼쪽→오른쪽 와이프 전환, 0.6초, 경계에 얇은 흰 선',
+    'Iris':'화면 가운데 원이 열리며 [장면 B]가 나타나는 아이리스 인 전환, 0.6초',
+    'Glitch':'[장면 A]에서 [장면 B]로 0.3초 글리치 전환, 빨강·파랑 색 분리와 가로 줄 노이즈',
+    'Match Cut':'[장면 A의 물체]와 같은 위치·같은 크기의 [장면 B의 물체]로 바로 이어 붙이는 매치 컷',
+    'Type On':'"[문장]"이 검색창에 한 글자씩 입력되는 타이핑 애니메이션, 글자당 0.07초, 깜빡이는 커서',
+    'Stagger':'[항목 1], [항목 2], [항목 3]이 0.1초 간격으로 차례로 튀어나오는 목록 애니메이션',
+    'Count Up':'[라벨] 숫자가 0에서 [목표 숫자]까지 1.5초 동안 올라가는 카운트 업, 끝에서 느려지게',
+    'Word Morph':'"[고정 문구]" 뒤 단어가 [단어 1] → [단어 2] → [단어 3]로 흐려지며 바뀌는 워드 모프',
+    'Lower 3rd':'화면 왼쪽 아래에 이름 "[이름]", 직함 "[직함]" 하단 자막, 색 띠가 먼저 나오고 글자가 뒤따름, 4초 유지',
+    'Ease Out':'[요소]가 화면 밖에서 빠르게 들어와 부드럽게 멈추는 등장, ease-out, 0.5초',
+    'Ease In-Out':'[요소]를 [시작 위치]에서 [끝 위치]로 천천히-빠르게-천천히 옮기기, ease-in-out, 0.8초',
+    'Overshoot':'[요소]가 튀어나오며 목표 크기를 살짝 넘었다가 돌아와 멈추는 오버슈트 등장, 0.5초',
+    'Anticipation':'[요소]가 반대쪽으로 살짝 움츠렸다가 [방향]으로 빠르게 날아가는 예비 동작, 0.6초',
+    'Squash & Stretch':'[물체]가 바닥에 닿을 때 납작해지고 튀어 오를 때 길쭉해지는 스쿼시 앤 스트레치 바운스',
+    'Parallax':'[사진]을 먼 배경·중간·앞 3개 층으로 나눠 가까운 층일수록 빠르게 움직이는 패럴랙스, 6초',
+    'Loop':'[요소]가 첫 프레임과 마지막 프레임이 같아 끊김 없이 반복되는 2초 루프 애니메이션',
+    'Motion Path':'[아이콘]이 [출발점]에서 [도착점]까지 곡선 길을 따라 가는 방향으로 회전하며 이동, 3초',
+    'Shape Morph':'[도형 A]가 회전·색 변화와 함께 [도형 B]로 부드럽게 변하는 셰이프 모프, 1.2초',
+    'Mask Reveal':'"[제목]" 글자가 보이지 않는 선 아래에서 밀려 올라오는 마스크 리빌, 줄마다 0.15초 시차'
+  };
+  var sheet=document.getElementById('sheet'),scrim=document.getElementById('scrim'),sTitle=document.getElementById('sheet-title'),sText=document.getElementById('sheet-text'),sCopy=document.getElementById('sheet-copy'),opener=null,cur='';
+  function esc(s){return s.replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+  function openSheet(tile){
+    var name=tile.querySelector('h3').textContent;cur=tile.getAttribute('data-prompt');opener=tile;
+    sheet.setAttribute('data-c',tile.getAttribute('data-c'));sTitle.textContent=name;
+    sText.innerHTML=esc(cur).replace(/\[[^\]]+\]/g,function(m){return '<mark>'+m+'</mark>';});
+    sCopy.textContent='프롬프트 복사';sheet.hidden=false;scrim.hidden=false;sCopy.focus();
+  }
+  function closeSheet(){sheet.hidden=true;scrim.hidden=true;if(opener)opener.focus();}
+  document.querySelectorAll('article.tile').forEach(function(t){
+    var p=P[t.querySelector('h3').textContent];if(!p)return;
+    t.setAttribute('data-prompt',p);t.tabIndex=0;t.setAttribute('role','button');t.setAttribute('aria-label',t.querySelector('h3').textContent+' 프롬프트 보기');
+    var tag=document.createElement('span');tag.className='ptag';tag.textContent='눌러서 프롬프트';t.querySelector('.stage').appendChild(tag);
+    t.addEventListener('click',function(){openSheet(t);});
+    t.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openSheet(t);}});
+  });
+  scrim.addEventListener('click',closeSheet);document.getElementById('sheet-close').addEventListener('click',closeSheet);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!sheet.hidden)closeSheet();});
+  function selectText(){var r=document.createRange();r.selectNodeContents(sText);var s=window.getSelection();s.removeAllRanges();s.addRange(r);}
+  sCopy.addEventListener('click',function(){
+    var done=function(){sCopy.textContent='복사됨';},fail=function(){selectText();sCopy.textContent='글자를 길게 눌러 복사하세요';};
+    try{navigator.clipboard.writeText(cur).then(done,fail);}catch(e){fail();}
+  });
+})();
+</script>
+
+</body>
+</html>
