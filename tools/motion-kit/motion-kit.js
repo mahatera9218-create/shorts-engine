@@ -492,7 +492,12 @@
     '@media (max-width:640px){.pnl{top:auto;left:0;right:0;bottom:0;width:auto;height:58vh;border-radius:16px 16px 0 0;padding-bottom:env(safe-area-inset-bottom,0px)}}',
     '.pnl.min{height:auto;bottom:auto;top:auto;bottom:12px;width:auto}',
     '@media (max-width:640px){.pnl.min{left:auto;right:12px;bottom:12px;border-radius:999px}}',
-    '.hd{display:flex;align-items:center;gap:6px;padding:10px 10px 10px 14px;border-bottom:1px solid #2C303B;flex:none}',
+    '.hd{display:flex;align-items:center;gap:6px;padding:10px 10px 10px 14px;border-bottom:1px solid #2C303B;flex:none;cursor:move;touch-action:none;user-select:none;-webkit-user-select:none}',
+    '.hd button{cursor:pointer}',
+    '@media (min-width:641px){.pnl.left{right:auto;left:12px}.pnl.free{right:auto;bottom:auto;height:min(78vh,720px)}.pnl.free.min{height:auto}}',
+    '@media (max-width:640px){.side-btn{display:none}}',
+    '.pnl.away{visibility:hidden}',
+    '.grip{color:#5B6274;font-size:12px;letter-spacing:-2px;margin-right:2px}',
     '.ttl{font-weight:800;font-size:14px;letter-spacing:-.01em;margin-right:auto;display:flex;align-items:center;gap:7px}',
     '.ttl i{width:9px;height:9px;border-radius:3px;background:linear-gradient(135deg,#E8A43C,#EE6A50 50%,#9C7BEE)}',
     '.min .body,.min .pick{display:none}',
@@ -526,7 +531,9 @@
     '.box.selbox{border-color:#25AD92;background:rgba(37,173,146,.10)}',
     '.box span{position:absolute;left:-2px;top:-20px;background:#5B88F2;color:#fff;font-size:11px;padding:2px 6px;border-radius:4px 4px 4px 0;white-space:nowrap}',
     '.selbox span{background:#25AD92}',
-    '.pick{position:fixed;left:50%;top:12px;transform:translateX(-50%);z-index:2147483647;background:#5B88F2;color:#fff;padding:8px 14px;border-radius:999px;font-weight:700;font-size:13px;box-shadow:0 8px 20px rgba(0,0,0,.3)}'
+    '.pick{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:2147483647;background:#5B88F2;color:#fff;padding:6px 6px 6px 16px;border-radius:999px;font-weight:700;font-size:13px;box-shadow:0 8px 20px rgba(0,0,0,.3);display:flex;align-items:center;gap:10px;white-space:nowrap}',
+    '.pick[hidden]{display:none}',
+    '.pick button{background:#fff;color:#2B4FD8;border:0;border-radius:999px;padding:6px 12px;font-weight:700}'
   ].join('\n');
 
   function h(tag, attrs, kids) {
@@ -548,17 +555,20 @@
     root.appendChild(h('style', { text: CSS_PANEL }));
     ui.hover = h('div', { class: 'box', hidden: true }, [h('span')]);
     ui.selbox = h('div', { class: 'box selbox', hidden: true }, [h('span', { text: '선택됨' })]);
-    ui.pickBar = h('div', { class: 'pick', hidden: true, text: '움직일 요소를 누르세요 · Esc로 취소' });
+    ui.pickBar = h('div', { class: 'pick', hidden: true }, ['움직일 요소를 누르세요', h('button', { type: 'button', on: { click: function () { setPicking(false); } } }, ['취소'])]);
+    ui.sideBtn = h('button', { type: 'button', class: 'side-btn', title: '패널을 반대쪽으로', 'aria-label': '패널을 반대쪽으로 옮기기', on: { click: function () { dock(!ui.pnl.classList.contains('left')); } } }, ['⇆']);
     ui.pickBtn = h('button', { type: 'button', on: { click: function () { setPicking(!picking); } } }, ['요소 선택']);
     ui.minBtn = h('button', { type: 'button', title: '접기', 'aria-label': '패널 접기', on: { click: function () { ui.pnl.classList.toggle('min'); ui.minBtn.textContent = ui.pnl.classList.contains('min') ? '펼치기' : '접기'; } } }, ['접기']);
     var close = h('button', { type: 'button', 'aria-label': '패널 닫기', on: { click: closePanel } }, ['✕']);
     ui.body = h('div', { class: 'body' });
     ui.pnl = h('div', { class: 'pnl', role: 'dialog', 'aria-label': 'Motion Kit 조절 패널' }, [
-      h('div', { class: 'hd' }, [h('div', { class: 'ttl' }, [h('i'), 'Motion Kit']), ui.pickBtn, ui.minBtn, close]),
+      ui.hd = h('div', { class: 'hd', title: '여기를 잡고 끌면 패널이 움직입니다' }, [h('div', { class: 'ttl' }, [h('span', { class: 'grip', 'aria-hidden': 'true', text: '⋮⋮' }), h('i'), 'Motion Kit']), ui.pickBtn, ui.sideBtn, ui.minBtn, close]),
       ui.body
     ]);
     root.appendChild(ui.hover); root.appendChild(ui.selbox); root.appendChild(ui.pickBar); root.appendChild(ui.pnl);
     document.documentElement.appendChild(host);
+    dragSetup();
+    restorePos();
   }
 
   function field(labelText, control) { return h('label', {}, [labelText, control]); }
@@ -742,11 +752,56 @@
     selected = e.target; setPicking(false); render();
   }
   function onKey(e) { if (e.key === 'Escape' && picking) setPicking(false); }
+  // 패널 옮기기: 머리줄을 잡고 끌기, ⇆ 로 좌우 바꾸기
+  var POS = 'motionkit:pos';
+  function savePos(o) { try { localStorage.setItem(POS, JSON.stringify(o)); } catch (e) {} }
+  function clampPos(x, y) {
+    var w = ui.pnl.offsetWidth, hh = ui.hd.offsetHeight;
+    return [Math.min(Math.max(0, x), window.innerWidth - Math.min(w, 120)), Math.min(Math.max(0, y), window.innerHeight - hh)];
+  }
+  function place(x, y) {
+    var c = clampPos(x, y);
+    ui.pnl.classList.add('free'); ui.pnl.classList.remove('left');
+    ui.pnl.style.left = c[0] + 'px'; ui.pnl.style.top = c[1] + 'px';
+    return c;
+  }
+  function dock(left) {
+    ui.pnl.classList.remove('free'); ui.pnl.style.left = ''; ui.pnl.style.top = '';
+    ui.pnl.classList.toggle('left', left);
+    savePos({ side: left ? 'left' : 'right' });
+  }
+  function restorePos() {
+    var o; try { o = JSON.parse(localStorage.getItem(POS) || 'null'); } catch (e) { o = null; }
+    if (!o) return;
+    if (o.side) dock(o.side === 'left'); else if (o.x != null) place(o.x, o.y);
+  }
+  function dragSetup() {
+    var sx, sy, ox, oy, on = false;
+    ui.hd.addEventListener('pointerdown', function (e) {
+      if (e.button !== 0 || (e.target.closest && e.target.closest('button'))) return;
+      if (window.matchMedia('(max-width:640px)').matches) return;
+      var r = ui.pnl.getBoundingClientRect();
+      sx = e.clientX; sy = e.clientY; ox = r.left; oy = r.top; on = true;
+      ui.hd.setPointerCapture(e.pointerId); e.preventDefault();
+    });
+    ui.hd.addEventListener('pointermove', function (e) { if (on) place(ox + e.clientX - sx, oy + e.clientY - sy); });
+    function end(e) {
+      if (!on) return; on = false;
+      var r = ui.pnl.getBoundingClientRect();
+      if (Math.abs(e.clientX - sx) + Math.abs(e.clientY - sy) > 3) savePos({ x: r.left, y: r.top });
+    }
+    ui.hd.addEventListener('pointerup', end);
+    ui.hd.addEventListener('pointercancel', end);
+    window.addEventListener('resize', function () { if (ui.pnl.classList.contains('free')) place(parseFloat(ui.pnl.style.left), parseFloat(ui.pnl.style.top)); });
+  }
+
   function setPicking(on) {
     picking = on;
     ui.pickBtn.classList.toggle('on', on);
     ui.pickBtn.textContent = on ? '선택 중…' : '요소 선택';
     ui.pickBar.hidden = !on;
+    // 고르는 동안 패널을 비켜서 뒤에 있는 요소도 누를 수 있게
+    ui.pnl.classList.toggle('away', on);
     if (!on) ui.hover.hidden = true;
   }
   var tickRaf = 0;
