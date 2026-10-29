@@ -321,6 +321,213 @@ h1 em{font-style:normal;font-family:var(--f-disp);font-stretch:125%;font-weight:
 .sheet-bot small{color:var(--ink2);font-size:12px}
 .copy{background:var(--ink);color:var(--wall);border-color:var(--ink)}
 
+
+/* ---------- 탭 ---------- */
+.tabs{display:inline-flex;gap:4px;margin-top:16px;padding:4px;border:1px solid var(--line);border-radius:12px;background:var(--mat)}
+.tab{font:700 15px/1.2 var(--f-body);color:var(--ink2);background:none;border:0;border-radius:9px;padding:10px 18px;cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+.tab small{font-weight:500;font-size:11px}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--wall)}
+.tab:focus-visible{outline:2px solid var(--c-ty);outline-offset:2px}
+.panel{display:flex;flex-direction:column;gap:18px}
+.intro{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:12px 40px;align-items:start}
+.intro .lede{margin:0}
+.intro .side{gap:10px}
+@media (max-width:640px){.intro{grid-template-columns:minmax(0,1fr)}}
+[data-c="wa"]{--hue:var(--c-cam)} [data-c="wb"]{--hue:var(--c-tr)} [data-c="wc"]{--hue:var(--c-ty)} [data-c="wd"]{--hue:var(--c-tm)} [data-c="we"]{--hue:var(--c-ly)}
+
+/* ---------- 웹앱 장면 공통 ---------- */
+.wsc{--T:calc(2.4s*var(--spd));background:#EEF1F6;color:#1A1E2B}
+.wsc .card{background:#fff;border-radius:10px;box-shadow:0 2px 8px rgba(20,30,60,.12)}
+.wsc .ln{height:6px;border-radius:3px;background:#D5DAE4}
+.wsc .av{left:10px;top:9px;width:16px;height:16px;border-radius:50%;background:var(--c-ty)}
+.wsc .img{left:8px;top:8px;width:46px;height:46px;border-radius:6px;background:linear-gradient(var(--sky-a),var(--sky-b))}
+.wbtn{border-radius:10px;background:#3B5BFD;color:#fff;font-size:13px;font-weight:700;display:grid;place-items:center}
+.tap{width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:rgba(30,40,90,.28);border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.25);opacity:0;z-index:4;animation:tap var(--T) infinite}
+.tap.two{animation-name:tap2}
+@keyframes tap{0%,24%{opacity:0;transform:scale(1.5)}30%{opacity:1;transform:scale(1)}36%{transform:scale(.85)}44%{opacity:1;transform:scale(.85)}52%,100%{opacity:0;transform:scale(1)}}
+@keyframes tap2{0%,20%{opacity:0;transform:scale(1.5)}25%{opacity:1;transform:scale(1)}30%{opacity:1;transform:scale(.85)}36%,70%{opacity:0;transform:scale(1.5)}75%{opacity:1;transform:scale(1)}80%{opacity:1;transform:scale(.85)}86%,100%{opacity:0}}
+.pg{left:0;top:0;width:240px;height:180px;background:#F1F3F8;overflow:hidden}
+.pg .hd{left:0;right:0;top:0;height:30px;background:#fff;font-size:11px;font-weight:700;line-height:30px;padding-left:14px;box-shadow:0 1px 0 #E1E5EC}
+
+/* 누르기 반응 */
+.fx-press .pbtn{left:50px;top:66px;width:140px;height:46px;box-shadow:0 4px 12px rgba(59,91,253,.35);animation:press var(--T) infinite}
+@keyframes press{0%,30%{transform:scale(1);filter:none}35%,44%{transform:scale(.94);filter:brightness(.9)}56%,100%{transform:scale(1);filter:none}}
+.fx-ripple .rbtn{left:30px;top:66px;width:180px;height:46px;overflow:hidden}
+.rip{left:60px;top:23px;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;background:rgba(255,255,255,.55);transform:scale(0);animation:rip var(--T) cubic-bezier(.2,.6,.3,1) infinite}
+@keyframes rip{0%,32%{transform:scale(0);opacity:1}72%,100%{transform:scale(13);opacity:0}}
+.hrt{left:96px;top:50px;width:48px;height:48px}
+.hrt1{animation:pop var(--T) infinite}
+@keyframes pop{0%,30%{transform:scale(0)}42%{transform:scale(1.28)}52%{transform:scale(.92)}60%,86%{transform:scale(1)}96%,100%{transform:scale(0)}}
+.bst{left:120px;top:74px;width:0;height:0}
+.bst b{left:0;top:0;width:0;height:0;transform:rotate(var(--a))}
+.bst i{left:-3px;top:-3px;width:6px;height:6px;border-radius:50%;background:#FF3B5C;opacity:0;animation:burst var(--T) cubic-bezier(.16,1,.3,1) infinite}
+.bst b:nth-child(even) i{background:#FFB020}
+@keyframes burst{0%,32%{transform:translateY(0) scale(1);opacity:0}36%{opacity:1}60%,100%{transform:translateY(-38px) scale(.3);opacity:0}}
+.wlab{left:0;right:0;text-align:center;font-size:11px;color:#6B7385}
+.fx-toggle{--T:calc(3s*var(--spd))}
+.fx-toggle .card{left:20px;top:60px;width:200px;height:58px}
+.tlab{left:16px;top:20px;font-size:13px;font-weight:600}
+.trk2{left:132px;top:14px;width:52px;height:30px;border-radius:15px;background:#C9CFDB;animation:trk var(--T) cubic-bezier(.65,0,.35,1) infinite}
+.knob{left:3px;top:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);animation:knob var(--T) cubic-bezier(.65,0,.35,1) infinite}
+@keyframes trk{0%,26%{background:#C9CFDB}36%,76%{background:#22C55E}86%,100%{background:#C9CFDB}}
+@keyframes knob{0%,26%{transform:none}36%,76%{transform:translateX(22px)}86%,100%{transform:none}}
+.fx-shake{--T:calc(2.8s*var(--spd))}
+.flab{left:36px;top:28px;font-size:10px;color:#6B7385}
+.inp{left:36px;top:44px;width:168px;height:34px;border-radius:8px;background:#fff;border:2px solid #C9CFDB;padding-left:10px;line-height:30px;font-size:14px;letter-spacing:2px;animation:shk var(--T) linear infinite,errb var(--T) linear infinite}
+.err{left:36px;top:83px;font-size:10px;color:#E5484D;font-weight:600;opacity:0;animation:errt var(--T) infinite}
+.lbtn{left:36px;top:114px;width:168px;height:34px}
+@keyframes shk{0%,30%{transform:none}33%{transform:translateX(-8px)}36%{transform:translateX(8px)}39%{transform:translateX(-6px)}42%{transform:translateX(6px)}45%{transform:translateX(-3px)}48%,100%{transform:none}}
+@keyframes errb{0%,30%{border-color:#C9CFDB}32%,88%{border-color:#E5484D}96%,100%{border-color:#C9CFDB}}
+@keyframes errt{0%,31%{opacity:0;transform:translateY(-3px)}36%,88%{opacity:1;transform:none}96%,100%{opacity:0}}
+
+/* 화면 전환 */
+.fx-fade{--T:calc(3.2s*var(--spd))}
+.fx-fade .pa{animation:fa var(--T) infinite}
+.fx-fade .pb{opacity:0;animation:fb var(--T) infinite}
+@keyframes fa{0%,28%{opacity:1;transform:none}40%,86%{opacity:0;transform:scale(.97)}96%,100%{opacity:1;transform:none}}
+@keyframes fb{0%,38%{opacity:0;transform:scale(1.03)}52%,84%{opacity:1;transform:none}92%,100%{opacity:0;transform:scale(1.03)}}
+.fx-push{--T:calc(3.4s*var(--spd))}
+.fx-push .pa{animation:pushA var(--T) cubic-bezier(.32,.72,0,1) infinite}
+.fx-push .pb{box-shadow:-6px 0 14px rgba(0,0,0,.15);animation:pushB var(--T) cubic-bezier(.32,.72,0,1) infinite}
+@keyframes pushA{0%,28%{transform:none;filter:none}44%,76%{transform:translateX(-72px);filter:brightness(.8)}92%,100%{transform:none;filter:none}}
+@keyframes pushB{0%,28%{transform:translateX(242px)}44%,76%{transform:none}92%,100%{transform:translateX(242px)}}
+.fx-shared{--T:calc(3.6s*var(--spd))}
+.se-fade{animation:sef var(--T) infinite}
+@keyframes sef{0%,30%{opacity:1}42%,86%{opacity:0}96%,100%{opacity:1}}
+.se-th{left:22px;top:46px;width:28px;height:28px;border-radius:6px;z-index:2;overflow:hidden;background:linear-gradient(var(--sky-a),var(--sky-b));animation:seth var(--T) cubic-bezier(.65,0,.35,1) infinite}
+.se-th::after{content:"";position:absolute;left:0;right:0;bottom:0;height:35%;background:var(--mtn);clip-path:polygon(0 100%,25% 20%,50% 70%,75% 10%,100% 60%,100% 100%)}
+@keyframes seth{0%,30%{left:22px;top:46px;width:28px;height:28px;border-radius:6px}52%,82%{left:0;top:0;width:240px;height:96px;border-radius:0}98%,100%{left:22px;top:46px;width:28px;height:28px;border-radius:6px}}
+.se-dt{left:0;top:0;width:240px;height:180px;opacity:0;animation:sedt var(--T) infinite}
+@keyframes sedt{0%,50%{opacity:0;transform:translateY(8px)}60%,82%{opacity:1;transform:none}88%,100%{opacity:0}}
+.fx-sheet{--T:calc(3.4s*var(--spd))}
+.obtn{left:176px;top:5px;width:52px;height:20px;font-size:10px;border-radius:6px;z-index:1}
+.dimw{inset:0;background:#0B1020;opacity:0;animation:dimw var(--T) infinite}
+@keyframes dimw{0%,22%{opacity:0}36%,76%{opacity:.45}86%,100%{opacity:0}}
+.sht{left:0;right:0;top:74px;height:110px;background:#fff;border-radius:14px 14px 0 0;transform:translateY(110px);animation:shUp var(--T) cubic-bezier(.32,.72,0,1) infinite}
+.sht .hdl{left:105px;top:7px;width:30px;height:4px;border-radius:2px;background:#C9CFDB}
+@keyframes shUp{0%,22%{transform:translateY(110px)}36%,76%{transform:none;animation-timing-function:cubic-bezier(.4,0,1,1)}86%,100%{transform:translateY(110px)}}
+.fx-tabs{--T:calc(3.6s*var(--spd))}
+.tbar{left:0;top:0;width:240px;height:40px;background:#fff;box-shadow:0 1px 0 #E1E5EC;z-index:2}
+.tbar span{top:13px;width:80px;text-align:center;font-size:11px;font-weight:700}
+.tind{left:20px;top:36px;width:40px;height:3px;border-radius:2px;background:#3B5BFD;animation:tabI var(--T) cubic-bezier(.65,0,.35,1) infinite}
+@keyframes tabI{0%,20%{transform:none}30%,53%{transform:translateX(80px)}63%,86%{transform:translateX(160px)}96%,100%{transform:none}}
+.tcon{left:0;top:40px;width:720px;height:140px;animation:tabC var(--T) cubic-bezier(.65,0,.35,1) infinite}
+@keyframes tabC{0%,20%{transform:none}30%,53%{transform:translateX(-240px)}63%,86%{transform:translateX(-480px)}96%,100%{transform:none}}
+
+/* 나타나기 */
+.fx-fup{--T:calc(2.6s*var(--spd))}
+.fx-fup .card{left:30px;top:36px;width:180px;height:108px;animation:fup var(--T) cubic-bezier(.16,1,.3,1) infinite}
+.fx-fup .img{width:164px;height:56px}
+@keyframes fup{0%,14%{opacity:0;transform:translateY(16px)}40%,86%{opacity:1;transform:none}96%,100%{opacity:0;transform:none}}
+.fx-slist{--T:calc(2.8s*var(--spd))}
+.fx-slist .card{left:20px;width:200px;height:28px;animation:sup var(--T) cubic-bezier(.16,1,.3,1) infinite;animation-delay:calc(var(--i)*.08s*var(--spd));animation-fill-mode:both}
+.fx-slist .av{top:6px}
+@keyframes sup{0%,10%{opacity:0;transform:translateY(12px)}30%,82%{opacity:1;transform:none}92%,100%{opacity:0;transform:none}}
+.fx-skel .card{left:24px;top:30px;width:192px;height:120px}
+.sk{border-radius:4px;background:linear-gradient(90deg,#E4E8EF 0,#E4E8EF 35%,#F7F8FB 50%,#E4E8EF 65%,#E4E8EF 100%);background-size:400px 100%;animation:shim calc(1.4s*var(--spd)) linear infinite}
+@keyframes shim{from{background-position:-400px 0}to{background-position:400px 0}}
+.fx-toast{--T:calc(3.6s*var(--spd))}
+.toast{left:30px;top:136px;width:180px;height:30px;border-radius:15px;background:#1E2333;color:#fff;font-size:11px;font-weight:600;text-align:center;line-height:30px;opacity:0;box-shadow:0 6px 16px rgba(0,0,0,.25);animation:toast var(--T) cubic-bezier(.16,1,.3,1) infinite}
+.toast b{position:static;color:#4ADE80}
+@keyframes toast{0%,20%{opacity:0;transform:translateY(40px)}30%,76%{opacity:1;transform:none}86%,100%{opacity:0;transform:translateY(40px)}}
+.fx-wcount{--T:calc(3.6s*var(--spd))}
+.fx-wcount .card{left:20px;top:18px;width:200px;height:144px}
+.wc-l{left:14px;top:12px;font-size:10px;color:#6B7385}
+.wc-n{left:14px;top:26px;font-family:var(--f-disp);font-weight:800;font-size:22px;font-variant-numeric:tabular-nums;color:#1A1E2B}
+.wbar{bottom:14px;width:18px;border-radius:3px 3px 0 0;background:#3B5BFD;transform-origin:50% 100%;transform:scaleY(0);animation:barG var(--T) cubic-bezier(.16,1,.3,1) infinite;animation-delay:calc(var(--i)*.06s*var(--spd));animation-fill-mode:both}
+@keyframes barG{0%,12%{transform:scaleY(0)}40%,88%{transform:scaleY(1)}98%,100%{transform:scaleY(0)}}
+
+/* 상태 표시 */
+.ring2{left:98px;top:50px;width:44px;height:44px;border-radius:50%;border:4px solid #DDE2EC;border-top-color:#3B5BFD;animation:spin calc(.8s*var(--spd)) linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.fx-burger .card{left:88px;top:46px;width:64px;height:64px;border-radius:14px}
+.bg{left:18px;width:28px;height:4px;border-radius:2px;background:#1A1E2B;animation:var(--n) var(--T) cubic-bezier(.65,0,.35,1) infinite}
+@keyframes bTop{0%,20%{transform:none}40%,70%{transform:translateY(10px) rotate(45deg)}90%,100%{transform:none}}
+@keyframes bMid{0%,20%{opacity:1;transform:none}32%,78%{opacity:0;transform:scaleX(0)}90%,100%{opacity:1;transform:none}}
+@keyframes bBot{0%,20%{transform:none}40%,70%{transform:translateY(-10px) rotate(-45deg)}90%,100%{transform:none}}
+.fx-prog{--T:calc(3.4s*var(--spd))}
+.fx-prog .card{left:24px;top:46px;width:192px;height:88px}
+.fic{left:12px;top:12px;width:22px;height:28px;border-radius:3px;background:#3B5BFD}
+.fnm{left:42px;top:12px;font-size:11px;font-weight:700}
+.fst{left:42px;top:28px;font-size:9.5px}
+.fst.up{color:#6B7385;animation:fsu var(--T) infinite}
+.fst.ok{color:#16A34A;font-weight:700;opacity:0;animation:fso var(--T) infinite}
+@keyframes fsu{0%,64%{opacity:1}68%,94%{opacity:0}100%{opacity:1}}
+@keyframes fso{0%,66%{opacity:0}70%,92%{opacity:1}98%,100%{opacity:0}}
+.ptk{left:12px;top:60px;width:168px;height:6px;border-radius:3px;background:#E4E8EF;overflow:hidden}
+.pfl{left:0;top:0;width:168px;height:6px;border-radius:3px;transform-origin:0 50%;animation:prog var(--T) cubic-bezier(.65,0,.35,1) infinite,prc var(--T) steps(1,end) infinite}
+@keyframes prog{0%,8%{transform:scaleX(0)}30%{transform:scaleX(.35)}44%{transform:scaleX(.62)}66%,92%{transform:scaleX(1)}100%{transform:scaleX(0)}}
+@keyframes prc{0%{background:#3B5BFD}66%{background:#22C55E}100%{background:#3B5BFD}}
+.fx-ok{--T:calc(3s*var(--spd))}
+.okc{left:92px;top:36px;width:56px;height:56px;border-radius:50%;background:#22C55E;box-shadow:0 6px 16px rgba(34,197,94,.4);animation:okc var(--T) infinite}
+.okc svg{left:0;top:0;width:56px;height:56px}
+.okc path{stroke-dasharray:40;stroke-dashoffset:40;animation:okd var(--T) infinite}
+@keyframes okc{0%,10%{transform:scale(0)}24%{transform:scale(1.15)}32%,90%{transform:scale(1)}100%{transform:scale(0)}}
+@keyframes okd{0%,30%{stroke-dashoffset:40}46%,100%{stroke-dashoffset:0}}
+.okt{left:0;right:0;top:106px;text-align:center;font-size:14px;font-weight:700;opacity:0;animation:okt var(--T) infinite}
+@keyframes okt{0%,42%{opacity:0;transform:translateY(6px)}54%,90%{opacity:1;transform:none}100%{opacity:0}}
+.fx-badge{--T:calc(2.8s*var(--spd))}
+.bell{left:96px;top:48px;width:48px;height:48px;transform-origin:50% 8%;animation:bring var(--T) infinite}
+@keyframes bring{0%,30%{transform:none}34%{transform:rotate(14deg)}38%{transform:rotate(-12deg)}42%{transform:rotate(8deg)}46%{transform:rotate(-4deg)}50%,100%{transform:none}}
+.bdg{left:128px;top:42px;width:22px;height:22px;border-radius:50%;background:#FF3B3B;color:#fff;font-size:11px;font-weight:700;animation:bump var(--T) infinite}
+.bdg span{inset:0;text-align:center;line-height:22px}
+.bdg .n4{opacity:0;animation:n4 var(--T) steps(1,end) infinite}
+.bdg .n3{animation:n3 var(--T) steps(1,end) infinite}
+@keyframes bump{0%,30%{transform:scale(1)}38%{transform:scale(1.45)}46%{transform:scale(.9)}52%,100%{transform:scale(1)}}
+@keyframes n3{0%{opacity:1}32%{opacity:0}96%{opacity:1}}
+@keyframes n4{0%{opacity:0}32%{opacity:1}96%{opacity:0}}
+
+/* 스크롤·제스처 */
+.drag{width:24px;height:24px;margin:-12px 0 0 -12px;border-radius:50%;background:rgba(30,40,90,.28);border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.25);z-index:4}
+.fx-phero{--T:calc(3.6s*var(--spd))}
+.phh{left:0;top:0;width:240px;height:120px;background:linear-gradient(var(--sky-a),var(--sky-b));animation:phA var(--T) cubic-bezier(.65,0,.35,1) infinite alternate}
+.phh::after{content:"";position:absolute;left:0;right:0;bottom:0;height:46px;background:var(--mtn);clip-path:polygon(0 100%,0 50%,20% 10%,40% 55%,65% 0,85% 45%,100% 25%,100% 100%)}
+.phh i{left:170px;top:24px;width:26px;height:26px;border-radius:50%;background:var(--sun)}
+.phc{left:0;top:96px;width:240px;height:240px;background:#F1F3F8;border-radius:14px 14px 0 0;animation:phB var(--T) cubic-bezier(.65,0,.35,1) infinite alternate}
+.fx-phero .drag{left:206px;top:150px;animation:dragP var(--T) cubic-bezier(.65,0,.35,1) infinite alternate}
+@keyframes phA{0%,12%{transform:none}88%,100%{transform:translateY(-30px)}}
+@keyframes phB{0%,12%{transform:none}88%,100%{transform:translateY(-80px)}}
+@keyframes dragP{0%,12%{transform:none}88%,100%{transform:translateY(-80px)}}
+.fx-shrink{--T:calc(3s*var(--spd))}
+.shh{left:0;top:0;width:240px;height:74px;background:#3B5BFD;z-index:2;animation:shh var(--T) cubic-bezier(.65,0,.35,1) infinite alternate}
+.shh b{left:14px;top:36px;font-size:22px;color:#fff;transform-origin:0 50%;animation:sht var(--T) cubic-bezier(.65,0,.35,1) infinite alternate}
+.shc{left:0;top:74px;width:240px;height:240px;animation:shc var(--T) cubic-bezier(.65,0,.35,1) infinite alternate}
+.fx-shrink .drag{left:206px;top:150px;animation:dragS var(--T) cubic-bezier(.65,0,.35,1) infinite alternate}
+@keyframes shh{0%,12%{height:74px}88%,100%{height:34px}}
+@keyframes sht{0%,12%{transform:none}88%,100%{transform:translateY(-27px) scale(.6)}}
+@keyframes shc{0%,12%{transform:none}88%,100%{transform:translateY(-40px)}}
+@keyframes dragS{0%,12%{transform:none}88%,100%{transform:translateY(-50px)}}
+.fx-ptr{--T:calc(3.4s*var(--spd))}
+.ptrw{left:108px;top:16px;width:24px;height:24px;opacity:0;animation:ptrO var(--T) infinite}
+.ptrw i{inset:0;border-radius:50%;border:3px solid #DDE2EC;border-top-color:#3B5BFD;animation:spin calc(.8s*var(--spd)) linear infinite}
+@keyframes ptrO{0%,14%{opacity:0;transform:scale(.6)}34%,70%{opacity:1;transform:none}78%,100%{opacity:0;transform:scale(.6)}}
+.fx-ptr .pg{animation:ptrP var(--T) infinite}
+@keyframes ptrP{0%,10%{transform:none}34%,70%{transform:translateY(56px);animation-timing-function:cubic-bezier(.16,1,.3,1)}84%,100%{transform:none}}
+.fx-ptr .drag{left:120px;top:70px;animation:dragR var(--T) infinite}
+@keyframes dragR{0%,8%{opacity:0;transform:none}10%{opacity:1;transform:none}34%{opacity:1;transform:translateY(56px)}38%,100%{opacity:0;transform:translateY(56px)}}
+.fx-car{--T:calc(4s*var(--spd))}
+.cstr{left:0;top:22px;width:720px;height:110px;animation:car var(--T) cubic-bezier(.2,.8,.2,1) infinite}
+.cstr i{top:0;width:170px;height:104px;border-radius:12px;box-shadow:0 4px 12px rgba(20,30,60,.15)}
+@keyframes car{0%,18%{transform:none}30%,48%{transform:translateX(-182px)}60%,78%{transform:translateX(-364px)}90%,100%{transform:none}}
+.cdot{top:144px;width:6px;height:6px;border-radius:50%;background:#C9CFDB}
+.cdot.on{background:#3B5BFD;width:6px;animation:cdot var(--T) cubic-bezier(.2,.8,.2,1) infinite}
+@keyframes cdot{0%,18%{transform:none}30%,48%{transform:translateX(12px)}60%,78%{transform:translateX(24px)}90%,100%{transform:none}}
+.fx-car .drag{left:180px;top:76px;opacity:0;animation:dragC var(--T) infinite}
+@keyframes dragC{0%,15%{opacity:0;transform:none}17%{opacity:1;transform:none}27%{opacity:1;transform:translateX(-80px)}30%,45%{opacity:0;transform:none}47%{opacity:1;transform:none}57%{opacity:1;transform:translateX(-80px)}60%,100%{opacity:0;transform:none}}
+.fx-swipe{--T:calc(3.6s*var(--spd))}
+.fx-swipe .card{left:14px;width:212px;height:36px}
+.fx-swipe .av{top:10px}
+.sdel{left:14px;top:66px;width:212px;height:36px;border-radius:10px;background:#E5484D;color:#fff;font-size:11px;font-weight:700;animation:sdel var(--T) infinite}
+.sdel span{right:18px;top:11px}
+.sw2{animation:sw2 var(--T) cubic-bezier(.2,.8,.2,1) infinite}
+.sw3{animation:sw3 var(--T) cubic-bezier(.65,0,.35,1) infinite}
+@keyframes sw2{0%,15%{transform:none;opacity:1}32%,52%{transform:translateX(-70px);opacity:1}62%,90%{transform:translateX(-250px);opacity:1}91%{transform:none;opacity:0}100%{transform:none;opacity:1}}
+@keyframes sdel{0%,60%{opacity:1}66%,98%{opacity:0}100%{opacity:1}}
+@keyframes sw3{0%,62%{transform:none}72%,90%{transform:translateY(-42px)}100%{transform:none}}
+.fx-swipe .drag{left:190px;top:84px;opacity:0;animation:dragD var(--T) infinite}
+@keyframes dragD{0%,12%{opacity:0;transform:none}14%{opacity:1;transform:none}32%,50%{opacity:1;transform:translateX(-70px)}60%{opacity:1;transform:translateX(-160px)}62%,100%{opacity:0;transform:translateX(-160px)}}
+
+.stage:has(.wsc) .ptag{top:auto;bottom:10px}
 /* 일시정지 */
 .paused .stage *,.paused .stage *::before,.paused .stage *::after{animation-play-state:paused!important}
 
@@ -331,18 +538,28 @@ h1 em{font-style:normal;font-family:var(--f-disp);font-stretch:125%;font-weight:
 <div class="page">
   <header class="top">
     <div>
-      <p class="eyebrow">Motion Graphics Pack · 25 moves · 5 groups</p>
+      <p class="eyebrow">Motion Graphics Pack · 영상 25 · 웹앱 25</p>
       <h1>모션 그래픽 팩 <em>MOTION</em></h1>
-      <p class="lede">영상 편집을 처음 배우는 사람을 위한 한 장짜리 견본집입니다. 자주 쓰는 모션 25가지를 비슷한 것끼리 다섯 묶음으로 나눴고, 액자마다 그 효과가 실제로 어떻게 움직이는지 반복해서 보여 줍니다. 아래 수치는 쇼츠(9:16) 편집에서 무난하게 쓰이는 시작값입니다.</p>
+      <div class="tabs" role="tablist" aria-label="용도">
+        <button class="tab" role="tab" id="tab-video" aria-controls="p-video" aria-selected="true" type="button">영상용<small>쇼츠·편집</small></button>
+        <button class="tab" role="tab" id="tab-web" aria-controls="p-web" aria-selected="false" type="button" tabindex="-1">웹앱용<small>버튼·화면 전환</small></button>
+      </div>
     </div>
     <div class="side">
-      <p class="starter"><b>처음이라면 이 세 개부터:</b> Ease Out(모든 등장의 기본) · Stagger(목록·자막) · Lower 3rd(인물 소개). 이것만 써도 화면이 훨씬 정돈돼 보입니다.</p>
       <p class="starter"><b>액자를 누르면</b> 바로 쓸 수 있는 짧은 프롬프트가 나옵니다. <b>[ ]</b> 안만 원하는 내용으로 바꿔서 쓰세요.</p>
       <div class="ctrl">
         <button class="btn" id="btn-play" type="button" aria-pressed="false"><svg viewBox="0 0 12 12" aria-hidden="true"><rect x="1" y="1" width="3.5" height="10"/><rect x="7.5" y="1" width="3.5" height="10"/></svg><span>일시정지</span></button>
         <button class="btn" id="btn-slow" type="button" aria-pressed="false">0.5배속으로 보기</button>
       </div>
       <p class="rm-note" id="rm-note" hidden>기기에서 '동작 줄이기'가 켜져 있어 멈춘 상태로 시작했습니다. 재생을 누르면 움직입니다.</p>
+    </div>
+  </header>
+
+  <section class="panel" id="p-video" role="tabpanel" aria-labelledby="tab-video">
+  <div class="intro">
+    <p class="lede">영상 편집을 처음 배우는 사람을 위한 한 장짜리 견본집입니다. 자주 쓰는 모션 25가지를 비슷한 것끼리 다섯 묶음으로 나눴고, 액자마다 그 효과가 실제로 어떻게 움직이는지 반복해서 보여 줍니다. 아래 수치는 쇼츠(9:16) 편집에서 무난하게 쓰이는 시작값입니다.</p>
+    <div class="side">
+      <p class="starter"><b>처음이라면 이 세 개부터:</b> Ease Out(모든 등장의 기본) · Stagger(목록·자막) · Lower 3rd(인물 소개). 이것만 써도 화면이 훨씬 정돈돼 보입니다.</p>
       <ul class="legend">
         <li><a href="#g-cam" data-c="cam"><span class="dot"></span>카메라 무브</a></li>
         <li><a href="#g-tr" data-c="tr"><span class="dot"></span>전환</a></li>
@@ -352,9 +569,8 @@ h1 em{font-style:normal;font-family:var(--f-disp);font-stretch:125%;font-weight:
         <li><span class="add">추천</span>&nbsp;요청 목록에 더한 5가지</li>
       </ul>
     </div>
-  </header>
-
-  <main class="wall">
+  </div>
+  <div class="wall">
 
     <!-- ===== 카메라 무브 ===== -->
     <section class="tile cat" id="g-cam" data-c="cam">
@@ -660,10 +876,239 @@ h1 em{font-style:normal;font-family:var(--f-disp);font-stretch:125%;font-weight:
       <p class="spec">0.5s · ease-out · 줄마다 0.15s 시차</p>
     </article>
 
-  </main>
+  </div>
+  </section>
+
+  <section class="panel" id="p-web" role="tabpanel" aria-labelledby="tab-web" hidden>
+  <div class="intro">
+    <p class="lede">웹앱·모바일 화면에서 쓰는 모션 25가지입니다. 영상 효과와 원리는 같지만 훨씬 짧고(0.1–0.5초) 절제해서 씁니다. 액자 속 동그라미는 손가락이 누르거나 미는 자리입니다. 프롬프트는 AI 코딩 도구에 그대로 넣을 수 있게 썼습니다.</p>
+    <div class="side">
+      <p class="starter"><b>처음이라면 이 세 개부터:</b> Press(버튼) · Fade Up(나타나기) · Toast(알림). 앱이 "살아 있다"는 느낌의 대부분이 여기서 나옵니다.</p>
+      <ul class="legend">
+        <li><a href="#g-wa" data-c="wa"><span class="dot"></span>누르기 반응</a></li>
+        <li><a href="#g-wb" data-c="wb"><span class="dot"></span>화면 전환</a></li>
+        <li><a href="#g-wc" data-c="wc"><span class="dot"></span>나타나기</a></li>
+        <li><a href="#g-wd" data-c="wd"><span class="dot"></span>상태 표시</a></li>
+        <li><a href="#g-we" data-c="we"><span class="dot"></span>스크롤·제스처</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wall">
+    <section class="tile cat" id="g-wa" data-c="wa">
+      <span class="n">Web A · 5</span>
+      <p class="code">FEEDBACK</p>
+      <h2>누르기 반응</h2>
+      <p>버튼을 누르거나 값을 바꿨을 때 "눌렸다"를 알려 주는 짧은 반응입니다. 없으면 앱이 멈춘 것처럼 느껴집니다.</p>
+      <ul><li>Press</li><li>Ripple</li><li>Like Pop</li><li>Toggle</li><li>Shake</li></ul>
+    </section>
+    <article class="tile" data-c="wa" data-prompt="내 웹앱의 [버튼]을 누르면 0.1초 동안 96% 크기로 줄었다가 돌아오는 눌림 효과를 넣어줘">
+      <div class="stage"><div class="scene wsc fx-press"><div class="wbtn pbtn">결제하기</div><div class="tap" style="left:120px;top:89px"></div></div></div>
+      <div class="name"><h3>Press</h3><span class="kr">눌림</span></div>
+      <p class="desc">누르는 순간 버튼이 살짝 작아졌다 돌아옵니다. 가장 작지만 가장 많이 쓰는 반응입니다.</p>
+      <p class="use"><b>영상 원리</b>Squash</p>
+      <p class="spec">100–150ms · ease-out · 크기 96%</p>
+    </article>
+    <article class="tile" data-c="wa" data-prompt="[버튼]을 누르면 누른 위치에서 원이 퍼지며 사라지는 물결(리플) 효과를 넣어줘, 0.5초">
+      <div class="stage"><div class="scene wsc fx-ripple"><div class="wbtn rbtn">계속하기<i class="rip"></i></div><div class="tap" style="left:90px;top:89px"></div></div></div>
+      <div class="name"><h3>Ripple</h3><span class="kr">리플</span></div>
+      <p class="desc">누른 자리에서 동그란 물결이 퍼집니다. 어디를 눌렀는지 정확히 보여 줍니다.</p>
+      <p class="use"><b>영상 원리</b>Iris</p>
+      <p class="spec">400–600ms · ease-out</p>
+    </article>
+    <article class="tile" data-c="wa" data-prompt="[좋아요 버튼]을 누르면 하트가 커졌다 제자리로 돌아오는 오버슈트 효과와 작은 점이 퍼지는 효과를 넣어줘">
+      <div class="stage"><div class="scene wsc fx-like"><svg class="hrt" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.1C.9 8.6 3 5 6.5 5c2 0 3.6 1.1 5.5 3.2C13.9 6.1 15.5 5 17.5 5 21 5 23.1 8.6 21.6 11.9 19.5 16.4 12 21 12 21z" fill="none" stroke="#9AA3B5" stroke-width="1.6"/></svg><svg class="hrt hrt1" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.1C.9 8.6 3 5 6.5 5c2 0 3.6 1.1 5.5 3.2C13.9 6.1 15.5 5 17.5 5 21 5 23.1 8.6 21.6 11.9 19.5 16.4 12 21 12 21z" fill="#FF3B5C"/></svg><div class="bst"><b style="--a:0deg"><i></i></b><b style="--a:45deg"><i></i></b><b style="--a:90deg"><i></i></b><b style="--a:135deg"><i></i></b><b style="--a:180deg"><i></i></b><b style="--a:225deg"><i></i></b><b style="--a:270deg"><i></i></b><b style="--a:315deg"><i></i></b></div><span class="wlab" style="top:112px">좋아요</span><div class="tap" style="left:120px;top:76px"></div></div></div>
+      <div class="name"><h3>Like Pop</h3><span class="kr">좋아요 팝</span></div>
+      <p class="desc">하트가 커졌다 제자리로 돌아오고 작은 점이 터집니다. 기분 좋은 순간을 강조합니다.</p>
+      <p class="use"><b>영상 원리</b>Overshoot</p>
+      <p class="spec">300–450ms · overshoot</p>
+    </article>
+    <article class="tile" data-c="wa" data-prompt="[설정 항목]에 켜기/끄기 스위치를 만들고, 누르면 0.2초 동안 동그라미가 부드럽게 미끄러지며 색이 바뀌게 해줘">
+      <div class="stage"><div class="scene wsc fx-toggle"><div class="card"><span class="tlab">알림 받기</span><div class="trk2"><i class="knob"></i></div></div><div class="tap two" style="left:178px;top:89px;animation-delay:calc(var(--T)*-0.0001)"></div></div></div>
+      <div class="name"><h3>Toggle</h3><span class="kr">토글 스위치</span></div>
+      <p class="desc">동그라미가 미끄러지며 색이 바뀌어 켜짐·꺼짐을 보여 줍니다.</p>
+      <p class="use"><b>영상 원리</b>Ease In-Out</p>
+      <p class="spec">200ms · ease-in-out</p>
+    </article>
+    <article class="tile" data-c="wa" data-prompt="[입력칸]에 잘못 입력하면 좌우로 3번 흔들리고 빨간 테두리와 [오류 문구]가 나타나게 해줘">
+      <div class="stage"><div class="scene wsc fx-shake"><span class="flab">비밀번호</span><div class="inp">••••••</div><span class="err">비밀번호가 틀렸어요</span><div class="wbtn lbtn">로그인</div><div class="tap" style="left:120px;top:131px;animation-delay:calc(var(--T)*-0.1)"></div></div></div>
+      <div class="name"><h3>Shake</h3><span class="kr">오류 흔들림</span></div>
+      <p class="desc">틀리게 입력하면 칸이 고개를 젓듯 좌우로 흔들립니다. 글을 안 읽어도 "틀렸다"가 전달됩니다.</p>
+      <p class="use"><b>영상 원리</b>Anticipation 반대(감쇠 진동)</p>
+      <p class="spec">400ms · 좌우 3–4번, 점점 작게</p>
+    </article>
+    <section class="tile cat" id="g-wb" data-c="wb">
+      <span class="n">Web B · 5</span>
+      <p class="code">NAVIGATION</p>
+      <h2>화면 전환</h2>
+      <p>페이지나 화면이 바뀔 때의 연결입니다. 사용자가 "어디에서 어디로 왔는지" 길을 잃지 않게 해 줍니다.</p>
+      <ul><li>Fade Through</li><li>Push</li><li>Shared Element</li><li>Bottom Sheet</li><li>Tab Indicator</li></ul>
+    </section>
+    <article class="tile" data-c="wb" data-prompt="[페이지 A]에서 [페이지 B]로 넘어갈 때 0.25초 동안 살짝 흐려졌다 나타나는 페이드 전환을 넣어줘">
+      <div class="stage"><div class="scene wsc fx-fade"><div class="pg pa"><div class="hd">홈</div><div class="card" style="left:14px;top:40px;width:212px;height:62px"><i class="img"></i><i class="ln" style="left:64px;top:16px;width:110px"></i><i class="ln" style="left:64px;top:30px;width:80px"></i></div><i class="ln" style="left:14px;top:116px;width:150px"></i><i class="ln" style="left:14px;top:130px;width:190px"></i><i class="ln" style="left:14px;top:144px;width:120px"></i></div><div class="pg pb"><div class="hd">‹ 설정</div><div class="card " style="left:14px;top:40px;width:212px;height:34px"><i class="av"></i><i class="ln" style="left:36px;top:14px;width:120px"></i></div><div class="card " style="left:14px;top:82px;width:212px;height:34px"><i class="av"></i><i class="ln" style="left:36px;top:14px;width:90px"></i></div><div class="card " style="left:14px;top:124px;width:212px;height:34px"><i class="av"></i><i class="ln" style="left:36px;top:14px;width:140px"></i></div></div><div class="tap" style="left:120px;top:71px;animation-delay:calc(var(--T)*-0.08)"></div></div></div>
+      <div class="name"><h3>Fade Through</h3><span class="kr">페이드</span></div>
+      <p class="desc">앞 화면이 살짝 흐려지고 다음 화면이 떠오릅니다. 서로 관계없는 메뉴끼리 이동할 때 씁니다.</p>
+      <p class="use"><b>영상 원리</b>Dissolve</p>
+      <p class="spec">200–300ms · 투명도 + 크기 97%</p>
+    </article>
+    <article class="tile" data-c="wb" data-prompt="[목록 화면]에서 [상세 화면]으로 갈 때 새 화면이 오른쪽에서 밀고 들어오는 슬라이드 전환을 넣어줘, 뒤로 가면 반대로">
+      <div class="stage"><div class="scene wsc fx-push"><div class="pg pa"><div class="hd">홈</div><div class="card" style="left:14px;top:40px;width:212px;height:62px"><i class="img"></i><i class="ln" style="left:64px;top:16px;width:110px"></i><i class="ln" style="left:64px;top:30px;width:80px"></i></div><i class="ln" style="left:14px;top:116px;width:150px"></i><i class="ln" style="left:14px;top:130px;width:190px"></i><i class="ln" style="left:14px;top:144px;width:120px"></i></div><div class="pg pb"><div class="hd">‹ 설정</div><div class="card " style="left:14px;top:40px;width:212px;height:34px"><i class="av"></i><i class="ln" style="left:36px;top:14px;width:120px"></i></div><div class="card " style="left:14px;top:82px;width:212px;height:34px"><i class="av"></i><i class="ln" style="left:36px;top:14px;width:90px"></i></div><div class="card " style="left:14px;top:124px;width:212px;height:34px"><i class="av"></i><i class="ln" style="left:36px;top:14px;width:140px"></i></div></div><div class="tap" style="left:120px;top:71px;animation-delay:calc(var(--T)*-0.06)"></div></div></div>
+      <div class="name"><h3>Push</h3><span class="kr">밀어 넣기</span></div>
+      <p class="desc">새 화면이 오른쪽에서 밀고 들어오고 뒤로 가면 반대로 나갑니다. 한 단계 깊이 들어갈 때 씁니다.</p>
+      <p class="use"><b>영상 원리</b>Wipe · Pan</p>
+      <p class="spec">300–400ms · cubic-bezier(.32,.72,0,1)</p>
+    </article>
+    <article class="tile" data-c="wb" data-prompt="[목록]의 [사진]을 누르면 그 사진이 커지면서 상세 화면 맨 위 사진이 되는 연결 전환(shared element)을 넣어줘">
+      <div class="stage"><div class="scene wsc fx-shared"><div class="pg"><div class="hd">갤러리</div><div class="card" style="left:14px;top:40px;width:212px;height:40px"><i class="ln" style="left:46px;top:12px;width:120px"></i><i class="ln" style="left:46px;top:24px;width:70px;background:#E6E9F0"></i></div><div class="se-fade"><div class="card" style="left:14px;top:88px;width:212px;height:40px"><i class="img" style="left:8px;top:6px;width:28px;height:28px;background:linear-gradient(#3A3550,#F07D1E)"></i><i class="ln" style="left:46px;top:12px;width:100px"></i></div><div class="card" style="left:14px;top:136px;width:212px;height:40px"><i class="img" style="left:8px;top:6px;width:28px;height:28px;background:linear-gradient(#1C7C77,#2AAE9C)"></i><i class="ln" style="left:46px;top:12px;width:130px"></i></div></div></div><div class="se-dt"><i class="ln" style="left:14px;top:108px;width:140px;height:10px;background:#B9C0CE"></i><i class="ln" style="left:14px;top:128px;width:200px"></i><i class="ln" style="left:14px;top:142px;width:180px"></i><i class="ln" style="left:14px;top:156px;width:120px"></i></div><i class="se-th"></i><div class="tap" style="left:120px;top:60px;animation-delay:calc(var(--T)*-0.08)"></div></div></div>
+      <div class="name"><h3>Shared Element</h3><span class="kr">연결 전환</span></div>
+      <p class="desc">목록의 사진을 누르면 그 사진이 그대로 커져 상세 화면 위쪽이 됩니다. 앱이 가장 고급스러워 보이는 기법입니다.</p>
+      <p class="use"><b>영상 원리</b>Match Cut</p>
+      <p class="spec">350–500ms · ease-in-out</p>
+    </article>
+    <article class="tile" data-c="wb" data-prompt="[버튼]을 누르면 화면 아래에서 [옵션 목록] 시트가 0.3초 동안 올라오고 뒤 배경이 어두워지게 해줘">
+      <div class="stage"><div class="scene wsc fx-sheet"><div class="pg pa"><div class="hd">홈</div><div class="wbtn obtn">옵션</div><div class="card" style="left:14px;top:40px;width:212px;height:62px"><i class="img"></i><i class="ln" style="left:64px;top:16px;width:110px"></i><i class="ln" style="left:64px;top:30px;width:80px"></i></div><i class="ln" style="left:14px;top:116px;width:150px"></i><i class="ln" style="left:14px;top:130px;width:190px"></i><i class="ln" style="left:14px;top:144px;width:120px"></i></div><div class="dimw"></div><div class="sht"><i class="hdl"></i><i class="ln" style="left:20px;top:28px;width:120px"></i><i class="ln" style="left:20px;top:52px;width:150px"></i><i class="ln" style="left:20px;top:76px;width:100px"></i></div><div class="tap" style="left:202px;top:15px;animation-delay:calc(var(--T)*-0.1)"></div></div></div>
+      <div class="name"><h3>Bottom Sheet</h3><span class="kr">바텀 시트</span></div>
+      <p class="desc">화면 아래에서 선택 창이 올라오고 뒤는 어두워집니다. 휴대폰에서 손가락이 닿기 쉬운 자리입니다.</p>
+      <p class="use"><b>영상 원리</b>Ease Out</p>
+      <p class="spec">열기 300ms · 닫기 200ms</p>
+    </article>
+    <article class="tile" data-c="wb" data-prompt="[탭 이름들] 탭을 누르면 밑줄이 그 탭으로 미끄러지고 내용도 옆으로 넘어가게 해줘">
+      <div class="stage"><div class="scene wsc fx-tabs"><div class="tbar"><span style="left:0">홈</span><span style="left:80px">검색</span><span style="left:160px">내 정보</span><i class="tind"></i></div><div class="tcon"><div class="card" style="left:14px;top:12px;width:212px;height:56px"><i class="img" style="background:linear-gradient(#283363,#E8896A)"></i><i class="ln" style="left:64px;top:16px;width:110px"></i></div><i class="ln" style="left:14px;top:82px;width:170px"></i><i class="ln" style="left:14px;top:96px;width:130px"></i><div class="card" style="left:254px;top:12px;width:212px;height:56px"><i class="img" style="background:linear-gradient(#1C7C77,#2AAE9C)"></i><i class="ln" style="left:64px;top:16px;width:110px"></i></div><i class="ln" style="left:254px;top:82px;width:170px"></i><i class="ln" style="left:254px;top:96px;width:130px"></i><div class="card" style="left:494px;top:12px;width:212px;height:56px"><i class="img" style="background:linear-gradient(#5B3FA8,#9C7BEE)"></i><i class="ln" style="left:64px;top:16px;width:110px"></i></div><i class="ln" style="left:494px;top:82px;width:170px"></i><i class="ln" style="left:494px;top:96px;width:130px"></i></div></div></div>
+      <div class="name"><h3>Tab Indicator</h3><span class="kr">탭 밑줄</span></div>
+      <p class="desc">탭을 바꾸면 밑줄이 미끄러져 따라가고 내용도 옆으로 넘어갑니다.</p>
+      <p class="use"><b>영상 원리</b>Wipe · Pan</p>
+      <p class="spec">250ms · ease-in-out</p>
+    </article>
+    <section class="tile cat" id="g-wc" data-c="wc">
+      <span class="n">Web C · 5</span>
+      <p class="code">ENTER</p>
+      <h2>나타나기</h2>
+      <p>화면에 새 내용이 나타나는 방법입니다. 갑자기 툭 나오지 않고 자연스럽게 자리 잡게 합니다.</p>
+      <ul><li>Fade Up</li><li>Stagger List</li><li>Skeleton</li><li>Toast</li><li>Count Up</li></ul>
+    </section>
+    <article class="tile" data-c="wc" data-prompt="[카드]가 처음 나타날 때 아래에서 12px 올라오며 0.3초 동안 서서히 보이게 해줘">
+      <div class="stage"><div class="scene wsc fx-fup"><div class="card"><i class="img"></i><i class="ln" style="left:8px;top:76px;width:130px"></i><i class="ln" style="left:8px;top:90px;width:90px"></i></div></div></div>
+      <div class="name"><h3>Fade Up</h3><span class="kr">떠오르기</span></div>
+      <p class="desc">아래에서 살짝 올라오며 서서히 보입니다. 카드·사진·문단이 나타날 때의 기본값입니다.</p>
+      <p class="use"><b>영상 원리</b>Ease Out</p>
+      <p class="spec">250–400ms · ease-out · 위로 8–16px</p>
+    </article>
+    <article class="tile" data-c="wc" data-prompt="[목록]의 항목들이 0.05초 간격으로 차례로 아래에서 올라오며 나타나게 해줘">
+      <div class="stage"><div class="scene wsc fx-slist"><div class="card" style="--i:0;top:18px"><i class="av" style="background:#5B88F2"></i><i class="ln" style="left:36px;top:11px;width:120px"></i></div><div class="card" style="--i:1;top:56px"><i class="av" style="background:#25AD92"></i><i class="ln" style="left:36px;top:11px;width:90px"></i></div><div class="card" style="--i:2;top:94px"><i class="av" style="background:#E8A43C"></i><i class="ln" style="left:36px;top:11px;width:140px"></i></div><div class="card" style="--i:3;top:132px"><i class="av" style="background:#EE6A50"></i><i class="ln" style="left:36px;top:11px;width:100px"></i></div></div></div>
+      <div class="name"><h3>Stagger List</h3><span class="kr">차례로 나타나기</span></div>
+      <p class="desc">목록이 위에서부터 하나씩 시차를 두고 나타납니다. 읽는 순서가 생깁니다.</p>
+      <p class="use"><b>영상 원리</b>Stagger</p>
+      <p class="spec">항목 간격 30–60ms</p>
+    </article>
+    <article class="tile" data-c="wc" data-prompt="[화면]을 불러오는 동안 회색 자리 표시 상자에 빛이 지나가는 스켈레톤 로딩을 보여 줘">
+      <div class="stage"><div class="scene wsc fx-skel"><div class="card"><i class="sk" style="left:12px;top:12px;width:32px;height:32px;border-radius:50%"></i><i class="sk" style="left:56px;top:16px;width:110px;height:8px"></i><i class="sk" style="left:56px;top:30px;width:70px;height:8px"></i><i class="sk" style="left:12px;top:56px;width:168px;height:34px;border-radius:6px"></i><i class="sk" style="left:12px;top:100px;width:140px;height:8px"></i></div><span class="wlab" style="top:158px">불러오는 동안 자리 표시</span></div></div>
+      <div class="name"><h3>Skeleton</h3><span class="kr">스켈레톤</span></div>
+      <p class="desc">내용을 불러오는 동안 회색 자리 표시에 빛이 지나갑니다. 빈 화면보다 덜 기다리는 느낌을 줍니다.</p>
+      <p class="use"><b>영상 원리</b>Loop</p>
+      <p class="spec">1.2–1.6s 반복 · linear</p>
+    </article>
+    <article class="tile" data-c="wc" data-prompt="[저장 버튼]을 누르면 화면 아래에 [알림 문구] 토스트가 올라왔다가 3초 뒤 사라지게 해줘">
+      <div class="stage"><div class="scene wsc fx-toast"><div class="pg pa"><div class="hd">메모</div><div class="wbtn obtn">저장</div><div class="card" style="left:14px;top:40px;width:212px;height:62px"><i class="img"></i><i class="ln" style="left:64px;top:16px;width:110px"></i><i class="ln" style="left:64px;top:30px;width:80px"></i></div><i class="ln" style="left:14px;top:116px;width:150px"></i><i class="ln" style="left:14px;top:130px;width:190px"></i><i class="ln" style="left:14px;top:144px;width:120px"></i></div><div class="toast"><b>✓</b> 저장되었어요</div><div class="tap" style="left:202px;top:15px;animation-delay:calc(var(--T)*-0.12)"></div></div></div>
+      <div class="name"><h3>Toast</h3><span class="kr">토스트 알림</span></div>
+      <p class="desc">화면 아래에 짧은 알림이 올라왔다가 몇 초 뒤 사라집니다.</p>
+      <p class="use"><b>영상 원리</b>Lower 3rd</p>
+      <p class="spec">등장 250ms · 유지 3–4s</p>
+    </article>
+    <article class="tile" data-c="wc" data-prompt="[대시보드 숫자]가 화면에 보일 때 0부터 실제 값까지 1초 동안 올라가게 하고, 아래 막대그래프도 차례로 자라게 해줘">
+      <div class="stage"><div class="scene wsc fx-wcount"><div class="card"><span class="wc-l">이번 달 매출 (예시)</span><strong class="wc-n" id="count-web">₩0</strong><i class="wbar" style="--i:0;left:14px;height:34px"></i><i class="wbar" style="--i:1;left:44px;height:52px"></i><i class="wbar" style="--i:2;left:74px;height:44px"></i><i class="wbar" style="--i:3;left:104px;height:70px"></i><i class="wbar" style="--i:4;left:134px;height:62px"></i><i class="wbar" style="--i:5;left:164px;height:84px"></i></div></div></div>
+      <div class="name"><h3>Count Up</h3><span class="kr">숫자 올라가기</span></div>
+      <p class="desc">대시보드 숫자가 0부터 올라가고 막대가 차례로 자랍니다.</p>
+      <p class="use"><b>영상 원리</b>Count Up · Stagger</p>
+      <p class="spec">0.8–1.2s · ease-out</p>
+    </article>
+    <section class="tile cat" id="g-wd" data-c="wd">
+      <span class="n">Web D · 5</span>
+      <p class="code">STATUS</p>
+      <h2>상태 표시</h2>
+      <p>기다리는 중, 끝남, 새 소식 같은 "지금 상태"를 알려 줍니다. 사용자가 불안하지 않게 합니다.</p>
+      <ul><li>Spinner</li><li>Icon Morph</li><li>Progress</li><li>Success Check</li><li>Badge Bump</li></ul>
+    </section>
+    <article class="tile" data-c="wd" data-prompt="[데이터]를 불러오는 동안 0.8초에 한 바퀴 도는 원형 로딩 표시와 [문구]를 보여 줘">
+      <div class="stage"><div class="scene wsc fx-spin"><i class="ring2"></i><span class="wlab" style="top:108px">불러오는 중…</span></div></div>
+      <div class="name"><h3>Spinner</h3><span class="kr">로딩 스피너</span></div>
+      <p class="desc">원이 계속 돌면서 "처리 중"을 알립니다. 1초 넘게 걸리는 작업에 씁니다.</p>
+      <p class="use"><b>영상 원리</b>Loop</p>
+      <p class="spec">1바퀴 0.8s · linear</p>
+    </article>
+    <article class="tile" data-c="wd" data-prompt="[메뉴 버튼]을 누르면 줄 세 개(☰)가 X 모양으로 0.25초 동안 바뀌고, 다시 누르면 돌아오게 해줘">
+      <div class="stage"><div class="scene wsc fx-burger"><div class="card"><i class="bg" style="--n:bTop;top:20px"></i><i class="bg" style="--n:bMid;top:30px"></i><i class="bg" style="--n:bBot;top:40px"></i></div><span class="wlab" style="top:124px">메뉴 ☰ ↔ 닫기 ✕</span><div class="tap two" style="left:120px;top:78px;animation-delay:calc(var(--T)*-0.07)"></div></div></div>
+      <div class="name"><h3>Icon Morph</h3><span class="kr">아이콘 변신</span></div>
+      <p class="desc">메뉴 줄 세 개가 X로 바뀌었다 돌아옵니다. 같은 버튼의 두 상태를 이어 줍니다.</p>
+      <p class="use"><b>영상 원리</b>Shape Morph</p>
+      <p class="spec">250ms · ease-in-out</p>
+    </article>
+    <article class="tile" data-c="wd" data-prompt="[파일] 업로드 진행률을 막대로 보여 주고, 끝나면 [완료 문구]로 바뀌게 해줘">
+      <div class="stage"><div class="scene wsc fx-prog"><div class="card"><i class="fic"></i><span class="fnm">영상_최종.mp4</span><span class="fst up">업로드 중…</span><span class="fst ok">완료 ✓</span><div class="ptk"><i class="pfl"></i></div></div></div></div>
+      <div class="name"><h3>Progress</h3><span class="kr">진행 막대</span></div>
+      <p class="desc">막대가 차오르며 얼마나 남았는지 보여 주고, 끝나면 완료로 바뀝니다.</p>
+      <p class="use"><b>영상 원리</b>Ease In-Out</p>
+      <p class="spec">실제 진행률에 맞춰 부드럽게</p>
+    </article>
+    <article class="tile" data-c="wd" data-prompt="[결제] 완료 화면에서 초록 원이 톡 튀어나오고 체크 표시가 그려지는 애니메이션을 넣어줘">
+      <div class="stage"><div class="scene wsc fx-ok"><div class="okc"><svg viewBox="0 0 56 56" aria-hidden="true"><path d="M17 29l7 7 15-16" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="okt">결제 완료</span></div></div>
+      <div class="name"><h3>Success Check</h3><span class="kr">완료 체크</span></div>
+      <p class="desc">초록 원이 톡 튀어나오고 체크 표시가 그려집니다. 결제·제출이 끝난 순간에 씁니다.</p>
+      <p class="use"><b>영상 원리</b>Overshoot · Type On</p>
+      <p class="spec">원 300ms → 체크 250ms</p>
+    </article>
+    <article class="tile" data-c="wd" data-prompt="[알림 아이콘]에 새 알림이 오면 숫자 배지가 톡 커졌다 돌아오고 종이 살짝 흔들리게 해줘">
+      <div class="stage"><div class="scene wsc fx-badge"><svg class="bell" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0-6 6v4l-2 3h16l-2-3V9a6 6 0 0 0-6-6zM10 19a2 2 0 0 0 4 0z" fill="#1A1E2B"/></svg><div class="bdg"><span class="n3">3</span><span class="n4">4</span></div><span class="wlab" style="top:112px">새 알림이 오면</span></div></div>
+      <div class="name"><h3>Badge Bump</h3><span class="kr">배지 튀기</span></div>
+      <p class="desc">새 알림이 오면 숫자 배지가 커졌다 돌아오고 종이 흔들립니다.</p>
+      <p class="use"><b>영상 원리</b>Overshoot</p>
+      <p class="spec">300ms · overshoot</p>
+    </article>
+    <section class="tile cat" id="g-we" data-c="we">
+      <span class="n">Web E · 5</span>
+      <p class="code">GESTURE</p>
+      <h2>스크롤·제스처</h2>
+      <p>손가락으로 밀고 당기는 동작에 화면이 따라오게 합니다. 휴대폰 웹앱에서 특히 중요합니다.</p>
+      <ul><li>Parallax Hero</li><li>Shrink Header</li><li>Pull to Refresh</li><li>Carousel</li><li>Swipe to Delete</li></ul>
+    </section>
+    <article class="tile" data-c="we" data-prompt="[첫 화면 사진]이 스크롤할 때 내용보다 절반 속도로 움직이는 패럴랙스 효과를 넣어줘">
+      <div class="stage"><div class="scene wsc fx-phero"><div class="phh"><i></i></div><div class="phc"><div class="card" style="left:14px;top:16px;width:212px;height:44px"><i class="av" style="top:14px"></i><i class="ln" style="left:36px;top:19px;width:120px"></i></div><div class="card" style="left:14px;top:68px;width:212px;height:44px"><i class="av" style="top:14px"></i><i class="ln" style="left:36px;top:19px;width:150px"></i></div><div class="card" style="left:14px;top:120px;width:212px;height:44px"><i class="av" style="top:14px"></i><i class="ln" style="left:36px;top:19px;width:100px"></i></div><div class="card" style="left:14px;top:172px;width:212px;height:44px"><i class="av" style="top:14px"></i><i class="ln" style="left:36px;top:19px;width:130px"></i></div></div><div class="drag"></div></div></div>
+      <div class="name"><h3>Parallax Hero</h3><span class="kr">패럴랙스 머리말</span></div>
+      <p class="desc">스크롤하면 맨 위 사진은 천천히, 내용은 빠르게 올라가 깊이가 생깁니다.</p>
+      <p class="use"><b>영상 원리</b>Parallax</p>
+      <p class="spec">사진 속도 ×0.3–0.5</p>
+    </article>
+    <article class="tile" data-c="we" data-prompt="스크롤을 내리면 [페이지 제목]이 있는 큰 머리말이 작은 상단 바로 줄어들게 해줘">
+      <div class="stage"><div class="scene wsc fx-shrink"><div class="shh"><b>알림</b></div><div class="shc"><div class="card" style="left:14px;top:12px;width:212px;height:44px"><i class="av" style="top:14px"></i><i class="ln" style="left:36px;top:19px;width:120px"></i></div><div class="card" style="left:14px;top:68px;width:212px;height:44px"><i class="av" style="top:14px"></i><i class="ln" style="left:36px;top:19px;width:150px"></i></div><div class="card" style="left:14px;top:120px;width:212px;height:44px"><i class="av" style="top:14px"></i><i class="ln" style="left:36px;top:19px;width:100px"></i></div><div class="card" style="left:14px;top:172px;width:212px;height:44px"><i class="av" style="top:14px"></i><i class="ln" style="left:36px;top:19px;width:130px"></i></div></div><div class="drag"></div></div></div>
+      <div class="name"><h3>Shrink Header</h3><span class="kr">줄어드는 머리말</span></div>
+      <p class="desc">스크롤을 내리면 큰 제목이 작은 상단 바로 줄어듭니다. 화면을 넓게 씁니다.</p>
+      <p class="use"><b>영상 원리</b>Zoom</p>
+      <p class="spec">스크롤 위치에 연동</p>
+    </article>
+    <article class="tile" data-c="we" data-prompt="[목록 화면]을 아래로 당기면 로딩 표시가 나오고 새로고침 후 제자리로 돌아오게 해줘">
+      <div class="stage"><div class="scene wsc fx-ptr"><div class="ptrw"><i></i></div><div class="pg"><div class="hd">받은 편지함</div><div class="card " style="left:14px;top:40px;width:212px;height:34px"><i class="av"></i><i class="ln" style="left:36px;top:14px;width:120px"></i></div><div class="card " style="left:14px;top:82px;width:212px;height:34px"><i class="av"></i><i class="ln" style="left:36px;top:14px;width:90px"></i></div><div class="card " style="left:14px;top:124px;width:212px;height:34px"><i class="av"></i><i class="ln" style="left:36px;top:14px;width:140px"></i></div></div><div class="drag"></div></div></div>
+      <div class="name"><h3>Pull to Refresh</h3><span class="kr">당겨서 새로고침</span></div>
+      <p class="desc">목록을 아래로 당기면 로딩 표시가 나오고, 새로고침 후 제자리로 돌아갑니다.</p>
+      <p class="use"><b>영상 원리</b>Ease Out · Loop</p>
+      <p class="spec">당긴 거리에 연동 · 복귀 300ms</p>
+    </article>
+    <article class="tile" data-c="we" data-prompt="[카드 목록]을 옆으로 밀면 한 장씩 딱 맞춰 멈추는 캐러셀과 아래 점 표시를 만들어줘">
+      <div class="stage"><div class="scene wsc fx-car"><div class="cstr"><i style="left:35px;background:linear-gradient(135deg,#EF7158,#C24E3E)"></i><i style="left:217px;background:linear-gradient(135deg,#2AAE9C,#1C7C77)"></i><i style="left:399px;background:linear-gradient(135deg,#9C7BEE,#5B3FA8)"></i></div><i class="cdot" style="left:105px"></i><i class="cdot" style="left:117px"></i><i class="cdot" style="left:129px"></i><i class="cdot on" style="left:105px"></i><div class="drag"></div></div></div>
+      <div class="name"><h3>Carousel</h3><span class="kr">캐러셀</span></div>
+      <p class="desc">카드를 옆으로 밀면 한 장씩 딱 맞춰 멈추고 아래 점이 따라갑니다.</p>
+      <p class="use"><b>영상 원리</b>Pan</p>
+      <p class="spec">스냅 300ms · ease-out</p>
+    </article>
+    <article class="tile" data-c="we" data-prompt="[목록 항목]을 왼쪽으로 밀면 빨간 삭제 버튼이 나오고, 지우면 항목이 접히며 아래 항목이 올라오게 해줘">
+      <div class="stage"><div class="scene wsc fx-swipe"><div class="card" style="top:24px"><i class="av"></i><i class="ln" style="left:36px;top:15px;width:120px"></i></div><div class="sdel"><span>삭제</span></div><div class="card sw2" style="top:66px"><i class="av" style="background:#E8A43C"></i><i class="ln" style="left:36px;top:15px;width:90px"></i></div><div class="card sw3" style="top:108px"><i class="av" style="background:#25AD92"></i><i class="ln" style="left:36px;top:15px;width:140px"></i></div><div class="card sw3" style="top:150px"><i class="av" style="background:#EE6A50"></i><i class="ln" style="left:36px;top:15px;width:100px"></i></div><div class="drag"></div></div></div>
+      <div class="name"><h3>Swipe to Delete</h3><span class="kr">밀어서 삭제</span></div>
+      <p class="desc">항목을 왼쪽으로 밀면 삭제 버튼이 나오고, 지우면 아래 항목이 올라와 빈자리를 채웁니다.</p>
+      <p class="use"><b>영상 원리</b>Wipe · Ease In-Out</p>
+      <p class="spec">손가락 연동 · 접힘 200ms</p>
+    </article>
+  </div>
+  </section>
 
   <footer class="foot">
-    <p>모든 예시는 이 페이지 안에서 CSS로 그린 것이라 외부 영상·이미지를 쓰지 않았습니다. 프리미어·캡컷·애프터이펙트 등 대부분의 편집 툴에서 같은 이름이나 비슷한 이름으로 찾을 수 있습니다.</p>
+    <p>모든 예시는 이 페이지 안에서 CSS로 그린 것이라 외부 영상·이미지를 쓰지 않았습니다. 영상 효과는 프리미어·캡컷·애프터이펙트에서, 웹앱 효과는 CSS·Framer Motion 같은 도구에서 같은 이름이나 비슷한 이름으로 찾을 수 있습니다. 숫자 예시(매출·조회수)는 화면 연출용입니다.</p>
     <p>2026-10-29 작성</p>
   </footer>
 </div>
@@ -701,17 +1146,34 @@ h1 em{font-style:normal;font-family:var(--f-disp);font-stretch:125%;font-weight:
 
   // 스크립트로 움직이는 두 장면: 타이핑, 카운트 업
   var typeEl=document.getElementById('type-out'), TXT='모션 그래픽 배우기';
-  var cntEl=document.getElementById('count-out'), barEl=document.getElementById('count-bar'), TARGET=1284000;
+  var webEl=document.getElementById('count-web'), cntEl=document.getElementById('count-out'), barEl=document.getElementById('count-bar'), TARGET=1284000;
   function render(t){
     var p=(t%4)/4, n=p<.55?Math.floor(p/.55*(TXT.length+1)):(p<.88?TXT.length:0);
     typeEl.textContent=TXT.slice(0,Math.min(n,TXT.length));
     var q=(t%3.6)/3.6, k=q<.12?0:(q>.7?1:(q-.12)/.58), e=1-Math.pow(1-k,3);
     cntEl.textContent=Math.round(TARGET*e).toLocaleString('ko-KR');
     barEl.style.width=(e*100)+'%';
+    var w=(t%3.6)/3.6, kw=w<.12?0:(w>.62?1:(w-.12)/.5), ew=1-Math.pow(1-kw,3);
+    webEl.textContent='₩'+Math.round(3240000*ew).toLocaleString('ko-KR');
   }
   var last=performance.now();
   function tick(now){var dt=Math.min((now-last)/1000,.1);last=now;if(!state.paused)state.t+=dt/state.spd;render(state.t);requestAnimationFrame(tick);}
   render(state.t);requestAnimationFrame(tick);
+
+
+  // 탭: #video / #web
+  var tabs={video:document.getElementById('tab-video'),web:document.getElementById('tab-web')};
+  var panels={video:document.getElementById('p-video'),web:document.getElementById('p-web')};
+  function show(name,push){
+    Object.keys(tabs).forEach(function(k){var on=k===name;tabs[k].setAttribute('aria-selected',String(on));tabs[k].tabIndex=on?0:-1;panels[k].hidden=!on;});
+    if(push&&location.hash!=='#'+name){try{history.replaceState(null,'','#'+name);}catch(e){location.hash=name;}}
+  }
+  function fromHash(){var h=location.hash.slice(1);show(h==='web'||h.indexOf('g-w')===0?'web':'video',false);}
+  tabs.video.addEventListener('click',function(){show('video',true);});
+  tabs.web.addEventListener('click',function(){show('web',true);});
+  document.querySelector('.tabs').addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key==='ArrowLeft'){var n=tabs.video.getAttribute('aria-selected')==='true'?'web':'video';show(n,true);tabs[n].focus();}});
+  window.addEventListener('hashchange',fromHash);fromHash();
+  document.querySelectorAll('.legend a').forEach(function(a){a.addEventListener('click',function(e){var el=document.getElementById(a.getAttribute('href').slice(1));if(el){e.preventDefault();el.scrollIntoView({behavior:'smooth',block:'start'});}});});
 
   // 액자를 누르면 프롬프트
   var P={
@@ -751,7 +1213,7 @@ h1 em{font-style:normal;font-family:var(--f-disp);font-stretch:125%;font-weight:
   }
   function closeSheet(){sheet.hidden=true;scrim.hidden=true;if(opener)opener.focus();}
   document.querySelectorAll('article.tile').forEach(function(t){
-    var p=P[t.querySelector('h3').textContent];if(!p)return;
+    var p=t.getAttribute('data-prompt')||P[t.querySelector('h3').textContent];if(!p)return;
     t.setAttribute('data-prompt',p);t.tabIndex=0;t.setAttribute('role','button');t.setAttribute('aria-label',t.querySelector('h3').textContent+' 프롬프트 보기');
     var tag=document.createElement('span');tag.className='ptag';tag.textContent='눌러서 프롬프트';t.querySelector('.stage').appendChild(tag);
     t.addEventListener('click',function(){openSheet(t);});
