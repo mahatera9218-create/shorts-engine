@@ -14,7 +14,7 @@
   'use strict';
   if (typeof window === 'undefined' || window.MotionKit) return;
 
-  var VERSION = '1.0.0';
+  var VERSION = '1.1.0';
   var SCRIPT = document.currentScript;
   var PANEL_MODE = (SCRIPT && SCRIPT.getAttribute('data-panel')) || 'auto';
   // 북마크로 실행: 프로젝트에 파일이 없으니 패널을 바로 열고, 내보내기는 '라이브러리 없이'가 기본
@@ -320,6 +320,14 @@
     var c = readCfg(el);
     if (!c || reduced()) return;
     var st = {}, K = kindFor(el, c, st), offs = [];
+    // 글자 속 <a>·<span> 같은 inline 요소는 크기·위치 변화가 적용되지 않으므로 inline-block으로 바꾼다
+    function blockify(t) {
+      if (getComputedStyle(t).display !== 'inline') return;
+      var prev = t.style.display; t.style.display = 'inline-block';
+      offs.push(function () { t.style.display = prev; });
+    }
+    if (c.p.s === 'stagger') [].forEach.call(el.children, blockify);
+    else if (!c.p.s || c.p.s === 'ripple') blockify(el);
     function on(type, fn, opt) { el.addEventListener(type, fn, opt); offs.push(function () { el.removeEventListener(type, fn, opt); }); }
     var b = { c: c, K: K, el: el, seen: false };
     switch (c.trigger) {
@@ -562,7 +570,7 @@
     var close = h('button', { type: 'button', 'aria-label': '패널 닫기', on: { click: closePanel } }, ['✕']);
     ui.body = h('div', { class: 'body' });
     ui.pnl = h('div', { class: 'pnl', role: 'dialog', 'aria-label': 'Motion Kit 조절 패널' }, [
-      ui.hd = h('div', { class: 'hd', title: '여기를 잡고 끌면 패널이 움직입니다' }, [h('div', { class: 'ttl' }, [h('span', { class: 'grip', 'aria-hidden': 'true', text: '⋮⋮' }), h('i'), 'Motion Kit']), ui.pickBtn, ui.sideBtn, ui.minBtn, close]),
+      ui.hd = h('div', { class: 'hd', title: '여기를 잡고 끌면 패널이 움직입니다' }, [h('div', { class: 'ttl' }, [h('span', { class: 'grip', 'aria-hidden': 'true', text: '⋮⋮' }), h('i'), 'Motion Kit', h('small', { style: 'font-weight:500;color:#7D8597;font-size:11px', text: 'v' + VERSION.slice(0, 3) })]), ui.pickBtn, ui.sideBtn, ui.minBtn, close]),
       ui.body
     ]);
     root.appendChild(ui.hover); root.appendChild(ui.selbox); root.appendChild(ui.pickBar); root.appendChild(ui.pnl);
