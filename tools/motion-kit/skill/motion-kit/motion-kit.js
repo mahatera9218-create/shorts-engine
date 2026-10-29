@@ -14,7 +14,7 @@
   'use strict';
   if (typeof window === 'undefined' || window.MotionKit) return;
 
-  var VERSION = '1.1.0';
+  var VERSION = '1.1.1';
   var SCRIPT = document.currentScript;
   var PANEL_MODE = (SCRIPT && SCRIPT.getAttribute('data-panel')) || 'auto';
   // 북마크로 실행: 프로젝트에 파일이 없으니 패널을 바로 열고, 내보내기는 '라이브러리 없이'가 기본
@@ -570,7 +570,7 @@
     var close = h('button', { type: 'button', 'aria-label': '패널 닫기', on: { click: closePanel } }, ['✕']);
     ui.body = h('div', { class: 'body' });
     ui.pnl = h('div', { class: 'pnl', role: 'dialog', 'aria-label': 'Motion Kit 조절 패널' }, [
-      ui.hd = h('div', { class: 'hd', title: '여기를 잡고 끌면 패널이 움직입니다' }, [h('div', { class: 'ttl' }, [h('span', { class: 'grip', 'aria-hidden': 'true', text: '⋮⋮' }), h('i'), 'Motion Kit', h('small', { style: 'font-weight:500;color:#7D8597;font-size:11px', text: 'v' + VERSION.slice(0, 3) })]), ui.pickBtn, ui.sideBtn, ui.minBtn, close]),
+      ui.hd = h('div', { class: 'hd', title: '여기를 잡고 끌면 패널이 움직입니다' }, [h('div', { class: 'ttl' }, [h('span', { class: 'grip', 'aria-hidden': 'true', text: '⋮⋮' }), h('i'), 'Motion Kit', h('small', { style: 'font-weight:500;color:#7D8597;font-size:11px', text: 'v' + VERSION })]), ui.pickBtn, ui.sideBtn, ui.minBtn, close]),
       ui.body
     ]);
     root.appendChild(ui.hover); root.appendChild(ui.selbox); root.appendChild(ui.pickBar); root.appendChild(ui.pnl);
@@ -618,6 +618,7 @@
   function render() {
     if (!root) return;
     var b = ui.body; b.textContent = '';
+    if (window.__MK_OLD) b.appendChild(h('p', { class: 'note', style: 'color:#FFB020' }, ['이 웹앱 프로젝트에 예전 motion-kit.js(v' + window.__MK_OLD + ')가 들어 있어 새 패널로 바꿔 띄웠습니다. 프로젝트의 motion-kit.js 파일도 새 버전으로 바꿔 주세요.']));
     if (!selected) {
       b.appendChild(h('p', { class: 'hint' }, ['위의 ', h('b', { text: '요소 선택' }), '을 누른 뒤 화면에서 움직이고 싶은 버튼·카드·제목을 누르세요. 그다음 여기서 효과와 속도를 고르면 바로 보입니다.']));
     } else {
@@ -854,7 +855,13 @@
     refresh: function () { applyRules(document); scan(document.body); },
     open: openPanel,
     close: closePanel,
-    toggle: togglePanel
+    toggle: togglePanel,
+    destroy: function () {
+      closePanel(); mo.disconnect();
+      bound.forEach(function (b, el) { unbind(el); });
+      if (host) host.remove();
+      delete window.MotionKit;
+    }
   };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
