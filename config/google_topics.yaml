@@ -365,3 +365,49 @@ topics:
   - slug: cheongnyeon-jeokgeum-jiwon-bigyo
     cat: jaetech
     topic: 청년 지원 적금·계좌 비교 (가입 요건·소득 기준·만기, 세제·정부기여 혜택 차이). 공식 기준으로 숫자를 쓴다
+  # 자동 보충 2026-10-30 (클로드 예약, 뒤처진 카테고리 pension·realty·jaetech)
+  - slug: gukmin-yeongeum-gamaek-gijun
+    cat: pension
+    topic: 노령연금 소득활동 감액 기준 (재직자 노령연금, A값 초과 소득월액 구간·감액률·감액 기간). 공식 기준으로 숫자를 쓴다
+  - slug: goyong-boheom-sileop-geupyeo-yogeon
+    cat: pension
+    topic: 고용보험 실업급여 수급 요건 (피보험단위기간 180일, 이직 사유, 소정급여일수, 구직활동). 공식 기준으로 숫자를 쓴다
+  - slug: geonbo-imui-gyesok-gaip
+    cat: pension
+    topic: 건강보험 임의계속가입 (퇴직 후 지역가입 보험료 부담 완화, 신청 기한, 유지 기간 36개월). 공식 기준으로 숫자를 쓴다
+  - slug: sanjae-hyueop-geupyeo
+    cat: pension
+    topic: 산재보험 휴업급여와 요양급여 (평균임금 70% 지급, 요양 범위, 청구 방법). 공식 기준으로 숫자를 쓴다
+  - slug: gukmin-yeongeum-suryeong-gaesi-yeollyeong
+    cat: pension
+    topic: 노령연금 수급개시연령 (출생연도별 61~65세, 가입기간 10년 요건). 공식 기준으로 숫자를 쓴다
+  - slug: gukmin-yeongeum-boheomlyo-sodeukgongje
+    cat: pension
+    topic: 국민연금 보험료 소득공제 (연말정산 전액 소득공제, 공제 방법·한도). 공식 기준으로 숫자를 쓴다
+  - slug: jutaek-imdae-sodeukse-bunri
+    cat: realty
+    topic: 주택임대소득 분리과세 (연 2천만원 이하 분리과세, 필요경비율·기본공제, 신고). 공식 기준으로 숫자를 쓴다
+  - slug: jeonwolse-jeonhwan-yul
+    cat: realty
+    topic: 전월세 전환율 법정 상한 (보증금-월세 전환 계산, 기준금리 연동 상한). 공식 기준으로 숫자를 쓴다
+  - slug: jutaek-cheongyak-gajeom-jedo
+    cat: realty
+    topic: 주택청약 가점제 점수 산정 (무주택기간·부양가족수·청약통장 가입기간 배점). 공식 기준으로 숫자를 쓴다
+  - slug: imchagwon-deungi-myeongryeong
+    cat: realty
+    topic: 임차권등기명령 (보증금 못 받고 이사할 때 대항력·우선변제권 유지, 신청 절차). 공식 기준으로 숫자를 쓴다
+  - slug: budongsan-silgeorae-singo
+    cat: realty
+    topic: 부동산 실거래가 신고 의무 (계약 후 30일 이내 신고, 미신고·거짓신고 과태료). 공식 기준으로 숫자를 쓴다
+  - slug: yeongeum-jeochuk-haeji-segeum
+    cat: jaetech
+    topic: 연금저축 중도해지 세금 (세액공제 받은 원금·운용수익 기타소득세 16.5%, 부득이한 사유 예외). 공식 기준으로 숫자를 쓴다
+  - slug: isa-jungdo-haeji-hwansu
+    cat: jaetech
+    topic: ISA 중도해지 시 세제혜택 환수 (비과세·분리과세 혜택 상실, 의무가입기간, 예외 사유). 공식 기준으로 숫자를 쓴다
+  - slug: johap-yetakgeum-bigwase
+    cat: jaetech
+    topic: 조합 예탁금 세금우대 (농협·새마을금고·신협 예탁금 이자 비과세·저율과세, 한도 3천만원, 출자금 배당). 공식 기준으로 숫자를 쓴다
+  - slug: sinyong-jeomsu-gwanli
+    cat: jaetech
+    topic: 신용점수 산정과 관리 (NICE·KCB 점수 구성 요소, 연체·카드 사용·조회 영향, 올리는 방법). 공식 기준으로 숫자를 쓴다
