@@ -39,17 +39,30 @@ jobs:
         run: |
           set -o pipefail
           python -m market.niche | tee -a "$GITHUB_STEP_SUMMARY"
-      - name: 커밋·푸시
+      - name: 결과 저장 (전용 브랜치 niche-results — 바쁜 main과 레이스 회피)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add "reports/검색량" 2>/dev/null || true
+          # 결과를 전용 브랜치 niche-results에 누적 커밋한다. 이 브랜치는 이 잡만 쓰므로
+          # main의 드립 발행과 충돌하지 않는다(main 푸시가 레이스로 실패했던 걸 고침).
+          DIR="reports/검색량"
+          TMP=$(mktemp -d)
+          cp -a "$DIR"/. "$TMP"/ 2>/dev/null || true         # 이번 결과 임시 보관
+          git fetch origin niche-results 2>/dev/null || true
+          if git rev-parse --verify origin/niche-results >/dev/null 2>&1; then
+            git checkout -f -B niche-results origin/niche-results   # 지난 결과 위에 누적
+          else
+            git checkout -f -B niche-results                        # 처음엔 현재(main) 기반
+          fi
+          mkdir -p "$DIR"
+          cp -a "$TMP"/. "$DIR"/                              # 이번 결과 복원(같은 날 재실행도 OK)
+          git add "$DIR" 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "변경 없음 — 커밋 생략." >> "$GITHUB_STEP_SUMMARY"; exit 0
           fi
           git commit -m "틈새 키워드 조사 ($(date +%F))"
           for i in 1 2 3 4; do
-            git pull --rebase --autostash origin main && git push origin HEAD:main && exit 0
-            sleep $((i * 3))
+            git push origin HEAD:niche-results && exit 0
+            sleep $((i * 2))
           done
           exit 1
