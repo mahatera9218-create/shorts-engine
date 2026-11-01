@@ -16,6 +16,7 @@ import sys
 from datetime import date
 
 from .common import ROOT, load_yaml, missing_secrets
+from .scoring import related_to_seeds
 
 
 def chunks(xs, n):
@@ -23,17 +24,21 @@ def chunks(xs, n):
         yield xs[i:i + n]
 
 
-def gather(tool, hub, seeds: list[str], cap: int, min_volume: int) -> list[dict]:
-    """씨앗 → 연관 키워드(검색량) → 검색량 상위 cap개의 블로그 문서수까지 조사."""
+def gather(tool, hub, seeds: list[str], cap: int, min_volume: int, group_name: str = "") -> list[dict]:
+    """씨앗 → 연관 키워드(검색량) → 검색량 상위 cap개의 블로그 문서수까지 조사.
+    씨앗·그룹명과 2글자도 안 겹치는 연관 키워드(드리프트, 예: 연금 씨앗이 끌어온 '나스닥선물')는 뺀다."""
     rows = []
     for batch in chunks(seeds, 5):          # 검색광고 씨앗은 한 번에 5개까지
         rows += tool.related(batch)
-    # 키워드 중복 제거(검색량 큰 것 우선), 최소 검색량 필터
+    # 키워드 중복 제거(검색량 큰 것 우선), 최소 검색량 + 관련성 필터
+    extra = [group_name] if group_name else None
     best: dict[str, dict] = {}
     for r in rows:
         k = r["keyword"].replace(" ", "")
         if r["volume"] < min_volume:
             continue
+        if not related_to_seeds(r["keyword"], seeds, extra):
+            continue   # 씨앗과 관련 없는 드리프트 제거 (예: 연금→나스닥선물)
         if k not in best or r["volume"] > best[k]["volume"]:
             best[k] = r
     top = sorted(best.values(), key=lambda r: -r["volume"])[:cap]
@@ -92,7 +97,7 @@ def main() -> int:
     parts.append("경쟁강도 = 블로그 문서수 ÷ 월 검색량 (낮을수록 틈새). 틈새 = 검색량 ÷ 문서수 (높을수록 노려볼 만함).\n")
     for name, seeds in groups.items():
         parts.append(f"## {name}")
-        rows = gather(tool, hub, seeds, cap, min_volume)
+        rows = gather(tool, hub, seeds, cap, min_volume, name)
         parts.append(table(rows) if rows else "_검색량 조건을 넘는 키워드가 없습니다._")
         parts.append("")
 
