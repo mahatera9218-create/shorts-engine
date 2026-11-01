@@ -10,7 +10,7 @@ on:
     branches: [main]
     paths: ["market/niche.py", "config/niche_keywords.yaml", ".github/workflows/keyword-niche.yml"]
   schedule:
-    - cron: "0 22 * * *"   # KST 매일 07:00 (대표 2026-11-01, 주1회→매일)
+    - cron: "0 19 * * *"   # KST 매일 04:00 (대표 2026-11-01, 어사이드 05:00보다 1시간 앞 → 같은 날 틈새표)
 
 permissions:
   contents: write
