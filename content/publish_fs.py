@@ -33,12 +33,21 @@ KST = timezone(timedelta(hours=9))
 
 
 CATS = ("jaetech", "realty", "tax", "pension")  # 사이트 카테고리(균등 발행 대상)
+REGISTRY = ROOT / "web" / "lib" / "tools" / "registry.ts"
+
+
+def published_tool_count() -> int:
+    """발행 중(published: true)인 계산기·판정 도구 수. registry.ts에서 센다."""
+    try:
+        return len(re.findall(r"published:\s*true", REGISTRY.read_text(encoding="utf-8")))
+    except OSError:
+        return 0
 
 
 def daily_max() -> int:
-    """하루 발행 상한 8편(2026-10-26 대표 결정: 발행량 증량·카테고리 균등).
-    8구간에 1편씩 → 카테고리 4개에 하루 2편씩 골고루."""
-    return 8
+    """하루 발행 상한 = 계산기(발행 중인 도구) 수(대표 2026-11-02: '계산기 수만큼만 발행').
+    글이 도구보다 앞서가지 않게 묶는다. 도구가 없으면 안전하게 4편."""
+    return published_tool_count() or 4
 
 
 # KST 시각을 8개 구간으로 나눠, 구간마다 1편만 나가게 한다(하루 8편, 아침~밤 분산).

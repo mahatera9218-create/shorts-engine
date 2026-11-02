@@ -33,8 +33,10 @@ class SlotTest(unittest.TestCase):
                 self.assertFalse(pf.slot_filled(other_slot))
                 self.assertFalse(pf.slot_filled(other_day))
 
-    def test_daily_max_is_eight(self):
-        self.assertEqual(pf.daily_max(), 8)
+    def test_daily_max_tracks_tool_count(self):
+        # 하루 상한 = 발행 중인 계산기 수(도구 없으면 4).
+        self.assertEqual(pf.daily_max(), pf.published_tool_count() or 4)
+        self.assertGreaterEqual(pf.daily_max(), 4)
 
     def test_next_draft_picks_laggard_category(self):
         # 발행수: tax 2, realty 0 → 두 카테고리 초안이 모두 대기면 realty(뒤처진 쪽)를 먼저 고른다.

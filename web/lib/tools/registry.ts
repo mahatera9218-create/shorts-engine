@@ -51,6 +51,36 @@ export const TOOLS: ToolMeta[] = [
     related: ["saeopja-deungnok-gijun"],
     checked: "2026-10-18",
   },
+  {
+    slug: "pension-credit",
+    title: "연금저축·IRP 세액공제, 얼마나 돌려받나 계산",
+    short: "연금저축·IRP 세액공제 계산",
+    audience: "연말정산·종합소득세 신고자",
+    description: "연금저축·IRP 납입액과 소득 구간을 넣으면 올해 돌려받을(덜 낼) 세금을 계산합니다. 한도 600만/900만원, 공제율 16.5%·13.2%.",
+    published: true,
+    related: ["yeongeum-irp-semuchul-gongje-2026", "isa-vs-yeongeum-jeochuk"],
+    checked: "2026-11-02",
+  },
+  {
+    slug: "jongbuse",
+    title: "종합부동산세(주택) 얼마 나올까 계산",
+    short: "종합부동산세 계산",
+    audience: "공시가격 높은 주택 보유자",
+    description: "보유 주택 공시가격 합계로 종합부동산세를 대략 계산합니다. 1세대 1주택 12억 공제·고령자·장기보유 세액공제 반영.",
+    published: true,
+    related: ["jongbuse-gibon-gongje"],
+    checked: "2026-11-02",
+  },
+  {
+    slug: "gift-tax",
+    title: "증여세 얼마 나올까 계산 (관계별 공제·10년 합산)",
+    short: "증여세 계산",
+    audience: "재산을 주고받는 가족",
+    description: "증여재산 가액과 관계를 넣으면 증여재산공제·10년 합산·신고세액공제까지 반영해 낼 증여세를 계산합니다.",
+    published: true,
+    related: ["jeungyeose-gongje-10nyeon", "jeungyeose-singo-bangbeop", "budongsan-jeungyeo-vs-sangsok"],
+    checked: "2026-11-02",
+  },
 ];
 
 /** 이 글(slug)과 짝을 이루는 도구들. */

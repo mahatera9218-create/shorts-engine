@@ -6,6 +6,9 @@ import RentalIncomeTool from "@/components/tools/RentalIncomeTool";
 import SellerVatTool from "@/components/tools/SellerVatTool";
 import DependentNhisTool from "@/components/tools/DependentNhisTool";
 import CreatorBusinessTool from "@/components/tools/CreatorBusinessTool";
+import PensionCreditTool from "@/components/tools/PensionCreditTool";
+import JongbuseTool from "@/components/tools/JongbuseTool";
+import GiftTaxTool from "@/components/tools/GiftTaxTool";
 
 export const dynamicParams = false;
 
@@ -87,6 +90,49 @@ const CONTENT: Record<string, { basis: { rule: string; value: string; source: st
       "계속성 점수(3개월·3건 등)는 법정 기준이 아니라 이 도구의 참고용 기준입니다.",
       "네이버 애드포스트·제휴 수수료·현물 협찬의 원천징수와 소득 구분은 확인되지 않아 '확인 필요'로 안내합니다.",
       "경비율 수치, 건강보험료 계산, 2026년 귀속 변경 사항은 다루지 않습니다.",
+    ],
+  },
+  "pension-credit": {
+    Tool: PensionCreditTool,
+    basis: [
+      { rule: "연금저축 공제 한도", value: "연 600만원", source: "소득세법 제59조의3" },
+      { rule: "연금저축+IRP 합산 한도", value: "연 900만원", source: "소득세법 제59조의3" },
+      { rule: "공제율", value: "총급여 5,500만원(종합소득 4,500만원) 이하 16.5%, 초과 13.2% (지방소득세 포함)", source: "국세청 연말정산 안내", url: NTS_RATE },
+      { rule: "ISA 전환 추가공제", value: "전환액의 10%, 최대 300만원(별도)", source: "조세특례제한법(이 도구 미반영)" },
+    ],
+    limits: [
+      "연금 수령 때 내는 연금소득세(3.3~5.5%)와 사적연금 연 1,500만원 초과 시 과세 방식은 다루지 않습니다.",
+      "실제 환급은 이미 낸 세금(기납부세액) 범위 안에서 정산됩니다. 결정세액이 0이면 공제액을 다 돌려받지 못할 수 있습니다.",
+      "ISA 만기 전환 추가공제, 퇴직연금(DB/DC) 회사 납입분은 계산하지 않습니다.",
+    ],
+  },
+  "jongbuse": {
+    Tool: JongbuseTool,
+    basis: [
+      { rule: "기본공제", value: "1세대 1주택 단독명의 12억원 / 그 외 9억원 (인별 공시가격 합계 기준)", source: "종합부동산세법 제8조" },
+      { rule: "세율(2주택 이하)", value: "0.5%~2.7% 누진 (과세표준 구간별)", source: "종합부동산세법 제9조" },
+      { rule: "세율(3주택 이상)", value: "0.5%~5.0% 누진 (12억 초과 구간부터 중과)", source: "종합부동산세법 제9조" },
+      { rule: "1주택 세액공제", value: "고령자 20~40% + 장기보유 20~50%, 합산 최대 80%", source: "종합부동산세법 제9조의2" },
+      { rule: "농어촌특별세", value: "종합부동산세의 20%", source: "농어촌특별세법" },
+    ],
+    limits: [
+      "공정시장가액비율은 해마다 고시로 바뀌어 직접 입력받습니다(최근 주택 60% 안팎).",
+      "이미 낸 재산세 중 종부세와 겹치는 금액(재산세 공제)과 세부담 상한을 빼지 않아, 실제 고지액보다 높게 나올 수 있습니다.",
+      "합산배제(임대·사원용 주택 등), 부부 공동명의 1주택 특례, 법인 과세는 다루지 않습니다.",
+    ],
+  },
+  "gift-tax": {
+    Tool: GiftTaxTool,
+    basis: [
+      { rule: "증여재산공제(10년)", value: "배우자 6억 / 성년 직계비속 5천만(미성년 2천만) / 직계존속 5천만 / 기타친족 1천만원", source: "상속세및증여세법 제53조" },
+      { rule: "세율", value: "10%~50% 누진 (1억↓10%, 5억↓20%, 10억↓30%, 30억↓40%, 30억 초과 50%)", source: "상속세및증여세법 제26조" },
+      { rule: "신고세액공제", value: "기한 내 신고 시 산출세액의 3%", source: "상속세및증여세법 제69조" },
+      { rule: "10년 합산", value: "같은 사람에게 10년 내 받은 증여는 합산 과세(기납부세액 공제)", source: "상속세및증여세법 제47조·제58조" },
+    ],
+    limits: [
+      "증여재산 가액 평가(시가·보충적 평가), 부담부증여, 저가·고가 양수, 창업·가업 승계 특례는 반영하지 않습니다.",
+      "부동산 증여 시 취득세(별도)와 세대 생략 증여 할증(30~40%)은 계산에 넣지 않습니다.",
+      "10년 합산·기납부세액 공제는 개략 계산이라, 실제 신고 세액과 다를 수 있습니다(홈택스·세무서 확인).",
     ],
   },
 };
