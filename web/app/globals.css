@@ -337,3 +337,23 @@ body { word-break: keep-all; overflow-wrap: break-word; }
 .tool-callout { margin: 26px 0 8px; padding: 14px 16px; border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line)); border-radius: 14px; background: color-mix(in srgb, var(--accent) 6%, transparent); }
 .tool-callout ul { margin: 8px 0 0; padding-left: 18px; }
 .tool-callout small { color: var(--muted); }
+
+/* 홈 계산기·판정 도구 전면 배치 (2026-11-02) */
+.tools-home { margin: 20px 0 8px; }
+.tools-home-head { display: flex; align-items: baseline; justify-content: space-between; margin: 0 0 12px; }
+.tools-home-head h2 { font-size: 19px; font-weight: 800; letter-spacing: -.02em; margin: 0; color: var(--fg); }
+.tools-home-all { font-size: 14px; font-weight: 600; color: var(--accent); text-decoration: none; white-space: nowrap; }
+.tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 560px) { .tool-grid { grid-template-columns: 1fr; } }
+.tool-card {
+  display: flex; flex-direction: column; gap: 5px;
+  border: 1px solid var(--cardline); border-radius: var(--radius);
+  background: var(--card); padding: 16px 17px; text-decoration: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+.tool-card:hover { border-color: var(--accent); box-shadow: 0 2px 14px color-mix(in srgb, var(--accent) 14%, transparent); }
+.tool-card-name { font-size: 16px; font-weight: 800; color: var(--fg); letter-spacing: -.01em; }
+.tool-card-aud { font-size: 12.5px; font-weight: 600; color: var(--accent); }
+.tool-card-desc { font-size: 14px; color: var(--sub); line-height: 1.6; margin: 2px 0 4px; }
+.tool-card-go { font-size: 14px; font-weight: 700; color: var(--fg); margin-top: auto; }
+.feed-head { font-size: 19px; font-weight: 800; letter-spacing: -.02em; color: var(--fg); margin: 30px 0 4px; }

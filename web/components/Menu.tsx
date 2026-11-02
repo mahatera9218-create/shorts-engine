@@ -17,12 +17,12 @@ export default function Menu() {
       {open ? (
         <div className="menu-pop" onClick={() => setOpen(false)}>
           <Link href="/">홈</Link>
+          <Link href="/tools">🧮 세금 계산기</Link>
           {CATEGORY_ORDER.map((c) => (
             <Link key={c.slug} href={`/category/${c.slug}`}>
               {c.name}
             </Link>
           ))}
-          <Link href="/tools">판정 도구</Link>
           {/* 공개 지표 비교(/rank)는 데이터 채우기 전까지 메뉴에서 숨김 — 심사 중 '미완성' 인상 방지(2026-10-18). 페이지 자체는 noindex로 유지. */}
           <Link href="/p/about">소개</Link>
         </div>
