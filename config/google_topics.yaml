@@ -411,3 +411,34 @@ topics:
   - slug: sinyong-jeomsu-gwanli
     cat: jaetech
     topic: 신용점수 산정과 관리 (NICE·KCB 점수 구성 요소, 연체·카드 사용·조회 영향, 올리는 방법). 공식 기준으로 숫자를 쓴다
+  # 자동 보충 2026-11-03 (클로드 예약, pension 대기 부족 보충)
+  - slug: gukmin-yeongeum-ban-nap
+    cat: pension
+    topic: 국민연금 반납 (과거 받은 반환일시금을 이자와 함께 되돌려 가입기간 복원, 반납금 계산·분할납부·신청 요건). 공식 기준으로 숫자를 쓴다
+  - slug: gukmin-yeongeum-sileop-credit
+    cat: pension
+    topic: 국민연금 실업크레딧 (구직급여 수급자 대상, 인정소득 50%·상한 70만원, 보험료 국가 75% 지원, 생애 최대 12개월, 신청 기한). 공식 기준으로 숫자를 쓴다
+  - slug: gukmin-yeongeum-gugoe-banhwan
+    cat: pension
+    topic: 국외이주 반환일시금 (영주 목적 국외이주·국적상실 시 수급 요건, 신청 방법, 청구 기한). 공식 기준으로 숫자를 쓴다
+  - slug: gichoyeongeum-yeongye-gamaek
+    cat: pension
+    topic: 기초연금과 국민연금 연계감액 (국민연금 급여액에 따른 기초연금 감액 구조, 선정기준액, 신청). 공식 기준으로 숫자를 쓴다
+  - slug: gukmin-yeongeum-saeobjang-jiyeok
+    cat: pension
+    topic: 국민연금 사업장가입자와 지역가입자 차이 (보험료 부담 주체·기준, 가입 자격 전환, 보험료율 9%). 공식 기준으로 숫자를 쓴다
+  - slug: gukmin-yeongeum-gunbok-credit
+    cat: pension
+    topic: 국민연금 군복무 크레딧 (현역·사회복무 등 인정 가입기간, 대상·신청, 노령연금 반영). 공식 기준으로 숫자를 쓴다
+  - slug: gukmin-yeongeum-chulsan-credit
+    cat: pension
+    topic: 국민연금 출산 크레딧 (둘째 이상 자녀 수별 추가 인정 가입기간·상한, 대상·신청 시점). 공식 기준으로 숫자를 쓴다
+  - slug: yujok-yeongeum-jungbok-jojeong
+    cat: pension
+    topic: 유족연금 중복조정 (본인 노령연금과 유족연금이 겹칠 때 선택 기준·지급률, 한쪽 선택 시 가산). 공식 기준으로 숫자를 쓴다
+  - slug: noin-janggi-yoyang-deunggeup
+    cat: pension
+    topic: 노인장기요양보험 등급판정 (장기요양인정 신청 요건·절차, 등급 구분, 본인부담률·감경). 공식 기준으로 숫자를 쓴다
+  - slug: toejik-yeongeum-yeongeum-suryeong
+    cat: pension
+    topic: 퇴직연금 연금수령과 일시금 세금 차이 (연금수령 시 연금소득세·분리과세, 일시금 퇴직소득세, 연금수령한도). 공식 기준으로 숫자를 쓴다
