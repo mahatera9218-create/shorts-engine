@@ -500,3 +500,34 @@ topics:
   - slug: energy-voucher
     cat: jaetech
     topic: 에너지바우처 (대상 가구 소득·세대 요건, 지원 금액, 신청·사용 기한). 공식 기준으로 숫자를 쓴다
+  # 부동산 보충(2026-11-05 클로드 예약, 거래의도형 evergreen)
+  - slug: osuktel-jutaeksu-poham
+    cat: realty
+    topic: 오피스텔이 주택 수에 포함되는지 (주거용·업무용 구분, 취득세·양도세·종부세에서 주택수 산정, 주택분 재산세 과세 여부). 공식 기준으로 숫자를 쓴다
+  - slug: yangdose-iwolgwase-baeuja
+    cat: realty
+    topic: 배우자·직계존비속에게 증여받은 부동산을 팔 때 이월과세 (증여자 취득가액 이월, 보유기간 통산, 적용 기간 10년, 적용 요건·예외). 공식 기준으로 숫자를 쓴다
+  - slug: bunyangkwon-jeonmae-jehan
+    cat: realty
+    topic: 분양권 전매제한 기간 (규제지역·공공택지·수도권 구분, 기산일, 전매제한 예외 사유). 공식 기준으로 숫자를 쓴다
+  - slug: teukbyeolgonggeup-yogeon
+    cat: realty
+    topic: 주택 특별공급 요건 비교 (신혼부부·생애최초·다자녀·노부모 유형별 소득·자산·청약통장 기준, 중복 청약 제한). 공식 기준으로 숫자를 쓴다
+  - slug: ilsijeok-2jutaek-chwideukse
+    cat: realty
+    topic: 일시적 2주택 취득세 중과 제외 (종전주택 처분기한, 중과세율과 일반세율 차이, 대상 지역). 공식 기준으로 숫자를 쓴다
+  - slug: jaegaebal-ipju-gwonli
+    cat: realty
+    topic: 재개발·재건축 조합원 입주권과 주택 수 (양도세·취득세에서 입주권 주택수 산정, 승계조합원, 비과세 특례). 공식 기준으로 숫자를 쓴다
+  - slug: sangga-hwansan-bojeunggeum
+    cat: realty
+    topic: 상가건물 임대차보호법 환산보증금 기준 (지역별 금액, 환산보증금 계산 보증금+월세×100, 초과 시 보호 범위 차이). 공식 기준으로 숫자를 쓴다
+  - slug: jeonsegwon-vs-hwakjeongilja
+    cat: realty
+    topic: 전세권설정과 확정일자 차이 (대항력·우선변제권·비용·집주인 동의 여부, 상황별 어느 쪽이 유리한지). 공식 기준으로 숫자를 쓴다
+  - slug: jutaek-chaegwon-maeib-hwanab
+    cat: realty
+    topic: 집 살 때 국민주택채권 매입과 즉시매도 할인 (매입 기준·공시가격별 매입률, 본인부담금, 즉시매도 할인율 확인 방법). 공식 기준으로 숫자를 쓴다
+  - slug: jaesanse-seyul-sebudam-sanghan
+    cat: realty
+    topic: 주택 재산세 세율과 세부담상한 (공정시장가액비율, 과세표준 구간별 세율, 1주택 특례세율, 세부담상한 105~130%). 공식 기준으로 숫자를 쓴다
