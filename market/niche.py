@@ -55,7 +55,7 @@ def gather(tool, hub, seeds: list[str], cap: int, min_volume: int, group_name: s
             "comp": docs / vol,               # 경쟁강도 = 문서수 ÷ 검색량 (낮을수록 틈새)
             "niche": vol / max(docs, 1),       # 틈새 = 검색량 ÷ 문서수 (높을수록 좋음)
         })
-    return sorted(out, key=lambda x: -x["niche"])
+    return sorted(out, key=lambda x: -x["volume"])   # 검색량 높은 순 정렬 (2026-11-05 대표 — 틈새·경쟁강도는 참고 지표로만)
 
 
 def table(rows: list[dict]) -> str:
@@ -94,7 +94,7 @@ def main() -> int:
     parts = [f"# 틈새 키워드 조사 · {today}", ""]
     if sample:
         parts.append("> ⚠️ 예시 데이터입니다. 실제 숫자가 아니니 판단에 쓰지 마세요.\n")
-    parts.append("경쟁강도 = 블로그 문서수 ÷ 월 검색량 (낮을수록 틈새). 틈새 = 검색량 ÷ 문서수 (높을수록 노려볼 만함).\n")
+    parts.append("표는 **검색량 높은 순**으로 정렬(2026-11-05 대표). 경쟁강도 = 블로그 문서수 ÷ 월 검색량 (낮을수록 틈새), 틈새 = 검색량 ÷ 문서수 — 둘은 **참고 지표**로만 본다(선정은 검색량 상위부터).\n")
     for name, seeds in groups.items():
         parts.append(f"## {name}")
         rows = gather(tool, hub, seeds, cap, min_volume, name)
