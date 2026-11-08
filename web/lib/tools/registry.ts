@@ -81,6 +81,36 @@ export const TOOLS: ToolMeta[] = [
     related: ["jeungyeose-gongje-10nyeon", "jeungyeose-singo-bangbeop", "budongsan-jeungyeo-vs-sangsok"],
     checked: "2026-11-02",
   },
+  {
+    slug: "capital-gains",
+    title: "양도소득세 얼마 나올까 계산 (1주택 비과세·장기보유공제)",
+    short: "양도소득세 계산",
+    audience: "집을 파는 사람",
+    description: "양도가·취득가·보유/거주기간으로 양도소득세를 대략 계산합니다. 1세대 1주택 비과세(12억)·고가주택 안분·장기보유특별공제 반영.",
+    published: true,
+    related: ["yangdose-1jutaek-bigwase"],
+    checked: "2026-11-08",
+  },
+  {
+    slug: "acquisition-tax",
+    title: "주택 취득세 얼마일까 계산 (주택수·조정지역·생애최초)",
+    short: "취득세 계산",
+    audience: "집을 사는 사람",
+    description: "취득가와 주택 수·지역으로 취득세·지방교육세·농어촌특별세를 계산합니다. 다주택 중과·생애최초 감면 반영.",
+    published: true,
+    related: ["chwideukse-seyul-jutaek"],
+    checked: "2026-11-08",
+  },
+  {
+    slug: "income-tax",
+    title: "종합소득세 얼마일까 계산 (과세표준·누진세율)",
+    short: "종합소득세 계산",
+    audience: "프리랜서·사업자·N잡러",
+    description: "종합소득금액과 공제로 과세표준·산출세액·지방소득세를 계산하고 한계세율을 보여 줍니다.",
+    published: true,
+    related: ["jonghap-sodeukse-singo-5wol", "sodeukse-yulpyo-2026"],
+    checked: "2026-11-08",
+  },
 ];
 
 /** 이 글(slug)과 짝을 이루는 도구들. */
