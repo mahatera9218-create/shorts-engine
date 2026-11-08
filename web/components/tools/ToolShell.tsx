@@ -23,29 +23,32 @@ export default async function ToolShell({
     (p): p is NonNullable<typeof p> => Boolean(p),
   );
   return (
-    <div className="container article">
-      <Link href="/tools" className="a-cat">← 판정·비교 도구</Link>
+    <div className="container article tool-page">
+      <Link href="/tools" className="a-cat">← 세금 계산기</Link>
       <h1>{tool.title}</h1>
       <div className="byline">
         <span>{SITE_NAME}</span><span>·</span><span>{tool.checked} 기준 규칙</span>
       </div>
-      <p className="rank-intro">{tool.description} <b>대상:</b> {tool.audience}.</p>
-      <div className="mock-banner">
-        ⚠️ 일반 정보 제공용 <b>대략 판정</b>입니다. 개별 사정(다른 소득·공제·특례)에 따라 달라질 수 있으니, 신고·가입 전 국세청(126)·국민건강보험공단·세무 전문가에게 확인하세요.
-      </div>
+      <p className="tool-sub">{tool.description} · <b>대상</b> {tool.audience}</p>
 
       {intro && intro.length > 0 ? (
-        <section className="tool-intro article-body">
+        <section className="tool-lead article-body">
           {intro.map((p, i) => <p key={i}>{p}</p>)}
         </section>
       ) : null}
 
-      {children}
+      <section className="tool-panel" aria-label="계산기">
+        <div className="tool-panel-head"><span aria-hidden>🧮</span> 계산해 보기</div>
+        <div className="tool-panel-body">{children}</div>
+      </section>
+      <p className="tool-note-inline">
+        ⚠️ 일반 정보 제공용 <b>대략 판정</b>입니다. 개별 사정(다른 소득·공제·특례)에 따라 달라질 수 있으니, 신고·가입 전 국세청(126)·국민건강보험공단·세무 전문가에게 확인하세요.
+      </p>
 
       <AdSlot />
 
       {faq && faq.length > 0 ? (
-        <section className="article-body">
+        <section className="tool-section article-body">
           <h2>자주 묻는 질문</h2>
           {faq.map((f, i) => (
             <div key={i}>
@@ -70,6 +73,7 @@ export default async function ToolShell({
         </section>
       ) : null}
 
+      <div className="tool-folds">
       <details className="tool-fold">
         <summary>계산·판정 기준 (출처)</summary>
         <figure className="wp-block-table basis">
@@ -91,12 +95,13 @@ export default async function ToolShell({
         <summary>이 도구가 다루지 않는 것</summary>
         <ul>{limits.map((l, i) => <li key={i}>{l}</li>)}</ul>
       </details>
+      </div>
 
       {related.length > 0 ? (
-        <>
+        <section className="tool-section">
           <h2>함께 보면 좋은 글</h2>
-          <ul>{related.map((p) => <li key={p.slug}><Link href={`/${p.slug}`}>{stripHtml(p.title.rendered)}</Link></li>)}</ul>
-        </>
+          <ul className="tool-related">{related.map((p) => <li key={p.slug}><Link href={`/${p.slug}`}>{stripHtml(p.title.rendered)}</Link></li>)}</ul>
+        </section>
       ) : null}
 
       <div className="byline-foot">

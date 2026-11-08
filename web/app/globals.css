@@ -369,3 +369,20 @@ body { word-break: keep-all; overflow-wrap: break-word; }
 /* 결과 박스 주의사항은 잔글씨(fine print)로 — 벽처럼 안 보이게 */
 .tr-body ul { font-size: 13px; color: var(--sub); line-height: 1.55; padding-left: 18px; margin: 10px 0 0; }
 .tr-body ul li { margin: 3px 0; }
+
+/* 계산기 페이지 시각 위계 (2026-11-08) */
+.tool-page h1 { margin-bottom: 6px; }
+.tool-sub { color: var(--sub); font-size: 15px; margin: 2px 0 16px; }
+.tool-lead { margin: 0 0 18px; }
+.tool-lead p { font-size: 16.5px; line-height: 1.72; color: var(--fg); margin: 0 0 10px; }
+/* 계산기 = 페이지의 주인공: 전용 패널 */
+.tool-panel { border: 1px solid var(--cardline); border-radius: 16px; background: var(--card); box-shadow: 0 2px 16px rgba(0,0,0,.05); overflow: hidden; margin: 0 0 12px; }
+.tool-panel-head { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 16px; padding: 14px 18px; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--accent) 7%, var(--card)); color: var(--fg); }
+.tool-panel-body { padding: 14px 18px 20px; }
+.tool-note-inline { font-size: 13px; color: var(--sub); line-height: 1.55; margin: 0 2px 22px; }
+.tool-section { margin: 28px 0 0; }
+.tool-section h2 { font-size: 20px; margin-bottom: 10px; }
+.tool-folds { margin-top: 22px; display: flex; flex-direction: column; gap: 10px; }
+.tool-folds .tool-fold { margin: 0; }
+.tool-related { margin: 0; padding-left: 18px; }
+.tool-related li { margin: 4px 0; }

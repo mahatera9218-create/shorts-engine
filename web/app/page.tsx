@@ -12,7 +12,7 @@ export const dynamic = "force-static";
 export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 export default async function Home() {
-  const posts = await getPosts(18);
+  const posts = await getPosts(6);
   const tools = TOOLS.filter((t) => t.published);
 
   return (
