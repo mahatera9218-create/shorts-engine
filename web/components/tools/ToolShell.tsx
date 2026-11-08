@@ -70,23 +70,27 @@ export default async function ToolShell({
         </section>
       ) : null}
 
-      <h2>계산·판정 기준 (출처)</h2>
-      <figure className="wp-block-table basis">
-        <table>
-          <thead><tr><th>규칙</th><th>값</th><th>출처</th></tr></thead>
-          <tbody>
-            {basis.map((b, i) => (
-              <tr key={i}>
-                <td>{b.rule}</td><td>{b.value}</td>
-                <td>{b.url ? <a href={b.url} target="_blank" rel="nofollow noopener">{b.source}</a> : b.source}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </figure>
+      <details className="tool-fold">
+        <summary>계산·판정 기준 (출처)</summary>
+        <figure className="wp-block-table basis">
+          <table>
+            <thead><tr><th>규칙</th><th>값</th><th>출처</th></tr></thead>
+            <tbody>
+              {basis.map((b, i) => (
+                <tr key={i}>
+                  <td>{b.rule}</td><td>{b.value}</td>
+                  <td>{b.url ? <a href={b.url} target="_blank" rel="nofollow noopener">{b.source}</a> : b.source}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </figure>
+      </details>
 
-      <h2>이 도구가 다루지 않는 것</h2>
-      <ul>{limits.map((l, i) => <li key={i}>{l}</li>)}</ul>
+      <details className="tool-fold">
+        <summary>이 도구가 다루지 않는 것</summary>
+        <ul>{limits.map((l, i) => <li key={i}>{l}</li>)}</ul>
+      </details>
 
       {related.length > 0 ? (
         <>
