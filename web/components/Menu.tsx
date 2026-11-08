@@ -19,7 +19,7 @@ export default function Menu() {
           <Link href="/">홈</Link>
           <Link href="/tools">🧮 세금 계산기</Link>
           {TOOL_GROUPS.map((g) => (
-            <Link key={g.key} href={`/tools#${g.key}`} className="menu-sub">
+            <Link key={g.key} href={`/tools/group/${g.key}`} className="menu-sub">
               {g.name}
             </Link>
           ))}

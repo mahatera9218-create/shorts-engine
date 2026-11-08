@@ -30,7 +30,7 @@ export default async function ToolShell({
         <Link href="/">홈</Link>
         <span aria-hidden>›</span>
         <Link href="/tools">세금 계산기</Link>
-        {group ? (<><span aria-hidden>›</span><Link href={`/tools#${group.key}`}>{group.name}</Link></>) : null}
+        {group ? (<><span aria-hidden>›</span><Link href={`/tools/group/${group.key}`}>{group.name}</Link></>) : null}
       </nav>
       <script
         type="application/ld+json"
@@ -41,7 +41,7 @@ export default async function ToolShell({
             itemListElement: [
               { "@type": "ListItem", position: 1, name: "홈", item: SITE_URL },
               { "@type": "ListItem", position: 2, name: "세금 계산기", item: `${SITE_URL}/tools` },
-              ...(group ? [{ "@type": "ListItem", position: 3, name: group.name, item: `${SITE_URL}/tools#${group.key}` }] : []),
+              ...(group ? [{ "@type": "ListItem", position: 3, name: group.name, item: `${SITE_URL}/tools/group/${group.key}` }] : []),
               { "@type": "ListItem", position: group ? 4 : 3, name: tool.short, item: `${SITE_URL}/tools/${tool.slug}` },
             ],
           }),

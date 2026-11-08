@@ -36,31 +36,25 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* 계산기를 사이트 간판으로, 주제별 계층으로 배치(2026-11-08). 글보다 위. */}
+      {/* 메인은 심플하게: 분류 4개 카드만. 각 분류 페이지로 들어간다(2026-11-08). */}
       {tools.length > 0 ? (
         <section className="tools-home" aria-label="세금 계산기">
           <div className="tools-home-head">
             <h2>🧮 세금 계산기</h2>
-            <Link href="/tools" className="tools-home-all">전체 보기 →</Link>
           </div>
-          {TOOL_GROUPS.map((g) => {
-            const gt = toolsInGroup(g.key);
-            if (gt.length === 0) return null;
-            return (
-              <div key={g.key} className="home-group">
-                <h3 className="home-group-head">{g.name} <span>· {g.desc}</span></h3>
-                <div className="tool-grid">
-                  {gt.map((t) => (
-                    <Link key={t.slug} href={`/tools/${t.slug}`} className="tool-card">
-                      <span className="tool-card-name">{t.short}</span>
-                      <span className="tool-card-aud">{t.audience}</span>
-                      <span className="tool-card-go">내 경우 계산 →</span>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
+          <div className="tool-grid">
+            {TOOL_GROUPS.map((g) => {
+              const gt = toolsInGroup(g.key);
+              if (gt.length === 0) return null;
+              return (
+                <Link key={g.key} href={`/tools/group/${g.key}`} className="tool-card cat-card">
+                  <span className="tool-card-name">{g.name}</span>
+                  <span className="tool-card-aud">{g.desc}</span>
+                  <span className="tool-card-go">{gt.length}개 계산기 →</span>
+                </Link>
+              );
+            })}
+          </div>
         </section>
       ) : null}
 

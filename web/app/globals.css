@@ -402,3 +402,8 @@ body { word-break: keep-all; overflow-wrap: break-word; }
 .home-group-head { font-size: 15px; font-weight: 800; color: var(--fg); margin: 0 0 9px; }
 .home-group-head span { font-weight: 500; color: var(--sub); font-size: 13px; }
 .menu-sub { padding-left: 22px !important; font-size: 14px !important; color: var(--sub) !important; }
+
+/* 분류(카테고리) 카드 — 네비게이션용 (2026-11-08) */
+.cat-card { justify-content: flex-start; }
+.cat-card .tool-card-name { font-size: 17px; }
+.cat-card .tool-card-go { color: var(--accent); margin-top: 10px; }
