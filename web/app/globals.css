@@ -386,3 +386,19 @@ body { word-break: keep-all; overflow-wrap: break-word; }
 .tool-folds .tool-fold { margin: 0; }
 .tool-related { margin: 0; padding-left: 18px; }
 .tool-related li { margin: 4px 0; }
+
+/* 계층 구조: 허브 그룹 · breadcrumb · 홈 그룹 · 메뉴 하위 (2026-11-08) */
+.crumbs { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 13px; color: var(--sub); margin: 0 0 10px; }
+.crumbs a { color: var(--sub); text-decoration: none; }
+.crumbs a:hover { color: var(--accent); }
+.tool-toc { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0 22px; }
+.tool-toc a { font-size: 13.5px; font-weight: 600; color: var(--fg); padding: 7px 13px; border: 1px solid var(--line); border-radius: 999px; text-decoration: none; }
+.tool-toc a:hover { border-color: var(--accent); color: var(--accent); }
+.tool-group { margin: 0 0 26px; scroll-margin-top: 70px; }
+.tool-group-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin: 0 0 12px; padding-bottom: 8px; border-bottom: 2px solid var(--line); }
+.tool-group-head h2 { font-size: 20px; margin: 0; }
+.tool-group-head span { font-size: 13.5px; color: var(--sub); }
+.home-group { margin: 0 0 18px; }
+.home-group-head { font-size: 15px; font-weight: 800; color: var(--fg); margin: 0 0 9px; }
+.home-group-head span { font-weight: 500; color: var(--sub); font-size: 13px; }
+.menu-sub { padding-left: 22px !important; font-size: 14px !important; color: var(--sub) !important; }

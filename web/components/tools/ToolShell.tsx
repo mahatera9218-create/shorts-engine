@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ToolMeta } from "@/lib/tools/registry";
-import { getPostBySlug, stripHtml, SITE_NAME } from "@/lib/wp";
+import { groupOf } from "@/lib/tools/registry";
+import { getPostBySlug, stripHtml, SITE_NAME, SITE_URL } from "@/lib/wp";
 import AdSlot from "@/components/AdSlot";
 
 // 도구 공통 틀: 제목·대상·면책·근거(규칙 표)·관련 글. 계산/판정 화면(children)은 도구별 클라이언트 컴포넌트.
@@ -22,9 +23,30 @@ export default async function ToolShell({
   const related = (await Promise.all(tool.related.map((s) => getPostBySlug(s)))).filter(
     (p): p is NonNullable<typeof p> => Boolean(p),
   );
+  const group = groupOf(tool.slug);
   return (
     <div className="container article tool-page">
-      <Link href="/tools" className="a-cat">← 세금 계산기</Link>
+      <nav className="crumbs" aria-label="위치">
+        <Link href="/">홈</Link>
+        <span aria-hidden>›</span>
+        <Link href="/tools">세금 계산기</Link>
+        {group ? (<><span aria-hidden>›</span><Link href={`/tools#${group.key}`}>{group.name}</Link></>) : null}
+      </nav>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "홈", item: SITE_URL },
+              { "@type": "ListItem", position: 2, name: "세금 계산기", item: `${SITE_URL}/tools` },
+              ...(group ? [{ "@type": "ListItem", position: 3, name: group.name, item: `${SITE_URL}/tools#${group.key}` }] : []),
+              { "@type": "ListItem", position: group ? 4 : 3, name: tool.short, item: `${SITE_URL}/tools/${tool.slug}` },
+            ],
+          }),
+        }}
+      />
       <h1>{tool.title}</h1>
       <div className="byline">
         <span>{SITE_NAME}</span><span>·</span><span>{tool.checked} 기준 규칙</span>

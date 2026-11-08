@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getPosts } from "@/lib/wp";
-import { TOOLS } from "@/lib/tools/registry";
+import { TOOLS, TOOL_GROUPS, toolsInGroup } from "@/lib/tools/registry";
 import PostCard from "@/components/PostCard";
 
 import type { Metadata } from "next";
@@ -36,23 +36,31 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* 계산기·판정 도구를 사이트 간판으로 전면 배치(2026-11-02). 글보다 위. */}
+      {/* 계산기를 사이트 간판으로, 주제별 계층으로 배치(2026-11-08). 글보다 위. */}
       {tools.length > 0 ? (
-        <section className="tools-home" aria-label="세금 계산기·판정 도구">
+        <section className="tools-home" aria-label="세금 계산기">
           <div className="tools-home-head">
-            <h2>🧮 세금 계산기·판정 도구</h2>
+            <h2>🧮 세금 계산기</h2>
             <Link href="/tools" className="tools-home-all">전체 보기 →</Link>
           </div>
-          <div className="tool-grid">
-            {tools.map((t) => (
-              <Link key={t.slug} href={`/tools/${t.slug}`} className="tool-card">
-                <span className="tool-card-name">{t.short}</span>
-                <span className="tool-card-aud">{t.audience}</span>
-                <span className="tool-card-desc">{t.description}</span>
-                <span className="tool-card-go">내 경우 계산 →</span>
-              </Link>
-            ))}
-          </div>
+          {TOOL_GROUPS.map((g) => {
+            const gt = toolsInGroup(g.key);
+            if (gt.length === 0) return null;
+            return (
+              <div key={g.key} className="home-group">
+                <h3 className="home-group-head">{g.name} <span>· {g.desc}</span></h3>
+                <div className="tool-grid">
+                  {gt.map((t) => (
+                    <Link key={t.slug} href={`/tools/${t.slug}`} className="tool-card">
+                      <span className="tool-card-name">{t.short}</span>
+                      <span className="tool-card-aud">{t.audience}</span>
+                      <span className="tool-card-go">내 경우 계산 →</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </section>
       ) : null}
 

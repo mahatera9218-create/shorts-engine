@@ -6,6 +6,7 @@ export interface ToolMeta {
   audience: string;
   description: string;
   published: boolean;
+  group: string; // 계층 분류 키
   related: string[]; // 관련 글 slug(존재하는 글만 표시)
   checked: string; // 규칙 확인일
 }
@@ -13,6 +14,7 @@ export interface ToolMeta {
 export const TOOLS: ToolMeta[] = [
   {
     slug: "rental-income",
+    group: "income",
     title: "주택 월세 소득, 분리과세 vs 종합과세 비교",
     short: "분리과세·종합과세 세금 비교",
     audience: "월세 받는 집주인",
@@ -23,6 +25,7 @@ export const TOOLS: ToolMeta[] = [
   },
   {
     slug: "seller-vat",
+    group: "income",
     title: "온라인 셀러 간이과세 vs 일반과세 비교",
     short: "간이과세·일반과세 부가세 비교",
     audience: "스마트스토어·쿠팡 셀러",
@@ -33,6 +36,7 @@ export const TOOLS: ToolMeta[] = [
   },
   {
     slug: "dependent-nhis",
+    group: "insurance",
     title: "건강보험 피부양자 자격 유지 판정 (부업 소득이 있다면)",
     short: "피부양자 자격 유지·탈락 판정",
     audience: "부업·부수입이 있는 직장인 가족",
@@ -43,6 +47,7 @@ export const TOOLS: ToolMeta[] = [
   },
   {
     slug: "creator-business",
+    group: "income",
     title: "블로거·유튜버 부수입, 사업자등록이 필요할까?",
     short: "사업자등록 필요 여부 판정",
     audience: "블로거·유튜버·인플루언서",
@@ -53,6 +58,7 @@ export const TOOLS: ToolMeta[] = [
   },
   {
     slug: "pension-credit",
+    group: "insurance",
     title: "연금저축·IRP 세액공제, 얼마나 돌려받나 계산",
     short: "연금저축·IRP 세액공제 계산",
     audience: "연말정산·종합소득세 신고자",
@@ -63,6 +69,7 @@ export const TOOLS: ToolMeta[] = [
   },
   {
     slug: "jongbuse",
+    group: "property",
     title: "종합부동산세(주택) 얼마 나올까 계산",
     short: "종합부동산세 계산",
     audience: "공시가격 높은 주택 보유자",
@@ -73,6 +80,7 @@ export const TOOLS: ToolMeta[] = [
   },
   {
     slug: "gift-tax",
+    group: "gift",
     title: "증여세 얼마 나올까 계산 (관계별 공제·10년 합산)",
     short: "증여세 계산",
     audience: "재산을 주고받는 가족",
@@ -83,6 +91,7 @@ export const TOOLS: ToolMeta[] = [
   },
   {
     slug: "capital-gains",
+    group: "property",
     title: "양도소득세 얼마 나올까 계산 (1주택 비과세·장기보유공제)",
     short: "양도소득세 계산",
     audience: "집을 파는 사람",
@@ -93,6 +102,7 @@ export const TOOLS: ToolMeta[] = [
   },
   {
     slug: "acquisition-tax",
+    group: "property",
     title: "주택 취득세 얼마일까 계산 (주택수·조정지역·생애최초)",
     short: "취득세 계산",
     audience: "집을 사는 사람",
@@ -103,6 +113,7 @@ export const TOOLS: ToolMeta[] = [
   },
   {
     slug: "income-tax",
+    group: "income",
     title: "종합소득세 얼마일까 계산 (과세표준·누진세율)",
     short: "종합소득세 계산",
     audience: "프리랜서·사업자·N잡러",
@@ -112,6 +123,22 @@ export const TOOLS: ToolMeta[] = [
     checked: "2026-11-08",
   },
 ];
+
+
+/** 계산기 계층 분류(홈·허브·breadcrumb 공용). */
+export const TOOL_GROUPS: { key: string; name: string; desc: string }[] = [
+  { key: "property", name: "부동산 세금", desc: "집을 사고팔고 보유할 때" },
+  { key: "gift", name: "상속·증여", desc: "재산을 물려주고 받을 때" },
+  { key: "income", name: "소득·사업 세금", desc: "벌이에 대한 세금" },
+  { key: "insurance", name: "건강보험·연금", desc: "4대보험과 노후 준비" },
+];
+
+export const groupOf = (slug: string): { key: string; name: string; desc: string } | undefined => {
+  const t = TOOLS.find((x) => x.slug === slug);
+  return t ? TOOL_GROUPS.find((g) => g.key === t.group) : undefined;
+};
+
+export const toolsInGroup = (key: string): ToolMeta[] => TOOLS.filter((t) => t.published && t.group === key);
 
 /** 이 글(slug)과 짝을 이루는 도구들. */
 export const toolsForPost = (slug: string): ToolMeta[] => TOOLS.filter((t) => t.published && t.related.includes(slug));
