@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getPosts, CATEGORY_ORDER } from "@/lib/wp";
+import { getPosts } from "@/lib/wp";
 import { TOOLS } from "@/lib/tools/registry";
 import PostCard from "@/components/PostCard";
 
@@ -56,17 +56,9 @@ export default async function Home() {
         </section>
       ) : null}
 
-      <div className="chips">
-        {CATEGORY_ORDER.map((c) => (
-          <Link key={c.slug} href={`/category/${c.slug}`}>
-            {c.name}
-          </Link>
-        ))}
-      </div>
-
       {posts.length > 0 ? (
         <section aria-label="정보 글">
-          <h2 className="feed-head">자세히 알아보기</h2>
+          <h2 className="feed-head">세금·연금 가이드</h2>
           <div className="feed">
             {posts.map((post, i) => (
               <PostCard key={post.id} post={post} priority={i === 0} />

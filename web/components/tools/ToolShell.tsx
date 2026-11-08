@@ -8,11 +8,15 @@ export default async function ToolShell({
   tool,
   basis,
   limits,
+  intro,
+  faq,
   children,
 }: {
   tool: ToolMeta;
   basis: { rule: string; value: string; source: string; url?: string }[];
   limits: string[];
+  intro?: string[];
+  faq?: { q: string; a: string }[];
   children: React.ReactNode;
 }) {
   const related = (await Promise.all(tool.related.map((s) => getPostBySlug(s)))).filter(
@@ -30,9 +34,41 @@ export default async function ToolShell({
         ⚠️ 일반 정보 제공용 <b>대략 판정</b>입니다. 개별 사정(다른 소득·공제·특례)에 따라 달라질 수 있으니, 신고·가입 전 국세청(126)·국민건강보험공단·세무 전문가에게 확인하세요.
       </div>
 
+      {intro && intro.length > 0 ? (
+        <section className="tool-intro article-body">
+          {intro.map((p, i) => <p key={i}>{p}</p>)}
+        </section>
+      ) : null}
+
       {children}
 
       <AdSlot />
+
+      {faq && faq.length > 0 ? (
+        <section className="article-body">
+          <h2>자주 묻는 질문</h2>
+          {faq.map((f, i) => (
+            <div key={i}>
+              <h3>{f.q}</h3>
+              <p>{f.a}</p>
+            </div>
+          ))}
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                mainEntity: faq.map((f) => ({
+                  "@type": "Question",
+                  name: f.q,
+                  acceptedAnswer: { "@type": "Answer", text: f.a },
+                })),
+              }),
+            }}
+          />
+        </section>
+      ) : null}
 
       <h2>계산·판정 기준 (출처)</h2>
       <figure className="wp-block-table basis">
