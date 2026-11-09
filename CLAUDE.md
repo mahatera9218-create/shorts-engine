@@ -46,3 +46,7 @@
 - `shorts-script`: 쇼츠 대본과 장면 목록
 - `blog-voice`: 블로그 말투와 AI 티 검사 (글을 쓸 때 money-content-writer와 함께)
 - 검증된 규칙(플레이북)은 해당 스킬의 SKILL.md를 고쳐서 반영하고, DECISIONS.md에 기록한다. (15.6)
+
+## 집 PC 공장 (로드맵)
+
+집 PC를 상시 서버로 돌려 콘텐츠 생산을 자동화하는 그림은 `docs/집PC-공장-로드맵.md`에 있다. 요지: **LLM 일은 구독제(Claude Code+Max, API 키 X) + 우리 스킬 + 구글시트 MCP + 어사이드(네이버 임시저장) + 로컬 GPU(ComfyUI, 3060 Ti — 썸네일 실사가공 img2img/ControlNet, 지피티 대체).** 발행은 끝까지 대표 수동, 키는 데이터 API만 Secrets. 집 PC 세팅·공장 착수 얘기 나오면 그 문서부터 본다.
