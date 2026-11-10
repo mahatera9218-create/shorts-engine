@@ -23,6 +23,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: claude/grok-test   # 스크립트는 이 테스트 브랜치서 — 이후 수정은 재병합 없이 'Run workflow'만
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
