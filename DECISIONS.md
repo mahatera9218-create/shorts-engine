@@ -1364,3 +1364,8 @@
 - 접근 방식: **리모트(폰 Claude↔PC)로 운영총괄에게 말로** 묻고 지시 = 기본. 드라이브 직접 열기 = 보조. PC off 시엔 지시함이 보관함.
 - 반영 위치: `docs/공장-조직설계.md` '상태판·지시함', `.claude/commands/경제-하루운영.md`(0·0b단계+단계별 기록+리모트 응답), `.claude/agents/기술보안팀.md`(🔴 기록). 템플릿: `local-factory/drive-templates/`. (경제=템플릿, 수평복제 때 패션·연예 하루운영에도 동일 적용.)
 - **리모트 컨트롤 연결 성공**(2026-11-10): 집 PC `claude remote-control` → 폰 Claude(claude.ai/code)에서 shorts-engine 폴더 접속·대화 확인. PC·그 창 켜져 있어야 닿음.
+
+## 2026-11-10 — 사진 라인: 유튜브 세션의 ComfyUI 공유 (재설치 X)
+- 집 PC에 **유튜브 자동화 세션이 이미 ComfyUI 설치**해둠 → 경제/인플 공장도 **그걸 공유**(같은 PC·GPU, 하나로 둘 다 큐 처리). `local-factory/02_photo.ps1`(사진설치.bat)은 **안 돌림**(중복 다운로드 방지).
+- 공장은 ComfyUI를 **로컬 API(기본 127.0.0.1:8188)로 호출** → 설치 경로 무관.
+- 캘리브레이션(E) 때 확인: ① 실사 체크포인트 유무(유튜브용이 비실사면 실사 모델 1개 추가) ② 우리 썸네일 img2img/ControlNet·본문 text2img 샘플 품질.
