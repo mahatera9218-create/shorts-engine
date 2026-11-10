@@ -3,11 +3,11 @@ chcp 65001 >nul
 cd /d "%~dp0"
 echo.
 echo =================================================
-echo   집 PC 공장 - 사진 라인(ComfyUI) 설치
-echo   용량 큼(~8GB). 유선 인터넷 권장. 오래 걸립니다.
-echo   먼저 '설치.bat'을 끝냈어야 합니다.
+echo   Home PC Factory : Photo line (ComfyUI)
+echo   Large download (~8GB). Wired internet recommended.
+echo   Run the main install first.
 echo =================================================
 pause
-powershell -NoProfile -ExecutionPolicy Bypass -File "02_사진.ps1"
+powershell -NoProfile -ExecutionPolicy Bypass -File "02_photo.ps1"
 echo.
 pause
