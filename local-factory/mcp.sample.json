@@ -1,0 +1,13 @@
+{
+  "_주석": "구글시트 MCP 설정 샘플. 집 PC에서 'claude mcp add'로 넣거나, 이 블록을 집 PC의 ~/.claude.json(또는 프로젝트 .mcp.json)에 복사. 키 파일 경로·폴더ID는 집 PC 실제 값으로 교체. 이 파일 자체엔 비밀 없음(경로·ID만) — 서비스계정 JSON 키는 절대 여기 넣지 않는다.",
+  "mcpServers": {
+    "google-sheets": {
+      "command": "uvx",
+      "args": ["mcp-google-sheets@latest"],
+      "env": {
+        "SERVICE_ACCOUNT_PATH": "C:\\factory\\secrets\\gsheets-key.json",
+        "DRIVE_FOLDER_ID": "여기에_시트가_든_드라이브폴더_ID"
+      }
+    }
+  }
+}
