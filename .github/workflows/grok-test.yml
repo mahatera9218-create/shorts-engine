@@ -1,0 +1,38 @@
+name: Grok 사진수집 테스트
+
+# 대표가 Actions 탭에서 'Run workflow' 누르면, GROK_API_KEY 시크릿으로
+# 우리 그록 프롬프트를 API에 먹여 '사진 수집이 되는지' 테스트한다. 결과는 로그에.
+on:
+  workflow_dispatch:
+    inputs:
+      prompt_file:
+        description: "그록 프롬프트 파일"
+        default: "prompts/project/그록-패션-조사사진.md"
+        required: true
+      input_text:
+        description: "입력(셀럽/키워드)"
+        default: "최근 공항패션으로 화제된 한국 여자 연예인 1명"
+        required: true
+      model:
+        description: "그록 모델명(막히면 grok-4.6 등으로 교체)"
+        default: "grok-4"
+        required: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 그록 API 사진수집 테스트
+        env:
+          XAI_API_KEY: ${{ secrets.GROK_API_KEY }}
+          XAI_MODEL: ${{ inputs.model }}
+        run: |
+          if [ -z "$XAI_API_KEY" ]; then
+            echo "::error::GROK_API_KEY 시크릿이 비어 있습니다. repo Settings > Secrets > Actions 확인."
+            exit 1
+          fi
+          python -I local-factory/grok-test.py "${{ inputs.prompt_file }}" "${{ inputs.input_text }}"
