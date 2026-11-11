@@ -11,3 +11,7 @@ site/
 .cache/
 site-health/
 site-fashion/
+
+# 배포 빌드 결과물·상태(머신 로컬)
+deploy/dist/
+deploy/.배포상태.json
