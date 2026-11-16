@@ -16,7 +16,8 @@ import {
 import { stockPhoto, stockPhotos } from "@/lib/photos";
 import PostCard from "@/components/PostCard";
 import Thumb from "@/components/Thumb";
-import { toolsForPost } from "@/lib/tools/registry";
+import { toolsForPost, getTool } from "@/lib/tools/registry";
+import { POST_LINKS } from "@/lib/tools/guides";
 import { sized } from "@/lib/imgsize";
 
 // 글이 모두 저장소 파일에 있으므로 빌드 때 전부 미리 만든다(완전 정적).
@@ -115,6 +116,17 @@ export default async function PostPage({
   const post = await getPostBySlug(decodeURIComponent(params.slug));
   if (!post) notFound();
 
+  // 이 글에서 이어지는 계산기·가이드(수동 큐레이션 + 계산기의 related 역방향).
+  const links = POST_LINKS[post.slug];
+  const linkTools = Array.from(
+    new Set([...(links?.tools ?? []), ...toolsForPost(post.slug).map((t) => t.slug)]),
+  )
+    .map((s) => getTool(s))
+    .filter((t): t is NonNullable<typeof t> => Boolean(t && t.published));
+  const linkPosts = (
+    await Promise.all((links?.guides ?? []).map((s) => getPostBySlug(s)))
+  ).filter((p): p is NonNullable<typeof p> => Boolean(p));
+
   const title = stripHtml(post.title.rendered);
   const cat = postCategory(post);
   const feat = featuredImage(post);
@@ -165,6 +177,40 @@ export default async function PostPage({
               <li key={t.slug}><Link href={`/tools/${t.slug}`}>{t.short} →</Link> <small>({t.audience})</small></li>
             ))}
           </ul>
+        </section>
+      ) : null}
+
+      {linkTools.length > 0 || linkPosts.length > 0 ? (
+        <section className="tool-section">
+          <h2>이 글과 함께 보는 계산기·가이드</h2>
+          {linkTools.length > 0 ? (
+            <>
+              <h3 className="tool-links-head">계산기</h3>
+              <ul className="tool-links">
+                {linkTools.map((t) => (
+                  <li key={t.slug}>
+                    <Link href={`/tools/${t.slug}`}>{t.short}</Link>
+                    <small>{t.audience}</small>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : null}
+          {linkPosts.length > 0 ? (
+            <>
+              <h3 className="tool-links-head">이어 보면 좋은 가이드</h3>
+              <ul className="tool-links">
+                {linkPosts.map((p) => (
+                  <li key={p.slug}>
+                    <Link href={`/${p.slug}`}>{stripHtml(p.title.rendered)}</Link>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : null}
+          <p className="tool-note-inline" style={{ marginTop: 14 }}>
+            <Link href="/tools">세금 계산기 전체 보기</Link>
+          </p>
         </section>
       ) : null}
 

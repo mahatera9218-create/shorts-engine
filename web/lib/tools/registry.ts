@@ -8,6 +8,7 @@ export interface ToolMeta {
   published: boolean;
   group: string; // 계층 분류 키
   related: string[]; // 관련 글 slug(존재하는 글만 표시)
+  seeAlso: string[]; // 이어서 볼 계산기 slug(분류를 넘나드는 교차 링크)
   checked: string; // 규칙 확인일
 }
 
@@ -20,7 +21,8 @@ export const TOOLS: ToolMeta[] = [
     audience: "월세 받는 집주인",
     description: "연 월세 수입 2,000만원 이하 집주인이 분리과세(14%)와 종합과세 중 어느 쪽이 세금이 적은지 비교합니다.",
     published: true,
-    related: ["imdae-sodeuk-sinmungo", "sodeukse-yulpyo-2026"],
+    related: ["imdae-sodeuk-sinmungo", "sodeukse-yulpyo-2026", "jonghap-sodeukse-singo-5wol"],
+    seeAlso: ["income-tax", "dependent-nhis"],
     checked: "2026-10-18",
   },
   {
@@ -31,7 +33,8 @@ export const TOOLS: ToolMeta[] = [
     audience: "스마트스토어·쿠팡 셀러",
     description: "연 매출과 매입으로 간이과세자와 일반과세자의 부가가치세를 비교하고, 납부면제 여부와 세금계산서 발급 의무를 확인합니다.",
     published: true,
-    related: ["seller-ganyi-ilban-gwase-chai"],
+    related: ["seller-ganyi-ilban-gwase-chai", "saeopja-deungnok-gijun", "jonghap-sodeukse-singo-5wol"],
+    seeAlso: ["creator-business", "income-tax"],
     checked: "2026-10-18",
   },
   {
@@ -42,7 +45,8 @@ export const TOOLS: ToolMeta[] = [
     audience: "부업·부수입이 있는 직장인 가족",
     description: "소득과 재산 기준으로 건강보험 피부양자 자격이 유지될지, 탈락 가능성이 있는지 대략 판정합니다.",
     published: true,
-    related: ["pibuyangja-jagyeok-yogeon", "jiyeok-geonbo-san-jeong"],
+    related: ["pibuyangja-jagyeok-yogeon", "jiyeok-geonbo-san-jeong", "imdae-sodeuk-sinmungo"],
+    seeAlso: ["four-insurance", "rental-income", "creator-business"],
     checked: "2026-10-18",
   },
   {
@@ -53,7 +57,8 @@ export const TOOLS: ToolMeta[] = [
     audience: "블로거·유튜버·인플루언서",
     description: "수익 종류와 규모, 지속성으로 사업자등록 필요 여부와 세금 처리 방향(사업소득·기타소득)을 안내합니다.",
     published: true,
-    related: ["saeopja-deungnok-gijun"],
+    related: ["saeopja-deungnok-gijun", "jonghap-sodeukse-singo-5wol", "seller-ganyi-ilban-gwase-chai"],
+    seeAlso: ["seller-vat", "income-tax", "dependent-nhis"],
     checked: "2026-10-18",
   },
   {
@@ -64,7 +69,8 @@ export const TOOLS: ToolMeta[] = [
     audience: "연말정산·종합소득세 신고자",
     description: "연금저축·IRP 납입액과 소득 구간을 넣으면 올해 돌려받을(덜 낼) 세금을 계산합니다. 한도 600만/900만원, 공제율 16.5%·13.2%.",
     published: true,
-    related: ["yeongeum-irp-semuchul-gongje-2026", "isa-vs-yeongeum-jeochuk"],
+    related: ["yeongeum-irp-semuchul-gongje-2026", "isa-vs-yeongeum-jeochuk", "sodeukse-yulpyo-2026"],
+    seeAlso: ["retirement-tax", "income-tax"],
     checked: "2026-11-02",
   },
   {
@@ -75,7 +81,8 @@ export const TOOLS: ToolMeta[] = [
     audience: "공시가격 높은 주택 보유자",
     description: "보유 주택 공시가격 합계로 종합부동산세를 대략 계산합니다. 1세대 1주택 12억 공제·고령자·장기보유 세액공제 반영.",
     published: true,
-    related: ["jongbuse-gibon-gongje"],
+    related: ["jongbuse-gibon-gongje", "yangdose-1jutaek-bigwase"],
+    seeAlso: ["property-tax", "capital-gains"],
     checked: "2026-11-02",
   },
   {
@@ -87,6 +94,7 @@ export const TOOLS: ToolMeta[] = [
     description: "증여재산 가액과 관계를 넣으면 증여재산공제·10년 합산·신고세액공제까지 반영해 낼 증여세를 계산합니다.",
     published: true,
     related: ["jeungyeose-gongje-10nyeon", "jeungyeose-singo-bangbeop", "budongsan-jeungyeo-vs-sangsok"],
+    seeAlso: ["inheritance-tax", "acquisition-tax"],
     checked: "2026-11-02",
   },
   {
@@ -97,7 +105,8 @@ export const TOOLS: ToolMeta[] = [
     audience: "집을 파는 사람",
     description: "양도가·취득가·보유/거주기간으로 양도소득세를 대략 계산합니다. 1세대 1주택 비과세(12억)·고가주택 안분·장기보유특별공제 반영.",
     published: true,
-    related: ["yangdose-1jutaek-bigwase"],
+    related: ["yangdose-1jutaek-bigwase", "chwideukse-seyul-jutaek"],
+    seeAlso: ["acquisition-tax", "property-tax", "brokerage"],
     checked: "2026-11-08",
   },
   {
@@ -108,7 +117,8 @@ export const TOOLS: ToolMeta[] = [
     audience: "집을 사는 사람",
     description: "취득가와 주택 수·지역으로 취득세·지방교육세·농어촌특별세를 계산합니다. 다주택 중과·생애최초 감면 반영.",
     published: true,
-    related: ["chwideukse-seyul-jutaek"],
+    related: ["chwideukse-seyul-jutaek", "yangdose-1jutaek-bigwase"],
+    seeAlso: ["brokerage", "capital-gains", "jeonwolse"],
     checked: "2026-11-08",
   },
   {
@@ -119,7 +129,8 @@ export const TOOLS: ToolMeta[] = [
     audience: "프리랜서·사업자·N잡러",
     description: "종합소득금액과 공제로 과세표준·산출세액·지방소득세를 계산하고 한계세율을 보여 줍니다.",
     published: true,
-    related: ["jonghap-sodeukse-singo-5wol", "sodeukse-yulpyo-2026"],
+    related: ["jonghap-sodeukse-singo-5wol", "sodeukse-yulpyo-2026", "saeopja-deungnok-gijun", "imdae-sodeuk-sinmungo"],
+    seeAlso: ["pension-credit", "rental-income", "seller-vat"],
     checked: "2026-11-08",
   },
   {
@@ -130,7 +141,8 @@ export const TOOLS: ToolMeta[] = [
     audience: "상속을 받는 가족",
     description: "상속재산과 배우자 유무로 상속세를 대략 계산합니다. 일괄공제 5억·배우자공제·신고세액공제 반영.",
     published: true,
-    related: ["budongsan-jeungyeo-vs-sangsok", "jeungyeose-gongje-10nyeon"],
+    related: ["budongsan-jeungyeo-vs-sangsok", "jeungyeose-gongje-10nyeon", "jeungyeose-singo-bangbeop"],
+    seeAlso: ["gift-tax", "jongbuse"],
     checked: "2026-11-08",
   },
   {
@@ -141,7 +153,8 @@ export const TOOLS: ToolMeta[] = [
     audience: "주택 보유자",
     description: "공시가격으로 주택 재산세를 대략 계산합니다. 1세대 1주택 특례세율·도시지역분·지방교육세 반영.",
     published: true,
-    related: ["jongbuse-gibon-gongje"],
+    related: ["jongbuse-gibon-gongje", "chwideukse-seyul-jutaek"],
+    seeAlso: ["jongbuse", "acquisition-tax"],
     checked: "2026-11-08",
   },
   {
@@ -152,7 +165,8 @@ export const TOOLS: ToolMeta[] = [
     audience: "집을 사고팔거나 임대차하는 사람",
     description: "거래금액으로 매매·임대차 중개보수(복비)의 법정 상한을 계산합니다. 구간별 요율·한도 반영.",
     published: true,
-    related: [],
+    related: ["chwideukse-seyul-jutaek", "yangdose-1jutaek-bigwase"],
+    seeAlso: ["acquisition-tax", "jeonwolse", "capital-gains"],
     checked: "2026-11-08",
   },
   {
@@ -164,6 +178,7 @@ export const TOOLS: ToolMeta[] = [
     description: "월급으로 국민연금·건강보험·장기요양·고용보험 근로자 부담액을 계산합니다.",
     published: true,
     related: ["jiyeok-geonbo-san-jeong", "pibuyangja-jagyeok-yogeon"],
+    seeAlso: ["dependent-nhis", "unemployment"],
     checked: "2026-11-08",
   },
   {
@@ -174,7 +189,8 @@ export const TOOLS: ToolMeta[] = [
     audience: "퇴직금을 받는 사람",
     description: "퇴직금과 근속연수로 퇴직소득세를 대략 계산합니다. 근속연수공제·환산급여·연분연승 반영.",
     published: true,
-    related: [],
+    related: ["yeongeum-irp-semuchul-gongje-2026", "sodeukse-yulpyo-2026"],
+    seeAlso: ["pension-credit", "income-tax"],
     checked: "2026-11-08",
   },
   {
@@ -185,7 +201,8 @@ export const TOOLS: ToolMeta[] = [
     audience: "실직·이직한 사람",
     description: "평균임금·나이·고용보험 가입기간으로 구직급여 1일액과 소정급여일수, 예상 총액을 계산합니다.",
     published: true,
-    related: [],
+    related: ["jiyeok-geonbo-san-jeong", "jonghap-sodeukse-singo-5wol"],
+    seeAlso: ["four-insurance", "dependent-nhis"],
     checked: "2026-11-08",
   },
   {
@@ -196,7 +213,8 @@ export const TOOLS: ToolMeta[] = [
     audience: "전세·월세를 바꾸는 세입자·집주인",
     description: "전환율로 전세 보증금을 월세로, 월세를 보증금으로 환산합니다.",
     published: true,
-    related: [],
+    related: ["imdae-sodeuk-sinmungo"],
+    seeAlso: ["brokerage", "rental-income"],
     checked: "2026-11-08",
   },
 ];
@@ -221,3 +239,19 @@ export const toolsInGroup = (key: string): ToolMeta[] => TOOLS.filter((t) => t.p
 export const toolsForPost = (slug: string): ToolMeta[] => TOOLS.filter((t) => t.published && t.related.includes(slug));
 
 export const getTool = (slug: string): ToolMeta | undefined => TOOLS.find((t) => t.slug === slug);
+
+/** 같은 분류의 다른 계산기(자기 자신 제외). */
+export const siblingTools = (slug: string): ToolMeta[] => {
+  const t = getTool(slug);
+  if (!t) return [];
+  return TOOLS.filter((x) => x.published && x.group === t.group && x.slug !== slug);
+};
+
+/** 이어서 볼 계산기(분류를 넘나드는 교차 링크). */
+export const seeAlsoTools = (slug: string): ToolMeta[] => {
+  const t = getTool(slug);
+  if (!t) return [];
+  return t.seeAlso
+    .map((s) => getTool(s))
+    .filter((x): x is ToolMeta => Boolean(x && x.published && x.slug !== slug));
+};

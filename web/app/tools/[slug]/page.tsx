@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { TOOLS, getTool } from "@/lib/tools/registry";
+import { TOOL_GUIDES } from "@/lib/tools/guides";
 import ToolShell from "@/components/tools/ToolShell";
 import RentalIncomeTool from "@/components/tools/RentalIncomeTool";
 import SellerVatTool from "@/components/tools/SellerVatTool";
@@ -243,7 +244,7 @@ const CONTENT: Record<string, { basis: { rule: string; value: string; source: st
       "6~9억 비례세율은 가액에 따라 연속적으로 바뀝니다(지방세법 산식 기준).",
     ],
     faq: [
-      { q: "7억짜리 집을 처음 사면 취득세가 얼마인가요?", a: "7억이면 비례구간이라 취득세율은 약 1.8% 안팎이고, 여기에 지방교육세가 더해집니다. 생애최초 요건을 갖추면 최대 200만원을 감면받습니다. 위에서 정확히 계산해 보세요." },
+      { q: "7억짜리 집을 처음 사면 취득세가 얼마인가요?", a: "7억이면 비례구간이라 취득세율은 1.667%이고, 여기에 지방교육세가 더해집니다(85㎡ 초과면 농어촌특별세 0.2% 추가). 생애최초 요건을 갖추면 최대 200만원을 감면받습니다. 위에서 정확히 계산해 보세요." },
       { q: "집이 2채가 되면 취득세가 왜 이렇게 오르나요?", a: "조정대상지역에서 2주택째를 사면 8%, 3주택부터는 12%의 중과세율이 적용됩니다. 1주택(1~3%)과 차이가 매우 큽니다." },
     ],
   },
@@ -429,7 +430,7 @@ export default function ToolPage({ params }: { params: { slug: string } }) {
   if (!tool || !c) notFound();
   const { Tool, basis, limits, intro, faq } = c;
   return (
-    <ToolShell tool={tool} basis={basis} limits={limits} intro={intro} faq={faq}>
+    <ToolShell tool={tool} basis={basis} limits={limits} intro={intro} faq={faq} guide={TOOL_GUIDES[tool.slug]}>
       <Tool />
     </ToolShell>
   );

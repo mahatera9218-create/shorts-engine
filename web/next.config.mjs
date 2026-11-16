@@ -41,7 +41,18 @@ const nextConfig = {
       ["/geonbo-imui-gyesok-gaip", "/jiyeok-geonbo-san-jeong"],
       // 옛 홈 주소 → 홈
       ["/home", "/"],
+      // ---- 2026-11-16: 대응이 정확한 옛 글 4건 → 현행 계산기·글 ----
+      // 퇴직금 세금 계산 → 퇴직소득세 계산기
+      ["/toejikgeum-se-gyesan", "/tools/retirement-tax"],
+      // 재산세 납기(재산세 안내) → 주택 재산세 계산기
+      ["/jaesan-se-nap-gi", "/tools/property-tax"],
+      // 증여 vs 상속 어디가 유리 → 부동산 증여·상속 비교 글
+      ["/jeungyeo-vs-sangsok-eoddi-yuri", "/budongsan-jeungyeo-vs-sangsok"],
+      // 부가세 환급 요건 → 온라인 셀러 부가세(간이·일반) 비교
+      ["/budaese-hwangeup-yogeon", "/tools/seller-vat"],
     ];
+    // 301(permanent)로 보낸다. 요청이 `/옛주소/` 처럼 슬래시로 끝나면 Next가 먼저
+    // `/옛주소`로 308 정규화한 뒤 이 301을 타므로, 두 형태 모두 결국 같은 페이지(200)로 도착한다.
     return old.map(([source, destination]) => ({ source, destination, statusCode: 301 }));
   },
   // 정적 이미지는 오래 캐시(PageSpeed '효율적인 캐시 수명').
