@@ -1,6 +1,7 @@
 ---
 title: 연락처
 slug: contact
+date: 2026-10-18
 ---
 <p>Yield Briefing에 관심 가져 주셔서 감사합니다. 아래로 문의하실 수 있습니다.</p>
 <h2>문의</h2>

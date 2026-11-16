@@ -1,6 +1,7 @@
 ---
 title: 면책조항
 slug: disclaimer
+date: 2026-10-16
 ---
 <p>Yield Briefing(이하 &quot;본 블로그&quot;)에 게시된 모든 정보는 일반적인 정보 제공을 목적으로 합니다. 아래 내용을 확인하신 뒤 이용해 주세요.</p>
 <h2>자문이 아닙니다</h2>

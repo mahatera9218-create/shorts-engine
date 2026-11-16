@@ -1,6 +1,7 @@
 ---
 title: 운영·편집 원칙 | Yield Briefing
 slug: editorial
+date: 2026-10-18
 ---
 <p><strong>Yield Briefing</strong>은 재테크·부동산·세금·연금 정보를 쉽고 정확하게 정리하는 정보 사이트입니다. 이 페이지는 우리가 글과 도구를 어떤 원칙으로 만들고 고치는지 밝혀 둡니다.</p>
 <h2>운영 주체와 연락처</h2>

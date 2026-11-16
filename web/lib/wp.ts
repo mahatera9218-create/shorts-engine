@@ -198,3 +198,14 @@ export async function getPageBySlug(slug: string): Promise<WpPost | null> {
 export async function getAllPageSlugs(): Promise<string[]> {
   return loadPages().map((p) => p.slug);
 }
+
+// 사이트맵 lastmod용: 고정 페이지 frontmatter의 마지막 수정일(date). 없으면 undefined(사이트맵에서 생략).
+// toPost의 날짜 기본값(빌드 시각)을 쓰지 않는다 — 내용이 그대로인데 lastmod만 바뀌면 구글에 거짓 신호가 된다.
+export async function getAllPages(): Promise<Array<{ slug: string; modified?: string }>> {
+  return readDir(PAGES_DIR)
+    .map((p) => ({
+      slug: p.data.slug || "",
+      modified: p.data.date || p.data.modified || undefined,
+    }))
+    .filter((p) => p.slug);
+}
