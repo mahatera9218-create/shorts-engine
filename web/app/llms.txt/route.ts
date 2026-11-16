@@ -1,4 +1,5 @@
 import { getPosts, getAllPageSlugs, stripHtml, SITE_NAME, SITE_DESC, SITE_URL } from "@/lib/wp";
+import { TOOLS, TOOL_GROUPS, toolsInGroup } from "@/lib/tools/registry";
 
 export const revalidate = 3600;
 
@@ -14,6 +15,14 @@ export async function GET() {
     "",
     "## 글",
     ...posts.map((p) => `- [${stripHtml(p.title.rendered)}](${SITE_URL}/${p.slug})`),
+    "",
+    "## 세금 계산기",
+    ...TOOL_GROUPS.flatMap((g) => [
+      `### ${g.name} (${g.desc}) — ${SITE_URL}/tools/group/${g.key}`,
+      ...toolsInGroup(g.key)
+        .filter((t) => t.published)
+        .map((t) => `- [${t.short}](${SITE_URL}/tools/${t.slug}) — ${t.description}`),
+    ]),
     "",
     "## 안내",
     ...pages.map((s) => `- ${SITE_URL}/p/${s}`),

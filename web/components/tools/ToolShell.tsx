@@ -1,16 +1,19 @@
 import Link from "next/link";
 import type { ToolMeta } from "@/lib/tools/registry";
-import { groupOf } from "@/lib/tools/registry";
+import { groupOf, siblingTools, seeAlsoTools } from "@/lib/tools/registry";
+import type { ToolGuide } from "@/lib/tools/guides";
 import { getPostBySlug, stripHtml, SITE_NAME, SITE_URL } from "@/lib/wp";
 import AdSlot from "@/components/AdSlot";
 
-// 도구 공통 틀: 제목·대상·면책·근거(규칙 표)·관련 글. 계산/판정 화면(children)은 도구별 클라이언트 컴포넌트.
+// 도구 공통 틀: 제목·대상·면책·활용 가이드·FAQ·근거(규칙 표)·관련 계산기/글.
+// 계산/판정 화면(children)은 도구별 클라이언트 컴포넌트.
 export default async function ToolShell({
   tool,
   basis,
   limits,
   intro,
   faq,
+  guide,
   children,
 }: {
   tool: ToolMeta;
@@ -18,12 +21,16 @@ export default async function ToolShell({
   limits: string[];
   intro?: string[];
   faq?: { q: string; a: string }[];
+  guide?: ToolGuide;
   children: React.ReactNode;
 }) {
   const related = (await Promise.all(tool.related.map((s) => getPostBySlug(s)))).filter(
     (p): p is NonNullable<typeof p> => Boolean(p),
   );
+  const siblings = siblingTools(tool.slug);
+  const also = seeAlsoTools(tool.slug);
   const group = groupOf(tool.slug);
+  const allFaq = [...(faq ?? []), ...(guide?.faq ?? [])];
   return (
     <div className="container article tool-page">
       <nav className="crumbs" aria-label="위치">
@@ -67,12 +74,40 @@ export default async function ToolShell({
         ⚠️ 일반 정보 제공용 <b>대략 판정</b>입니다. 개별 사정(다른 소득·공제·특례)에 따라 달라질 수 있으니, 신고·가입 전 국세청(126)·국민건강보험공단·세무 전문가에게 확인하세요.
       </p>
 
+      {guide ? (
+        <section className="tool-guide article-body">
+          <h2>이럴 때 쓰는 계산기</h2>
+          {guide.useWhen.map((p, i) => <p key={i}>{p}</p>)}
+
+          <h2>계산 예시</h2>
+          <p className="tool-example-lead">{guide.example.title}</p>
+          <figure className="wp-block-table">
+            <table>
+              <thead>
+                <tr><th>입력</th><th>계산 결과</th></tr>
+              </thead>
+              <tbody>
+                {guide.example.rows.map(([a, b], i) => (
+                  <tr key={i}><td>{a}</td><td>{b}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          </figure>
+          {guide.example.note ? <p className="tool-example-note">{guide.example.note}</p> : null}
+
+          <h2>결과를 실제로 쓸 때 확인할 점</h2>
+          <ul>
+            {guide.checklist.map((c, i) => <li key={i}>{c}</li>)}
+          </ul>
+        </section>
+      ) : null}
+
       <AdSlot />
 
-      {faq && faq.length > 0 ? (
+      {allFaq.length > 0 ? (
         <section className="tool-section article-body">
           <h2>자주 묻는 질문</h2>
-          {faq.map((f, i) => (
+          {allFaq.map((f, i) => (
             <div key={i}>
               <h3>{f.q}</h3>
               <p>{f.a}</p>
@@ -84,7 +119,7 @@ export default async function ToolShell({
               __html: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "FAQPage",
-                mainEntity: faq.map((f) => ({
+                mainEntity: allFaq.map((f) => ({
                   "@type": "Question",
                   name: f.q,
                   acceptedAnswer: { "@type": "Answer", text: f.a },
@@ -119,10 +154,51 @@ export default async function ToolShell({
       </details>
       </div>
 
-      {related.length > 0 ? (
+      {siblings.length > 0 || also.length > 0 || related.length > 0 ? (
         <section className="tool-section">
-          <h2>함께 보면 좋은 글</h2>
-          <ul className="tool-related">{related.map((p) => <li key={p.slug}><Link href={`/${p.slug}`}>{stripHtml(p.title.rendered)}</Link></li>)}</ul>
+          <h2>관련 계산기·가이드</h2>
+          {siblings.length > 0 ? (
+            <>
+              <h3 className="tool-links-head">{group ? `${group.name} 계산기` : "같은 분류 계산기"}</h3>
+              <ul className="tool-links">
+                {siblings.map((t) => (
+                  <li key={t.slug}>
+                    <Link href={`/tools/${t.slug}`}>{t.short}</Link>
+                    <small>{t.audience}</small>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : null}
+          {also.length > 0 ? (
+            <>
+              <h3 className="tool-links-head">이어서 볼 계산기</h3>
+              <ul className="tool-links">
+                {also.map((t) => (
+                  <li key={t.slug}>
+                    <Link href={`/tools/${t.slug}`}>{t.short}</Link>
+                    <small>{t.audience}</small>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : null}
+          {related.length > 0 ? (
+            <>
+              <h3 className="tool-links-head">관련 가이드</h3>
+              <ul className="tool-links">
+                {related.map((p) => (
+                  <li key={p.slug}>
+                    <Link href={`/${p.slug}`}>{stripHtml(p.title.rendered)}</Link>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : null}
+          <p className="tool-note-inline" style={{ marginTop: 14 }}>
+            <Link href="/tools">계산기 전체 보기</Link>
+            {group ? <> · <Link href={`/tools/group/${group.key}`}>{group.name} 계산기 모음</Link></> : null}
+          </p>
         </section>
       ) : null}
 
