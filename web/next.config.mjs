@@ -20,6 +20,30 @@ const nextConfig = {
   experimental: {
     missingSuspenseWithCSRBailout: false,
   },
+  // 옛 주소 → 지금 페이지 301 영구 리다이렉트.
+  // 2024년에 이 도메인에 있던 워드프레스 글 주소로, 지금은 글이 없다(Search Console '찾을 수 없음(404)' 9건).
+  // 가장 가까운 현행 글·계산기로 보내 색인·유입을 살린다. statusCode 301 = 진짜 301(permanent: true는 308).
+  async redirects() {
+    const old = [
+      // 국민연금 실업크레딧 → 실업급여 계산기(고용보험·실업 계열)
+      ["/gukmin-yeongeum-sileop-credit", "/tools/unemployment"],
+      // 내일배움카드(고용보험 직업훈련) → 실업급여 계산기
+      ["/naeil-baeum-card", "/tools/unemployment"],
+      // 고용보험 실업급여 요건 → 실업급여 계산기
+      ["/goyong-boheom-sileop-geupyeo-yogeon", "/tools/unemployment"],
+      // 금융소득 종합과세(2,000만원 초과) → 5월 종합소득세 신고 글
+      ["/geumyung-sodeuk-jonghap-gwase", "/jonghap-sodeukse-singo-5wol"],
+      // 예금 이자 소득세(15.4%) → 소득세율표
+      ["/yegeum-ija-sodeukse", "/sodeukse-yulpyo-2026"],
+      // 연금 수령 한도 → 연금저축·IRP 글
+      ["/yeongeum-suryeong-hando", "/yeongeum-irp-semuchul-gongje-2026"],
+      // 건강보험 임의계속가입 → 직장 그만둔 뒤 지역가입자 건보료 글
+      ["/geonbo-imui-gyesok-gaip", "/jiyeok-geonbo-san-jeong"],
+      // 옛 홈 주소 → 홈
+      ["/home", "/"],
+    ];
+    return old.map(([source, destination]) => ({ source, destination, statusCode: 301 }));
+  },
   // 정적 이미지는 오래 캐시(PageSpeed '효율적인 캐시 수명').
   async headers() {
     const long = [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }];
