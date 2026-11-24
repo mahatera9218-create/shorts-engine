@@ -39,17 +39,9 @@ jobs:
         run: |
           set -o pipefail
           python -m market.niche | tee -a "$GITHUB_STEP_SUMMARY"
-      - name: 커밋·푸시
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add "reports/검색량" 2>/dev/null || true
-          if git diff --cached --quiet; then
-            echo "변경 없음 — 커밋 생략." >> "$GITHUB_STEP_SUMMARY"; exit 0
-          fi
-          git commit -m "틈새 키워드 조사 ($(date +%F))"
-          for i in 1 2 3 4; do
-            git pull --rebase --autostash origin main && git push origin HEAD:main && exit 0
-            sleep $((i * 3))
-          done
-          exit 1
+      - name: 결과 업로드(조사 스파이크 — main 푸시 안 함)
+        uses: actions/upload-artifact@v4
+        with:
+          name: niche-report
+          path: reports/검색량/
+          if-no-files-found: ignore
