@@ -645,3 +645,8 @@
 - 구조: 홈(분류 4카드) → /tools 허브(분류 4카드) → /tools/group/[분류](해당 계산기들) → /tools/[계산기].
 - 분류: property(부동산)·gift(상속증여)·income(소득사업)·insurance(건강보험연금).
 - 각 단계 breadcrumb + BreadcrumbList/ItemList 스키마, 사이트맵에 분류 페이지 추가. 메뉴에 분류 하위링크.
+
+## 2026-11-25 — 강사 키워드는 발행 전 '경쟁강도 먼저' 조사
+- 대표: 강사(쿠니네) 주간 키워드 중 경쟁 센 것은 발행해도 노출이 안 뜬다. 앞으로 **강사 키워드를 먼저 경쟁강도로 조사하고, 검색량 있고 경쟁 낮은 것부터 선택**한다.
+- 방법: 매주 강사 리스트를 `config/niche_keywords.yaml` 씨앗으로 갈아끼우고 PR 머지 → 틈새 엔진(GitHub Actions) 자동 실행 → `niche-results` 브랜치 `reports/검색량/틈새-<날짜>.md`에 키워드별 경쟁강도표.
+- 타임아웃 방지: 그룹수×cap이 크면 15분 초과 → cap 20으로. (설계서 위치: config/niche_keywords.yaml, market/niche.py)
